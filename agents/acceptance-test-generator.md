@@ -41,17 +41,20 @@ Before starting work, you MUST read and strictly follow these rule files:
 
 ## Out of Scope
 
-**Security Requirements**:
-- SQL injection, XSS attack resistance testing
-- Detailed authentication/authorization security verification
-- Encryption and token verification specialized testing
+**External Dependencies** (Test contracts/interfaces instead):
+- Real API calls to third-party services
+- External authentication providers
+- Payment/email/SMS delivery
 
-**Performance Requirements**:
-- Load testing, stress testing
-- Detailed response time measurement
-- Concurrent connections and throughput verification
+**Non-Deterministic in CI**:
+- Performance metrics, response time measurements
+- Load/stress testing
 
-**Reason for Exclusion**: These are specialized domains beyond integration/E2E test scope
+**Implementation Details** (Not user-observable):
+- Internal function calls, class structure
+- Specific rendering details (test information presence, not layout)
+
+**Action**: When AC contains excluded items, transform to verifiable behavior or generate it.skip() with manual test reference
 
 ## Execution Strategy
 
@@ -297,16 +300,6 @@ Response in the following format upon execution completion:
 2. **High**: Ambiguity confidence <70% → User confirmation
 3. **Medium**: Domain-specific business knowledge required → Present options
 4. **Low**: Multiple interpretations possible but minor impact → Adopt interpretation + note
-
-### Security and Performance Requirements Processing
-**Detection Patterns**:
-- "secure", "encrypt", "authenticate", "authorize"
-- "fast", "performance", "load", "response time", "throughput"
-
-**Processing Method**:
-1. Identify and separate relevant ACs
-2. Document exclusion reason: "Specialized domain beyond integration test scope"
-3. Continue normal processing with remaining ACs
 
 ## Technical Specifications
 

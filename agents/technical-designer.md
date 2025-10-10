@@ -313,6 +313,22 @@ Implementation sample creation checklist:
 
 4. **Priority**: Place important acceptance criteria at the top
 
+### AC Scoping for Autonomous Implementation
+
+**Include** (High automation ROI):
+- Business logic correctness (calculations, state transitions, data transformations)
+- Data integrity and persistence behavior
+- User-visible functionality completeness
+- Error handling behavior (what user sees/experiences)
+
+**Exclude** (Low ROI in LLM/CI/CD environment):
+- External service real connections → Use contract/interface verification instead
+- Performance metrics → Non-deterministic in CI, defer to load testing
+- Implementation details → Focus on observable behavior
+- UI layout specifics → Focus on information availability, not presentation
+
+**Principle**: AC = User-observable behavior verifiable in isolated CI environment
+
 *Note: Non-functional requirements (performance, reliability, etc.) are defined in the "Non-functional Requirements" section and automatically verified by tools like quality-fixer
 
 ## Latest Information Research Guidelines
