@@ -121,8 +121,8 @@ No Ripple Effect:
 
 ### Type Definitions
 
-```typescript
-// Record major type definitions here
+```
+// Record major type/interface definitions here
 ```
 
 ### Data Contract
@@ -131,12 +131,12 @@ No Ripple Effect:
 
 ```yaml
 Input:
-  Type: [TypeScript type definition]
+  Type: [Type/interface definition]
   Preconditions: [Required items, format constraints]
   Validation: [Validation method]
 
 Output:
-  Type: [TypeScript type definition]
+  Type: [Type/interface definition]
   Guarantees: [Conditions that must always be met]
   On Error: [Exception/null/default value]
 

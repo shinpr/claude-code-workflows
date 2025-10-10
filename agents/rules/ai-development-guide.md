@@ -13,7 +13,7 @@ Immediately stop and reconsider design when detecting the following patterns:
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
-7. **Excessive use of type assertions (as)** - Abandoning type safety
+7. **Bypassing type safety mechanisms** - Using unsafe casts or ignoring type checks
 
 ### Design Anti-patterns
 - **"Make it work for now" thinking** - Accumulation of technical debt
@@ -87,7 +87,7 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 ### Pattern 2: Abandoning Type Safety
 **Symptom**: Excessive use of unsafe type casts or dynamic typing when static typing is available
 **Cause**: Impulse to avoid type errors
-**Avoidance**: Use language-appropriate type safety mechanisms (e.g., unknown + type guards in TypeScript, type hints + mypy in Python)
+**Avoidance**: Use language-appropriate type safety mechanisms (type guards, runtime validation, proper type annotations)
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation

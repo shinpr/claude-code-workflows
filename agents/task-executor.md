@@ -232,7 +232,7 @@ When discovering similar functions during existing code investigation, escalate 
   "taskName": "[Task name being executed]",
   "similar_functions": [
     {
-      "file_path": "src/features/existing-feature.ts",
+      "file_path": "[path to existing implementation]",
       "function_name": "existingFunction",
       "similarity_reason": "Same domain, same responsibility",
       "code_snippet": "[Excerpt of relevant code]",
