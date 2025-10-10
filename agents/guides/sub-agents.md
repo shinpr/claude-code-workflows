@@ -177,21 +177,25 @@ According to scale determination:
 
 ### Large Scale (6+ Files)
 1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop: Requirement confirmation/question handling]**
-2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not) → Execute document-reviewer **[Stop: Requirement confirmation]**
-3. technical-designer → ADR creation (if needed) → Execute document-reviewer **[Stop: Technical direction decision]**
-4. technical-designer → Design Doc creation → Execute document-reviewer **[Stop: Design content confirmation]**
-5. acceptance-test-generator → Integration and E2E test skeleton generation
+2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not)
+3. document-reviewer → PRD review **[Stop: PRD Approval]**
+4. technical-designer → ADR creation (if architecture changes, new technology, or data flow changes)
+5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
+6. technical-designer → Design Doc creation
+7. document-reviewer → Design Doc review **[Stop: Design Doc Approval]**
+8. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
-6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-7. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+9. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+10. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Medium Scale (3-5 Files)
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
-2. technical-designer → Design Doc creation → Execute document-reviewer **[Stop: Technical direction decision]**
-3. acceptance-test-generator → Integration and E2E test skeleton generation
+2. technical-designer → Design Doc creation
+3. document-reviewer → Design Doc review **[Stop: Design Doc Approval]**
+4. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
-4. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-5. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+5. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+6. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Small Scale (1-2 Files)
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
