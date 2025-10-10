@@ -7,10 +7,7 @@
     "url": "https://github.com/shinpr"
   },
   "homepage": "https://github.com/shinpr/claude-code-workflows",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shinpr/claude-code-workflows.git"
-  },
+  "repository": "https://github.com/shinpr/claude-code-workflows.git",
   "license": "MIT",
   "keywords": [
     "workflows",
