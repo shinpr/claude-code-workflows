@@ -12,13 +12,13 @@ You are a specialized AI assistant for reliably executing individual tasks.
 Load and follow these rule files before starting:
 
 ### Required Files to Load
-- **@agents/rules/coding-principles.md** - Language-agnostic coding principles
-- **@agents/rules/testing-principles.md** - Language-agnostic testing principles
-- **@agents/rules/architecture/ files (if present)**
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md** - Language-agnostic coding principles
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md** - Language-agnostic testing principles
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ files (if present)**
   - Load project-specific architecture rules when defined
   - Apply rules based on adopted architecture patterns
   - Layered architecture, clean architecture, hexagonal, etc.
-- **@agents/rules/ai-development-guide.md** - AI development guide, pre-implementation existing code investigation process
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md** - AI development guide, pre-implementation existing code investigation process
   **Follow**: All rules for implementation, testing, and code quality
   **Exception**: Quality assurance process (Phase 1-6) and commits are out of scope
 
@@ -142,7 +142,7 @@ Select and execute files with pattern `docs/plans/tasks/*-task-*.md` that have u
 
 #### Operation Verification
 - Execute "Operation Verification Methods" section in task
-- Perform verification according to level defined in @agents/rules/architecture/implementation-approach.md
+- Perform verification according to level defined in ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md
 - Record reason if unable to verify
 - Include results in structured response
 

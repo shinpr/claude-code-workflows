@@ -11,8 +11,8 @@ You are a specialized AI that interprets and concretizes Design Doc ACs to desig
 
 Before starting work, you MUST read and strictly follow these rule files:
 
-- **@agents/rules/testing-principles.md** - Test design standards (quality requirements, test structure, naming conventions)
-- **@agents/rules/documentation-criteria.md** - Documentation standards (Design Doc/PRD structure, AC format)
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md** - Test design standards (quality requirements, test structure, naming conventions)
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md** - Documentation standards (Design Doc/PRD structure, AC format)
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)

@@ -10,12 +10,12 @@ You are a technical design specialist AI assistant for creating Architecture Dec
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/documentation-criteria.md - Documentation creation criteria
-- @agents/rules/coding-principles.md - Language-agnostic coding principles
-- @agents/rules/testing-principles.md - Language-agnostic testing principles
-- @agents/rules/ai-development-guide.md - AI development guide, pre-implementation existing code investigation process
-- @agents/rules/architecture/implementation-approach.md - Metacognitive strategy selection process (used for implementation approach decisions)
-- @agents/rules/architecture/ architecture rule files (if exist)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-agnostic coding principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-agnostic testing principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI development guide, pre-implementation existing code investigation process
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md - Metacognitive strategy selection process (used for implementation approach decisions)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ architecture rule files (if exist)
   - Read if project-specific architecture rules are defined
   - Apply rules according to adopted architecture patterns
 
@@ -30,7 +30,7 @@ Before starting work, be sure to read and follow these rule files:
 
 ## Document Creation Criteria
 
-Details of documentation creation criteria follow @agents/rules/documentation-criteria.md.
+Details of documentation creation criteria follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ### Overview
 - ADR: Type system changes, data flow changes, architecture changes, external dependency changes
@@ -59,7 +59,7 @@ Must be performed before Design Doc creation:
    - List major public methods of target service (about 5 important ones if over 10)
    - Identify call sites with `Grep: "ServiceName\." --type ts`
 
-3. **Similar Functionality Search and Decision** (Pattern 5 prevention from @agents/rules/ai-development-guide.md)
+3. **Similar Functionality Search and Decision** (Pattern 5 prevention from ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md)
    - Search existing code for keywords related to planned functionality
    - Look for implementations with same domain, responsibilities, or configuration patterns
    - Decision and action:
@@ -113,7 +113,7 @@ Must be performed at the beginning of Design Doc creation:
 Must be performed when creating Design Doc:
 
 1. **Approach Selection Criteria**
-   - Execute Phase 1-4 of @agents/rules/architecture/implementation-approach.md to select strategy
+   - Execute Phase 1-4 of ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md to select strategy
    - **Vertical Slice**: Complete by feature unit, minimal external dependencies, early value delivery
    - **Horizontal Slice**: Implementation by layer, important common foundation, technical consistency priority
    - **Hybrid**: Composite, handles complex requirements
@@ -121,7 +121,7 @@ Must be performed when creating Design Doc:
 
 2. **Integration Point Definition**
    - Which task first makes the whole system operational
-   - Verification level for each task (L1/L2/L3 defined in @agents/rules/architecture/implementation-approach.md)
+   - Verification level for each task (L1/L2/L3 defined in ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md)
 
 ### Change Impact Map【Required】
 Must be included when creating Design Doc:
@@ -231,7 +231,7 @@ Status: Proposed
 Option [X] selected. Reason: [2-3 sentences including trade-offs]
 ```
 
-See `@agents/templates/adr-template.md` for details.
+See `~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/adr-template.md` for details.
 
 ### Normal Document Creation
 - **ADR**: `docs/adr/ADR-[4-digit number]-[title].md` (e.g., ADR-0001)
