@@ -11,11 +11,41 @@
 ## ⚡ Quick Start
 
 ```bash
-# Install the plugin directly from GitHub (HTTPS)
-/plugin install https://github.com/shinpr/claude-code-workflows.git
+# Install the plugin from marketplace
+/plugin marketplace add shinpr/claude-code-workflows
+/plugin install claude-code-workflows@shinpr
 
 # Start building with full workflow support
 /implement <your feature>
+```
+
+**Note:** If you encounter SSH authentication errors, set up SSH keys for GitHub:
+
+```bash
+# 1. Check if SSH key already exists
+ls ~/.ssh/id_ed25519.pub
+
+# 2. Generate new SSH key (if needed)
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# → Press Enter to save to default location
+# → Enter a strong passphrase when prompted (recommended for security)
+
+# 3. Add SSH key to ssh-agent
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# 4. Copy public key to clipboard
+cat ~/.ssh/id_ed25519.pub
+# → Copy the output
+
+# 5. Add to GitHub
+# Go to https://github.com/settings/keys
+# Click "New SSH key"
+# Paste your public key and save
+
+# 6. Test connection
+ssh -T git@github.com
+# → Should see: "Hi username! You've successfully authenticated..."
 ```
 
 ---
