@@ -119,7 +119,7 @@ Battle-tested best practices that work across all languages:
 
 ### Core Concepts
 - **Sub Agents** - [Anthropic Documentation](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
-- **Design Philosophy** - [770K tokens without exhaustion](https://dev.to/shinpr/zero-context-exhaustion-building-production-ready-ai-coding-teams-with-claude-code-sub-agents-31b)
+- **Design Philosophy** - [Sub-Agent Development Workflow](https://dev.to/shinpr/zero-context-exhaustion-building-production-ready-ai-coding-teams-with-claude-code-sub-agents-31b)
 
 ---
 
@@ -200,26 +200,42 @@ graph LR
 
 ```
 claude-code-workflows/
-├── .claude-plugin/           # Plugin metadata
-│   └── plugin.json          # Plugin configuration
+├── .claude-plugin/          # Plugin metadata
+│   ├── marketplace.json
+│   └── plugin.json
 ├── agents/                  # Specialized agent definitions
-│   ├── requirement-analyzer.md
-│   ├── technical-designer.md
+│   ├── acceptance-test-generator.md
+│   ├── code-reviewer.md
+│   ├── document-reviewer.md
+│   ├── prd-creator.md
 │   ├── quality-fixer.md
-│   ├── rules/              # Development rules
+│   ├── requirement-analyzer.md
+│   ├── rule-advisor.md
+│   ├── task-decomposer.md
+│   ├── task-executor.md
+│   ├── technical-designer.md
+│   ├── work-planner.md
+│   ├── guides/              # User documentation
+│   │   └── sub-agents.md
+│   ├── rules/               # Development rules
+│   │   ├── ai-development-guide.md
 │   │   ├── coding-principles.md
-│   │   ├── testing-principles.md
 │   │   ├── documentation-criteria.md
+│   │   ├── testing-principles.md
+│   │   ├── rules-index.yaml
 │   │   └── architecture/
-│   ├── guides/             # User documentation
-│   └── templates/          # Document templates
+│   └── templates/           # Document templates
+│       ├── adr-template.md
+│       ├── design-template.md
+│       ├── plan-template.md
+│       └── prd-template.md
 ├── commands/                # Workflow commands
 │   ├── implement.md
-│   ├── task.md
 │   ├── design.md
 │   ├── plan.md
 │   ├── build.md
-│   └── review.md
+│   ├── review.md
+│   └── task.md
 ├── LICENSE
 └── README.md
 ```
@@ -233,9 +249,6 @@ A: Just use `/implement` to start. The plugin handles the complexity automatical
 
 **Q: What if there are errors?**
 A: The `quality-fixer` agent automatically fixes most issues. If it can't, it provides clear guidance.
-
-**Q: Can I customize the workflows?**
-A: Absolutely! After installation, edit rules in `~/.claude/agents/rules/` and agents in `~/.claude/agents/` to fit your team's needs.
 
 ---
 
