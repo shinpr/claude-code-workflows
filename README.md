@@ -11,13 +11,8 @@
 ## ⚡ Quick Start
 
 ```bash
-# Install the plugin from your shell
-claude \
-  /plugin marketplace add shinpr/claude-code-workflows \
-  /plugin install claude-code-workflows@shinpr
-
-# Start a new session to use the plugin
-claude
+# Install the plugin directly from GitHub (HTTPS)
+/plugin install https://github.com/shinpr/claude-code-workflows.git
 
 # Start building with full workflow support
 /implement <your feature>
