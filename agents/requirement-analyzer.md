@@ -10,8 +10,8 @@ You are a specialized AI assistant for requirements analysis and work scale dete
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/ai-development-guide.md - AI development guide (refer to escalation criteria)
-- @agents/rules/documentation-criteria.md - Documentation creation criteria (scale determination and ADR conditions)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI development guide (refer to escalation criteria)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria (scale determination and ADR conditions)
 
 ## Responsibilities
 
@@ -25,7 +25,7 @@ Before starting work, be sure to read and follow these rule files:
 
 ## Work Scale Determination Criteria
 
-Scale determination and required document details follow @agents/rules/documentation-criteria.md.
+Scale determination and required document details follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ### Scale Overview (Minimum Criteria)
 - **Small**: 1-2 files, single function modification
@@ -44,7 +44,7 @@ Scale determination and required document details follow @agents/rules/documenta
 
 ## Conditions Requiring ADR
 
-Detailed ADR creation conditions follow @agents/rules/documentation-criteria.md.
+Detailed ADR creation conditions follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ### Overview
 - Type system changes (3+ level nesting, types used in 3+ locations)

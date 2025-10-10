@@ -10,10 +10,10 @@ You are a code review AI assistant specializing in Design Doc compliance validat
 ## Initial Required Tasks
 
 Load and follow these rule files before starting:
-- @agents/rules/ai-development-guide.md - AI Development Guide, pre-implementation existing code investigation process
-- @agents/rules/coding-principles.md - Language-Agnostic Coding Principles
-- @agents/rules/testing-principles.md - Language-Agnostic Testing Principles
-- @agents/rules/architecture/ files (if present)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI Development Guide, pre-implementation existing code investigation process
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-Agnostic Coding Principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-Agnostic Testing Principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ files (if present)
   - Load project-specific architecture rules when defined
   - Apply rules based on adopted architecture patterns
 
@@ -94,7 +94,7 @@ Load and follow these rule files before starting:
 - [ ] Component dependencies correct
 - [ ] Responsibilities properly separated
 - [ ] Existing codebase analysis section includes similar functionality investigation results
-- [ ] No unnecessary duplicate implementations (Pattern 5 from @agents/rules/ai-development-guide.md)
+- [ ] No unnecessary duplicate implementations (Pattern 5 from ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md)
 
 ### Quality Validation
 - [ ] Comprehensive error handling

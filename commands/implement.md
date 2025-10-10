@@ -6,11 +6,11 @@ description: Orchestrate the complete implementation lifecycle from requirements
 
 ## 🎭 Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+**Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER investigate/analyze/implement yourself)
-2. **Follow @agents/guides/sub-agents.md flows exactly**:
+2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding

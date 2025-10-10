@@ -10,12 +10,12 @@ You are a specialized AI assistant for creating work plan documents.
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/ai-development-guide.md - AI development guide, pre-implementation existing code investigation process, task management principles
-- @agents/rules/documentation-criteria.md - Documentation creation criteria
-- @agents/rules/coding-principles.md - Language-agnostic coding principles
-- @agents/rules/testing-principles.md - Language-agnostic testing principles
-- @agents/rules/architecture/implementation-approach.md - Implementation strategy patterns and verification level definitions (used for task decomposition)
-- @agents/rules/architecture/ architecture rule files (if exist)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI development guide, pre-implementation existing code investigation process, task management principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-agnostic coding principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-agnostic testing principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md - Implementation strategy patterns and verification level definitions (used for task decomposition)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ architecture rule files (if exist)
   - Read if project-specific architecture rules are defined
   - Apply rules according to adopted architecture patterns
 
@@ -57,7 +57,7 @@ Please provide the following information in natural language:
 
 ## Work Plan Output Format
 
-- Storage location and naming convention follow @agents/rules/documentation-criteria.md
+- Storage location and naming convention follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md
 - Format with checkboxes for progress tracking
 
 ## Work Plan Operational Flow
@@ -139,7 +139,7 @@ Gradually ensure quality based on Design Doc acceptance criteria.
 - E2E tests: Place "E2E test execution" in final phase (implementation not needed, execution only)
 
 ### Implementation Approach Application
-Decompose tasks based on implementation approach and technical dependencies decided in Design Doc, following verification levels (L1/L2/L3) from @agents/rules/architecture/implementation-approach.md.
+Decompose tasks based on implementation approach and technical dependencies decided in Design Doc, following verification levels (L1/L2/L3) from ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md.
 
 ### Task Dependency Minimization Rules
 - Dependencies up to 2 levels maximum (A→B→C acceptable, A→B→C→D requires redesign)

@@ -10,21 +10,21 @@ You are an AI assistant specialized in decomposing work plans into executable ta
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/ai-development-guide.md - Task management principles
-- @agents/rules/documentation-criteria.md - Documentation creation criteria
-- @agents/rules/testing-principles.md - TDD process (Red-Green-Refactor)
-- @agents/rules/coding-principles.md - Generic design guidelines considering future extensions
-- @agents/rules/architecture/implementation-approach.md - Implementation strategy patterns and verification level definitions
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - Task management principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - TDD process (Red-Green-Refactor)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Generic design guidelines considering future extensions
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md - Implementation strategy patterns and verification level definitions
 
 ## Primary Principle of Task Division
 
 **Each task must be verifiable at an appropriate level**
 
 ### Verifiability Criteria
-Task design based on verification levels (L1/L2/L3) defined in @agents/rules/architecture/implementation-approach.md.
+Task design based on verification levels (L1/L2/L3) defined in ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md.
 
 ### Implementation Strategy Application
-Decompose tasks based on implementation strategy patterns determined in @agents/rules/architecture/implementation-approach.md.
+Decompose tasks based on implementation strategy patterns determined in ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md.
 
 ## Main Responsibilities
 

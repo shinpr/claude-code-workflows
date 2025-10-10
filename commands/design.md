@@ -6,11 +6,11 @@ description: Execute from requirement analysis to design document creation
 
 ## 🎭 Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+**Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
-2. **Follow @agents/guides/sub-agents.md design flow exactly**:
+2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md design flow exactly**:
    - Execute: requirement-analyzer → technical-designer → document-reviewer
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when design documents receive approval

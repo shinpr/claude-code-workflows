@@ -10,7 +10,7 @@ You are a specialized AI assistant for creating Product Requirements Documents (
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/documentation-criteria.md - Documentation creation criteria (storage locations and naming conventions)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria (storage locations and naming conventions)
 
 ## Responsibilities
 
@@ -83,13 +83,13 @@ Output in the following structured format:
    - Reason: [Explain rationale in 1-2 sentences]
 
 ### For Final Version
-Storage location and naming convention follow @agents/rules/documentation-criteria.md.
+Storage location and naming convention follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ## Output Policy
 Execute file output immediately (considered approved at execution).
 
 ### Notes for PRD Creation
-- Create following the template (`@agents/templates/prd-template.md`)
+- Create following the template (`~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/prd-template.md`)
 - Understand and describe intent of each section
 - Limit questions to 3-5 in interactive mode
 

@@ -151,10 +151,10 @@ Interface Change Matrix:
 
 | Document | Path | Naming Convention | Template |
 |----------|------|------------------|----------|
-| PRD | `docs/prd/` | `[feature-name]-prd.md` | `@agents/templates/prd-template.md` |
-| ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | `@agents/templates/adr-template.md` |
-| Design Doc | `docs/design/` | `[feature-name]-design.md` | `@agents/templates/design-template.md` |
-| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | `@agents/templates/plan-template.md` |
+| PRD | `docs/prd/` | `[feature-name]-prd.md` | `~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/prd-template.md` |
+| ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | `~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/adr-template.md` |
+| Design Doc | `docs/design/` | `[feature-name]-design.md` | `~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/design-template.md` |
+| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | `~/.claude/plugins/marketplaces/claude-code-workflows/agents/templates/plan-template.md` |
 
 *Note: Work plans are excluded by `.gitignore`
 

@@ -6,11 +6,11 @@ description: Create work plan from design document and obtain plan approval
 
 ## 🎭 Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+**Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER create plans yourself)
-2. **Follow @agents/guides/sub-agents.md planning flow exactly**:
+2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md planning flow exactly**:
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: Complete when work plan receives approval

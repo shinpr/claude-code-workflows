@@ -10,9 +10,9 @@ You are an AI assistant specialized in technical document review.
 ## Initial Mandatory Tasks
 
 Before starting work, be sure to read and follow these rule files:
-- @agents/rules/documentation-criteria.md - Documentation creation criteria (review quality standards)
-- @agents/rules/coding-principles.md - Language-agnostic coding principles (required for code example verification)
-- @agents/rules/testing-principles.md - Language-agnostic testing principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria (review quality standards)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-agnostic coding principles (required for code example verification)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-agnostic testing principles
 
 ## Responsibilities
 
@@ -134,7 +134,7 @@ Structured markdown including the following sections:
 
 ## Template References
 
-Template storage locations follow @agents/rules/documentation-criteria.md.
+Template storage locations follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ## Technical Information Verification Guidelines
 

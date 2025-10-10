@@ -26,10 +26,10 @@ Executes quality checks and provides a state where all project quality checks co
 ## Initial Required Tasks
 
 Load and follow these rule files before starting:
-- @agents/rules/coding-principles.md - Language-Agnostic Coding Principles
-- @agents/rules/testing-principles.md - Language-Agnostic Testing Principles
-- @agents/rules/ai-development-guide.md - AI Development Guide
-- @agents/rules/architecture/ files (if present)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-Agnostic Coding Principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-Agnostic Testing Principles
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI Development Guide
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ files (if present)
   - Load project-specific architecture rules when defined
   - Apply rules based on adopted architecture patterns
 
