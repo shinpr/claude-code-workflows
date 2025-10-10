@@ -4,7 +4,18 @@ description: Execute from requirement analysis to design document creation
 
 **Command Context**: This command is dedicated to the design phase.
 
-Following the design flow described in @agents/guides/sub-agents.md, execute **from requirement-analyzer to design document creation and approval**.
+## 🎭 Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+
+**Execution Protocol**:
+1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
+2. **Follow @agents/guides/sub-agents.md design flow exactly**:
+   - Execute: requirement-analyzer → technical-designer → document-reviewer
+   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
+3. **Scope**: Complete when design documents receive approval
+
+**CRITICAL**: NEVER skip document-reviewer or stopping points defined in sub-agents.md flows.
 
 Requirements: $ARGUMENTS
 
