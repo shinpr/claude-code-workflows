@@ -1,0 +1,60 @@
+{
+  "name": "claude-code-workflows",
+  "version": "2.0.0",
+  "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
+  "author": {
+    "name": "Shinsuke Kagawa",
+    "url": "https://github.com/shinpr"
+  },
+  "homepage": "https://github.com/shinpr/claude-code-workflows",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shinpr/claude-code-workflows.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "workflows",
+    "best-practices",
+    "sub-agents",
+    "quality",
+    "development",
+    "coding-standards",
+    "testing",
+    "architecture"
+  ],
+  "categories": [
+    "productivity",
+    "quality",
+    "workflows"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.0"
+  },
+  "main": {
+    "agents": "./agents",
+    "commands": "./commands"
+  },
+  "features": {
+    "agents": [
+      "requirement-analyzer",
+      "technical-designer",
+      "work-planner",
+      "task-executor",
+      "quality-fixer",
+      "code-reviewer",
+      "prd-creator",
+      "task-decomposer",
+      "rule-advisor",
+      "acceptance-test-generator",
+      "document-reviewer"
+    ],
+    "commands": [
+      "implement",
+      "task",
+      "design",
+      "plan",
+      "build",
+      "review"
+    ]
+  }
+}
