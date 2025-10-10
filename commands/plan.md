@@ -4,7 +4,20 @@ description: Create work plan from design document and obtain plan approval
 
 **Command Context**: This command is dedicated to the planning phase.
 
-Follow @agents/guides/sub-agents.md strictly and create work plan with the following process:
+## 🎭 Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+
+**Execution Protocol**:
+1. **Delegate all work** to sub-agents (NEVER create plans yourself)
+2. **Follow @agents/guides/sub-agents.md planning flow exactly**:
+   - Execute steps defined below
+   - **Stop and obtain approval** for plan content before completion
+3. **Scope**: Complete when work plan receives approval
+
+**CRITICAL**: NEVER skip acceptance-test-generator when user requests test generation.
+
+Follow the planning process below:
 
 ## Execution Process
 

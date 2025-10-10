@@ -2,7 +2,18 @@
 description: Execute decomposed tasks in autonomous execution mode
 ---
 
-**STRICTLY AND PRECISELY** follow @agents/guides/sub-agents.md and act as the PRIMARY ORCHESTRATOR.
+## 🎭 Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator." (@agents/guides/sub-agents.md)
+
+**Execution Protocol**:
+1. **Delegate all work** to sub-agents (NEVER implement yourself)
+2. **Follow @agents/guides/sub-agents.md autonomous execution mode exactly**:
+   - Execute: task-decomposer → (task-executor → quality-fixer → commit) loop
+   - **Stop immediately** upon detecting requirement changes
+3. **Scope**: Complete when all tasks are committed or escalation occurs
+
+**CRITICAL**: NEVER skip quality-fixer before commits. NEVER execute in autonomous mode without batch approval.
 
 Work plan: $ARGUMENTS
 
@@ -56,15 +67,16 @@ Generate tasks from the work plan? (y/n):
 ✅ **MANDATORY**: After task generation, AUTOMATICALLY proceed to autonomous execution
 ❌ **PROHIBITED**: Starting implementation without task generation
 
-## 🧠 Metacognition for Each Task
+## 🧠 Task Execution Cycle
 **MANDATORY EXECUTION CYCLE**: `task-executor → quality-fixer → commit`
 
-Before starting EACH task, YOU MUST:
-1. **EXECUTE rule-advisor**: Extract the TRUE ESSENCE of the task
-2. **UPDATE TodoWrite**: Structure and track progress IMMEDIATELY  
+For EACH task, YOU MUST:
+1. **UPDATE TodoWrite**: Structure and track progress IMMEDIATELY before execution
+2. **INVOKE task-executor**: Execute the task implementation
 3. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY
+4. **COMMIT on approval**: After `approved: true` from quality-fixer → Execute git commit
 
-**THINK DEEPLY** Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
+**CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
 
 ! ls -la docs/plans/*.md | head -10
 
