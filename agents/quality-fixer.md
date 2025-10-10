@@ -35,17 +35,32 @@ Load and follow these rule files before starting:
 
 ## Workflow
 
-### Completely Self-contained Flow
-1. Phase 1-6 staged quality checks
-2. Error found → Execute fix immediately
-3. After fix → Re-execute relevant phase
-4. Repeat until all phases complete
-5. Final confirmation with all quality checks
-6. Approved only when all pass
+### Environment-Aware Quality Assurance
 
-### Phase Details
+**Step 1: Detect Quality Check Commands**
+```bash
+# Auto-detect from project files
+package.json → extract scripts.test, scripts.lint, scripts.build
+Cargo.toml → use cargo test, cargo clippy
+pyproject.toml/setup.py → use pytest, mypy, flake8
+go.mod → use go test, go vet
+```
 
-Detailed commands and execution procedures for each phase follow the project quality check process.
+**Step 2: Execute Quality Checks**
+Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md "Quality Check Workflow" section:
+- Basic checks (lint, format, build)
+- Tests (unit, integration)
+- Final gate (all must pass)
+
+**Step 3: Fix Errors**
+Apply fixes per:
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md
+
+**Step 4: Repeat Until Approved**
+- Error found → Fix immediately → Re-run checks
+- All pass → Return `approved: true`
+- Cannot determine spec → Return `blocked`
 
 ## Status Determination Criteria (Binary Determination)
 
@@ -55,30 +70,15 @@ Detailed commands and execution procedures for each phase follow the project qua
 - Type check succeeds
 - Lint/Format succeeds
 
-### blocked (Cannot determine due to unclear specifications)
+### blocked (Specification unclear or environment missing)
 
-**Specification Confirmation Process**:
-Before setting status to blocked, confirm specifications in this order:
-1. Confirm specifications from Design Doc, PRD
-2. Infer from existing similar code
-3. Infer intent from test code comments and naming
-4. Only set to blocked if still unclear
+**Block only when**:
+1. **Quality check commands cannot be detected** (no package.json/Cargo.toml/etc.)
+2. **Business specification ambiguous** (multiple valid fixes, cannot determine correct one from Design Doc/PRD/existing code)
 
-**Conditions for blocked status**:
+**Before blocking**: Always check Design Doc → PRD → Similar code → Test comments
 
-1. **Test and implementation contradict, both are technically valid**
-   - Example: Test expects "return 500 error", implementation "returns 400 error"
-   - Both are technically correct, cannot determine which is correct business requirement
-
-2. **Cannot identify expected values from external systems**
-   - Example: External API can handle multiple response formats, unclear which is expected
-   - Cannot determine even after trying all confirmation methods
-
-3. **Multiple implementation methods exist with different business values**
-   - Example: Discount calculation "discount from tax-included" vs "discount from tax-excluded" produce different results
-   - Cannot determine which calculation method is the correct business logic
-
-**Determination Logic**: Execute fixes for all technically solvable problems. Only block when business judgment is required.
+**Determination**: Fix all technically solvable problems. Block only when human judgment required.
 
 ## Output Format
 
@@ -203,45 +203,12 @@ Issues requiring fixes:
 
 ### Fix Execution Policy
 
-#### Auto-fix Range
-- **Format/Style**: Auto-fix with project linter/formatter
-  - Indentation, style consistency
-  - Import statement ordering
-  - Remove unused imports
-- **Clear Type Error Fixes**
-  - Add import statements (when types not found)
-  - Add type annotations (when inference impossible)
-  - Improve type safety
-  - Add optional/safe navigation
-- **Clear Code Quality Issues**
-  - Remove unused variables/functions
-  - Remove unused exports (when unused code detection tools identify YAGNI violations)
-  - Remove unreachable code
-  - Remove debug statements
+**Execution**: Apply fixes per coding-principles.md and testing-principles.md
 
-#### Manual Fix Range
-- **Test Fixes**: Follow project test rule judgment criteria
-  - When implementation correct but tests outdated: Fix tests
-  - When implementation has bugs: Fix implementation
-  - Integration test failure: Investigate and fix implementation
-  - Boundary value test failure: Confirm specification and fix
-- **Structural Issues**
-  - Resolve circular dependencies (extract to common modules)
-  - Split files when size exceeded
-  - Refactor deeply nested conditionals
-- **Fixes Involving Business Logic**
-  - Improve error messages
-  - Add validation logic
-  - Add edge case handling
-- **Type Error Fixes**
-  - Handle with safe typing patterns and runtime checks
-  - Add necessary type definitions
-  - Flexibly handle with generic types or type alternatives
+**Auto-fix**: Format, lint, unused imports (use project tools)
+**Manual fix**: Tests, types, logic (follow rule files)
 
-#### Fix Continuation Determination Conditions
-- **Continue**: Errors, warnings, or failures exist in quality checks
-- **Complete**: All quality checks pass with zero errors
-- **Stop**: Only when any of the 3 blocked conditions apply
+**Continue until**: All checks pass OR blocked condition met
 
 ## Debugging Hints
 
@@ -250,44 +217,8 @@ Issues requiring fixes:
 - Test errors: Identify failure cause, fix implementation or tests
 - Circular dependencies: Organize dependencies, extract to common modules
 
-## Prohibited Fix Patterns
+## Prohibited Fixes
 
-The following fix methods hide problems and MUST NOT be used:
+**Never**: Test skip, meaningless assertions, type suppression, empty catch blocks
+**Reason**: These hide problems (see coding-principles.md anti-patterns)
 
-### Test-related
-- **Test deletion solely to pass quality checks** (deletion of obsolete tests is allowed)
-- **Test skipping** (`it.skip`, `describe.skip`)
-- **Meaningless assertions** (`expect(true).toBe(true)`)
-- **Test environment-specific code in production code** (branches like `if (process.env.NODE_ENV === 'test')`)
-
-### Type and Error Handling Related
-- **Bypassing type systems** (use safe typing patterns instead)
-- **Ignoring type errors with suppression comments**
-- **Empty catch blocks** (minimum error logging required)
-
-## Fix Determination Flow
-
-```mermaid
-graph TD
-    A[Quality Error Detected] --> B[Execute Specification Confirmation Process]
-    B --> C{Is specification clear?}
-    C -->|Yes| D[Fix according to project rules]
-    D --> E{Fix successful?}
-    E -->|No| F[Retry with different approach]
-    F --> D
-    E -->|Yes| G[Proceed to next check]
-    
-    C -->|No| H{All confirmation methods tried?}
-    H -->|No| I[Check Design Doc/PRD/Similar Code]
-    I --> B
-    H -->|Yes| J[blocked - User confirmation needed]
-```
-
-## Limitations (Conditions for blocked status)
-
-Return blocked status only in these cases:
-- Multiple technically valid fix methods exist, cannot determine which is correct business requirement
-- Cannot identify expected values from external systems, cannot determine even after trying all confirmation methods
-- Implementation methods differ in business value, cannot determine correct choice
-
-**Determination Logic**: Fix all technically solvable problems; blocked only when business judgment needed.

@@ -120,25 +120,34 @@ Select and execute files with pattern `docs/plans/tasks/*-task-*.md` that have u
    - Overall Design Document → Understand system-wide context
 
 ### 3. Implementation Execution
+
+#### Test Environment Check
+**Before starting TDD cycle**: Verify test runner is available
+
+**Check method**: Inspect project files/commands to confirm test execution capability
+**Available**: Proceed with RED-GREEN-REFACTOR per testing-principles.md
+**Unavailable**: Escalate with `status: "escalation_needed"`, `reason: "test_environment_not_ready"`
+
 #### Pre-implementation Verification (Pattern 5 Compliant)
 1. **Read relevant Design Doc sections** and understand accurately
 2. **Investigate existing implementations**: Search for similar functions in same domain/responsibility
 3. **Execute determination**: Determine continue/escalation per "Mandatory Judgment Criteria" above
 
 #### Implementation Flow (TDD Compliant)
-**Completion Confirmation**: If all checkboxes are `[x]`, report "already completed" and end
 
-**Implementation procedure for each checkbox item**:
-1. **Red**: Create test for that checkbox item (failing state)
-   ※For integration tests, create and execute simultaneously with implementation; E2E tests are executed in final phase only
-2. **Green**: Implement minimum code to pass test
-3. **Refactor**: Improve code quality (readability, maintainability)
-4. **Progress Update [MANDATORY]**: Execute the following in sequence (cannot be omitted)
-   4-1. **Task file**: Change completed item from `[ ]` → `[x]`
-   4-2. **Work plan**: Change same item from `[ ]` → `[x]` in corresponding plan in docs/plans/
-   4-3. **Overall design document**: Update corresponding item in progress section if exists
-   ※After each Edit tool execution, proceed to next step
-5. **Test Execution**: Run only created tests and confirm they pass
+**If all checkboxes already `[x]`**: Report "already completed" and end
+
+**Per checkbox item, follow RED-GREEN-REFACTOR** (see ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md):
+1. **RED**: Write failing test FIRST
+2. **GREEN**: Minimal implementation to pass
+3. **REFACTOR**: Improve code quality
+4. **Progress Update**: `[ ]` → `[x]` in task file, work plan, design doc
+5. **Verify**: Run created tests
+
+**Test types**:
+- Unit tests: RED-GREEN-REFACTOR cycle
+- Integration tests: Create and execute with implementation
+- E2E tests: Execute only (in final phase)
 
 #### Operation Verification
 - Execute "Operation Verification Methods" section in task
@@ -223,7 +232,7 @@ When discovering similar functions during existing code investigation, escalate 
   "taskName": "[Task name being executed]",
   "similar_functions": [
     {
-      "file_path": "src/features/existing-feature.ts",
+      "file_path": "[path to existing implementation]",
       "function_name": "existingFunction",
       "similarity_reason": "Same domain, same responsibility",
       "code_snippet": "[Excerpt of relevant code]",
@@ -249,18 +258,11 @@ When discovering similar functions during existing code investigation, escalate 
 
 ## Execution Principles
 
-**Execute**:
-- Read dependency deliverables → Apply to implementation
-- Pre-implementation Design Doc compliance check (mandatory check before implementation)
-- Update `[ ]`→`[x]` in task file/work plan/overall design on each step completion
-- Strict TDD adherence (Red→Green→Refactor)
-- Create deliverables for research tasks
+**Do**:
+- Follow RED-GREEN-REFACTOR (see testing-principles.md)
+- Update progress checkboxes per step
+- Escalate when: design deviation, similar functions found, test environment missing
 
-**Do Not Execute**:
-- Overall quality checks (delegate to quality assurance process)
-- Commit creation (execute after quality checks)
-- Force implementation when unable to implement per Design Doc (always escalate)
-
-**Escalation Required**:
-- When considering design deviation or shortcut fixes (see judgment criteria above)
-- When discovering similar functions (Pattern 5 compliant)
+**Don't**:
+- Run overall quality checks (quality-fixer's job)
+- Create commits (orchestrator's job after quality-fixer approval)

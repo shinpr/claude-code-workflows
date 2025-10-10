@@ -54,7 +54,9 @@ When continuing existing flow, verify:
 - [ ] Identified current progress position
 - [ ] Clarified next step
 - [ ] Recognized stopping points
-- [ ] Understood task execution quality cycle (task → quality-check → commit)
+- [ ] **Environment check**: Can I execute per-task commit cycle?
+  - If commit capability unavailable → Escalate before autonomous mode
+  - Other environments (tests, quality tools) → Subagents will escalate
 
 **Flow Deviation PROHIBITED**: Deviating from sub-agents.md defined flows is strictly forbidden. Specifically:
 - Never skip quality-fixer before committing
@@ -72,13 +74,22 @@ DO NOT invoke rule-advisor under any circumstances (Task tool rule-advisor speci
 
 ## 🎯 Mandatory Orchestrator Responsibilities
 
-### Task Execution Quality Cycle Management
-**ABSOLUTE RULE**: After task-executor execution, MUST execute:
-1. quality-fixer invocation (until approved: true is returned)
-2. git commit execution (using Bash tool)
-3. Next task execution or completion report
+### Task Execution Quality Cycle (ONE Task at a Time)
 
-**NO OMISSION**: Skipping this cycle guarantees implementation quality failure
+**Per-task cycle** (NEVER batch multiple tasks):
+```
+Single task → task-executor → quality-fixer → git commit → Next task
+```
+
+**Rules**:
+1. Execute ONE task completely before starting next
+2. quality-fixer MUST run after each task-executor (no skipping)
+3. Commit MUST execute when quality-fixer returns `approved: true`
+
+**Violations**:
+- ✗ Batching tasks for "efficiency"
+- ✗ Skipping quality-fixer
+- ✗ Deferring commits to end
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

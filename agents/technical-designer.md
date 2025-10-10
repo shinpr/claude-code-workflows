@@ -51,13 +51,13 @@ Details of documentation creation criteria follow ~/.claude/plugins/marketplaces
 Must be performed before Design Doc creation:
 
 1. **Implementation File Path Verification**
-   - First grasp overall structure with `Glob: src/**/*.ts`
-   - Then identify target files with `Grep: "class.*Service" --type ts` or feature names
+   - First grasp overall structure using Glob with detected project patterns
+   - Then identify target files using Grep with appropriate keywords and file types
    - Record and distinguish between existing implementation locations and planned new locations
 
 2. **Existing Interface Investigation** (Only when changing existing features)
    - List major public methods of target service (about 5 important ones if over 10)
-   - Identify call sites with `Grep: "ServiceName\." --type ts`
+   - Identify call sites using Grep with appropriate search patterns
 
 3. **Similar Functionality Search and Decision** (Pattern 5 prevention from ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md)
    - Search existing code for keywords related to planned functionality
@@ -127,15 +127,15 @@ Must be performed when creating Design Doc:
 Must be included when creating Design Doc:
 
 ```yaml
-Change Target: UserService.authenticate()
+Change Target: [ServiceName.methodName()]
 Direct Impact:
-  - src/services/UserService.ts (method change)
-  - src/api/auth.ts (call site)
+  - [service file path] (method change)
+  - [API handler path] (call site)
 Indirect Impact:
-  - Session management (token format change)
-  - Log output (new fields added)
+  - [Component name] (data format change)
+  - [Component name] (new fields added)
 No Ripple Effect:
-  - Other services, DB structure
+  - [Explicitly list unaffected components]
 ```
 
 ### Interface Change Impact Analysis【Required】
@@ -313,6 +313,22 @@ Implementation sample creation checklist:
 
 4. **Priority**: Place important acceptance criteria at the top
 
+### AC Scoping for Autonomous Implementation
+
+**Include** (High automation ROI):
+- Business logic correctness (calculations, state transitions, data transformations)
+- Data integrity and persistence behavior
+- User-visible functionality completeness
+- Error handling behavior (what user sees/experiences)
+
+**Exclude** (Low ROI in LLM/CI/CD environment):
+- External service real connections → Use contract/interface verification instead
+- Performance metrics → Non-deterministic in CI, defer to load testing
+- Implementation details → Focus on observable behavior
+- UI layout specifics → Focus on information availability, not presentation
+
+**Principle**: AC = User-observable behavior verifiable in isolated CI environment
+
 *Note: Non-functional requirements (performance, reliability, etc.) are defined in the "Non-functional Requirements" section and automatically verified by tools like quality-fixer
 
 ## Latest Information Research Guidelines
@@ -333,10 +349,10 @@ Implementation sample creation checklist:
 **Required Research Timing**: New technology introduction, performance optimization, security design, major version upgrades
 
 **Specific Search Pattern Examples**:
-- `React Server Components best practices 2024` (new feature research)
-- `PostgreSQL vs MongoDB performance comparison 2024` (technology selection)
-- `microservices authentication patterns` (design patterns)
-- `Node.js v20 breaking changes migration guide` (version upgrade)
+- `[technology] [feature] best practices 2024` (new feature research)
+- `[tech A] vs [tech B] performance comparison 2024` (technology selection)
+- `[architecture pattern] [concern] patterns` (design patterns)
+- `[framework] v[X] breaking changes migration guide` (version upgrade)
 - `[framework name] official documentation` (official information)
 
 **Citation**: Add "## References" section at end of ADR/Design Doc with URLs and descriptions

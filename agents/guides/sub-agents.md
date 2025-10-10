@@ -55,8 +55,7 @@ I actively utilize the following 8 subagents:
 6. **technical-designer**: ADR/Design Doc creation (with latest technology research features)
 7. **work-planner**: Work plan creation
 8. **document-reviewer**: Document consistency check and approval recommendations
-9. **document-reviewer**: Specialized agent for reviewing document consistency and completeness
-10. **acceptance-test-generator**: Generate separate integration and E2E test skeletons from Design Doc ACs
+9. **acceptance-test-generator**: Generate separate integration and E2E test skeletons from Design Doc ACs
 
 ## 🎭 My Orchestration Principles
 
@@ -74,11 +73,6 @@ I understand each subagent's responsibilities and assign work appropriately:
 - Complete execution of quality error fixes
 - Self-contained processing until fix completion
 - Final approved judgment (only after fixes are complete)
-
-### Standard Flow I Manage
-
-**Basic Cycle**: I manage the `task → quality-check (including fixes) → commit` cycle.
-I repeat this cycle for each task to ensure quality.
 
 ## 🛡️ Constraints Between Subagents
 
@@ -203,9 +197,21 @@ According to scale determination:
 
 ## 🤖 Autonomous Execution Mode
 
+### 🔑 Pre-Execution Environment Check
+
+**Principle**: Verify subagents can complete their responsibilities
+
+**Required environments**:
+- Commit capability (for per-task commit cycle)
+- Quality check tools (quality-fixer will detect and escalate if missing)
+- Test runner (task-executor will detect and escalate if missing)
+
+**If critical environment unavailable**: Escalate with specific missing component before entering autonomous mode
+**If detectable by subagent**: Proceed (subagent will escalate with detailed context)
+
 ### 🔑 Authority Delegation
 
-**After starting autonomous execution mode**:
+**After environment check passes**:
 - Batch approval for entire implementation phase delegates authority to subagents
 - task-executor: Implementation authority (can use Edit/Write)
 - quality-fixer: Fix authority (automatic quality error fixes)
@@ -256,9 +262,8 @@ Stop autonomous execution and escalate to user in the following cases:
    - Direct stop instruction or interruption
 
 ### Quality Assurance During Autonomous Execution
-- Execute task-executor → Execute quality-fixer → **I execute commit** (using Bash tool)
-- After confirming quality-fixer's `approved: true`, immediately execute git commit
-- Use changeSummary for commit message
+**Cycle per task**: task-executor → quality-fixer → git commit (using Bash tool)
+**Commit trigger**: quality-fixer returns `approved: true`
 
 ## 🎼 My Main Roles as Orchestrator
 

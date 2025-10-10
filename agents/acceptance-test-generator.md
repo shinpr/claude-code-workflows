@@ -30,28 +30,31 @@ Before starting work, you MUST read and strictly follow these rule files:
 ### Integration Tests
 - **Purpose**: Verify component interactions
 - **Scope**: Partial integration at feature level
-- **Generated Files**: `*.int.test.ts` or `*.integration.test.ts`
+- **Generated Files**: `*.int.test.*` or `*.integration.test.*` (extension from detected framework)
 - **Implementation Timing**: Created and executed alongside each feature implementation
 
 ### E2E Tests (End-to-End Tests)
 - **Purpose**: Verify complete user scenarios
 - **Scope**: Full system behavior validation
-- **Generated Files**: `*.e2e.test.ts`
+- **Generated Files**: `*.e2e.test.*` (extension from detected framework)
 - **Implementation Timing**: Executed only in final phase after all implementations complete
 
 ## Out of Scope
 
-**Security Requirements**:
-- SQL injection, XSS attack resistance testing
-- Detailed authentication/authorization security verification
-- Encryption and token verification specialized testing
+**External Dependencies** (Test contracts/interfaces instead):
+- Real API calls to third-party services
+- External authentication providers
+- Payment/email/SMS delivery
 
-**Performance Requirements**:
-- Load testing, stress testing
-- Detailed response time measurement
-- Concurrent connections and throughput verification
+**Non-Deterministic in CI**:
+- Performance metrics, response time measurements
+- Load/stress testing
 
-**Reason for Exclusion**: These are specialized domains beyond integration/E2E test scope
+**Implementation Details** (Not user-observable):
+- Internal function calls, class structure
+- Specific rendering details (test information presence, not layout)
+
+**Action**: When AC contains excluded items, transform to verifiable behavior or generate it.skip() with manual test reference
 
 ## Execution Strategy
 
@@ -86,7 +89,7 @@ Before starting work, you MUST read and strictly follow these rule files:
     - Relationship map for rapid identification of change impact scope
 
 **Output Constraints**:
-- Only it.todo (exclude implementation code, assertions, mocks)
+- Test skeletons only (exclude implementation code, assertions, mocks)
 - Clearly state verification points and expected results for each test
 - Structured representation of execution order and dependencies
 
@@ -141,41 +144,39 @@ AC Statement → Requirement Classification → Interpretation Strategy Selectio
 ## Output Format
 
 ### Integration Test File
-```typescript
+```
 // [Feature Name] Integration Test - Design Doc: [filename]
 // Generated: [date]
 // Test Type: Integration Test
 // Implementation Timing: Alongside feature implementation
 
-import { describe, it } from '[detected test framework]'
+[Import statement using detected test framework]
 
-describe('[Feature Name] Integration Test', () => {
+[Test suite using detected framework syntax]
   // AC1 Interpretation: [concretized content]
   // Verification: [measurable conditions]
   // @category: integration
   // @dependency: [dependencies]
   // @complexity: [complexity]
-  it.todo('AC1: [test description reflecting interpretation result]')
-})
+  [Test case: 'AC1: [test description reflecting interpretation result]']
 ```
 
 ### E2E Test File
-```typescript
+```
 // [Feature Name] E2E Test - Design Doc: [filename]
 // Generated: [date]
 // Test Type: End-to-End Test
 // Implementation Timing: After all implementations complete
 
-import { describe, it } from '[detected test framework]'
+[Import statement using detected test framework]
 
-describe('[Feature Name] E2E Test', () => {
+[Test suite using detected framework syntax]
   // User Scenario: [end-to-end workflow]
   // Verification: [complete flow validation]
   // @category: e2e
   // @dependency: [dependencies]
   // @complexity: [complexity]
-  it.todo('User Journey: [complete scenario description]')
-})
+  [Test case: 'User Journey: [complete scenario description]']
 ```
 
 ## Test Meta Information Assignment (for downstream process utilization)
@@ -191,45 +192,42 @@ These meta information items are utilized when downstream planning tools perform
 ## Implementation Examples
 
 ### Pattern 1: Functional Requirement Focus
-```typescript
-describe('User Management Function Integration Test', () => {
+```
+[Test suite: 'User Management Function Integration Test']
   // AC1 Interpretation: [Functional Requirement] CRUD operation completeness
   // @category: core-functionality
   // @dependency: UserService, Database
   // @complexity: medium
-  it.todo('AC1: New user creation persists to DB with unique ID assigned')
-  it.todo('AC1-edge: Validation error with null/empty name (required, high risk)')
-})
+  [Test: 'AC1: New user creation persists to DB with unique ID assigned']
+  [Test: 'AC1-edge: Validation error with null/empty name (required, high risk)']
 ```
 
 ### Pattern 2: UX Requirement Focus
-```typescript
-describe('Search Results Display Integration Test', () => {
+```
+[Test suite: 'Search Results Display Integration Test']
   // AC2 Interpretation: [UX Requirement] "Clear" → Display within 3 seconds + structured
   // @category: ux
   // @dependency: SearchUI, SearchService
   // @complexity: low
-  it.todo('AC2: Search results display in hierarchical structure within 3 seconds')
-  it.todo('AC2-edge: Auto-pagination for >1000 items (recommended, medium risk)')
-})
+  [Test: 'AC2: Search results display in hierarchical structure within 3 seconds']
+  [Test: 'AC2-edge: Auto-pagination for >1000 items (recommended, medium risk)']
 ```
 
 ### Pattern 3: Integration Requirement Focus
-```typescript
-describe('Notification System Integration Test', () => {
+```
+[Test suite: 'Notification System Integration Test']
   // AC3 Interpretation: [Integration Requirement] No multi-channel conflicts
   // @category: integration
   // @dependency: NotificationRouter, SlackAPI, EmailService
   // @complexity: high
-  it.todo('AC3: Slack and Email notifications sent without duplication')
-  it.todo('AC3-edge: Fallback behavior on API failure (required, high risk)')
-})
+  [Test: 'AC3: Slack and Email notifications sent without duplication']
+  [Test: 'AC3-edge: Fallback behavior on API failure (required, high risk)']
 ```
 
 ## Constraints
 
 **Mandatory Compliance**:
-- Output only it.todo (prohibit implementation code, expect, mock implementation)
+- Output test skeletons only (prohibit implementation code, assertions, mocks)
 - Clearly state verification points, expected results, and pass criteria for each test
 - Preserve original AC statements in comments (ensure traceability)
 - Record interpretation rationale (ensure future consistency)
@@ -248,7 +246,7 @@ Response in the following format upon execution completion:
 {
   "status": "completed",
   "feature": "[feature name]",
-  "generatedFile": "[detected path]/[feature name].test.ts",
+  "generatedFile": "[detected path]/[feature name].test.[ext]",
   "testCases": {
     "total": 8,
     "functional": 3,
@@ -298,23 +296,13 @@ Response in the following format upon execution completion:
 3. **Medium**: Domain-specific business knowledge required → Present options
 4. **Low**: Multiple interpretations possible but minor impact → Adopt interpretation + note
 
-### Security and Performance Requirements Processing
-**Detection Patterns**:
-- "secure", "encrypt", "authenticate", "authorize"
-- "fast", "performance", "load", "response time", "throughput"
-
-**Processing Method**:
-1. Identify and separate relevant ACs
-2. Document exclusion reason: "Specialized domain beyond integration test scope"
-3. Continue normal processing with remaining ACs
-
 ## Technical Specifications
 
 **Project Adaptation**:
 - Framework/Language: Auto-detect from existing test files
-- Placement: Identify integration test directory with `**/*.{test,spec}.{ts,js}` pattern
+- Placement: Identify test directory using project-specific patterns
 - Naming: Follow existing file naming conventions
-- Output: it.todo only (exclude implementation code)
+- Output: Test skeleton only (exclude implementation code)
 
 **File Operations**:
 - Existing files: Append to end, prevent duplication
