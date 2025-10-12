@@ -209,7 +209,7 @@ test("should throw exception when file not found")
 - Mock at boundaries, not internally
 - Keep mocks simple and focused
 - Verify mock expectations when relevant
-- Don't mock types you don't own (prefer adapters)
+- Don't mock external libraries/frameworks you don't control (prefer adapters)
 
 ### Types of Test Doubles
 
@@ -375,31 +375,33 @@ Eliminate tests that fail intermittently:
 - Gradually improve coverage
 - Refactor with confidence
 
-## Testing Best Practices by Language Type
+## Testing Best Practices by Language Paradigm
 
-### Statically Typed Languages
+### Type System Utilization
 
-- Leverage type system for compile-time checks
-- Test business logic, not types
-- Use type-safe mocking frameworks
+**For languages with static type systems:**
+- Leverage compile-time verification for correctness
+- Focus tests on business logic and runtime behavior
+- Use language's type system to prevent invalid states
 
-### Dynamically Typed Languages
-
+**For languages with dynamic typing:**
 - Add comprehensive runtime validation tests
-- Test type handling explicitly
-- Use property-based testing when applicable
+- Explicitly test data contract validation
+- Consider property-based testing for broader coverage
 
-### Functional Languages
+### Programming Paradigm Considerations
 
-- Test pure functions thoroughly
-- Test side effects at boundaries
-- Leverage property-based testing
+**Functional approach:**
+- Test pure functions thoroughly (deterministic, no side effects)
+- Test side effects at system boundaries
+- Leverage property-based testing for invariants
 
-### Object-Oriented Languages
+**Object-oriented approach:**
+- Test behavior through public interfaces
+- Mock dependencies via abstraction layers
+- Test polymorphic behavior carefully
 
-- Test behavior through interfaces
-- Mock dependencies via interfaces
-- Test inheritance hierarchies carefully
+**Common principle:** Adapt testing strategy to leverage language strengths while ensuring comprehensive coverage
 
 ## Documentation and Communication
 

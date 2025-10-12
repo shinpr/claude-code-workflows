@@ -29,6 +29,8 @@ rules:
       - "Security Principles"
       - "Documentation"
       - "Version Control Practices"
+      - "Language-Specific Adaptations"
+      - "Continuous Learning"
 
   testing-principles:
     file: "testing-principles.md"
@@ -56,6 +58,10 @@ rules:
       - "Performance Considerations"
       - "Continuous Integration"
       - "Common Anti-Patterns to Avoid"
+      - "Regression Testing"
+      - "Testing Best Practices by Language Type"
+      - "Documentation and Communication"
+      - "Continuous Improvement"
 
   ai-development-guide:
     file: "ai-development-guide.md"
@@ -72,7 +78,7 @@ rules:
     sections:
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fallback Design Principles"
-      - "Rule of Three - Code Duplication Criteria"
+      - "Rule of Three - Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
       - "Quality Check Workflow"
@@ -90,7 +96,7 @@ rules:
       - "Single Source of Truth"
     sections:
       - "Creation Decision Matrix"
-      - "ADR Creation Conditions"
+      - "ADR Creation Conditions (Required if Any Apply)"
       - "Detailed Document Definitions"
       - "Creation Process"
       - "Storage Locations"
@@ -101,7 +107,7 @@ rules:
 
   implementation-approach:
     file: "architecture/implementation-approach.md"
-    tags: [architecture, implementation, task-decomposition, strategy-patterns, strangler-pattern, facade-pattern, design, planning, confirmation-levels]
+    tags: [architecture, implementation, task-decomposition, strategy-patterns, strangler-pattern, facade-pattern, design, planning, verification-levels]
     typical-use: "Implementation strategy selection, task decomposition, design decisions, large-scale change planning"
     size: medium
     key-references:
@@ -110,8 +116,8 @@ rules:
       - "Walking Skeleton - Alistair Cockburn"
       - "Facade Pattern - Gang of Four"
     sections:
-      - "Metacognitive Strategy Selection Process"
-      - "Confirmation Level Definitions"
+      - "Meta-cognitive Strategy Selection Process"
+      - "Verification Level Definitions"
       - "Integration Point Definitions"
       - "Anti-patterns"
-      - "Guidelines for Metacognitive Execution"
+      - "Guidelines for Meta-cognitive Execution"

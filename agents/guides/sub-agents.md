@@ -67,7 +67,7 @@ I understand each subagent's responsibilities and assign work appropriately:
 - Do not delegate quality assurance
 
 **What to delegate to quality-fixer**:
-- Overall quality assurance (type check, lint, all test execution, etc.)
+- Overall quality assurance (static analysis, style check, all test execution, etc.)
 - Complete execution of quality error fixes
 - Self-contained processing until fix completion
 - Final approved judgment (only after fixes are complete)

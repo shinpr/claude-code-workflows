@@ -62,13 +62,14 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Simple helpers in test code
 
 ### Implementation Example
-```typescript
+```
 // ❌ Immediate commonalization on 1st duplication
-function validateUserEmail(email: string) { /* ... */ }
-function validateContactEmail(email: string) { /* ... */ }
+function validateUserEmail(email) { /* ... */ }
+function validateContactEmail(email) { /* ... */ }
 
-// ✅ Commonalize on 3rd occurrence
-function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /* ... */ }
+// ✅ Commonalize on 3rd occurrence with context parameter
+function validateEmail(email, context) { /* ... */ }
+// context: 'user' | 'contact' | 'admin'
 ```
 
 ## Common Failure Patterns and Avoidance Methods
@@ -79,9 +80,9 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 **Avoidance**: Identify root cause with 5 Whys before fixing
 
 ### Pattern 2: Abandoning Type Safety
-**Symptom**: Excessive use of unsafe type casts or dynamic typing when static typing is available
-**Cause**: Impulse to avoid type errors
-**Avoidance**: Use language-appropriate type safety mechanisms (type guards, runtime validation, proper type annotations)
+**Symptom**: Bypassing language's type system or validation mechanisms
+**Cause**: Impulse to avoid type/validation errors
+**Avoidance**: Use language-appropriate safety mechanisms (static type checking, runtime validation, contracts, assertions)
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation
@@ -121,7 +122,7 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 ```
 Example:
 Symptom: Build error
-Why1: Type/interface definitions don't match → Why2: Interface was updated
+Why1: Contract definitions don't match → Why2: Interface was updated
 Why3: Dependency change → Why4: Package update impact
 Why5: Major version upgrade with breaking changes
 Root cause: Inappropriate version specification in dependency manifest
@@ -135,69 +136,61 @@ To isolate problems, attempt reproduction with minimal code:
 
 ### 4. Debug Log Output
 ```
-Example (TypeScript):
-console.log('DEBUG:', {
-  context: 'user-creation',
-  input: { email, name },
+Pattern: Structured logging with context
+{
+  context: 'operation-name',
+  input: { relevant, input, data },
   state: currentState,
-  timestamp: new Date().toISOString()
-})
+  timestamp: current_time_ISO8601
+}
 
-Example (Python):
-logging.debug('user-creation', extra={
-  'input': {'email': email, 'name': name},
-  'state': current_state,
-  'timestamp': datetime.now().isoformat()
-})
+Key elements:
+- Operation context (what is being executed)
+- Input data (what was received)
+- Current state (relevant state variables)
+- Timestamp (for correlation)
 ```
 
 ## Quality Check Workflow
 
-Language-agnostic quality assurance phases:
+Universal quality assurance phases applicable to all languages:
 
-### Phase 1-3: Basic Checks
-1. **Linting**: Check code style and common issues
-2. **Formatting**: Ensure consistent code formatting
-3. **Unused Code Detection**: Identify dead code
-4. **Build/Compilation**: Verify code compiles (for compiled languages)
+### Phase 1: Static Analysis
+1. **Code Style Checking**: Verify adherence to style guidelines
+2. **Code Formatting**: Ensure consistent formatting
+3. **Unused Code Detection**: Identify dead code and unused imports/variables
+4. **Static Type Checking**: Verify type correctness (for statically typed languages)
+5. **Static Analysis**: Detect potential bugs, security issues, code smells
 
-### Phase 4-6: Tests and Final Confirmation
+### Phase 2: Build Verification
+1. **Compilation/Build**: Verify code builds successfully (for compiled languages)
+2. **Dependency Resolution**: Ensure all dependencies are available and compatible
+3. **Resource Validation**: Check configuration files, assets are valid
+
+### Phase 3: Testing
 1. **Unit Tests**: Run all unit tests
-2. **Coverage**: Measure test coverage
-3. **Integration Tests**: Run integration/E2E tests
-4. **Final Quality Gate**: All checks must pass
+2. **Integration Tests**: Run integration tests
+3. **Test Coverage**: Measure and verify coverage meets standards
+4. **E2E Tests**: Run end-to-end tests
 
-### Example: TypeScript/Node.js Project
-```bash
-# Basic checks
-npm run check          # Lint + format
-npm run check:unused   # Unused exports
-npm run build          # TypeScript compile
+### Phase 4: Final Quality Gate
+All checks must pass before proceeding:
+- Zero static analysis errors
+- Build succeeds
+- All tests pass
+- Coverage meets threshold
 
-# Tests
-npm test                        # Run tests
-npm run test:coverage:fresh     # Coverage
-npm run check:all               # All checks
-
-# Auto-fixes
-npm run format     # Format
-npm run lint:fix   # Lint fixes
+### Quality Check Pattern (Language-Agnostic)
 ```
+Workflow:
+1. Format check → 2. Lint/Style → 3. Static analysis →
+4. Build/Compile → 5. Unit tests → 6. Coverage check →
+7. Integration tests → 8. Final gate
 
-### Example: Python Project
-```bash
-# Basic checks
-black --check .        # Format check
-flake8                 # Linting
-mypy .                 # Type checking
-
-# Tests
-pytest                 # Run tests
-pytest --cov           # Coverage
-
-# Auto-fixes
-black .                # Format
-isort .                # Import sorting
+Auto-fix capabilities (when available):
+- Format auto-fix
+- Lint auto-fix
+- Import organization
 ```
 
 ## Situations Requiring Technical Decisions
@@ -212,10 +205,10 @@ isort .                # Import sorting
 - Measure before optimizing (don't guess, measure)
 - Document reason with comments when optimizing
 
-### Granularity of Type Definitions
-- Overly detailed types reduce maintainability
-- Design types that appropriately express domain
-- Use utility types to reduce duplication
+### Granularity of Contracts and Interfaces
+- Overly detailed contracts reduce maintainability
+- Design interfaces that appropriately express domain
+- Use abstraction mechanisms to reduce duplication
 
 ## Continuous Improvement Mindset
 
