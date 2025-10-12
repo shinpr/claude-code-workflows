@@ -11,15 +11,19 @@
 ## ⚡ Quick Start
 
 ```bash
-# 1. Start Claude Code session
+# 1. Start Claude Code
 claude
 
-# 2. Inside Claude Code, install the plugin
+# 2. Install plugin
 /plugin marketplace add shinpr/claude-code-workflows
 /plugin install claude-code-workflows@shinpr
 
-# 3. Start building with full workflow support
+# 3. Restart session (required)
+# Exit and restart Claude Code
+
+# 4. Start building
 /implement <your feature>
+# Tip: Type /imp + Tab (full: /claude-code-workflows:implement)
 ```
 
 **Note:** If you encounter SSH authentication errors, set up SSH keys for GitHub:
@@ -257,13 +261,6 @@ A: The `quality-fixer` agent automatically fixes most issues. If it can't, it pr
 MIT License - Free to use, modify, and distribute.
 
 See [LICENSE](LICENSE) for full details.
-
----
-
-## 🙏 Acknowledgments
-
-- Built on [Claude Code](https://claude.ai/code) by Anthropic
-- Community feedback and real-world testing
 
 ---
 
