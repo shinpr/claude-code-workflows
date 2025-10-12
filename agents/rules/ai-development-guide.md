@@ -1,7 +1,5 @@
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection
 
-This document compiles technical decision criteria, anti-patterns, debugging techniques, and quality check commands that LLMs (you) should reference during implementation. This document focuses purely on technical guidance.
-
 ## Technical Anti-patterns (Red Flag Patterns)
 
 Immediately stop and reconsider design when detecting the following patterns:
@@ -63,17 +61,13 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
-### Implementation Example (TypeScript)
+### Implementation Example
 ```typescript
-// ❌ Bad: Immediate commonalization on 1st duplication
+// ❌ Immediate commonalization on 1st duplication
 function validateUserEmail(email: string) { /* ... */ }
 function validateContactEmail(email: string) { /* ... */ }
-// → Premature abstraction
 
-// ✅ Good: Commonalize on 3rd occurrence
-// 1st time: inline implementation
-// 2nd time: Copy but consider future
-// 3rd time: Extract to common validator
+// ✅ Commonalize on 3rd occurrence
 function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /* ... */ }
 ```
 
@@ -119,12 +113,9 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 ## Debugging Techniques
 
 ### 1. Error Analysis Procedure
-```bash
-# How to read stack traces
 1. Read error message (first line) accurately
 2. Focus on first and last of stack trace
 3. Identify first line where your code appears
-```
 
 ### 2. 5 Whys - Root Cause Analysis
 ```

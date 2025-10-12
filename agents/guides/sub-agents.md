@@ -1,7 +1,5 @@
 # Subagents Practical Guide - Orchestration Guidelines for Claude (Me)
 
-This document provides practical behavioral guidelines for me (Claude) to efficiently process tasks by utilizing subagents.
-
 ## 🚨 Most Important Principle: I Don't Do the Work Myself
 
 **"I am not a worker. I am an orchestrator."**

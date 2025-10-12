@@ -1,7 +1,5 @@
 # Language-Agnostic Testing Principles
 
-This document defines universal testing principles that apply across all programming languages and frameworks. These rules ensure consistent, reliable, and maintainable test suites.
-
 ## Core Testing Philosophy
 
 1. **Tests are First-Class Code**: Maintain test quality equal to production code
