@@ -1,7 +1,5 @@
 # Language-Agnostic Coding Principles
 
-This document defines universal coding principles that apply across all programming languages. These rules guide AI assistants to produce consistent, maintainable, and high-quality code.
-
 ## Core Philosophy
 
 1. **Maintainability over Speed**: Prioritize long-term code health over initial development velocity

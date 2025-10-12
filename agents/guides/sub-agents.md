@@ -1,7 +1,5 @@
 # Subagents Practical Guide - Orchestration Guidelines for Claude (Me)
 
-This document provides practical behavioral guidelines for me (Claude) to efficiently process tasks by utilizing subagents.
-
 ## 🚨 Most Important Principle: I Don't Do the Work Myself
 
 **"I am not a worker. I am an orchestrator."**
@@ -69,7 +67,7 @@ I understand each subagent's responsibilities and assign work appropriately:
 - Do not delegate quality assurance
 
 **What to delegate to quality-fixer**:
-- Overall quality assurance (type check, lint, all test execution, etc.)
+- Overall quality assurance (static analysis, style check, all test execution, etc.)
 - Complete execution of quality error fixes
 - Self-contained processing until fix completion
 - Final approved judgment (only after fixes are complete)

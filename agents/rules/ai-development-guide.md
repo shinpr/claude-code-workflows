@@ -1,7 +1,5 @@
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection
 
-This document compiles technical decision criteria, anti-patterns, debugging techniques, and quality check commands that LLMs (you) should reference during implementation. This document focuses purely on technical guidance.
-
 ## Technical Anti-patterns (Red Flag Patterns)
 
 Immediately stop and reconsider design when detecting the following patterns:
@@ -22,22 +20,77 @@ Immediately stop and reconsider design when detecting the following patterns:
 - **Symptomatic fixes** - Surface-level fixes that don't solve root causes
 - **Unplanned large-scale changes** - Lack of incremental approach
 
-## Fallback Design Principles
+## Fail-Fast Fallback Design Principles
 
-### Core Principle: Fail-Fast
-Design philosophy that prioritizes improving primary code reliability over fallback implementations in distributed systems.
+### Core Principle
+Prioritize primary code reliability over fallback implementations. In distributed systems, excessive fallback mechanisms can mask errors and make debugging difficult.
 
-### Criteria for Fallback Implementation
-- **Default Prohibition**: Do not implement unconditional fallbacks on errors
-- **Exception Approval**: Implement only when explicitly defined in Design Doc
-- **Layer Responsibilities**:
-  - Infrastructure Layer: Always throw errors upward (no fallback decisions)
-  - Application Layer: Implement decisions based on business requirements
+### Implementation Guidelines
 
-### Detection of Excessive Fallbacks
-- Require design review when writing the 3rd catch statement in the same feature
-- Verify Design Doc definition before implementing fallbacks
-- Properly log errors and make failures explicit
+#### Default Approach
+- **Prohibit unconditional fallbacks**: Do not automatically return default values on errors
+- **Make failures explicit**: Errors should be visible and traceable
+- **Preserve error context**: Include original error information when re-throwing
+
+#### When Fallbacks Are Acceptable
+- **Only with explicit Design Doc approval**: Document why fallback is necessary
+- **Business-critical continuity**: When partial functionality is better than none
+- **Graceful degradation paths**: Clearly defined degraded service levels
+
+#### Layer Responsibilities
+- **Infrastructure Layer**:
+  - Always throw errors upward
+  - No business logic decisions
+  - Provide detailed error context
+
+- **Application Layer**:
+  - Make business-driven error handling decisions
+  - Implement fallbacks only when specified in requirements
+  - Log all fallback activations for monitoring
+
+### Error Masking Detection
+
+**Review Triggers** (require design review):
+- Writing 3rd catch statement in the same feature
+- Multiple try-catch blocks in single function
+- Nested try-catch structures
+- Catch blocks that return default values
+
+**Before Implementing Any Fallback**:
+1. Verify Design Doc explicitly defines this fallback
+2. Document the business justification
+3. Ensure error is logged with full context
+4. Add monitoring/alerting for fallback activation
+
+### Implementation Patterns
+
+```
+❌ AVOID: Silent fallback that hides errors
+    try:
+        return fetchUserData(userId)
+    catch:
+        return DEFAULT_USER  // Error is hidden, debugging becomes difficult
+
+✅ PREFERRED: Explicit failure with context
+    try:
+        return fetchUserData(userId)
+    catch (error):
+        log_error('Failed to fetch user data', userId, error)
+        throw ServiceError('User data unavailable', error)
+
+✅ ACCEPTABLE: Documented fallback with monitoring (when justified in Design Doc)
+    try:
+        return fetchPrimaryData()
+    catch (error):
+        // Fallback defined in Design Doc section 3.2.1
+        log_warning('Primary data source failed, using cache', error)
+        increment_metric('data.fallback.cache_used')
+
+        cachedData = fetchFromCache()
+        if not cachedData:
+            throw ServiceError('Both primary and cache failed', error)
+        return cachedData
+```
 
 ## Rule of Three - Criteria for Code Duplication
 
@@ -63,18 +116,15 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
-### Implementation Example (TypeScript)
-```typescript
-// ❌ Bad: Immediate commonalization on 1st duplication
-function validateUserEmail(email: string) { /* ... */ }
-function validateContactEmail(email: string) { /* ... */ }
-// → Premature abstraction
+### Implementation Example
+```
+// ❌ Immediate commonalization on 1st duplication
+function validateUserEmail(email) { /* ... */ }
+function validateContactEmail(email) { /* ... */ }
 
-// ✅ Good: Commonalize on 3rd occurrence
-// 1st time: inline implementation
-// 2nd time: Copy but consider future
-// 3rd time: Extract to common validator
-function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /* ... */ }
+// ✅ Commonalize on 3rd occurrence with context parameter
+function validateEmail(email, context) { /* ... */ }
+// context: 'user' | 'contact' | 'admin'
 ```
 
 ## Common Failure Patterns and Avoidance Methods
@@ -85,9 +135,9 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 **Avoidance**: Identify root cause with 5 Whys before fixing
 
 ### Pattern 2: Abandoning Type Safety
-**Symptom**: Excessive use of unsafe type casts or dynamic typing when static typing is available
-**Cause**: Impulse to avoid type errors
-**Avoidance**: Use language-appropriate type safety mechanisms (type guards, runtime validation, proper type annotations)
+**Symptom**: Bypassing language's type system or validation mechanisms
+**Cause**: Impulse to avoid type/validation errors
+**Avoidance**: Use language-appropriate safety mechanisms (static type checking, runtime validation, contracts, assertions)
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation
@@ -119,18 +169,15 @@ function validateEmail(email: string, context: 'user' | 'contact' | 'admin') { /
 ## Debugging Techniques
 
 ### 1. Error Analysis Procedure
-```bash
-# How to read stack traces
 1. Read error message (first line) accurately
 2. Focus on first and last of stack trace
 3. Identify first line where your code appears
-```
 
 ### 2. 5 Whys - Root Cause Analysis
 ```
 Example:
 Symptom: Build error
-Why1: Type/interface definitions don't match → Why2: Interface was updated
+Why1: Contract definitions don't match → Why2: Interface was updated
 Why3: Dependency change → Why4: Package update impact
 Why5: Major version upgrade with breaking changes
 Root cause: Inappropriate version specification in dependency manifest
@@ -144,69 +191,61 @@ To isolate problems, attempt reproduction with minimal code:
 
 ### 4. Debug Log Output
 ```
-Example (TypeScript):
-console.log('DEBUG:', {
-  context: 'user-creation',
-  input: { email, name },
+Pattern: Structured logging with context
+{
+  context: 'operation-name',
+  input: { relevant, input, data },
   state: currentState,
-  timestamp: new Date().toISOString()
-})
+  timestamp: current_time_ISO8601
+}
 
-Example (Python):
-logging.debug('user-creation', extra={
-  'input': {'email': email, 'name': name},
-  'state': current_state,
-  'timestamp': datetime.now().isoformat()
-})
+Key elements:
+- Operation context (what is being executed)
+- Input data (what was received)
+- Current state (relevant state variables)
+- Timestamp (for correlation)
 ```
 
 ## Quality Check Workflow
 
-Language-agnostic quality assurance phases:
+Universal quality assurance phases applicable to all languages:
 
-### Phase 1-3: Basic Checks
-1. **Linting**: Check code style and common issues
-2. **Formatting**: Ensure consistent code formatting
-3. **Unused Code Detection**: Identify dead code
-4. **Build/Compilation**: Verify code compiles (for compiled languages)
+### Phase 1: Static Analysis
+1. **Code Style Checking**: Verify adherence to style guidelines
+2. **Code Formatting**: Ensure consistent formatting
+3. **Unused Code Detection**: Identify dead code and unused imports/variables
+4. **Static Type Checking**: Verify type correctness (for statically typed languages)
+5. **Static Analysis**: Detect potential bugs, security issues, code smells
 
-### Phase 4-6: Tests and Final Confirmation
+### Phase 2: Build Verification
+1. **Compilation/Build**: Verify code builds successfully (for compiled languages)
+2. **Dependency Resolution**: Ensure all dependencies are available and compatible
+3. **Resource Validation**: Check configuration files, assets are valid
+
+### Phase 3: Testing
 1. **Unit Tests**: Run all unit tests
-2. **Coverage**: Measure test coverage
-3. **Integration Tests**: Run integration/E2E tests
-4. **Final Quality Gate**: All checks must pass
+2. **Integration Tests**: Run integration tests
+3. **Test Coverage**: Measure and verify coverage meets standards
+4. **E2E Tests**: Run end-to-end tests
 
-### Example: TypeScript/Node.js Project
-```bash
-# Basic checks
-npm run check          # Lint + format
-npm run check:unused   # Unused exports
-npm run build          # TypeScript compile
+### Phase 4: Final Quality Gate
+All checks must pass before proceeding:
+- Zero static analysis errors
+- Build succeeds
+- All tests pass
+- Coverage meets threshold
 
-# Tests
-npm test                        # Run tests
-npm run test:coverage:fresh     # Coverage
-npm run check:all               # All checks
-
-# Auto-fixes
-npm run format     # Format
-npm run lint:fix   # Lint fixes
+### Quality Check Pattern (Language-Agnostic)
 ```
+Workflow:
+1. Format check → 2. Lint/Style → 3. Static analysis →
+4. Build/Compile → 5. Unit tests → 6. Coverage check →
+7. Integration tests → 8. Final gate
 
-### Example: Python Project
-```bash
-# Basic checks
-black --check .        # Format check
-flake8                 # Linting
-mypy .                 # Type checking
-
-# Tests
-pytest                 # Run tests
-pytest --cov           # Coverage
-
-# Auto-fixes
-black .                # Format
-isort .                # Import sorting
+Auto-fix capabilities (when available):
+- Format auto-fix
+- Lint auto-fix
+- Import organization
 ```
 
 ## Situations Requiring Technical Decisions
@@ -221,10 +260,10 @@ isort .                # Import sorting
 - Measure before optimizing (don't guess, measure)
 - Document reason with comments when optimizing
 
-### Granularity of Type Definitions
-- Overly detailed types reduce maintainability
-- Design types that appropriately express domain
-- Use utility types to reduce duplication
+### Granularity of Contracts and Interfaces
+- Overly detailed contracts reduce maintainability
+- Design interfaces that appropriately express domain
+- Use abstraction mechanisms to reduce duplication
 
 ## Continuous Improvement Mindset
 
