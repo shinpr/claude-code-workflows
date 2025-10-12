@@ -26,40 +26,61 @@ claude
 # Tip: Type /imp + Tab (full: /claude-code-workflows:implement)
 ```
 
-**Note:** If you encounter SSH authentication errors, set up SSH keys for GitHub:
-
-```bash
-# 1. Check if SSH key already exists
-ls ~/.ssh/id_ed25519.pub
-
-# 2. Generate new SSH key (if needed)
-ssh-keygen -t ed25519 -C "your_email@example.com"
-# → Press Enter to save to default location
-# → Enter a strong passphrase when prompted (recommended for security)
-
-# 3. Add SSH key to ssh-agent
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-
-# 4. Copy public key to clipboard
-cat ~/.ssh/id_ed25519.pub
-# → Copy the output
-
-# 5. Add to GitHub
-# Go to https://github.com/settings/keys
-# Click "New SSH key"
-# Paste your public key and save
-
-# 6. Test connection
-ssh -T git@github.com
-# → Should see: "Hi username! You've successfully authenticated..."
-```
+> **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
 
 ---
 
-## 🎯 What's Included
+## 🔧 How It Works
 
-### 📦 Specialized Agents
+### Intelligent Workflow Orchestration
+
+```mermaid
+graph TB
+    A[👤 User Request] --> B[🔍 requirement-analyzer]
+
+    B --> |"📦 Large (6+ files)"| C[📄 prd-creator]
+    B --> |"📦 Medium (3-5 files)"| D[📐 technical-designer]
+    B --> |"📦 Small (1-2 files)"| E[⚡ Direct Implementation]
+
+    C --> D
+    D --> F[🧪 acceptance-test-generator]
+    F --> G[📋 work-planner]
+    G --> H[✂️ task-decomposer]
+
+    H --> I[🔨 task-executor]
+    E --> I
+
+    I --> J[✅ quality-fixer]
+    J --> K[🎉 Ready to Commit]
+```
+
+### Execution Flow
+
+1. **Analysis**: Assess task complexity and requirements
+2. **Planning**: Generate appropriate documentation (PRD, Design Doc, Work Plan)
+3. **Execution**: Specialized agents handle each phase autonomously
+4. **Quality**: Automated testing, type checking, and error fixing
+5. **Review**: Verify compliance and completeness
+6. **Commit**: Clean, production-ready code
+
+---
+
+## ⚡ Workflow Commands
+
+Streamline your development with purpose-built commands:
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `/implement` | End-to-end feature development | New features, complete workflows |
+| `/task` | Execute single task with precision | Bug fixes, small changes |
+| `/design` | Create design documentation | Architecture planning |
+| `/plan` | Generate work plan from design | Planning phase |
+| `/build` | Execute from existing task plan | Resume implementation |
+| `/review` | Verify code against design docs | Post-implementation check |
+
+---
+
+## 📦 Specialized Agents
 
 11 production-ready agents for every phase of development:
 
@@ -77,20 +98,9 @@ ssh -T git@github.com
 | **rule-advisor** | Select optimal rules for current task | Task initiation |
 | **document-reviewer** | Review documentation consistency | Documentation phase |
 
-### ⚡ Workflow Commands
+---
 
-Streamline your development with purpose-built commands:
-
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `/implement` | End-to-end feature development | New features, complete workflows |
-| `/task` | Execute single task with precision | Bug fixes, small changes |
-| `/design` | Create design documentation | Architecture planning |
-| `/plan` | Generate work plan from design | Planning phase |
-| `/build` | Execute from existing task plan | Resume implementation |
-| `/review` | Verify code against design docs | Post-implementation check |
-
-### 📚 Language-Agnostic Rules
+## 📚 Language-Agnostic Rules
 
 Battle-tested best practices that work across all languages:
 
@@ -119,42 +129,6 @@ Battle-tested best practices that work across all languages:
 
 ---
 
-## 📖 Documentation
-
-### Core Concepts
-- **Sub Agents** - [Anthropic Documentation](https://docs.anthropic.com/en/docs/claude-code/sub-agents)
-- **Design Philosophy** - [Sub-Agent Development Workflow](https://dev.to/shinpr/zero-context-exhaustion-building-production-ready-ai-coding-teams-with-claude-code-sub-agents-31b)
-
----
-
-## 🔧 How It Works
-
-### Intelligent Workflow Orchestration
-
-```mermaid
-graph LR
-    A[User Request] --> B[requirement-analyzer]
-    B -->|Small| C[Direct Implementation]
-    B -->|Medium| D[Design → Implementation]
-    B -->|Large| E[PRD → Design → Implementation]
-
-    C --> F[quality-fixer]
-    D --> F
-    E --> F
-    F --> G[code-reviewer]
-    G --> H[Ready to Commit]
-```
-
-### Execution Flow
-
-1. **Analysis**: Assess task complexity and requirements
-2. **Planning**: Generate appropriate documentation (PRD, Design Doc, Work Plan)
-3. **Execution**: Specialized agents handle each phase autonomously
-4. **Quality**: Automated testing, type checking, and error fixing
-5. **Review**: Verify compliance and completeness
-6. **Commit**: Clean, production-ready code
-
----
 
 ## 💡 Real-World Results
 
@@ -253,6 +227,36 @@ A: Just use `/implement` to start. The plugin handles the complexity automatical
 
 **Q: What if there are errors?**
 A: The `quality-fixer` agent automatically fixes most issues. If it can't, it provides clear guidance.
+
+**Q: SSH authentication error during plugin installation?**
+A: Set up SSH keys for GitHub:
+
+```bash
+# 1. Check if SSH key already exists
+ls ~/.ssh/id_ed25519.pub
+
+# 2. Generate new SSH key (if needed)
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# → Press Enter to save to default location
+# → Enter a strong passphrase when prompted (recommended for security)
+
+# 3. Add SSH key to ssh-agent
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# 4. Copy public key to clipboard
+cat ~/.ssh/id_ed25519.pub
+# → Copy the output
+
+# 5. Add to GitHub
+# Go to https://github.com/settings/keys
+# Click "New SSH key"
+# Paste your public key and save
+
+# 6. Test connection
+ssh -T git@github.com
+# → Should see: "Hi username! You've successfully authenticated..."
+```
 
 ---
 
