@@ -152,7 +152,7 @@
 - Deeply nested conditionals
 - Duplicated code blocks
 - Unclear variable names
-- Large classes or functions
+- Large modules, classes, or functions
 
 ## Testing Considerations
 

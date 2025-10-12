@@ -177,8 +177,8 @@ Task 3: [Content]
 ### Interface Change Impact Analysis
 | Existing Interface | New Interface | Conversion Required | Corresponding Task |
 |-------------------|---------------|-------------------|-------------------|
-| methodA()         | methodA()     | None              | -                 |
-| methodB(x)        | methodC(x,y)  | Yes               | Task X            |
+| operationA()      | operationA()  | None              | -                 |
+| operationB(x)     | operationC(x,y) | Yes             | Task X            |
 
 ### Common Processing Points
 - [Functions/types/constants shared between tasks]

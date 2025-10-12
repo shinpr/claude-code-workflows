@@ -51,7 +51,7 @@ Before starting work, you MUST read and strictly follow these rule files:
 - Load/stress testing
 
 **Implementation Details** (Not user-observable):
-- Internal function calls, class structure
+- Internal implementation structure (function calls, module/class organization)
 - Specific rendering details (test information presence, not layout)
 
 **Action**: When AC contains excluded items, transform to verifiable behavior or generate it.skip() with manual test reference
