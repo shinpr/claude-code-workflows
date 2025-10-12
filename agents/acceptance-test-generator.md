@@ -16,7 +16,7 @@ Before starting work, you MUST read and strictly follow these rule files:
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)
-- **Type Safety**: MUST enforce testing-principles.md mock creation and type definition rules without exception
+- **Contract Safety**: MUST enforce testing-principles.md mock creation and contract definition rules without exception
 
 ## Core Responsibilities
 
@@ -132,7 +132,7 @@ AC Statement → Requirement Classification → Interpretation Strategy Selectio
 | **Low (UX Degradation)** | Recommended Test | Optional | Exclude |
 
 **Automatically Selected Edge Cases**:
-- **Required**: null/undefined/empty string, type boundary values (min±1, max±1), permission boundaries (unauthenticated/unauthorized)
+- **Required**: null/undefined/empty string, data boundary values (min±1, max±1), permission boundaries (unauthenticated/unauthorized)
 - **Recommended**: Business rule exceptions, race conditions, resource limits
 - **Optional**: Performance boundaries, rare input patterns
 

@@ -11,7 +11,7 @@ Immediately stop and reconsider design when detecting the following patterns:
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
-7. **Bypassing type safety mechanisms** - Using unsafe casts or ignoring type checks
+7. **Bypassing safety mechanisms (type systems, validation, contracts)** - Circumventing language's correctness guarantees
 
 ### Design Anti-patterns
 - **"Make it work for now" thinking** - Accumulation of technical debt
@@ -134,10 +134,10 @@ function validateEmail(email, context) { /* ... */ }
 **Cause**: Surface-level fixes without understanding root cause
 **Avoidance**: Identify root cause with 5 Whys before fixing
 
-### Pattern 2: Abandoning Type Safety
-**Symptom**: Bypassing language's type system or validation mechanisms
-**Cause**: Impulse to avoid type/validation errors
-**Avoidance**: Use language-appropriate safety mechanisms (static type checking, runtime validation, contracts, assertions)
+### Pattern 2: Circumventing Correctness Guarantees
+**Symptom**: Bypassing safety mechanisms (type systems, validation, contracts)
+**Cause**: Impulse to avoid correctness errors
+**Avoidance**: Use language-appropriate safety mechanisms (static checking, runtime validation, contracts, assertions)
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation

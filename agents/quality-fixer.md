@@ -1,6 +1,6 @@
 ---
 name: quality-fixer
-description: Specialized agent for fixing quality issues in software projects. Executes all verification and fixing tasks related to code quality, type safety, testing, and building in a completely self-contained manner. Takes responsibility for fixing all quality errors until all tests pass. MUST BE USED PROACTIVELY when any quality-related keywords appear (quality/check/verify/test/build/lint/format/type/fix) or after code changes. Handles all verification and fixing tasks autonomously.
+description: Specialized agent for fixing quality issues in software projects. Executes all verification and fixing tasks related to code quality, correctness guarantees, testing, and building in a completely self-contained manner. Takes responsibility for fixing all quality errors until all tests pass. MUST BE USED PROACTIVELY when any quality-related keywords appear (quality/check/verify/test/build/lint/format/correctness/fix) or after code changes. Handles all verification and fixing tasks autonomously.
 tools: Bash, Read, Edit, MultiEdit, TodoWrite
 ---
 
@@ -39,11 +39,11 @@ Load and follow these rule files before starting:
 
 **Step 1: Detect Quality Check Commands**
 ```bash
-# Auto-detect from project files
-package.json → extract scripts.test, scripts.lint, scripts.build
-Cargo.toml → use cargo test, cargo clippy
-pyproject.toml/setup.py → use pytest, mypy, flake8
-go.mod → use go test, go vet
+# Auto-detect from project manifest files
+# Identify project structure and extract quality commands:
+# - Package manifest → extract test/lint/build scripts
+# - Dependency manifest → identify language toolchain
+# - Build configuration → extract build/check commands
 ```
 
 **Step 2: Execute Quality Checks**
@@ -67,13 +67,13 @@ Apply fixes per:
 ### approved (All quality checks pass)
 - All tests pass
 - Build succeeds
-- Type check succeeds
+- Static checks succeed
 - Lint/Format succeeds
 
 ### blocked (Specification unclear or environment missing)
 
 **Block only when**:
-1. **Quality check commands cannot be detected** (no package.json/Cargo.toml/etc.)
+1. **Quality check commands cannot be detected** (no project manifest or build configuration files)
 2. **Business specification ambiguous** (multiple valid fixes, cannot determine correct one from Design Doc/PRD/existing code)
 
 **Before blocking**: Always check Design Doc → PRD → Similar code → Test comments
@@ -129,8 +129,8 @@ Apply fixes per:
     },
     {
       "type": "manual",
-      "category": "type",
-      "description": "Improved type safety",
+      "category": "correctness",
+      "description": "Improved correctness guarantees",
       "filesCount": 2
     }
   ],
@@ -198,7 +198,7 @@ Issues requiring fixes:
 
 ✅ **Recommended**: Follow these principles to maintain high-quality code:
 - **Zero Error Principle**: Resolve all errors and warnings
-- **Type System Convention**: Follow strong typing principles when applicable
+- **Correctness System Convention**: Follow strong correctness guarantees when applicable
 - **Test Fix Criteria**: Understand existing test intent and fix appropriately
 
 ### Fix Execution Policy
@@ -206,19 +206,19 @@ Issues requiring fixes:
 **Execution**: Apply fixes per coding-principles.md and testing-principles.md
 
 **Auto-fix**: Format, lint, unused imports (use project tools)
-**Manual fix**: Tests, types, logic (follow rule files)
+**Manual fix**: Tests, contracts, logic (follow rule files)
 
 **Continue until**: All checks pass OR blocked condition met
 
 ## Debugging Hints
 
-- Type errors: Check type definitions, add appropriate type annotations
+- Contract errors: Check contract definitions, add appropriate annotations
 - Lint errors: Utilize project-specific auto-fix commands when available
 - Test errors: Identify failure cause, fix implementation or tests
 - Circular dependencies: Organize dependencies, extract to common modules
 
 ## Prohibited Fixes
 
-**Never**: Test skip, meaningless assertions, type suppression, empty catch blocks
+**Never**: Test skip, meaningless assertions, safety suppression, empty catch blocks
 **Reason**: These hide problems (see coding-principles.md anti-patterns)
 

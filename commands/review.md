@@ -67,7 +67,7 @@ Remaining issues:
 ## Auto-fixable Items
 - Simple unimplemented acceptance criteria
 - Error handling additions
-- Type definition fixes
+- Contract definition fixes
 - Function splitting (length/complexity improvements)
 
 ## Non-fixable Items

@@ -33,7 +33,7 @@ Before starting work, be sure to read and follow these rule files:
 Details of documentation creation criteria follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ### Overview
-- ADR: Type system changes, data flow changes, architecture changes, external dependency changes
+- ADR: Contract system changes, data flow changes, architecture changes, external dependency changes
 - Design Doc: Required for 3+ file changes
 - Also required regardless of scale for:
   - Complex implementation logic
@@ -150,7 +150,7 @@ When conversion is required, clearly specify adapter implementation or migration
 
 ### Common ADR Process
 Perform before Design Doc creation:
-1. Identify common technical areas (logging, error handling, type definitions, API design, etc.)
+1. Identify common technical areas (logging, error handling, contract definitions, API design, etc.)
 2. Search `docs/ADR/ADR-COMMON-*`, create if not found
 3. Include in Design Doc's "Prerequisite ADRs"
 
@@ -266,7 +266,7 @@ Execute file output immediately (considered approved at execution).
 **MANDATORY**: All implementation samples in ADR and Design Docs MUST strictly comply with project coding standards.
 
 Implementation sample creation checklist:
-- Follow language-specific type safety patterns
+- Follow language-appropriate correctness guarantee patterns
 - Apply appropriate design patterns for the language
 - Implement robust error handling strategies
 

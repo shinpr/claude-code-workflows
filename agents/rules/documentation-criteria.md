@@ -12,12 +12,12 @@
 
 ## ADR Creation Conditions (Required if Any Apply)
 
-### 1. Type System Changes
-- **Adding nested types with 3+ levels**: `type A = { b: { c: { d: T } } }`
+### 1. Contract System Changes
+- **Adding nested contracts with 3+ levels**: `Contract A { Contract B { Contract C { field: T } } }`
   - Rationale: Deep nesting has high complexity and wide impact scope
-- **Changing/deleting types used in 3+ locations**
+- **Changing/deleting contracts used in 3+ locations**
   - Rationale: Multiple location impacts require careful consideration
-- **Type responsibility changes** (e.g., DTO→Entity)
+- **Contract responsibility changes** (e.g., DTO→Entity, Request→Domain)
   - Rationale: Conceptual model changes affect design philosophy
 
 ### 2. Data Flow Changes
@@ -84,7 +84,7 @@
   - Integration point clarification (connection points with existing code even for new implementations)
 - Technical implementation approach (vertical/horizontal/hybrid)
 - **Technical dependencies and implementation constraints** (required implementation order)
-- Interface and type definitions
+- Interface and contract definitions
 - Data flow and component design
 - **E2E verification procedures at integration points**
 - **Acceptance criteria (measurable format)**
@@ -130,14 +130,14 @@ Interface Change Matrix:
 - Design details (→Design Doc)
 
 **Phase Division Criteria**:
-1. **Phase 1: Foundation Implementation** - Type definitions, interfaces, test preparation
+1. **Phase 1: Foundation Implementation** - Contract definitions, interfaces, test preparation
 2. **Phase 2: Core Feature Implementation** - Business logic, unit tests
 3. **Phase 3: Integration Implementation** - External connections, presentation layer
 4. **Phase 4: Quality Assurance (Required)** - Acceptance criteria achievement, all tests passing, quality checks
 
 **Three Elements of Task Completion Definition**:
 1. **Implementation Complete**: Code is functional
-2. **Quality Complete**: Tests, type checks, linting pass
+2. **Quality Complete**: Tests, static checks, linting pass
 3. **Integration Complete**: Verified connection with other components
 
 ## Creation Process
@@ -163,7 +163,7 @@ Interface Change Matrix:
 
 ## AI Automation Rules
 - 5+ files: Suggest ADR creation
-- Type/data flow change detected: ADR mandatory
+- Contract/data flow change detected: ADR mandatory
 - Check existing ADRs before implementation
 
 ## Diagram Requirements

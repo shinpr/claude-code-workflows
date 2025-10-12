@@ -24,7 +24,7 @@ Load and follow these rule files before starting:
 
 ### Applying to Implementation
 - Determine layer structure and dependency direction with architecture rules
-- Implement type definitions and error handling with coding principles
+- Implement contract definitions and error handling with coding principles
 - Practice TDD and create test structure with testing principles
 - Verify requirement compliance with project requirements
 - **MUST strictly adhere to task file implementation patterns (function vs class selection)**
@@ -32,14 +32,14 @@ Load and follow these rule files before starting:
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
-□ Interface definition change needed? (argument/return type/count/name changes)
+□ Interface definition change needed? (argument/return contract/count/name changes)
 □ Layer structure violation needed? (e.g., Handler→Repository direct call)
 □ Dependency direction reversal needed? (e.g., lower layer references upper layer)
 □ New external library/API addition needed?
-□ Need to ignore type definitions in Design Doc?
+□ Need to ignore contract definitions in Design Doc?
 
 ### Step2: Quality Standard Violation Check (Any YES → Immediate Escalation)
-□ Type system bypass needed? (type casting, forced dynamic typing, type validation disable)
+□ Contract system bypass needed? (unsafe casts, validation disable)
 □ Error handling bypass needed? (exception ignore, error suppression)
 □ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
 □ Existing test modification/deletion needed?
@@ -49,7 +49,7 @@ Load and follow these rule files before starting:
 
 **High Duplication (Escalation Required)** - 3+ items match:
 □ Same domain/responsibility (business domain, processing entity same)
-□ Same input/output pattern (argument/return type/structure same or highly similar)
+□ Same input/output pattern (argument/return contract/structure same or highly similar)
 □ Same processing content (CRUD operations, validation, transformation, calculation logic same)
 □ Same placement (same directory or functionally related module)
 □ Naming similarity (function/class names share keywords/patterns)
@@ -64,9 +64,9 @@ Load and follow these rule files before starting:
 ### Safety Measures: Handling Ambiguous Cases
 
 **Gray Zone Examples (Escalation Recommended)**:
-- **"Add argument" vs "Interface change"**: Appending to end while preserving existing argument order/type is minor; inserting required arguments or changing existing is deviation
+- **"Add argument" vs "Interface change"**: Appending to end while preserving existing argument order/contract is minor; inserting required arguments or changing existing is deviation
 - **"Process optimization" vs "Architecture violation"**: Efficiency within same layer is optimization; direct calls crossing layer boundaries is violation
-- **"Type concretization" vs "Type definition change"**: Safe conversion from unknown→concrete type is concretization; changing Design Doc-specified types is violation
+- **"Contract concretization" vs "Contract definition change"**: Safe conversion from unknown→concrete contract is concretization; changing Design Doc-specified contracts is violation
 - **"Minor similarity" vs "High similarity"**: Simple CRUD operation similarity is minor; same business logic + same argument structure is high similarity
 
 **Iron Rule: Escalate When Objectively Undeterminable**
@@ -76,14 +76,14 @@ Load and follow these rule files before starting:
 - **Technical judgment divided**: Possibility of divided judgment among equivalent engineers → Escalation
 
 **Specific Boundary Determination Criteria**
-- **Interface change boundary**: Method signature changes (argument type/order/required status, return type) are deviations
+- **Interface change boundary**: Method signature changes (argument contract/order/required status, return contract) are deviations
 - **Architecture violation boundary**: Layer dependency direction reversal, layer skipping are violations
 - **Similar function boundary**: Domain + responsibility + input/output structure matching is high similarity
 
 ### Implementation Continuable (All checks NO AND clearly applicable)
 - Implementation detail optimization (variable names, internal processing order, etc.)
 - Detailed specifications not in Design Doc
-- Type guard usage from unknown→concrete type
+- Safety guard usage from unknown→concrete contract
 - Minor UI adjustments, message text changes
 
 ## Implementation Authority and Responsibility Boundaries

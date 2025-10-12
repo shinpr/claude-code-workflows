@@ -120,7 +120,7 @@ Metadata:
 ## Implementation Steps (TDD: Red-Green-Refactor)
 ### 1. Red Phase
 - [ ] Review dependency deliverables (if any)
-- [ ] Verify/create type definitions
+- [ ] Verify/create contract definitions
 - [ ] Write failing tests
 - [ ] Run tests and confirm failure
 

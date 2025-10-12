@@ -32,7 +32,7 @@ Scale determination and required document details follow ~/.claude/plugins/marke
 - **Medium**: 3-5 files, spanning multiple components → **Design Doc mandatory**
 - **Large**: 6+ files, architecture-level changes → **PRD mandatory**, **Design Doc mandatory**
 
-※ADR conditions (type system changes, data flow changes, architecture changes, external dependency changes) require ADR regardless of scale
+※ADR conditions (contract system changes, data flow changes, architecture changes, external dependency changes) require ADR regardless of scale
 
 ### Important: Clear Determination Expressions
 ✅ **Recommended**: Use the following expressions to show clear determinations:
@@ -47,7 +47,7 @@ Scale determination and required document details follow ~/.claude/plugins/marke
 Detailed ADR creation conditions follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md.
 
 ### Overview
-- Type system changes (3+ level nesting, types used in 3+ locations)
+- Contract system changes (3+ level nesting, contracts used in 3+ locations)
 - Data flow changes (storage location, processing order, passing methods)
 - Architecture changes (layer addition, responsibility changes)
 - External dependency changes (libraries, frameworks, APIs)

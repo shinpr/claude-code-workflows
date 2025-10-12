@@ -101,7 +101,7 @@ Related Issue/PR: #XXX (if any)
 ### Quality Assurance
 - [ ] Implement staged quality checks (details: refer to ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md)
 - [ ] All tests pass
-- [ ] Type check pass
+- [ ] Static check pass
 - [ ] Lint check pass
 - [ ] Build success
 
