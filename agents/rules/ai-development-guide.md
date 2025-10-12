@@ -62,52 +62,22 @@ Prioritize primary code reliability over fallback implementations. In distribute
 3. Ensure error is logged with full context
 4. Add monitoring/alerting for fallback activation
 
-### Implementation Patterns
+### Implementation Pattern
 
-**Pattern A: Exception-based (languages with exceptions)**
+**Core principle**: Make errors explicit with full context. Never hide errors with silent fallbacks.
+
 ```
 ❌ AVOID: Silent fallback that hides errors
-    try:
-        return fetchUserData(userId)
-    catch:
-        return DEFAULT_USER  // Error is hidden
+    <handle error>:
+        return DEFAULT_VALUE  // Error hidden, debugging impossible
 
 ✅ PREFERRED: Explicit failure with context
-    try:
-        return fetchUserData(userId)
-    catch (error):
-        log_error('Failed to fetch user data', userId, error)
-        throw ServiceError('User data unavailable', error)
+    <handle error>:
+        log_error('Operation failed', context, error)
+        <propagate error>  // Re-throw exception, return Error, return error tuple
 ```
 
-**Pattern B: Result-based (functional approach)**
-```
-❌ AVOID: Silent fallback that hides errors
-    result = fetchUserData(userId)
-    return result.unwrap_or(DEFAULT_USER)  // Error is hidden
-
-✅ PREFERRED: Explicit failure with context
-    result = fetchUserData(userId)
-    if result.is_error():
-        log_error('Failed to fetch user data', userId, result.error())
-        return Error('User data unavailable')
-    return result.value()
-```
-
-**Pattern C: Error code-based (procedural approach)**
-```
-❌ AVOID: Silent fallback that hides errors
-    user, error = fetchUserData(userId)
-    if error != nil:
-        return DEFAULT_USER  // Error is hidden
-
-✅ PREFERRED: Explicit failure with context
-    user, error = fetchUserData(userId)
-    if error != nil:
-        log_error('Failed to fetch user data', userId, error)
-        return nil, ServiceError('User data unavailable', error)
-    return user, nil
-```
+**Adaptation**: Use language-appropriate error handling (exceptions, Result types, error tuples, etc.)
 
 ## Rule of Three - Criteria for Code Duplication
 
@@ -133,9 +103,8 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
-### Implementation Examples
+### Implementation Example
 
-**Example A: Function/Procedure extraction**
 ```
 // ❌ Immediate commonalization on 1st duplication
 validateUserEmail(email) { /* ... */ }
@@ -146,29 +115,7 @@ validateEmail(email, context) { /* ... */ }
 // context: 'user' | 'contact' | 'admin'
 ```
 
-**Example B: Class/Module abstraction**
-```
-// ❌ Immediate commonalization on 1st duplication
-class UserEmailValidator { validate(email) { /* ... */ } }
-class ContactEmailValidator { validate(email) { /* ... */ } }
-
-// ✅ Commonalize on 3rd occurrence with strategy pattern
-class EmailValidator {
-    validate(email, validationContext) { /* ... */ }
-}
-```
-
-**Example C: Configuration-driven approach**
-```
-// ❌ Hard-coded validation in multiple places
-validateForUser(email) { /* user-specific rules */ }
-validateForContact(email) { /* contact-specific rules */ }
-
-// ✅ Commonalize with configuration
-validate(email, rules) {
-    // Apply rules from configuration/strategy
-}
-```
+**Adaptation**: Use appropriate abstraction for your codebase (functions, classes, modules, configuration)
 
 ## Common Failure Patterns and Avoidance Methods
 

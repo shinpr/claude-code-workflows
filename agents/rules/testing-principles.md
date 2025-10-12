@@ -131,13 +131,12 @@ Follow the test pyramid structure:
 
 ### AAA Pattern (Arrange-Act-Assert)
 
-Structure every test clearly. Apply this pattern regardless of language or paradigm:
+Structure every test in three clear phases:
 
-**Example A: Object-oriented approach**
 ```
 // Arrange: Setup test data and conditions
 user = createTestUser()
-validator = UserValidator()
+validator = createValidator()
 
 // Act: Execute the code under test
 result = validator.validate(user)
@@ -146,29 +145,7 @@ result = validator.validate(user)
 assert(result.isValid == true)
 ```
 
-**Example B: Functional approach**
-```
-// Arrange: Setup test data and conditions
-user = createTestUser()
-
-// Act: Execute the code under test
-result = validateUser(user)
-
-// Assert: Verify expected outcome
-assert(result == Valid)
-```
-
-**Example C: Procedural approach**
-```
-// Arrange: Setup test data and conditions
-user = create_test_user()
-
-// Act: Execute the code under test
-is_valid, error = validate_user(user)
-
-// Assert: Verify expected outcome
-assert(is_valid == true and error == nil)
-```
+**Adaptation**: Apply this structure using your language's idioms (methods, functions, procedures)
 
 ### One Assertion Per Concept
 
@@ -197,21 +174,14 @@ Test names should clearly describe:
 
 **Recommended format**: `"should [expected behavior] when [condition]"`
 
-**Examples across different conventions:**
+**Examples**:
 ```
-// Function/method style
-test_should_return_error_when_email_invalid()
-testShouldCalculateDiscountWhenUserPremium()
-test "should return error when email is invalid"
-
-// Describe/It style
-it("should return error when email is invalid")
-should "calculate discount when user is premium"
-
-// Sentence style
-Test: "Returns error when email is invalid"
-Case: "User receives discount when premium member"
+test("should return error when email is invalid")
+test("should calculate discount when user is premium")
+test("should throw exception when file not found")
 ```
+
+**Adaptation**: Follow your project's naming convention (camelCase, snake_case, describe/it blocks)
 
 ## Test Independence
 
