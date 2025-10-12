@@ -100,7 +100,7 @@ Load and follow these rule files before starting:
 - [ ] Comprehensive error handling
 - [ ] Appropriate logging
 - [ ] Tests cover acceptance criteria
-- [ ] Type definitions match Design Doc
+- [ ] Contract definitions match Design Doc
 
 ### Code Quality Items
 - [ ] **Function length**: Appropriate (ideal: <50 lines, max: 200)

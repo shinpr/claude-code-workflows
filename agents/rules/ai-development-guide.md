@@ -51,10 +51,10 @@ Prioritize primary code reliability over fallback implementations. In distribute
 ### Error Masking Detection
 
 **Review Triggers** (require design review):
-- Writing 3rd catch statement in the same feature
-- Multiple try-catch blocks in single function
-- Nested try-catch structures
-- Catch blocks that return default values
+- Writing 3rd error handler in the same feature
+- Multiple error handling blocks in single function/method
+- Nested error handling structures
+- Error handlers that return default values without logging
 
 **Before Implementing Any Fallback**:
 1. Verify Design Doc explicitly defines this fallback
@@ -64,12 +64,13 @@ Prioritize primary code reliability over fallback implementations. In distribute
 
 ### Implementation Patterns
 
+**Pattern A: Exception-based (languages with exceptions)**
 ```
 ❌ AVOID: Silent fallback that hides errors
     try:
         return fetchUserData(userId)
     catch:
-        return DEFAULT_USER  // Error is hidden, debugging becomes difficult
+        return DEFAULT_USER  // Error is hidden
 
 ✅ PREFERRED: Explicit failure with context
     try:
@@ -77,19 +78,35 @@ Prioritize primary code reliability over fallback implementations. In distribute
     catch (error):
         log_error('Failed to fetch user data', userId, error)
         throw ServiceError('User data unavailable', error)
+```
 
-✅ ACCEPTABLE: Documented fallback with monitoring (when justified in Design Doc)
-    try:
-        return fetchPrimaryData()
-    catch (error):
-        // Fallback defined in Design Doc section 3.2.1
-        log_warning('Primary data source failed, using cache', error)
-        increment_metric('data.fallback.cache_used')
+**Pattern B: Result-based (functional approach)**
+```
+❌ AVOID: Silent fallback that hides errors
+    result = fetchUserData(userId)
+    return result.unwrap_or(DEFAULT_USER)  // Error is hidden
 
-        cachedData = fetchFromCache()
-        if not cachedData:
-            throw ServiceError('Both primary and cache failed', error)
-        return cachedData
+✅ PREFERRED: Explicit failure with context
+    result = fetchUserData(userId)
+    if result.is_error():
+        log_error('Failed to fetch user data', userId, result.error())
+        return Error('User data unavailable')
+    return result.value()
+```
+
+**Pattern C: Error code-based (procedural approach)**
+```
+❌ AVOID: Silent fallback that hides errors
+    user, error = fetchUserData(userId)
+    if error != nil:
+        return DEFAULT_USER  // Error is hidden
+
+✅ PREFERRED: Explicit failure with context
+    user, error = fetchUserData(userId)
+    if error != nil:
+        log_error('Failed to fetch user data', userId, error)
+        return nil, ServiceError('User data unavailable', error)
+    return user, nil
 ```
 
 ## Rule of Three - Criteria for Code Duplication
@@ -116,15 +133,41 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
-### Implementation Example
+### Implementation Examples
+
+**Example A: Function/Procedure extraction**
 ```
 // ❌ Immediate commonalization on 1st duplication
-function validateUserEmail(email) { /* ... */ }
-function validateContactEmail(email) { /* ... */ }
+validateUserEmail(email) { /* ... */ }
+validateContactEmail(email) { /* ... */ }
 
 // ✅ Commonalize on 3rd occurrence with context parameter
-function validateEmail(email, context) { /* ... */ }
+validateEmail(email, context) { /* ... */ }
 // context: 'user' | 'contact' | 'admin'
+```
+
+**Example B: Class/Module abstraction**
+```
+// ❌ Immediate commonalization on 1st duplication
+class UserEmailValidator { validate(email) { /* ... */ } }
+class ContactEmailValidator { validate(email) { /* ... */ } }
+
+// ✅ Commonalize on 3rd occurrence with strategy pattern
+class EmailValidator {
+    validate(email, validationContext) { /* ... */ }
+}
+```
+
+**Example C: Configuration-driven approach**
+```
+// ❌ Hard-coded validation in multiple places
+validateForUser(email) { /* user-specific rules */ }
+validateForContact(email) { /* contact-specific rules */ }
+
+// ✅ Commonalize with configuration
+validate(email, rules) {
+    // Apply rules from configuration/strategy
+}
 ```
 
 ## Common Failure Patterns and Avoidance Methods
@@ -245,7 +288,8 @@ Workflow:
 Auto-fix capabilities (when available):
 - Format auto-fix
 - Lint auto-fix
-- Import organization
+- Dependency/import organization
+- Simple code smell corrections
 ```
 
 ## Situations Requiring Technical Decisions

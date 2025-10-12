@@ -131,18 +131,43 @@ Follow the test pyramid structure:
 
 ### AAA Pattern (Arrange-Act-Assert)
 
-Structure every test clearly:
+Structure every test clearly. Apply this pattern regardless of language or paradigm:
 
+**Example A: Object-oriented approach**
 ```
 // Arrange: Setup test data and conditions
-const user = createTestUser()
-const validator = new UserValidator()
+user = createTestUser()
+validator = UserValidator()
 
 // Act: Execute the code under test
-const result = validator.validate(user)
+result = validator.validate(user)
 
 // Assert: Verify expected outcome
-assert(result.isValid === true)
+assert(result.isValid == true)
+```
+
+**Example B: Functional approach**
+```
+// Arrange: Setup test data and conditions
+user = createTestUser()
+
+// Act: Execute the code under test
+result = validateUser(user)
+
+// Assert: Verify expected outcome
+assert(result == Valid)
+```
+
+**Example C: Procedural approach**
+```
+// Arrange: Setup test data and conditions
+user = create_test_user()
+
+// Act: Execute the code under test
+is_valid, error = validate_user(user)
+
+// Assert: Verify expected outcome
+assert(is_valid == true and error == nil)
 ```
 
 ### One Assertion Per Concept
@@ -170,13 +195,22 @@ Test names should clearly describe:
 - Under what conditions
 - What the expected outcome is
 
-**Format**: `test("should [expected behavior] when [condition]")`
+**Recommended format**: `"should [expected behavior] when [condition]"`
 
-**Examples**:
+**Examples across different conventions:**
 ```
-test("should return error when email is invalid")
-test("should calculate discount when user is premium member")
-test("should throw exception when file not found")
+// Function/method style
+test_should_return_error_when_email_invalid()
+testShouldCalculateDiscountWhenUserPremium()
+test "should return error when email is invalid"
+
+// Describe/It style
+it("should return error when email is invalid")
+should "calculate discount when user is premium"
+
+// Sentence style
+Test: "Returns error when email is invalid"
+Case: "User receives discount when premium member"
 ```
 
 ## Test Independence
@@ -291,7 +325,8 @@ Always test:
 ### File Structure
 
 - **Mirror production structure**: Tests follow code organization
-- **Clear naming**: `UserService.test.js`, `user_service_test.py`
+- **Clear naming conventions**: Follow project's test file patterns
+  - Examples: `UserService.test.*`, `user_service_test.*`, `test_user_service.*`, `UserServiceTests.*`
 - **Logical grouping**: Group related tests together
 - **Separate test types**: Unit, integration, e2e in separate directories
 

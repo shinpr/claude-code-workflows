@@ -212,13 +212,13 @@ Issues requiring fixes:
 
 ## Debugging Hints
 
-- Contract errors: Check contract definitions, add appropriate annotations
+- Contract errors: Check contract definitions, add appropriate markers/annotations/declarations
 - Lint errors: Utilize project-specific auto-fix commands when available
 - Test errors: Identify failure cause, fix implementation or tests
 - Circular dependencies: Organize dependencies, extract to common modules
 
 ## Prohibited Fixes
 
-**Never**: Test skip, meaningless assertions, safety suppression, empty catch blocks
+**Never**: Test skip, meaningless assertions, safety suppression, unhandled errors (empty catch blocks, ignored Results, unchecked error codes)
 **Reason**: These hide problems (see coding-principles.md anti-patterns)
 

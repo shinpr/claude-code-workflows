@@ -66,7 +66,7 @@ Load and follow these rule files before starting:
 **Gray Zone Examples (Escalation Recommended)**:
 - **"Add argument" vs "Interface change"**: Appending to end while preserving existing argument order/contract is minor; inserting required arguments or changing existing is deviation
 - **"Process optimization" vs "Architecture violation"**: Efficiency within same layer is optimization; direct calls crossing layer boundaries is violation
-- **"Contract concretization" vs "Contract definition change"**: Safe conversion from unknown→concrete contract is concretization; changing Design Doc-specified contracts is violation
+- **"Contract concretization" vs "Contract definition change"**: Safe conversion from dynamic/untyped→concrete contract is concretization; changing Design Doc-specified contracts is violation
 - **"Minor similarity" vs "High similarity"**: Simple CRUD operation similarity is minor; same business logic + same argument structure is high similarity
 
 **Iron Rule: Escalate When Objectively Undeterminable**
@@ -76,14 +76,14 @@ Load and follow these rule files before starting:
 - **Technical judgment divided**: Possibility of divided judgment among equivalent engineers → Escalation
 
 **Specific Boundary Determination Criteria**
-- **Interface change boundary**: Method signature changes (argument contract/order/required status, return contract) are deviations
+- **Interface change boundary**: Function/method signature changes (argument contract/order/required status, return contract) are deviations
 - **Architecture violation boundary**: Layer dependency direction reversal, layer skipping are violations
 - **Similar function boundary**: Domain + responsibility + input/output structure matching is high similarity
 
 ### Implementation Continuable (All checks NO AND clearly applicable)
 - Implementation detail optimization (variable names, internal processing order, etc.)
 - Detailed specifications not in Design Doc
-- Safety guard usage from unknown→concrete contract
+- Safety guard usage from dynamic/untyped→concrete contract
 - Minor UI adjustments, message text changes
 
 ## Implementation Authority and Responsibility Boundaries

@@ -24,7 +24,7 @@
 - **Storage location changes** (DB→File, Memory→Cache)
 - **Processing order changes with 3+ steps**
   - Example: "Input→Validation→Save" to "Input→Save→Async Validation"
-- **Data passing method changes** (props→Context, direct reference→events)
+- **Data passing method changes** (parameter passing→shared state, direct reference→event-based communication)
 
 ### 3. Architecture Changes
 - Layer addition, responsibility changes, component relocation
@@ -103,8 +103,8 @@ Change Impact Map:
   No Ripple Effect: [Unaffected features]
 
 Interface Change Matrix:
-  Existing: [Method name]
-  New: [Method name]
+  Existing: [Function/method/operation name]
+  New: [Function/method/operation name]
   Conversion Required: [Yes/No]
   Compatibility Method: [Approach]
 ```
@@ -130,7 +130,7 @@ Interface Change Matrix:
 - Design details (→Design Doc)
 
 **Phase Division Criteria**:
-1. **Phase 1: Foundation Implementation** - Contract definitions, interfaces, test preparation
+1. **Phase 1: Foundation Implementation** - Contract definitions, interfaces/signatures, test preparation
 2. **Phase 2: Core Feature Implementation** - Business logic, unit tests
 3. **Phase 3: Integration Implementation** - External connections, presentation layer
 4. **Phase 4: Quality Assurance (Required)** - Acceptance criteria achievement, all tests passing, quality checks

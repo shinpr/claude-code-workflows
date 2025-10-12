@@ -38,7 +38,7 @@ Details of documentation creation criteria follow ~/.claude/plugins/marketplaces
 - Also required regardless of scale for:
   - Complex implementation logic
     - Criteria: Managing 3+ states, or coordinating 5+ asynchronous processes
-    - Example: Complex Redux state management, Promise chains with 5+ links
+    - Example: Complex state management, coordinating multiple asynchronous operations
   - Introduction of new algorithms or patterns
     - Example: New caching strategies, custom routing implementation
 
@@ -79,7 +79,7 @@ Clarify integration points with existing systems when adding new features or mod
    ```yaml
    ## Integration Point Map
    Integration Point 1:
-     Existing Component: [Service Name/Method Name]
+     Existing Component: [Component/module name, function/method name]
      Integration Method: [Hook Addition/Call Addition/Data Reference/etc]
      Impact Level: High (Process Flow Change) / Medium (Data Usage) / Low (Read-Only)
      Required Test Coverage: [Continuity Verification of Existing Features]
@@ -141,10 +141,10 @@ No Ripple Effect:
 ### Interface Change Impact Analysis【Required】
 
 **Change Matrix:**
-| Existing Method | New Method | Conversion Required | Adapter Required | Compatibility Method |
-|----------------|------------|-------------------|------------------|---------------------|
-| methodA()      | methodA()  | None              | Not Required     | -                   |
-| methodB(x)     | methodC(x,y)| Yes             | Required         | Adapter implementation |
+| Existing Operation | New Operation | Conversion Required | Adapter Required | Compatibility Method |
+|-------------------|---------------|-------------------|------------------|---------------------|
+| operationA()      | operationA()  | None              | Not Required     | -                   |
+| operationB(x)     | operationC(x,y)| Yes             | Required         | Adapter implementation |
 
 When conversion is required, clearly specify adapter implementation or migration path.
 
@@ -253,7 +253,7 @@ Execute file output immediately (considered approved at execution).
 
 1. **Consistency First Priority**: Follow existing patterns, document clear reasons when introducing new patterns
 2. **Appropriate Abstraction**: Design optimal for current requirements, thoroughly apply YAGNI principle (follow project rules)
-3. **Testability**: Dependency injection and mockable design
+3. **Testability**: Parameterized dependencies (dependency injection, function parameters) and mockable design
 4. **Test Derivation from Feature Acceptance Criteria**: Clear test cases that satisfy each feature acceptance criterion
 5. **Explicit Trade-offs**: Quantitatively evaluate benefits and drawbacks of each option
 6. **Active Use of Latest Information**: 
