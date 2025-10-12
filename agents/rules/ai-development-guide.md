@@ -20,22 +20,77 @@ Immediately stop and reconsider design when detecting the following patterns:
 - **Symptomatic fixes** - Surface-level fixes that don't solve root causes
 - **Unplanned large-scale changes** - Lack of incremental approach
 
-## Fallback Design Principles
+## Fail-Fast Fallback Design Principles
 
-### Core Principle: Fail-Fast
-Design philosophy that prioritizes improving primary code reliability over fallback implementations in distributed systems.
+### Core Principle
+Prioritize primary code reliability over fallback implementations. In distributed systems, excessive fallback mechanisms can mask errors and make debugging difficult.
 
-### Criteria for Fallback Implementation
-- **Default Prohibition**: Do not implement unconditional fallbacks on errors
-- **Exception Approval**: Implement only when explicitly defined in Design Doc
-- **Layer Responsibilities**:
-  - Infrastructure Layer: Always throw errors upward (no fallback decisions)
-  - Application Layer: Implement decisions based on business requirements
+### Implementation Guidelines
 
-### Detection of Excessive Fallbacks
-- Require design review when writing the 3rd catch statement in the same feature
-- Verify Design Doc definition before implementing fallbacks
-- Properly log errors and make failures explicit
+#### Default Approach
+- **Prohibit unconditional fallbacks**: Do not automatically return default values on errors
+- **Make failures explicit**: Errors should be visible and traceable
+- **Preserve error context**: Include original error information when re-throwing
+
+#### When Fallbacks Are Acceptable
+- **Only with explicit Design Doc approval**: Document why fallback is necessary
+- **Business-critical continuity**: When partial functionality is better than none
+- **Graceful degradation paths**: Clearly defined degraded service levels
+
+#### Layer Responsibilities
+- **Infrastructure Layer**:
+  - Always throw errors upward
+  - No business logic decisions
+  - Provide detailed error context
+
+- **Application Layer**:
+  - Make business-driven error handling decisions
+  - Implement fallbacks only when specified in requirements
+  - Log all fallback activations for monitoring
+
+### Error Masking Detection
+
+**Review Triggers** (require design review):
+- Writing 3rd catch statement in the same feature
+- Multiple try-catch blocks in single function
+- Nested try-catch structures
+- Catch blocks that return default values
+
+**Before Implementing Any Fallback**:
+1. Verify Design Doc explicitly defines this fallback
+2. Document the business justification
+3. Ensure error is logged with full context
+4. Add monitoring/alerting for fallback activation
+
+### Implementation Patterns
+
+```
+❌ AVOID: Silent fallback that hides errors
+    try:
+        return fetchUserData(userId)
+    catch:
+        return DEFAULT_USER  // Error is hidden, debugging becomes difficult
+
+✅ PREFERRED: Explicit failure with context
+    try:
+        return fetchUserData(userId)
+    catch (error):
+        log_error('Failed to fetch user data', userId, error)
+        throw ServiceError('User data unavailable', error)
+
+✅ ACCEPTABLE: Documented fallback with monitoring (when justified in Design Doc)
+    try:
+        return fetchPrimaryData()
+    catch (error):
+        // Fallback defined in Design Doc section 3.2.1
+        log_warning('Primary data source failed, using cache', error)
+        increment_metric('data.fallback.cache_used')
+
+        cachedData = fetchFromCache()
+        if not cachedData:
+            throw ServiceError('Both primary and cache failed', error)
+        return cachedData
+```
 
 ## Rule of Three - Criteria for Code Duplication
 

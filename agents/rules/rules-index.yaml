@@ -65,9 +65,9 @@ rules:
 
   ai-development-guide:
     file: "ai-development-guide.md"
-    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, best-practices, language-agnostic]
+    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, best-practices, language-agnostic, fail-fast, error-handling]
     typical-use: "Technical decision criteria, anti-pattern detection, debugging techniques, quality check workflows for all programming languages"
-    size: medium
+    size: large
     key-references:
       - "Rule of Three - Martin Fowler"
       - "5 Whys - Toyota Production System"
@@ -77,7 +77,7 @@ rules:
       - "Avoiding fallback in distributed systems - AWS Builders' Library"
     sections:
       - "Technical Anti-patterns (Red Flag Patterns)"
-      - "Fallback Design Principles"
+      - "Fail-Fast Fallback Design Principles"
       - "Rule of Three - Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
