@@ -110,19 +110,19 @@ No Ripple Effect:
 #### Component 1
 
 - **Responsibility**: [Scope of responsibility for this component]
-- **Interface**: [APIs and type definitions provided]
+- **Interface**: [APIs and contract definitions provided]
 - **Dependencies**: [Relationships with other components]
 
 #### Component 2
 
 - **Responsibility**: [Scope of responsibility for this component]
-- **Interface**: [APIs and type definitions provided]
+- **Interface**: [APIs and contract definitions provided]
 - **Dependencies**: [Relationships with other components]
 
-### Type Definitions
+### Contract Definitions
 
 ```
-// Record major type/interface definitions here
+// Record major contract/interface definitions here
 ```
 
 ### Data Contract

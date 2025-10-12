@@ -80,7 +80,7 @@ Execute file output immediately (considered approved at execution).
 
 ### Task Completion Definition: 3 Elements
 1. **Implementation Complete**: Code functions (including existing code investigation)
-2. **Quality Complete**: Tests, type checking, linting pass
+2. **Quality Complete**: Tests, static checking, linting pass
 3. **Integration Complete**: Coordination with other components verified
 
 Include completion conditions in task names (e.g., "Service implementation and unit test creation")

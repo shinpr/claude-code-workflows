@@ -4,7 +4,7 @@
 rules:
   coding-principles:
     file: "coding-principles.md"
-    tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, dependency-injection, performance, security]
+    tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, parameterized-dependencies, performance, security]
     typical-use: "Language-agnostic code creation, modification, and refactoring principles applicable to all programming languages"
     size: medium
     key-references:
@@ -13,7 +13,7 @@ rules:
       - "DRY Principle - The Pragmatic Programmer"
       - "Refactoring - Martin Fowler"
       - "Single Responsibility Principle - SOLID"
-      - "Dependency Injection - Martin Fowler"
+      - "Dependency Management Patterns - Martin Fowler"
     sections:
       - "Core Philosophy"
       - "Code Quality"

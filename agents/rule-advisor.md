@@ -126,7 +126,7 @@ Always return structured response in the following JSON format:
     "Is there a possibility of exceeding initial assumptions?"
   ],
   "criticalRules": [
-    "Complete type checking - ensure type safety",
+    "Complete static checking - ensure correctness guarantees",
     "User approval mandatory before implementation",
     "No commits before quality check completion"
   ],

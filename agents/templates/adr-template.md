@@ -47,7 +47,7 @@
 ## Implementation Guidance
 
 [Principled direction only. Implementation procedures go to Design Doc]
-Example: "Use dependency injection" ✓, "Implement in Phase 1" ✗
+Examples: "Use parameterized dependencies" ✓, "Prefer pure functions" ✓, "Implement in Phase 1" ✗
 
 ## Related Information
 

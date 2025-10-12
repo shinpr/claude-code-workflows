@@ -120,7 +120,7 @@ Metadata:
 ## Implementation Steps (TDD: Red-Green-Refactor)
 ### 1. Red Phase
 - [ ] Review dependency deliverables (if any)
-- [ ] Verify/create type definitions
+- [ ] Verify/create contract definitions
 - [ ] Write failing tests
 - [ ] Run tests and confirm failure
 
@@ -177,8 +177,8 @@ Task 3: [Content]
 ### Interface Change Impact Analysis
 | Existing Interface | New Interface | Conversion Required | Corresponding Task |
 |-------------------|---------------|-------------------|-------------------|
-| methodA()         | methodA()     | None              | -                 |
-| methodB(x)        | methodC(x,y)  | Yes               | Task X            |
+| operationA()      | operationA()  | None              | -                 |
+| operationB(x)     | operationC(x,y) | Yes             | Task X            |
 
 ### Common Processing Points
 - [Functions/types/constants shared between tasks]

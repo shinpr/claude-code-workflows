@@ -66,9 +66,10 @@
 - Depend on abstractions, not concrete implementations
 - Minimize inter-module dependencies
 
-### Dependency Injection
+### Parameterized Dependencies
 - Pass dependencies explicitly through function parameters
-- Use constructor injection for class-based languages
+- Use constructor parameter injection for class-based languages
+- Use function parameters for functional/procedural approaches
 - Facilitate testing through mockable dependencies
 
 ## Performance Considerations
@@ -151,7 +152,7 @@
 - Deeply nested conditionals
 - Duplicated code blocks
 - Unclear variable names
-- Large classes or functions
+- Large modules, classes, or functions
 
 ## Testing Considerations
 
@@ -159,7 +160,7 @@
 - Write testable code from the start
 - Avoid hidden dependencies
 - Keep side effects explicit
-- Design for dependency injection
+- Design for parameterized dependencies
 
 ### Test-Driven Development
 - Write tests before implementation when appropriate

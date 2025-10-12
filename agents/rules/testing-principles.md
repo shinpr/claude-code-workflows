@@ -131,19 +131,21 @@ Follow the test pyramid structure:
 
 ### AAA Pattern (Arrange-Act-Assert)
 
-Structure every test clearly:
+Structure every test in three clear phases:
 
 ```
 // Arrange: Setup test data and conditions
-const user = createTestUser()
-const validator = new UserValidator()
+user = createTestUser()
+validator = createValidator()
 
 // Act: Execute the code under test
-const result = validator.validate(user)
+result = validator.validate(user)
 
 // Assert: Verify expected outcome
-assert(result.isValid === true)
+assert(result.isValid == true)
 ```
+
+**Adaptation**: Apply this structure using your language's idioms (methods, functions, procedures)
 
 ### One Assertion Per Concept
 
@@ -170,14 +172,16 @@ Test names should clearly describe:
 - Under what conditions
 - What the expected outcome is
 
-**Format**: `test("should [expected behavior] when [condition]")`
+**Recommended format**: `"should [expected behavior] when [condition]"`
 
 **Examples**:
 ```
 test("should return error when email is invalid")
-test("should calculate discount when user is premium member")
+test("should calculate discount when user is premium")
 test("should throw exception when file not found")
 ```
+
+**Adaptation**: Follow your project's naming convention (camelCase, snake_case, describe/it blocks)
 
 ## Test Independence
 
@@ -291,7 +295,8 @@ Always test:
 ### File Structure
 
 - **Mirror production structure**: Tests follow code organization
-- **Clear naming**: `UserService.test.js`, `user_service_test.py`
+- **Clear naming conventions**: Follow project's test file patterns
+  - Examples: `UserService.test.*`, `user_service_test.*`, `test_user_service.*`, `UserServiceTests.*`
 - **Logical grouping**: Group related tests together
 - **Separate test types**: Unit, integration, e2e in separate directories
 

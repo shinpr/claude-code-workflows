@@ -11,7 +11,7 @@ Immediately stop and reconsider design when detecting the following patterns:
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
-7. **Bypassing type safety mechanisms** - Using unsafe casts or ignoring type checks
+7. **Bypassing safety mechanisms (type systems, validation, contracts)** - Circumventing language's correctness guarantees
 
 ### Design Anti-patterns
 - **"Make it work for now" thinking** - Accumulation of technical debt
@@ -51,10 +51,10 @@ Prioritize primary code reliability over fallback implementations. In distribute
 ### Error Masking Detection
 
 **Review Triggers** (require design review):
-- Writing 3rd catch statement in the same feature
-- Multiple try-catch blocks in single function
-- Nested try-catch structures
-- Catch blocks that return default values
+- Writing 3rd error handler in the same feature
+- Multiple error handling blocks in single function/method
+- Nested error handling structures
+- Error handlers that return default values without logging
 
 **Before Implementing Any Fallback**:
 1. Verify Design Doc explicitly defines this fallback
@@ -62,35 +62,22 @@ Prioritize primary code reliability over fallback implementations. In distribute
 3. Ensure error is logged with full context
 4. Add monitoring/alerting for fallback activation
 
-### Implementation Patterns
+### Implementation Pattern
+
+**Core principle**: Make errors explicit with full context. Never hide errors with silent fallbacks.
 
 ```
 ❌ AVOID: Silent fallback that hides errors
-    try:
-        return fetchUserData(userId)
-    catch:
-        return DEFAULT_USER  // Error is hidden, debugging becomes difficult
+    <handle error>:
+        return DEFAULT_VALUE  // Error hidden, debugging impossible
 
 ✅ PREFERRED: Explicit failure with context
-    try:
-        return fetchUserData(userId)
-    catch (error):
-        log_error('Failed to fetch user data', userId, error)
-        throw ServiceError('User data unavailable', error)
-
-✅ ACCEPTABLE: Documented fallback with monitoring (when justified in Design Doc)
-    try:
-        return fetchPrimaryData()
-    catch (error):
-        // Fallback defined in Design Doc section 3.2.1
-        log_warning('Primary data source failed, using cache', error)
-        increment_metric('data.fallback.cache_used')
-
-        cachedData = fetchFromCache()
-        if not cachedData:
-            throw ServiceError('Both primary and cache failed', error)
-        return cachedData
+    <handle error>:
+        log_error('Operation failed', context, error)
+        <propagate error>  // Re-throw exception, return Error, return error tuple
 ```
+
+**Adaptation**: Use language-appropriate error handling (exceptions, Result types, error tuples, etc.)
 
 ## Rule of Three - Criteria for Code Duplication
 
@@ -117,15 +104,18 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Simple helpers in test code
 
 ### Implementation Example
+
 ```
 // ❌ Immediate commonalization on 1st duplication
-function validateUserEmail(email) { /* ... */ }
-function validateContactEmail(email) { /* ... */ }
+validateUserEmail(email) { /* ... */ }
+validateContactEmail(email) { /* ... */ }
 
 // ✅ Commonalize on 3rd occurrence with context parameter
-function validateEmail(email, context) { /* ... */ }
+validateEmail(email, context) { /* ... */ }
 // context: 'user' | 'contact' | 'admin'
 ```
+
+**Adaptation**: Use appropriate abstraction for your codebase (functions, classes, modules, configuration)
 
 ## Common Failure Patterns and Avoidance Methods
 
@@ -134,10 +124,10 @@ function validateEmail(email, context) { /* ... */ }
 **Cause**: Surface-level fixes without understanding root cause
 **Avoidance**: Identify root cause with 5 Whys before fixing
 
-### Pattern 2: Abandoning Type Safety
-**Symptom**: Bypassing language's type system or validation mechanisms
-**Cause**: Impulse to avoid type/validation errors
-**Avoidance**: Use language-appropriate safety mechanisms (static type checking, runtime validation, contracts, assertions)
+### Pattern 2: Circumventing Correctness Guarantees
+**Symptom**: Bypassing safety mechanisms (type systems, validation, contracts)
+**Cause**: Impulse to avoid correctness errors
+**Avoidance**: Use language-appropriate safety mechanisms (static checking, runtime validation, contracts, assertions)
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation
@@ -245,7 +235,8 @@ Workflow:
 Auto-fix capabilities (when available):
 - Format auto-fix
 - Lint auto-fix
-- Import organization
+- Dependency/import organization
+- Simple code smell corrections
 ```
 
 ## Situations Requiring Technical Decisions
