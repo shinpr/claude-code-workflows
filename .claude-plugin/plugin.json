@@ -19,11 +19,6 @@
     "testing",
     "architecture"
   ],
-  "categories": [
-    "productivity",
-    "quality",
-    "workflows"
-  ],
   "engines": {
     "claude-code": ">=1.0.0"
   },
