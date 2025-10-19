@@ -22,31 +22,25 @@
   "engines": {
     "claude-code": ">=1.0.0"
   },
-  "main": {
-    "agents": "./agents",
-    "commands": "./commands"
-  },
-  "features": {
-    "agents": [
-      "requirement-analyzer",
-      "technical-designer",
-      "work-planner",
-      "task-executor",
-      "quality-fixer",
-      "code-reviewer",
-      "prd-creator",
-      "task-decomposer",
-      "rule-advisor",
-      "acceptance-test-generator",
-      "document-reviewer"
-    ],
-    "commands": [
-      "implement",
-      "task",
-      "design",
-      "plan",
-      "build",
-      "review"
-    ]
-  }
+  "commands": [
+    "./commands/build.md",
+    "./commands/design.md",
+    "./commands/implement.md",
+    "./commands/plan.md",
+    "./commands/review.md",
+    "./commands/task.md"
+  ],
+  "agents": [
+    "./agents/acceptance-test-generator.md",
+    "./agents/code-reviewer.md",
+    "./agents/document-reviewer.md",
+    "./agents/prd-creator.md",
+    "./agents/quality-fixer.md",
+    "./agents/requirement-analyzer.md",
+    "./agents/rule-advisor.md",
+    "./agents/task-decomposer.md",
+    "./agents/task-executor.md",
+    "./agents/technical-designer.md",
+    "./agents/work-planner.md"
+  ]
 }
