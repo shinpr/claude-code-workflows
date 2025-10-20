@@ -16,7 +16,7 @@ claude
 
 # 2. Install plugin
 /plugin marketplace add shinpr/claude-code-workflows
-/plugin install claude-code-workflows@shinpr
+/plugin install claude-code-workflows@claude-code-workflows
 
 # 3. Restart session (required)
 # Exit and restart Claude Code
