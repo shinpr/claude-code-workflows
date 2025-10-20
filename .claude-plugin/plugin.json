@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "2.0.0",
+  "version": "0.2.5",
   "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
   "author": {
     "name": "Shinsuke Kagawa",
@@ -19,9 +19,6 @@
     "testing",
     "architecture"
   ],
-  "engines": {
-    "claude-code": ">=1.0.0"
-  },
   "commands": [
     "./commands/build.md",
     "./commands/design.md",
