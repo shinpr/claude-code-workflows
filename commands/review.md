@@ -1,4 +1,5 @@
 ---
+name: review
 description: Design Doc compliance validation with optional auto-fixes
 ---
 

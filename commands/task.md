@@ -1,4 +1,5 @@
 ---
+name: task
 description: Execute tasks following appropriate rules with rule-advisor metacognition
 ---
 

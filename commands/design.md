@@ -1,4 +1,5 @@
 ---
+name: design
 description: Execute from requirement analysis to design document creation
 ---
 
