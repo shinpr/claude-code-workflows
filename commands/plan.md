@@ -1,4 +1,5 @@
 ---
+name: plan
 description: Create work plan from design document and obtain plan approval
 ---
 

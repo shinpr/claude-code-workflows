@@ -1,4 +1,5 @@
 ---
+name: build
 description: Execute decomposed tasks in autonomous execution mode
 ---
 
