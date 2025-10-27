@@ -1,13 +1,13 @@
 {
-  "name": "claude-code-workflows",
-  "version": "0.2.5",
+  "name": "dev-workflows",
+  "version": "0.3.0",
   "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
   },
-  "homepage": "https://github.com/shinpr/claude-code-workflows",
-  "repository": "https://github.com/shinpr/claude-code-workflows.git",
+  "homepage": "https://github.com/shinpr/dev-workflows",
+  "repository": "https://github.com/shinpr/dev-workflows.git",
   "license": "MIT",
   "keywords": [
     "workflows",
@@ -17,7 +17,8 @@
     "development",
     "coding-standards",
     "testing",
-    "architecture"
+    "architecture",
+    "backend"
   ],
   "commands": [
     "./commands/build.md",
