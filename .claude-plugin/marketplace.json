@@ -4,29 +4,19 @@
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
   },
+  "metadata": {
+    "description": "Professional development workflows for backend and frontend - Language-agnostic best practices and React/TypeScript specialized patterns"
+  },
   "plugins": [
     {
-      "name": "claude-code-workflows",
-      "source": "./",
-      "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
-      "version": "0.2.5",
-      "author": {
-        "name": "Shinsuke Kagawa",
-        "url": "https://github.com/shinpr"
-      },
-      "homepage": "https://github.com/shinpr/claude-code-workflows",
-      "repository": "https://github.com/shinpr/claude-code-workflows.git",
-      "license": "MIT",
-      "keywords": [
-        "workflows",
-        "best-practices",
-        "sub-agents",
-        "quality",
-        "development",
-        "coding-standards",
-        "testing",
-        "architecture"
-      ]
+      "name": "dev-workflows",
+      "source": "./backend",
+      "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software"
+    },
+    {
+      "name": "dev-workflows-frontend",
+      "source": "./frontend",
+      "description": "Professional frontend development workflows for Claude Code - React/TypeScript specialized agents, commands, and quality patterns for building production-ready web applications"
     }
   ]
 }

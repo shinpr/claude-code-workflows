@@ -1,0 +1,41 @@
+{
+  "name": "dev-workflows-frontend",
+  "version": "0.1.0",
+  "description": "Professional frontend development workflows for Claude Code - React/TypeScript specialized agents, commands, and quality patterns for building production-ready web applications",
+  "author": {
+    "name": "Shinsuke Kagawa",
+    "url": "https://github.com/shinpr"
+  },
+  "homepage": "https://github.com/shinpr/dev-workflows",
+  "repository": "https://github.com/shinpr/dev-workflows.git",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "frontend",
+    "workflows",
+    "typescript",
+    "testing",
+    "quality",
+    "sub-agents",
+    "tdd",
+    "react-testing-library",
+    "best-practices"
+  ],
+  "commands": [
+    "./commands/front-design.md",
+    "./commands/front-plan.md",
+    "./commands/front-build.md",
+    "./commands/task.md",
+    "./commands/review.md"
+  ],
+  "agents": [
+    "./agents/technical-designer-frontend.md",
+    "./agents/task-executor-frontend.md",
+    "./agents/quality-fixer-frontend.md",
+    "./agents/requirement-analyzer.md",
+    "./agents/document-reviewer.md",
+    "./agents/work-planner.md",
+    "./agents/task-decomposer.md",
+    "./agents/code-reviewer.md"
+  ]
+}

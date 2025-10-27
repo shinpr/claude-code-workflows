@@ -122,3 +122,64 @@ rules:
       - "Integration Point Definitions"
       - "Anti-patterns"
       - "Guidelines for Meta-cognitive Execution"
+
+  # Frontend-Specific Rules
+  frontend-ai-development-guide:
+    file: "frontend/ai-development-guide.md"
+    tags: [frontend, react, anti-patterns, technical-judgment, component-design, testing, quality-commands, rule-of-three, typescript]
+    typical-use: "Frontend technical decision criteria, React anti-pattern detection, component quality check workflows"
+    size: large
+    key-references:
+      - "Rule of Three - Martin Fowler"
+      - "React Best Practices"
+      - "Props-Driven Design"
+      - "React Testing Library Principles"
+    sections:
+      - "Technical Anti-patterns (Frontend-Specific)"
+      - "Fallback Design Principles"
+      - "Rule of Three"
+      - "Common Failure Patterns"
+      - "Quality Check Workflow"
+
+  frontend-technical-spec:
+    file: "frontend/technical-spec.md"
+    tags: [frontend, react, build-tools, environment-variables, configuration, typescript]
+    typical-use: "Frontend technical specifications, React setup, build tool configuration, environment variable handling"
+    size: medium
+    sections:
+      - "React Configuration"
+      - "Build Tools"
+      - "Environment Variables"
+      - "Browser Compatibility"
+
+  frontend-typescript:
+    file: "frontend/typescript.md"
+    tags: [frontend, react, typescript, function-components, props-driven, type-safety]
+    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design"
+    size: large
+    key-references:
+      - "React Function Components"
+      - "TypeScript Best Practices"
+      - "Props-Driven Design"
+    sections:
+      - "Function Component Requirements"
+      - "Props Type Definitions"
+      - "Custom Hooks"
+      - "Type Safety Strategies"
+      - "Error Handling"
+
+  frontend-typescript-testing:
+    file: "frontend/typescript-testing.md"
+    tags: [frontend, react, testing, react-testing-library, msw, coverage, tdd]
+    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets"
+    size: large
+    key-references:
+      - "React Testing Library"
+      - "Mock Service Worker (MSW)"
+      - "Testing Library Principles"
+    sections:
+      - "Testing Principles"
+      - "React Testing Library Patterns"
+      - "MSW for API Mocking"
+      - "Coverage Targets"
+      - "Test Organization"

@@ -1,30 +1,58 @@
-# Claude Code Workflows Plugin 🚀
+# Claude Code Workflows 🚀
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
-**Professional development workflows for Claude Code** - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software.
+**Build production-ready software with Claude Code** - Workflow plugins that bring best practices, specialized agents, and automated quality checks to your development process.
 
 ---
 
 ## ⚡ Quick Start
 
+This marketplace includes two plugins:
+
+- **dev-workflows** - Backend and general-purpose development
+- **dev-workflows-frontend** - React/TypeScript specialized workflows
+
+Choose what fits your project:
+
+### Backend or General Development
+
 ```bash
 # 1. Start Claude Code
 claude
 
-# 2. Install plugin
+# 2. Install the marketplace
 /plugin marketplace add shinpr/claude-code-workflows
-/plugin install claude-code-workflows@claude-code-workflows
 
-# 3. Restart session (required)
+# 3. Install backend plugin
+/plugin install dev-workflows@claude-code-workflows
+
+# 4. Restart session (required)
 # Exit and restart Claude Code
 
-# 4. Start building
+# 5. Start building
 /implement <your feature>
-# Tip: Type /imp + Tab (full: /claude-code-workflows:implement)
 ```
+
+### Frontend Development (React/TypeScript)
+
+```bash
+# 1-2. Same as above (start Claude Code and add marketplace)
+
+# 3. Install frontend plugin
+/plugin install dev-workflows-frontend@claude-code-workflows
+
+# 4-5. Same as above (restart and start building)
+
+# Use frontend-specific commands
+/front-design <your feature>
+```
+
+### Full-Stack Development
+
+Install both plugins to get the complete toolkit for backend and frontend work.
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
 
@@ -32,7 +60,7 @@ claude
 
 ## 🔧 How It Works
 
-### Intelligent Workflow Orchestration
+### The Workflow
 
 ```mermaid
 graph TB
@@ -54,20 +82,20 @@ graph TB
     J --> K[🎉 Ready to Commit]
 ```
 
-### Execution Flow
+### What Happens Behind the Scenes
 
-1. **Analysis**: Assess task complexity and requirements
-2. **Planning**: Generate appropriate documentation (PRD, Design Doc, Work Plan)
-3. **Execution**: Specialized agents handle each phase autonomously
-4. **Quality**: Automated testing, type checking, and error fixing
-5. **Review**: Verify compliance and completeness
-6. **Commit**: Clean, production-ready code
+1. **Analysis** - Figures out how complex your task is
+2. **Planning** - Creates the right docs (PRD, design doc, work plan) based on complexity
+3. **Execution** - Specialized agents handle implementation autonomously
+4. **Quality** - Runs tests, checks types, fixes errors automatically
+5. **Review** - Makes sure everything matches the design
+6. **Done** - Clean, production-ready code
 
 ---
 
 ## ⚡ Workflow Commands
 
-Streamline your development with purpose-built commands:
+### Backend & General Development (dev-workflows)
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
@@ -78,98 +106,166 @@ Streamline your development with purpose-built commands:
 | `/build` | Execute from existing task plan | Resume implementation |
 | `/review` | Verify code against design docs | Post-implementation check |
 
+### Frontend Development (dev-workflows-frontend)
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `/front-design` | Create frontend design docs | React component architecture |
+| `/front-plan` | Generate frontend work plan | Component breakdown planning |
+| `/front-build` | Execute frontend task plan | Resume React implementation |
+| `/task` | Execute single task with precision | Component fixes, small updates |
+| `/review` | Verify code against design docs | Post-implementation check |
+
+> **Tip**: Both plugins share `/task` and `/review` commands with the same functionality.
+
 ---
 
 ## 📦 Specialized Agents
 
-11 production-ready agents for every phase of development:
+### Shared Agents (Available in Both Plugins)
 
-| Agent | Purpose | Activation |
-|-------|---------|------------|
-| **requirement-analyzer** | Assess task scope and complexity | Start of `/implement` |
-| **prd-creator** | Create product requirements documents | Large-scale features |
-| **technical-designer** | Design architecture and technical approach | Medium/large features |
-| **work-planner** | Break down work into executable tasks | After design |
-| **task-decomposer** | Decompose plans into commit-sized tasks | Task breakdown |
-| **task-executor** | Execute individual tasks with TDD | Implementation |
-| **quality-fixer** | Fix all quality issues automatically | After code changes |
-| **code-reviewer** | Verify compliance with design docs | Post-implementation |
-| **acceptance-test-generator** | Generate E2E and integration tests | Testing phase |
-| **rule-advisor** | Select optimal rules for current task | Task initiation |
-| **document-reviewer** | Review documentation consistency | Documentation phase |
+These agents work the same way whether you're building a REST API or a React app:
+
+| Agent | What It Does |
+|-------|--------------|
+| **requirement-analyzer** | Figures out how complex your task is and picks the right workflow |
+| **work-planner** | Breaks down design docs into actionable tasks |
+| **task-decomposer** | Splits work into small, commit-ready chunks |
+| **code-reviewer** | Checks your code against design docs to make sure nothing's missing |
+| **document-reviewer** | Keeps your documentation consistent and catches contradictions |
+
+### Backend-Specific Agents (dev-workflows)
+
+| Agent | What It Does |
+|-------|--------------|
+| **prd-creator** | Writes product requirement docs for complex features |
+| **technical-designer** | Plans architecture and tech stack decisions |
+| **acceptance-test-generator** | Creates E2E and integration test scaffolds from requirements |
+| **task-executor** | Implements backend features with TDD |
+| **quality-fixer** | Runs tests, fixes type errors, handles linting - everything quality-related |
+| **rule-advisor** | Picks the best coding rules for your current task |
+
+### Frontend-Specific Agents (dev-workflows-frontend)
+
+| Agent | What It Does |
+|-------|--------------|
+| **technical-designer-frontend** | Plans React component architecture and state management |
+| **task-executor-frontend** | Implements React components with Testing Library |
+| **quality-fixer-frontend** | Handles React-specific tests, TypeScript checks, and builds |
 
 ---
 
-## 📚 Language-Agnostic Rules
+## 📚 Built-in Best Practices
 
-Battle-tested best practices that work across all languages:
+The backend plugin includes proven best practices that work with any language:
 
-- **[Coding Principles](agents/rules/coding-principles.md)** - Universal code quality standards
+- **[Coding Principles](agents/rules/coding-principles.md)** - Code quality standards
 - **[Testing Principles](agents/rules/testing-principles.md)** - TDD, coverage, test patterns
 - **[Architecture Patterns](agents/rules/architecture/)** - Design decisions and trade-offs
 - **[Documentation Standards](agents/rules/documentation-criteria.md)** - Clear, maintainable docs
 
----
-
-## 🚀 Why Use This Plugin?
-
-### Problem: AI Coding Challenges
-
-- ❌ Context exhaustion in long sessions
-- ❌ Declining code quality over time
-- ❌ Inconsistent patterns across team
-- ❌ Manual quality checks and fixes
-
-### Solution: Specialized Workflows
-
-- ✅ Fresh context per specialized agent
-- ✅ Consistent quality through enforced rules
-- ✅ Automated quality assurance
-- ✅ Complete development lifecycle support
+The frontend plugin has React and TypeScript-specific rules built in.
 
 ---
 
+## 🚀 Why Use These Plugins?
 
-## 💡 Real-World Results
+### The Problem
 
-### Success Stories
+When building with AI coding assistants, you often run into:
+
+- Context gets exhausted in long sessions
+- Code quality drops over time
+- Patterns become inconsistent
+- You end up fixing test failures and type errors manually
+
+### The Solution
+
+These plugins fix that by:
+
+- **Fresh context for each phase** - Specialized agents handle different parts without context exhaustion
+- **Enforced best practices** - Language-agnostic rules (backend) and React patterns (frontend) keep quality consistent
+- **Automated quality checks** - Tests, types, and linting run automatically and get fixed if they fail
+- **Complete lifecycle** - From requirements to implementation to review
+
+### Frontend-Specific Benefits
+
+The frontend plugin is built specifically for React development:
+
+- Component architecture planning with state management decisions
+- React Testing Library integration from the start
+- TypeScript-first approach with automatic type generation
+- Handles build errors, test failures, and type issues automatically
+
+---
+
+
+## 💡 Real-World Examples
+
+### What People Have Built
 
 #### [Sub-Agents MCP Server](https://github.com/shinpr/sub-agents-mcp)
-- **Time**: 2 days → 30 TypeScript files with full coverage
-- **Result**: Production-deployed MCP server
+Built in 2 days - 30 TypeScript files with full test coverage, now running in production.
 
 #### [MCP Image Generator](https://github.com/shinpr/mcp-image)
-- **Time**: 1.5 days → Complete creative tool
-- **Result**: Multi-image blending, character consistency
+Built in 1.5 days - Complete creative tool with multi-image blending and character consistency.
 
-> **Key Insight**: Proper workflows + specialized agents = production-quality code at AI speed
+> The right workflow structure + specialized agents = production-quality code at AI speed.
 
 ---
 
-## 🎯 Typical Workflow
+## 🎯 Typical Workflows
 
-### Feature Development
+### Backend Feature Development
+
 ```bash
 /implement "Add user authentication with JWT"
-# → Automatically:
-#   1. Analyzes requirements
-#   2. Creates design documents
-#   3. Breaks down into tasks
-#   4. Implements with TDD
-#   5. Fixes all quality issues
-#   6. Reviews against design
+
+# What happens:
+# 1. Analyzes your requirements
+# 2. Creates design documents
+# 3. Breaks down into tasks
+# 4. Implements with TDD
+# 5. Runs tests and fixes issues
+# 6. Reviews against design docs
 ```
 
-### Bug Fix or Small Change
+### Frontend Feature Development
+
+```bash
+/front-design "Build a user profile dashboard"
+
+# What happens:
+# 1. Plans React component structure
+# 2. Defines state management approach
+# 3. Creates work plan
+#
+# Then run:
+/front-build
+
+# This:
+# 1. Implements components with Testing Library
+# 2. Writes tests for each component
+# 3. Handles TypeScript types
+# 4. Fixes lint and build errors
+```
+
+### Quick Fixes (Both Plugins)
+
 ```bash
 /task "Fix validation error message"
-# → Direct implementation with quality checks
+
+# Direct implementation with quality checks
+# Works the same in both plugins
 ```
 
 ### Code Review
+
 ```bash
 /review
-# → Verifies implementation matches design docs
+
+# Checks your implementation against design docs
+# Catches missing features or inconsistencies
 ```
 
 ---
@@ -178,42 +274,62 @@ Battle-tested best practices that work across all languages:
 
 ```
 claude-code-workflows/
-├── .claude-plugin/          # Plugin metadata
-│   ├── marketplace.json
-│   └── plugin.json
-├── agents/                  # Specialized agent definitions
-│   ├── acceptance-test-generator.md
-│   ├── code-reviewer.md
-│   ├── document-reviewer.md
-│   ├── prd-creator.md
-│   ├── quality-fixer.md
-│   ├── requirement-analyzer.md
-│   ├── rule-advisor.md
-│   ├── task-decomposer.md
-│   ├── task-executor.md
-│   ├── technical-designer.md
-│   ├── work-planner.md
-│   ├── guides/              # User documentation
-│   │   └── sub-agents.md
-│   ├── rules/               # Development rules
-│   │   ├── ai-development-guide.md
-│   │   ├── coding-principles.md
-│   │   ├── documentation-criteria.md
-│   │   ├── testing-principles.md
-│   │   ├── rules-index.yaml
-│   │   └── architecture/
-│   └── templates/           # Document templates
-│       ├── adr-template.md
-│       ├── design-template.md
-│       ├── plan-template.md
-│       └── prd-template.md
-├── commands/                # Workflow commands
-│   ├── implement.md
-│   ├── design.md
-│   ├── plan.md
-│   ├── build.md
-│   ├── review.md
-│   └── task.md
+├── .claude-plugin/
+│   └── marketplace.json        # Manages both plugins
+│
+├── backend/                    # dev-workflows plugin
+│   ├── .claude-plugin/
+│   │   └── plugin.json
+│   ├── agents/                 # Backend & general agents
+│   │   ├── acceptance-test-generator.md
+│   │   ├── code-reviewer.md
+│   │   ├── document-reviewer.md
+│   │   ├── prd-creator.md
+│   │   ├── quality-fixer.md
+│   │   ├── requirement-analyzer.md
+│   │   ├── rule-advisor.md
+│   │   ├── task-decomposer.md
+│   │   ├── task-executor.md
+│   │   ├── technical-designer.md
+│   │   ├── work-planner.md
+│   │   ├── guides/
+│   │   ├── rules/              # Language-agnostic rules
+│   │   │   ├── coding-principles.md
+│   │   │   ├── testing-principles.md
+│   │   │   ├── documentation-criteria.md
+│   │   │   └── architecture/
+│   │   └── templates/
+│   └── commands/               # Backend commands
+│       ├── implement.md
+│       ├── design.md
+│       ├── plan.md
+│       ├── build.md
+│       ├── review.md
+│       └── task.md
+│
+├── frontend/                   # dev-workflows-frontend plugin
+│   ├── .claude-plugin/
+│   │   └── plugin.json
+│   ├── agents/                 # Frontend-specific agents
+│   │   ├── technical-designer-frontend.md
+│   │   ├── task-executor-frontend.md
+│   │   ├── quality-fixer-frontend.md
+│   │   ├── requirement-analyzer.md
+│   │   ├── document-reviewer.md
+│   │   ├── work-planner.md
+│   │   ├── task-decomposer.md
+│   │   ├── code-reviewer.md
+│   │   ├── rules/              # React/TypeScript rules
+│   │   │   ├── react-principles.md
+│   │   │   └── frontend-testing.md
+│   │   └── templates/
+│   └── commands/               # Frontend commands
+│       ├── front-design.md
+│       ├── front-plan.md
+│       ├── front-build.md
+│       ├── task.md
+│       └── review.md
+│
 ├── LICENSE
 └── README.md
 ```
@@ -222,11 +338,26 @@ claude-code-workflows/
 
 ## 🤔 FAQ
 
+**Q: Which plugin should I install?**
+
+A: Depends on what you're building:
+- **Backend, APIs, CLI tools, or general programming** → Install `dev-workflows`
+- **React apps** → Install `dev-workflows-frontend`
+- **Full-stack projects** → Install both
+
+Both plugins can run side-by-side without conflicts.
+
+**Q: Can I use both plugins at the same time?**
+
+A: Yes! They're designed to work together. Install both if you're building a full-stack app.
+
 **Q: Do I need to learn special commands?**
-A: Just use `/implement` to start. The plugin handles the complexity automatically.
+
+A: Not really. For backend, just use `/implement`. For frontend, use `/front-design`. The plugins handle everything else automatically.
 
 **Q: What if there are errors?**
-A: The `quality-fixer` agent automatically fixes most issues. If it can't, it provides clear guidance.
+
+A: The quality-fixer agents (one in each plugin) automatically fix most issues like test failures, type errors, and lint problems. If something can't be auto-fixed, you'll get clear guidance on what needs attention.
 
 **Q: SSH authentication error during plugin installation?**
 A: Set up SSH keys for GitHub:
