@@ -324,8 +324,12 @@ Implementation sample creation checklist:
 **Exclude** (Low ROI in LLM/CI/CD environment):
 - External service real connections → Use contract/interface verification instead
 - Performance metrics → Non-deterministic in CI, defer to load testing
-- Implementation details → Focus on observable behavior
-- UI layout specifics → Focus on information availability, not presentation
+- Implementation details (technology choice, algorithms, internal structure) → Focus on observable behavior
+- UI presentation method (layout, styling) → Focus on information availability
+
+**Example**:
+- ❌ Implementation detail: "Data is stored using specific technology X"
+- ✅ Observable behavior: "Saved data can be retrieved after system restart"
 
 **Principle**: AC = User-observable behavior verifiable in isolated CI environment
 
@@ -349,11 +353,16 @@ Implementation sample creation checklist:
 **Required Research Timing**: New technology introduction, performance optimization, security design, major version upgrades
 
 **Specific Search Pattern Examples**:
-- `[technology] [feature] best practices 2024` (new feature research)
-- `[tech A] vs [tech B] performance comparison 2024` (technology selection)
+To get latest information, always check current year before searching:
+```bash
+date +%Y  # e.g., 2025
+```
+Include this year in search queries:
+- `[technology] [feature] best practices {current_year}` (new feature research)
+- `[tech A] vs [tech B] performance comparison {current_year}` (technology selection)
 - `[architecture pattern] [concern] patterns` (design patterns)
 - `[framework] v[X] breaking changes migration guide` (version upgrade)
-- `[framework name] official documentation` (official information)
+- `[framework name] official documentation` (official docs don't need year)
 
 **Citation**: Add "## References" section at end of ADR/Design Doc with URLs and descriptions
 
