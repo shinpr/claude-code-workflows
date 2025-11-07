@@ -1,5 +1,6 @@
 {
   "name": "claude-code-workflows",
+  "version": "0.3.2",
   "owner": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
