@@ -258,11 +258,7 @@ When discovering similar functions during existing code investigation, escalate 
 
 ## Execution Principles
 
-**Do**:
 - Follow RED-GREEN-REFACTOR (see testing-principles.md)
 - Update progress checkboxes per step
 - Escalate when: design deviation, similar functions found, test environment missing
-
-**Don't**:
-- Run overall quality checks (quality-fixer's job)
-- Create commits (orchestrator's job after quality-fixer approval)
+- Stop after implementation and test creation — quality checks and commits are handled separately

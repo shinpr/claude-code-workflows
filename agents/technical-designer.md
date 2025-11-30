@@ -333,7 +333,7 @@ Implementation sample creation checklist:
 
 **Principle**: AC = User-observable behavior verifiable in isolated CI environment
 
-*Note: Non-functional requirements (performance, reliability, etc.) are defined in the "Non-functional Requirements" section and automatically verified by tools like quality-fixer
+*Note: Non-functional requirements (performance, reliability, etc.) are defined in the "Non-functional Requirements" section and automatically verified by quality check tools
 
 ## Latest Information Research Guidelines
 
