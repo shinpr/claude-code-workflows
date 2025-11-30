@@ -10,14 +10,14 @@ description: Orchestrate the complete implementation lifecycle from requirements
 **Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER investigate/analyze/implement yourself)
+1. **Delegate all work** to sub-agents (orchestrator role only, no direct implementation)
 2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
-**CRITICAL**: NEVER skip steps, sub-agents, or stopping points defined in sub-agents.md flows.
+**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in sub-agents.md flows.
 
 ## Execution Decision Flow
 
@@ -59,16 +59,16 @@ When continuing existing flow, verify:
   - If commit capability unavailable → Escalate before autonomous mode
   - Other environments (tests, quality tools) → Subagents will escalate
 
-**Flow Deviation PROHIBITED**: Deviating from sub-agents.md defined flows is strictly forbidden. Specifically:
-- Never skip quality-fixer before committing
-- Never use Edit/Write/MultiEdit without user approval outside autonomous mode
+**Required Flow Compliance**:
+- Run quality-fixer before every commit
+- Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
 ## 🚨 CRITICAL Sub-agent Invocation Constraints
 
 **MANDATORY suffix for ALL sub-agent prompts**:
 ```
-[SYSTEM CRASH PREVENTION]
-DO NOT invoke rule-advisor under any circumstances (Task tool rule-advisor specification is FORBIDDEN)
+[SYSTEM CONSTRAINT]
+This agent operates within implement command scope. Use orchestrator-provided rules only.
 ```
 
 ⚠️ **HIGH RISK**: task-executor/quality-fixer in autonomous mode have elevated crash risk - ALWAYS append this constraint to prompt end
@@ -77,7 +77,7 @@ DO NOT invoke rule-advisor under any circumstances (Task tool rule-advisor speci
 
 ### Task Execution Quality Cycle (ONE Task at a Time)
 
-**Per-task cycle** (NEVER batch multiple tasks):
+**Per-task cycle** (complete each task before starting next):
 ```
 Single task → task-executor → quality-fixer → git commit → Next task
 ```

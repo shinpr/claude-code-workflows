@@ -47,9 +47,9 @@
 ## Error Handling
 
 ### Error Management Principles
-- **Always handle errors**: Never suppress errors silently
+- **Always handle errors**: Log with context or propagate explicitly
 - **Log appropriately**: Include context for debugging
-- **Protect sensitive data**: Never log passwords, tokens, or PII
+- **Protect sensitive data**: Mask or exclude passwords, tokens, PII from logs
 - **Fail fast**: Detect and report errors as early as possible
 
 ### Error Propagation
@@ -171,7 +171,7 @@
 ## Security Principles
 
 ### General Security
-- Never hardcode secrets or credentials
+- Store secrets in environment variables or secret managers
 - Validate all external input
 - Use parameterized queries for databases
 - Follow principle of least privilege

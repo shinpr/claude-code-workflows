@@ -227,8 +227,8 @@ test("should throw exception when file not found")
 
 ### Keep Tests Active
 
-- **Never skip tests**: Fix or delete failing tests
-- **No commented-out tests**: Delete or fix them
+- **Fix or delete failing tests**: Resolve failures immediately
+- **Remove commented-out tests**: Fix them or delete entirely
 - **Keep tests running**: Broken tests lose value quickly
 - **Maintain test suite**: Refactor tests as needed
 

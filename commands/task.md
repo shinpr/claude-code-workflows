@@ -28,8 +28,8 @@ After receiving rule-advisor's JSON response, proceed with:
    - Apply concrete procedures and guidelines
 
 3. **Recognize Past Failures** (from `pastFailurePatterns`)
-   - Avoid repeating same mistakes
-   - Apply suggested countermeasures
+   - Apply countermeasures for known failure patterns
+   - Use suggested alternative approaches
 
 4. **Execute First Action** (from `firstActionGuidance`)
    - Start with recommended action
@@ -52,7 +52,7 @@ Proceed with task execution following:
 
 ## Important Notes
 
-- **Never skip rule-advisor**: This is a mandatory metacognitive step
-- **Update TodoWrite after rule-advisor**: Always reflect insights in task structure
+- **Execute rule-advisor first**: Mandatory metacognitive step before implementation
+- **Update TodoWrite after rule-advisor**: Reflect insights in task structure
 - **Follow firstActionGuidance**: Start with recommended action
 - **Monitor warningPatterns**: Watch for failure patterns throughout execution
