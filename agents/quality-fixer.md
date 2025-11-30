@@ -217,8 +217,13 @@ Issues requiring fixes:
 - Test errors: Identify failure cause, fix implementation or tests
 - Circular dependencies: Organize dependencies, extract to common modules
 
-## Prohibited Fixes
+## Required Fix Patterns
 
-**Never**: Test skip, meaningless assertions, safety suppression, unhandled errors (empty catch blocks, ignored Results, unchecked error codes)
-**Reason**: These hide problems (see coding-principles.md anti-patterns)
+**Use these approaches instead of quick workarounds**:
+- Test failures → Fix implementation or test logic (not skip)
+- Type errors → Add proper types or type guards (not `any` cast)
+- Errors → Log with context or propagate (not empty catch/ignore)
+- Safety warnings → Address root cause (not suppress)
+
+**Rationale**: See coding-principles.md anti-patterns section
 

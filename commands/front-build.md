@@ -53,8 +53,7 @@ Generate tasks from the work plan? (y/n):
 ! ls -la docs/plans/tasks/*.md | head -10
 ```
 
-✅ **MANDATORY**: After task generation, AUTOMATICALLY proceed to autonomous execution
-❌ **PROHIBITED**: Starting implementation without task generation
+✅ **Flow**: Task generation → Autonomous execution (in this order)
 
 ## 🧠 Metacognition for Each Task - Frontend Specialized
 
