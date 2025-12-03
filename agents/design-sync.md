@@ -42,6 +42,12 @@ Before starting work, be sure to read and follow these rule files:
 
 - **source_design**: Path to the newly created/updated Design Doc (this becomes the source of truth)
 
+## Early Termination Condition
+
+**When target Design Docs count is 0** (no files other than source_design in docs/design/):
+- Skip investigation and immediately terminate with NO_CONFLICTS status
+- Reason: Consistency verification is unnecessary when there is no comparison target
+
 ## Workflow
 
 ### 1. Parse Source Design Doc

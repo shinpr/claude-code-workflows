@@ -177,7 +177,7 @@ According to scale determination:
 5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
 6. technical-designer → Design Doc creation
 7. document-reviewer → Design Doc review
-8. design-sync → Design Doc consistency verification (*2) **[Stop: Design Doc Approval]**
+8. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
 9. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
 10. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
@@ -187,7 +187,7 @@ According to scale determination:
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
 2. technical-designer → Design Doc creation
 3. document-reviewer → Design Doc review
-4. design-sync → Design Doc consistency verification (*2) **[Stop: Design Doc Approval]**
+4. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
 5. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
 6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
@@ -290,12 +290,6 @@ Stop autonomous execution and escalate to user in the following cases:
    - E2E test file: [path] (execute only in final phase)
 
    **On error**: Escalate to user if files are not generated
-
-   #### *2 design-sync Execution Conditions
-
-   **Condition**: Only when other Design Docs exist in docs/design/
-   **Purpose**: Verify consistency between new/updated Design Doc and existing Design Docs
-   **On conflict detection**: Report to user and wait for fix instructions → Fix with technical-designer(update)
 
 3. **Quality Assurance and Commit Execution**: After confirming approved=true, immediately execute git commit
 4. **Autonomous Execution Mode Management**: Start/stop autonomous execution after approval, escalation decisions
