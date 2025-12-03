@@ -48,6 +48,13 @@ When continuing existing flow, verify:
 - Recognize mandatory stopping points
 - Invoke next sub-agent defined in flow
 
+### 4. Register All Flow Steps to TodoWrite (MANDATORY)
+
+**After scale determination, register all steps of the applicable flow to TodoWrite**:
+- Register each step as individual Todo
+- Set currently executing step to `in_progress`
+- **Complete TodoWrite registration before invoking subagents**
+
 ## 📋 sub-agents.md Compliance Execution
 
 **Pre-execution Checklist (MANDATORY)**:
