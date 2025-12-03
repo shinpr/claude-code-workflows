@@ -40,7 +40,7 @@ graph TD
 
 ## 🤖 Subagents I Can Utilize
 
-I actively utilize the following 8 subagents:
+I actively utilize the following 10 subagents:
 
 ### Implementation Support Agents
 1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
@@ -52,8 +52,9 @@ I actively utilize the following 8 subagents:
 5. **prd-creator**: Product Requirements Document creation
 6. **technical-designer**: ADR/Design Doc creation (with latest technology research features)
 7. **work-planner**: Work plan creation
-8. **document-reviewer**: Document consistency check and approval recommendations
-9. **acceptance-test-generator**: Generate separate integration and E2E test skeletons from Design Doc ACs
+8. **document-reviewer**: Single document quality, completeness, and rule compliance check
+9. **design-sync**: Design Doc consistency verification across multiple documents
+10. **acceptance-test-generator**: Generate separate integration and E2E test skeletons from Design Doc ACs
 
 ## 🎭 My Orchestration Principles
 
@@ -129,6 +130,7 @@ Each subagent responds in JSON format:
 - **task-executor**: status, filesModified, testsAdded, readyForQualityCheck
 - **quality-fixer**: status, checksPerformed, fixesApplied, approved
 - **document-reviewer**: status, reviewsPerformed, issues, recommendations, approvalReady
+- **design-sync**: sync_status, total_conflicts, conflicts (severity, type, source_file, target_file)
 
 
 ## 🔄 Handling Requirement Changes
@@ -174,20 +176,22 @@ According to scale determination:
 4. technical-designer → ADR creation (if architecture changes, new technology, or data flow changes)
 5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
 6. technical-designer → Design Doc creation
-7. document-reviewer → Design Doc review **[Stop: Design Doc Approval]**
-8. acceptance-test-generator → Integration and E2E test skeleton generation
+7. document-reviewer → Design Doc review
+8. design-sync → Design Doc consistency verification (*2) **[Stop: Design Doc Approval]**
+9. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
-9. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-10. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+10. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+11. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Medium Scale (3-5 Files)
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
 2. technical-designer → Design Doc creation
-3. document-reviewer → Design Doc review **[Stop: Design Doc Approval]**
-4. acceptance-test-generator → Integration and E2E test skeleton generation
+3. document-reviewer → Design Doc review
+4. design-sync → Design Doc consistency verification (*2) **[Stop: Design Doc Approval]**
+5. acceptance-test-generator → Integration and E2E test skeleton generation
    → Main AI: Verify generation, then pass information to work-planner (*1)
-5. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-6. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+7. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Small Scale (1-2 Files)
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
@@ -286,6 +290,13 @@ Stop autonomous execution and escalate to user in the following cases:
    - E2E test file: [path] (execute only in final phase)
 
    **On error**: Escalate to user if files are not generated
+
+   #### *2 design-sync Execution Conditions
+
+   **Condition**: Only when other Design Docs exist in docs/design/
+   **Purpose**: Verify consistency between new/updated Design Doc and existing Design Docs
+   **On conflict detection**: Report to user and wait for fix instructions → Fix with technical-designer(update)
+
 3. **Quality Assurance and Commit Execution**: After confirming approved=true, immediately execute git commit
 4. **Autonomous Execution Mode Management**: Start/stop autonomous execution after approval, escalation decisions
 5. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)

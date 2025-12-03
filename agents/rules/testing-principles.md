@@ -273,6 +273,34 @@ Always test:
 - **Edge cases**: Special characters, extreme values
 - **Happy path**: Normal, expected usage
 
+## Test Quality Criteria
+
+These criteria ensure reliable, maintainable tests.
+
+### Literal Expected Values
+
+- Use hardcoded literal values in assertions
+- Calculate expected values independently from the implementation
+- If the implementation has a bug, the test catches it through independent verification
+
+### Result-Based Verification
+
+- Verify final results and observable outcomes
+- Assert on return values, output data, or system state changes
+- For mock verification, check that correct arguments were passed
+
+### Meaningful Assertions
+
+- Every test must include at least one assertion
+- Assertions must validate observable behavior
+- A test without assertions always passes and provides no value
+
+### Appropriate Mock Scope
+
+- Mock direct external I/O dependencies: databases, HTTP clients, file systems
+- Use real implementations for internal utilities and business logic
+- Over-mocking reduces test value by verifying wiring instead of behavior
+
 ## Verification Requirements
 
 ### Before Commit

@@ -34,8 +34,8 @@ rules:
 
   testing-principles:
     file: "testing-principles.md"
-    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd]
-    typical-use: "Universal testing principles, TDD practice, test creation and quality assurance for all programming languages"
+    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd, test-quality-criteria]
+    typical-use: "Universal testing principles, TDD practice, test quality criteria, test creation and quality assurance for all programming languages"
     size: large
     key-references:
       - "Test-Driven Development - Kent Beck"
@@ -53,6 +53,7 @@ rules:
       - "Mocking and Test Doubles"
       - "Test Quality Practices"
       - "What to Test"
+      - "Test Quality Criteria"
       - "Verification Requirements"
       - "Test Organization"
       - "Performance Considerations"
@@ -169,8 +170,8 @@ rules:
 
   frontend-typescript-testing:
     file: "frontend/typescript-testing.md"
-    tags: [frontend, react, testing, react-testing-library, msw, coverage, tdd]
-    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets"
+    tags: [frontend, react, testing, react-testing-library, msw, coverage, tdd, test-quality-criteria]
+    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets, test quality criteria"
     size: large
     key-references:
       - "React Testing Library"
@@ -184,6 +185,7 @@ rules:
       - "Test Helper Utilization Rules"
       - "Test Implementation Conventions"
       - "Test Granularity Principles"
+      - "Test Quality Criteria"
       - "Mock Type Safety Enforcement"
       - "Continuity Test Scope"
       - "Basic React Testing Library Example"

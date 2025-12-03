@@ -50,6 +50,14 @@ Before starting work, you MUST read and strictly follow these rule files:
 
 ### Phase 1: AC Validation (Behavior-First Filtering)
 
+**EARS Format Detection**: Determine test type from EARS keywords in AC:
+| Keyword | Test Type | Generation Approach |
+|---------|-----------|---------------------|
+| **When** | Event-driven test | Trigger event → verify outcome |
+| **While** | State condition test | Setup state → verify behavior |
+| **If-then** | Branch coverage test | Condition true/false → verify both paths |
+| (none) | Basic functionality test | Direct invocation → verify result |
+
 **For each AC, apply 3 mandatory checks**:
 
 | Check | Question | Action if NO | Skip Reason |

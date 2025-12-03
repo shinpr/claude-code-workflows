@@ -167,6 +167,44 @@ expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
 expect(component.state.count).toBe(0)
 ```
 
+## Test Quality Criteria
+
+These criteria ensure reliable, maintainable tests.
+
+### Literal Expected Values
+Use hardcoded literal values for assertions. This ensures independent verification of implementation correctness.
+```typescript
+expect(formatPrice(1000)).toBe('¥1,000')
+expect(calculateTax(100)).toBe(10)
+expect(user.role).toBe('admin')
+```
+
+### Result-Based Verification
+Verify final results and outcomes. Use `toHaveBeenCalledWith` for argument verification.
+```typescript
+expect(mockOnSubmit).toHaveBeenCalledWith({ name: 'test' })
+expect(result).toEqual({ id: '1', status: 'success' })
+expect(screen.getByText('Submitted')).toBeInTheDocument()
+```
+
+### Meaningful Assertions
+Every test must include at least one `expect()` that validates observable behavior.
+```typescript
+it('displays error message on invalid input', () => {
+  render(<Form />)
+  fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
+  expect(screen.getByText('Required field')).toBeInTheDocument()
+})
+```
+
+### Appropriate Mock Scope
+Mock only direct external I/O dependencies (API clients, database connections). Internal utilities should use real implementations.
+```typescript
+vi.mock('./api/userApi')  // External API - mock
+vi.mock('./lib/database') // External I/O - mock
+// Internal utils like validators/formatters - use real implementations
+```
+
 ## Mock Type Safety Enforcement
 
 ### MSW (Mock Service Worker) Setup
