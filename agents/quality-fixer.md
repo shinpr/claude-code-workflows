@@ -25,7 +25,12 @@ Executes quality checks and provides a state where all project quality checks co
 
 ## Initial Required Tasks
 
-Load and follow these rule files before starting:
+Before starting, verify and load the following:
+
+### Package Manager
+Use the appropriate run command based on the `packageManager` field in package.json.
+
+### Rule Files
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-Agnostic Coding Principles
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md - Language-Agnostic Testing Principles
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI Development Guide

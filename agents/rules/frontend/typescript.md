@@ -164,4 +164,4 @@ Never include sensitive information (password, token, apiKey, secret, creditCard
 - Component Memoization: Use React.memo for expensive components
 - State Optimization: Minimize re-renders with proper state structure
 - Lazy Loading: Use React.lazy and Suspense for code splitting
-- Bundle Size: Monitor with `npm run build` and keep under 500KB
+- Bundle Size: Monitor with the `build` script (use the appropriate run command based on the `packageManager` field in package.json) and keep under 500KB

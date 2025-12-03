@@ -102,55 +102,32 @@ async function fetchUser(id: string): Promise<User> {
 ```
 
 ## Build and Testing
+Use the appropriate run command based on the `packageManager` field in package.json.
 
 ### Build Commands
-```bash
-# Development server
-npm run dev
-
-# Production build
-npm run build
-
-# Preview production build
-npm run preview
-
-# Type check (no emit)
-npm run type-check
-```
+- `dev` - Development server
+- `build` - Production build
+- `preview` - Preview production build
+- `type-check` - Type check (no emit)
 
 ### Testing Commands
-```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests with coverage (fresh cache)
-npm run test:coverage:fresh
-
-# Safe test execution (with auto cleanup)
-npm run test:safe
-
-# Cleanup Vitest processes
-npm run cleanup:processes
-```
+- `test` - Run tests
+- `test:coverage` - Run tests with coverage
+- `test:coverage:fresh` - Run tests with coverage (fresh cache)
+- `test:safe` - Safe test execution (with auto cleanup)
+- `cleanup:processes` - Cleanup Vitest processes
 
 ### Quality Check Requirements
 Quality checks are mandatory upon implementation completion:
 
 **Phase 1-3: Basic Checks**
-```bash
-npm run check        # Biome (lint + format)
-npm run build        # TypeScript build
-```
+- `check` - Biome (lint + format)
+- `build` - TypeScript build
 
 **Phase 4-5: Tests and Final Confirmation**
-```bash
-npm test                    # Test execution
-npm run test:coverage:fresh # Coverage measurement
-npm run check:all           # Overall integrated check
-```
+- `test` - Test execution
+- `test:coverage:fresh` - Coverage measurement
+- `check:all` - Overall integrated check
 
 ### Coverage Requirements
 - **Mandatory**: Unit test coverage must be 60% or higher
