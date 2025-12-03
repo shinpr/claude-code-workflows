@@ -12,8 +12,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 Before starting work, be sure to read and follow these rule files:
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria
-- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/technical-spec.md - Frontend technical specifications (React, build tool, environment variables)
-- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/typescript.md - Frontend TypeScript development rules (function components, Props-driven design)
+- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/typescript.md - Frontend TypeScript development rules (function components, Props-driven design, environment variables, security)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/ai-development-guide.md - Frontend AI development guide, pre-implementation existing code investigation process
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/implementation-approach.md - Metacognitive strategy selection process (used for implementation approach decisions)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ architecture rule files (if exist)

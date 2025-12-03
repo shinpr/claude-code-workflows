@@ -59,7 +59,7 @@ rules:
       - "Continuous Integration"
       - "Common Anti-Patterns to Avoid"
       - "Regression Testing"
-      - "Testing Best Practices by Language Type"
+      - "Testing Best Practices by Language Paradigm"
       - "Documentation and Communication"
       - "Continuous Improvement"
 
@@ -85,6 +85,7 @@ rules:
       - "Situations Requiring Technical Decisions"
       - "Continuous Improvement Mindset"
       - "Implementation Completeness Assurance"
+      - "Impact Analysis"
 
   documentation-criteria:
     file: "documentation-criteria.md"
@@ -135,38 +136,36 @@ rules:
       - "Props-Driven Design"
       - "React Testing Library Principles"
     sections:
-      - "Technical Anti-patterns (Frontend-Specific)"
+      - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fallback Design Principles"
-      - "Rule of Three"
-      - "Common Failure Patterns"
+      - "Rule of Three - Criteria for Code Duplication"
+      - "Common Failure Patterns and Avoidance Methods"
+      - "Debugging Techniques"
       - "Quality Check Workflow"
-
-  frontend-technical-spec:
-    file: "frontend/technical-spec.md"
-    tags: [frontend, react, build-tools, environment-variables, configuration, typescript]
-    typical-use: "Frontend technical specifications, React setup, build tool configuration, environment variable handling"
-    size: medium
-    sections:
-      - "React Configuration"
-      - "Build Tools"
-      - "Environment Variables"
-      - "Browser Compatibility"
+      - "Situations Requiring Technical Decisions"
+      - "Continuous Improvement Mindset"
+      - "Implementation Completeness Assurance"
+      - "Impact Analysis"
 
   frontend-typescript:
     file: "frontend/typescript.md"
-    tags: [frontend, react, typescript, function-components, props-driven, type-safety]
-    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design"
+    tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management, architecture]
+    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design, environment variables, security, state management patterns"
     size: large
     key-references:
       - "React Function Components"
       - "TypeScript Best Practices"
       - "Props-Driven Design"
+      - "React State Management Patterns"
     sections:
-      - "Function Component Requirements"
-      - "Props Type Definitions"
-      - "Custom Hooks"
-      - "Type Safety Strategies"
+      - "Basic Principles"
+      - "Comment Writing Rules"
+      - "Type Safety"
+      - "Coding Conventions"
       - "Error Handling"
+      - "Refactoring Techniques"
+      - "Performance Optimization"
+      - "Non-functional Requirements"
 
   frontend-typescript-testing:
     file: "frontend/typescript-testing.md"
@@ -178,8 +177,13 @@ rules:
       - "Mock Service Worker (MSW)"
       - "Testing Library Principles"
     sections:
-      - "Testing Principles"
-      - "React Testing Library Patterns"
-      - "MSW for API Mocking"
-      - "Coverage Targets"
-      - "Test Organization"
+      - "Test Framework"
+      - "Basic Testing Policy"
+      - "Red-Green-Refactor Process (Test-First Development)"
+      - "Test Design Principles"
+      - "Test Helper Utilization Rules"
+      - "Test Implementation Conventions"
+      - "Test Granularity Principles"
+      - "Mock Type Safety Enforcement"
+      - "Continuity Test Scope"
+      - "Basic React Testing Library Example"
