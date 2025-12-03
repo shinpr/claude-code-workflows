@@ -34,7 +34,6 @@ Use the appropriate run command based on the `packageManager` field in package.j
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/typescript.md - Frontend TypeScript Development Rules (React function components, Props-driven design)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/typescript-testing.md - Frontend Testing Rules (React Testing Library, MSW, 60% coverage)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/ai-development-guide.md - Frontend Quality Check Command Reference
-- ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/technical-spec.md - Frontend Technical Specifications (environment variables, build requirements)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ files (if present)
   - Load project-specific architecture rules when defined
   - Apply rules based on adopted architecture patterns

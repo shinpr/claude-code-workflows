@@ -147,49 +147,39 @@ console.log('DEBUG:', {
 })
 ```
 
-## Quality Check Command Reference
+## Quality Check Workflow
 
-### Phase 1-3: Basic Checks
-```bash
-# Biome comprehensive check (lint + format)
-npm run check
+Use the appropriate run command based on the `packageManager` field in package.json.
 
-# TypeScript build
-npm run build
-```
+### Build Commands
+- `dev` - Development server
+- `build` - Production build
+- `preview` - Preview production build
+- `type-check` - Type check (no emit)
 
-### Phase 4-5: Tests and Final Confirmation
-```bash
-# Test execution
-npm test
+### Quality Check Phases
 
-# Coverage measurement (clear cache)
-npm run test:coverage:fresh
+**Phase 1-3: Basic Checks**
+- `check` - Biome (lint + format)
+- `build` - TypeScript build
 
-# Overall integrated check
-npm run check:all
-```
+**Phase 4-5: Tests and Final Confirmation**
+- `test` - Test execution
+- `test:coverage:fresh` - Coverage measurement (fresh cache)
+- `check:all` - Overall integrated check
 
 ### Auxiliary Commands
-```bash
-# Check coverage report
-open coverage/index.html
-
-# Vitest process cleanup (mandatory after tests)
-npm run cleanup:processes
-
-# Safe test execution (with auto cleanup)
-npm run test:safe
-
-# Auto fixes
-npm run format        # Format fixes
-npm run lint:fix      # Lint fixes
-```
+- `test:coverage` - Run tests with coverage
+- `test:safe` - Safe test execution (with auto cleanup)
+- `cleanup:processes` - Cleanup Vitest processes
+- `format` - Format fixes
+- `lint:fix` - Lint fixes
+- `open coverage/index.html` - Check coverage report
 
 ### Troubleshooting
-- **Port in use error**: `npm run cleanup:processes`
-- **Cache issues**: `npm run test:coverage:fresh`
-- **Dependency errors**: Reinstall with `npm ci`
+- **Port in use error**: Run `cleanup:processes` script
+- **Cache issues**: Run `test:coverage:fresh` script
+- **Dependency errors**: Clean reinstall dependencies
 - **Vite preview not starting**: Check port 4173 availability
 
 ## Situations Requiring Technical Decisions

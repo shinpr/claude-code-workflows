@@ -58,7 +58,29 @@ function isUser(value: unknown): value is User {
 **Component Design Criteria**
 - **Function Components (Mandatory)**: Official React recommendation, optimizable by modern tooling
 - **Classes Prohibited**: Class components completely deprecated (Exception: Error Boundary)
-- **Custom Hooks**: Standard pattern for logic reuse
+- **Custom Hooks**: Standard pattern for logic reuse and dependency injection
+- **Component Hierarchy**: Atoms → Molecules → Organisms → Templates → Pages
+- **Co-location**: Place tests, styles, and related files alongside components
+
+**State Management Patterns**
+- **Local State**: `useState` for component-specific state
+- **Context API**: For sharing state across component tree (theme, auth, etc.)
+- **Custom Hooks**: Encapsulate state logic and side effects
+- **Server State**: React Query or SWR for API data caching
+
+**Data Flow Principles**
+- **Single Source of Truth**: Each piece of state has one authoritative source
+- **Unidirectional Flow**: Data flows top-down via props
+- **Immutable Updates**: Use immutable patterns for state updates
+
+```typescript
+// ✅ Immutable state update
+setUsers(prev => [...prev, newUser])
+
+// ❌ Mutable state update
+users.push(newUser)
+setUsers(users)
+```
 
 **Function Design**
 - **0-2 parameters maximum**: Use object for 3+ parameters
@@ -74,7 +96,34 @@ function isUser(value: unknown): value is User {
 
 **Environment Variables**
 - **Use build tool's environment variable system**: `process.env` does not work in browsers
-- **No secrets on client-side**: All frontend code is public, manage secrets in backend
+- Centrally manage environment variables through configuration layer
+- Implement proper type safety and default value handling
+
+```typescript
+// ✅ Build tool environment variables (public values only)
+const config = {
+  apiUrl: import.meta.env.API_URL || 'http://localhost:3000',
+  appName: import.meta.env.APP_NAME || 'My App'
+}
+
+// ❌ Does not work in frontend
+const apiUrl = process.env.API_URL
+```
+
+**Security (Client-side Constraints)**
+- **CRITICAL**: All frontend code is public and visible in browser
+- **Never store secrets client-side**: No API keys, tokens, or secrets in environment variables
+- Do not include `.env` files in Git
+- Do not include sensitive information in error messages
+
+```typescript
+// ❌ Security risk: API key exposed in browser
+const apiKey = import.meta.env.API_KEY
+const response = await fetch(`https://api.example.com/data?key=${apiKey}`)
+
+// ✅ Correct: Backend manages secrets, frontend accesses via proxy
+const response = await fetch('/api/data') // Backend handles API key authentication
+```
 
 **Dependency Injection**
 - **Custom Hooks for dependency injection**: Ensure testability and modularity
@@ -164,4 +213,9 @@ Never include sensitive information (password, token, apiKey, secret, creditCard
 - Component Memoization: Use React.memo for expensive components
 - State Optimization: Minimize re-renders with proper state structure
 - Lazy Loading: Use React.lazy and Suspense for code splitting
-- Bundle Size: Monitor with the `build` script (use the appropriate run command based on the `packageManager` field in package.json) and keep under 500KB
+- Bundle Size: Monitor with the `build` script and keep under 500KB
+
+## Non-functional Requirements
+
+- **Browser Compatibility**: Chrome/Firefox/Safari/Edge (latest 2 versions)
+- **Rendering Time**: Within 5 seconds for major pages

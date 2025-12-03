@@ -16,7 +16,6 @@ Before starting, verify and load the following:
 Use the appropriate run command based on the `packageManager` field in package.json.
 
 ### Required Files to Load
-- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/frontend/technical-spec.md** - Frontend technical specifications (React, Vite, environment variables, state management)
 - **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/architecture/ files (if present)**
   - Load project-specific architecture rules when defined
   - Apply rules based on adopted architecture patterns
