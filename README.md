@@ -71,7 +71,9 @@ graph TB
     B --> |"📦 Small (1-2 files)"| E[⚡ Direct Implementation]
 
     C --> D
-    D --> F[🧪 acceptance-test-generator]
+    D --> DR[📋 document-reviewer]
+    DR --> DS[🔄 design-sync]
+    DS --> F[🧪 acceptance-test-generator]
     F --> G[📋 work-planner]
     G --> H[✂️ task-decomposer]
 
@@ -132,7 +134,8 @@ These agents work the same way whether you're building a REST API or a React app
 | **work-planner** | Breaks down design docs into actionable tasks |
 | **task-decomposer** | Splits work into small, commit-ready chunks |
 | **code-reviewer** | Checks your code against design docs to make sure nothing's missing |
-| **document-reviewer** | Keeps your documentation consistent and catches contradictions |
+| **document-reviewer** | Reviews single document quality, completeness, and rule compliance |
+| **design-sync** | Verifies consistency across multiple Design Docs and detects conflicts |
 
 ### Backend-Specific Agents (dev-workflows)
 
@@ -283,6 +286,7 @@ claude-code-workflows/
 │   ├── agents/                 # Backend & general agents
 │   │   ├── acceptance-test-generator.md
 │   │   ├── code-reviewer.md
+│   │   ├── design-sync.md
 │   │   ├── document-reviewer.md
 │   │   ├── prd-creator.md
 │   │   ├── quality-fixer.md
