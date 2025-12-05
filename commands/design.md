@@ -12,11 +12,26 @@ description: Execute from requirement analysis to design document creation
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
 2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md design flow exactly**:
-   - Execute: requirement-analyzer → technical-designer → document-reviewer
+   - Execute: requirement-analyzer → technical-designer → document-reviewer → design-sync
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when design documents receive approval
 
-**CRITICAL**: NEVER skip document-reviewer or stopping points defined in sub-agents.md flows.
+**CRITICAL**: NEVER skip document-reviewer, design-sync, or stopping points defined in sub-agents.md flows.
+
+## Scope Boundaries
+
+**Included in this command**:
+- Requirement analysis with requirement-analyzer
+- ADR creation (if architecture changes, new technology, or data flow changes)
+- Design Doc creation with technical-designer
+- Document review with document-reviewer
+- Design Doc consistency verification with design-sync
+
+**NOT included** (out of scope):
+- PRD creation → Use `/implement` for full lifecycle
+- Work plan creation → Use `/plan` after design approval
+- Test skeleton generation → Use `/plan` after design approval
+- Implementation → Use `/build` after work plan approval
 
 Requirements: $ARGUMENTS
 

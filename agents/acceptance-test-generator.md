@@ -10,10 +10,13 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Mandatory Initial Tasks
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Before starting work, you MUST read and strictly follow these rule files:
 
 - **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/testing-principles.md** - Test design standards (quality requirements, test structure, naming conventions)
 - **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md** - Documentation standards (Design Doc/PRD structure, AC format)
+- **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/integration-e2e-testing.md** - Integration/E2E test principles and specifications (most important)
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)
@@ -30,21 +33,11 @@ Before starting work, you MUST read and strictly follow these rule files:
 
 ## Test Type Definition
 
-### Integration Tests
-- **Purpose**: Verify component interactions at feature level
-- **Scope**: Partial integration between components
-- **Generated Files**: `*.int.test.*` or `*.integration.test.*` (extension from detected framework)
-- **Budget**: MAX 3 tests per feature
-- **Implementation Timing**: Created alongside feature implementation
+Test type definitions, budgets, and ROI calculations are specified in **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/integration-e2e-testing.md**.
 
-### E2E Tests (End-to-End Tests)
-- **Purpose**: Verify critical user journeys
-- **Scope**: Full system behavior validation
-- **Generated Files**: `*.e2e.test.*` (extension from detected framework)
-- **Budget**: MAX 1-2 tests per feature (only if ROI > threshold)
-- **Implementation Timing**: Executed only in final phase after all implementations complete
-
-**Critical User Journey Definition**: User flows that are business-essential, including revenue-impacting (payment, checkout), legally required (GDPR, data protection), or high-frequency core functionality (>80% users).
+Key points:
+- **Integration Tests**: MAX 3 per feature, created alongside implementation
+- **E2E Tests**: MAX 1-2 per feature, executed in final phase only
 
 ## 4-Phase Generation Process
 
@@ -107,20 +100,7 @@ For each valid AC from Phase 1:
 
 ### Phase 3: ROI-Based Selection (Two-Pass #2)
 
-**ROI Calculation**:
-
-```
-ROI Score = (Business Value × User Frequency + Legal Requirement × 10 + Defect Detection)
-            / (Creation Cost + Execution Cost + Maintenance Cost)
-```
-
-**Cost Table**:
-
-| Test Type | Create | Execute | Maintain | Total Cost |
-|-----------|--------|---------|----------|------------|
-| Unit | 1 | 1 | 1 | 3 |
-| Integration | 3 | 5 | 3 | 11 |
-| E2E | 10 | 20 | 8 | 38 |
+ROI calculation formula and cost table are defined in **~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/integration-e2e-testing.md**.
 
 **Selection Algorithm**:
 
@@ -214,35 +194,9 @@ ROI Score = (Business Value × User Frequency + Legal Requirement × 10 + Defect
     "integration": "[path]/[feature].int.test.[ext]",
     "e2e": "[path]/[feature].e2e.test.[ext]"
   },
-  "testCounts": {
-    "selected": {
-      "integration": 2,
-      "e2e": 1,
-      "total": 3
-    },
-    "candidates": {
-      "integration": 8,
-      "e2e": 3,
-      "total": 11
-    },
-    "selectionRate": "27%"
-  },
   "budgetUsage": {
     "integration": "2/3",
     "e2e": "1/2"
-  },
-  "roiMetrics": {
-    "avgSelectedROI": 84,
-    "minSelectedROI": 72
-  },
-  "acValidation": {
-    "total": 12,
-    "passed": 6,
-    "filtered": {
-      "implementationDetail": 2,
-      "unitLevel": 3,
-      "outOfScope": 1
-    }
   }
 }
 ```

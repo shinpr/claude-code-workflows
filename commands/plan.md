@@ -18,6 +18,20 @@ description: Create work plan from design document and obtain plan approval
 
 **CRITICAL**: NEVER skip acceptance-test-generator when user requests test generation.
 
+## Scope Boundaries
+
+**Included in this command**:
+- Design document selection
+- Test skeleton generation with acceptance-test-generator
+- Work plan creation with work-planner
+- Plan approval obtainment
+
+**NOT included** (out of scope):
+- Requirement analysis → Use `/design` or `/implement`
+- Design document creation → Use `/design`
+- Task decomposition → Use `/build` after plan approval
+- Implementation → Use `/build` after plan approval
+
 Follow the planning process below:
 
 ## Execution Process

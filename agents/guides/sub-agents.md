@@ -40,21 +40,22 @@ graph TD
 
 ## 🤖 Subagents I Can Utilize
 
-I actively utilize the following 10 subagents:
+I actively utilize the following subagents:
 
 ### Implementation Support Agents
 1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
 2. **task-decomposer**: Appropriate task decomposition of work plans
 3. **task-executor**: Individual task execution and structured response
+4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
 
 ### Document Creation Agents
-4. **requirement-analyzer**: Requirement analysis and work scale determination
-5. **prd-creator**: Product Requirements Document creation
-6. **technical-designer**: ADR/Design Doc creation (with latest technology research features)
-7. **work-planner**: Work plan creation
-8. **document-reviewer**: Single document quality, completeness, and rule compliance check
-9. **design-sync**: Design Doc consistency verification across multiple documents
-10. **acceptance-test-generator**: Generate separate integration and E2E test skeletons from Design Doc ACs
+5. **requirement-analyzer**: Requirement analysis and work scale determination
+6. **prd-creator**: Product Requirements Document creation
+7. **technical-designer**: ADR/Design Doc creation
+8. **work-planner**: Work plan creation from Design Doc and test skeletons
+9. **document-reviewer**: Single document quality and rule compliance check
+10. **design-sync**: Design Doc consistency verification across multiple documents
+11. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
 ## 🎭 My Orchestration Principles
 
@@ -77,23 +78,19 @@ I understand each subagent's responsibilities and assign work appropriately:
 
 **Important**: Subagents cannot directly call other subagents. When coordinating multiple subagents, the main AI (Claude) operates as the orchestrator.
 
-## 💡 Decision Patterns
+## 🛑 Explicit Stop Points
 
-### Pattern 1: New Feature Development Request
-**Trigger**: "I want to create XX feature", "Please implement XX", etc.
-**Decision**: New feature addition → Start with requirement-analyzer
+Autonomous execution MUST stop and wait for user input at these points:
 
-### Pattern 2: Explicit Orchestrator Instruction
-**Trigger**: "As an orchestrator", "Using subagents", etc.
-**Decision**: Explicit instruction → Always utilize subagents
+| Phase | Stop Point | User Action Required |
+|-------|------------|---------------------|
+| Requirements | After requirement-analyzer completes | Confirm requirements / Answer questions |
+| PRD | After document-reviewer completes PRD review | Approve PRD |
+| ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
+| Design | After design-sync completes consistency verification | Approve Design Doc |
+| Work Plan | After work-planner creates plan | Batch approval for implementation phase |
 
-### Pattern 3: Subagent Utilization Context
-**Trigger**: sub-agents.md is open
-**Decision**: User expects subagent utilization → Act according to this guide
-
-### Pattern 4: Quality Assurance Phase
-**Trigger**: After implementation completion, before commit
-**Decision**: Quality assurance needed → Request quality check and fixes from quality-fixer
+**After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
 ## 📏 Scale Determination and Document Requirements
 | Scale | File Count | PRD | ADR | Design Doc | Work Plan |
@@ -131,6 +128,8 @@ Each subagent responds in JSON format:
 - **quality-fixer**: status, checksPerformed, fixesApplied, approved
 - **document-reviewer**: status, reviewsPerformed, issues, recommendations, approvalReady
 - **design-sync**: sync_status, total_conflicts, conflicts (severity, type, source_file, target_file)
+- **integration-test-reviewer**: status (approved/needs_revision/blocked), qualityIssues, requiredFixes, verdict
+- **acceptance-test-generator**: status, generatedFiles, budgetUsage
 
 
 ## 🔄 Handling Requirement Changes
@@ -263,9 +262,27 @@ Stop autonomous execution and escalate to user in the following cases:
 4. **When user explicitly stops**
    - Direct stop instruction or interruption
 
-### Quality Assurance During Autonomous Execution
-**Cycle per task**: task-executor → quality-fixer → git commit (using Bash tool)
+### Task Management: 4-Step Cycle
+
+**Per-task cycle**:
+```
+1. task-executor → Implementation
+2. Escalation judgment → Check task-executor status
+3. quality-fixer → Quality check and fixes
+4. git commit → Execute with Bash (on approved: true)
+```
+
 **Commit trigger**: quality-fixer returns `approved: true`
+
+### 2-Stage TodoWrite Management
+
+**Stage 1: Phase Management** (Main AI responsibility)
+- Register overall phases as TodoWrite items
+- Update status as each phase completes
+
+**Stage 2: Task Expansion** (Subagent responsibility)
+- Each subagent registers detailed steps in TodoWrite at execution start
+- Update status on each step completion
 
 ## 🎼 My Main Roles as Orchestrator
 

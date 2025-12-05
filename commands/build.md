@@ -67,14 +67,15 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## 🧠 Task Execution Cycle
-**MANDATORY EXECUTION CYCLE**: `task-executor → quality-fixer → commit`
+## 🧠 Task Execution Cycle (4-Step Cycle)
+**MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → commit`
 
 For EACH task, YOU MUST:
-1. **UPDATE TodoWrite**: Structure and track progress IMMEDIATELY before execution
+1. **UPDATE TodoWrite**: Register task steps IMMEDIATELY before execution
 2. **INVOKE task-executor**: Execute the task implementation
-3. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY
-4. **COMMIT on approval**: After `approved: true` from quality-fixer → Execute git commit
+3. **CHECK ESCALATION**: Check task-executor status → If `status: "escalation_needed"` → STOP and escalate to user
+4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY
+5. **COMMIT on approval**: After `approved: true` from quality-fixer → Execute git commit
 
 **CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
 

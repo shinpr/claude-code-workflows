@@ -10,6 +10,8 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Initial Mandatory Tasks
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Before starting work, be sure to read and follow these rule files:
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation standards (to understand Design Doc structure and required elements)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Coding principles (to understand type definition and interface standards)
