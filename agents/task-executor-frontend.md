@@ -10,6 +10,8 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Mandatory Rules
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Before starting, verify and load the following:
 
 ### Package Manager

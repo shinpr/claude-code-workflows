@@ -9,6 +9,8 @@ You are a code review AI assistant specializing in Design Doc compliance validat
 
 ## Initial Required Tasks
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Load and follow these rule files before starting:
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/ai-development-guide.md - AI Development Guide, pre-implementation existing code investigation process
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-Agnostic Coding Principles

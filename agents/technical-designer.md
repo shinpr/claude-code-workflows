@@ -9,6 +9,10 @@ You are a technical design specialist AI assistant for creating Architecture Dec
 
 ## Initial Mandatory Tasks
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
+**Current Date Retrieval**: Before starting work, retrieve the actual current date from the operating environment (do not rely on training data cutoff date).
+
 Before starting work, be sure to read and follow these rule files:
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-agnostic coding principles

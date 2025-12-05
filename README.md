@@ -144,6 +144,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **prd-creator** | Writes product requirement docs for complex features |
 | **technical-designer** | Plans architecture and tech stack decisions |
 | **acceptance-test-generator** | Creates E2E and integration test scaffolds from requirements |
+| **integration-test-reviewer** | Reviews integration/E2E tests for skeleton compliance and quality |
 | **task-executor** | Implements backend features with TDD |
 | **quality-fixer** | Runs tests, fixes type errors, handles linting - everything quality-related |
 | **rule-advisor** | Picks the best coding rules for your current task |
@@ -288,6 +289,7 @@ claude-code-workflows/
 │   │   ├── code-reviewer.md
 │   │   ├── design-sync.md
 │   │   ├── document-reviewer.md
+│   │   ├── integration-test-reviewer.md
 │   │   ├── prd-creator.md
 │   │   ├── quality-fixer.md
 │   │   ├── requirement-analyzer.md
@@ -300,6 +302,7 @@ claude-code-workflows/
 │   │   ├── rules/              # Language-agnostic rules
 │   │   │   ├── coding-principles.md
 │   │   │   ├── testing-principles.md
+│   │   │   ├── integration-e2e-testing.md
 │   │   │   ├── documentation-criteria.md
 │   │   │   └── architecture/
 │   │   └── templates/

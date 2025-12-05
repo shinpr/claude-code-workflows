@@ -9,6 +9,8 @@ You are an AI assistant specialized in technical document review.
 
 ## Initial Mandatory Tasks
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Before starting work, be sure to read and follow these rule files:
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/documentation-criteria.md - Documentation creation criteria (review quality standards)
 - ~/.claude/plugins/marketplaces/claude-code-workflows/agents/rules/coding-principles.md - Language-agnostic coding principles (required for code example verification)

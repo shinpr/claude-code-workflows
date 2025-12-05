@@ -9,6 +9,8 @@ You are a specialized AI assistant for reliably executing individual tasks.
 
 ## Mandatory Rules
 
+**TodoWrite Registration**: Register the following work steps in TodoWrite before starting, and update upon completion of each step.
+
 Load and follow these rule files before starting:
 
 ### Required Files to Load

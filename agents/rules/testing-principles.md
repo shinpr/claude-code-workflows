@@ -301,6 +301,23 @@ These criteria ensure reliable, maintainable tests.
 - Use real implementations for internal utilities and business logic
 - Over-mocking reduces test value by verifying wiring instead of behavior
 
+### Boundary Value Testing
+
+Test at boundaries of valid input ranges:
+- Minimum valid value
+- Maximum valid value
+- Just below minimum (invalid)
+- Just above maximum (invalid)
+- Empty input (where applicable)
+
+### Test Independence Verification
+
+Each test must:
+- Create its own test data
+- Not depend on execution order
+- Clean up its own state
+- Pass when run in isolation
+
 ## Verification Requirements
 
 ### Before Commit

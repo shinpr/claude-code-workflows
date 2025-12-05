@@ -82,20 +82,25 @@ This agent operates within implement command scope. Use orchestrator-provided ru
 
 ## 🎯 Mandatory Orchestrator Responsibilities
 
-### Task Execution Quality Cycle (ONE Task at a Time)
+### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
 ```
-Single task → task-executor → quality-fixer → git commit → Next task
+1. task-executor → Implementation
+2. Escalation judgment → Check task-executor status
+3. quality-fixer → Quality check and fixes
+4. git commit → Execute with Bash (on approved: true)
 ```
 
 **Rules**:
 1. Execute ONE task completely before starting next
-2. quality-fixer MUST run after each task-executor (no skipping)
-3. Commit MUST execute when quality-fixer returns `approved: true`
+2. Check task-executor status before quality-fixer (escalation check)
+3. quality-fixer MUST run after each task-executor (no skipping)
+4. Commit MUST execute when quality-fixer returns `approved: true`
 
 **Violations**:
 - ✗ Batching tasks for "efficiency"
+- ✗ Skipping escalation check
 - ✗ Skipping quality-fixer
 - ✗ Deferring commits to end
 

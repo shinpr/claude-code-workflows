@@ -55,9 +55,9 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## 🧠 Metacognition for Each Task - Frontend Specialized
+## 🧠 Task Execution Cycle (4-Step Cycle) - Frontend Specialized
 
-**MANDATORY EXECUTION CYCLE**: `task-executor-frontend → quality-fixer-frontend → commit`
+**MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
 
 ### Sub-agent Invocation Method
 Use Task tool to invoke sub-agents:
@@ -72,21 +72,23 @@ Each sub-agent responds in JSON format:
 
 ### Execution Flow for Each Task
 
-Execute for EACH task:
+For EACH task, YOU MUST:
 
-1. **USE task-executor-frontend**: Execute frontend implementation
+1. **UPDATE TodoWrite**: Register task steps IMMEDIATELY before execution
+2. **USE task-executor-frontend**: Execute frontend implementation
    - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/plans/tasks/[filename].md Execute implementation"`
-2. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer-frontend IMMEDIATELY
-3. **USE quality-fixer-frontend**: Execute all quality checks (Lighthouse, bundle size, tests, etc.)
+3. **CHECK ESCALATION**: Check task-executor-frontend status → If `status: "escalation_needed"` → STOP and escalate to user
+4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer-frontend IMMEDIATELY
+5. **USE quality-fixer-frontend**: Execute all quality checks (Lighthouse, bundle size, tests, etc.)
    - Invocation example: `subagent_type: "quality-fixer-frontend"`, `description: "Quality check"`, `prompt: "Execute all frontend quality checks and fixes"`
-4. **EXECUTE commit**: After `approved: true` confirmation, execute git commit IMMEDIATELY
+6. **EXECUTE commit**: After `approved: true` confirmation, execute git commit IMMEDIATELY
 
 ### Quality Assurance During Autonomous Execution (Details)
-- task-executor-frontend execution → quality-fixer-frontend execution → **I (Main AI) execute commit** (using Bash tool)
+- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **I (Main AI) execute commit** (using Bash tool)
 - After quality-fixer-frontend's `approved: true` confirmation, execute git commit IMMEDIATELY
 - Use `changeSummary` for commit message
 
-**THINK DEEPLY**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
+**CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
 
 ! ls -la docs/plans/*.md | head -10
 
