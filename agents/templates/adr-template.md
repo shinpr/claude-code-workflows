@@ -12,6 +12,16 @@
 
 [Describe the actual decision made. Aim for specific and clear descriptions]
 
+### Decision Details
+
+| Item | Content |
+|------|---------|
+| **Decision** | [The decision in one sentence] |
+| **Why now** | [Why this needs to happen now (timing rationale)] |
+| **Why this** | [Why this option over alternatives (1-3 lines)] |
+| **Known unknowns** | [At least one uncertainty at this point] |
+| **Kill criteria** | [One signal that should trigger reversal of this decision] |
+
 ## Rationale
 
 [Explain why this decision was made and why it is the best option compared to alternatives]
@@ -47,7 +57,7 @@
 ## Implementation Guidance
 
 [Principled direction only. Implementation procedures go to Design Doc]
-Examples: "Use parameterized dependencies" ✓, "Prefer pure functions" ✓, "Implement in Phase 1" ✗
+Example: "Use dependency injection" ✓, "Implement in Phase 1" ✗
 
 ## Related Information
 

@@ -44,6 +44,7 @@ Before starting work, be sure to read and follow these rule files:
 2. **Implementation consistency**: Code examples MUST strictly comply with coding-principles.md standards, interface definition alignment
 3. **Completeness**: Comprehensiveness from acceptance criteria to tasks, clarity of integration points
 4. **Common ADR compliance**: Coverage of common technical areas, appropriateness of references
+5. **Failure scenario review**: Coverage of scenarios where the design could fail
 
 ## Workflow
 
@@ -63,7 +64,8 @@ Before starting work, be sure to read and follow these rule files:
 - Rule compliance check: Compatibility with project rules
 - Feasibility check: Technical and resource perspectives
 - Assessment consistency check: Verify alignment between scale assessment and document requirements
-- **Technical information verification**: When sources exist, verify with WebSearch for latest information and validate claim validity
+- Technical information verification: When sources exist, verify with WebSearch for latest information and validate claim validity
+- Failure scenario review: Identify failure scenarios across normal usage, high load, and external failures
 
 #### Perspective-specific Mode
 - Implement review based on specified mode and focus
@@ -103,7 +105,12 @@ Structured markdown including the following sections:
 - [ ] Clarification of risks and countermeasures
 - [ ] Consistency with existing systems
 - [ ] Fulfillment of approval conditions
-- [ ] **Verification of sources for technical claims and consistency with latest information**
+- [ ] Verification of sources for technical claims and consistency with latest information
+- [ ] Failure scenario coverage
+
+## Failure Scenario Review
+
+Identify at least one failure scenario for each of the three categories—normal usage, high load, and external failures—and specify which design element becomes the bottleneck.
 
 ## Review Criteria (for Comprehensive Mode)
 

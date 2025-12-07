@@ -4,6 +4,22 @@
 
 [Explain the purpose and overview of this feature in 2-3 sentences]
 
+## Design Summary (Meta)
+
+```yaml
+design_type: "new_feature|extension|refactoring"
+risk_level: "low|medium|high"
+main_constraints:
+  - "[constraint 1]"
+  - "[constraint 2]"
+biggest_risks:
+  - "[risk 1]"
+  - "[risk 2]"
+unknowns:
+  - "[uncertainty 1]"
+  - "[uncertainty 2]"
+```
+
 ## Background and Context
 
 ### Prerequisite ADRs
