@@ -29,8 +29,11 @@ So that [expected value/benefit]
 
 ### Must Have (MVP)
 - [ ] Requirement 1: [Detailed description]
+  - AC: [Acceptance criteria - Given/When/Then format or measurable standard]
 - [ ] Requirement 2: [Detailed description]
+  - AC: [Acceptance criteria]
 - [ ] Requirement 3: [Detailed description]
+  - AC: [Acceptance criteria]
 
 ### Nice to Have
 - [ ] Requirement 1: [Detailed description]
@@ -78,11 +81,22 @@ So that [expected value/benefit]
 - [Technical constraints]
 - [Resource constraints]
 
+### Assumptions
+- [Prerequisite requiring validation 1]
+- [Prerequisite requiring validation 2]
+
 ### Risks and Mitigation
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
 | [Risk 1] | High/Medium/Low | High/Medium/Low | [Countermeasure] |
 | [Risk 2] | High/Medium/Low | High/Medium/Low | [Countermeasure] |
+
+## Undetermined Items
+
+- [ ] [Question 1]: [Description of options or impacts]
+- [ ] [Question 2]: [Description of options or impacts]
+
+*Discuss with user until this section is empty, then delete after confirmation*
 
 ## Appendix
 
