@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
   "author": {
     "name": "Shinsuke Kagawa",
