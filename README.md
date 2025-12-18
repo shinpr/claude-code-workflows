@@ -163,10 +163,12 @@ These agents work the same way whether you're building a REST API or a React app
 
 The backend plugin includes proven best practices that work with any language:
 
-- **[Coding Principles](agents/rules/coding-principles.md)** - Code quality standards
-- **[Testing Principles](agents/rules/testing-principles.md)** - TDD, coverage, test patterns
-- **[Architecture Patterns](agents/rules/architecture/)** - Design decisions and trade-offs
-- **[Documentation Standards](agents/rules/documentation-criteria.md)** - Clear, maintainable docs
+- **Coding Principles** - Code quality standards
+- **Testing Principles** - TDD, coverage, test patterns
+- **Implementation Approach** - Design decisions and trade-offs
+- **Documentation Standards** - Clear, maintainable docs
+
+These are loaded as skills and automatically applied by agents when relevant.
 
 The frontend plugin has React and TypeScript-specific rules built in.
 
@@ -202,7 +204,6 @@ The frontend plugin is built specifically for React development:
 - Handles build errors, test failures, and type issues automatically
 
 ---
-
 
 ## 💡 Real-World Examples
 
@@ -281,61 +282,39 @@ claude-code-workflows/
 ├── .claude-plugin/
 │   └── marketplace.json        # Manages both plugins
 │
+├── agents/                     # Shared agents (symlinked by both plugins)
+│   ├── acceptance-test-generator.md
+│   ├── code-reviewer.md
+│   ├── prd-creator.md
+│   ├── quality-fixer.md
+│   ├── task-executor.md
+│   ├── technical-designer.md
+│   └── ...
+│
+├── commands/                   # Shared commands
+│   ├── implement.md
+│   ├── design.md
+│   ├── plan.md
+│   ├── build.md
+│   └── ...
+│
+├── skills/                     # Skills (auto-loaded by agents)
+│   ├── coding-principles/
+│   ├── testing-principles/
+│   ├── documentation-criteria/
+│   ├── implementation-approach/
+│   ├── ai-development-guide/
+│   ├── typescript-rules/       # Frontend-specific
+│   ├── typescript-testing/     # Frontend-specific
+│   └── ...
+│
 ├── backend/                    # dev-workflows plugin
-│   ├── .claude-plugin/
-│   │   └── plugin.json
-│   ├── agents/                 # Backend & general agents
-│   │   ├── acceptance-test-generator.md
-│   │   ├── code-reviewer.md
-│   │   ├── design-sync.md
-│   │   ├── document-reviewer.md
-│   │   ├── integration-test-reviewer.md
-│   │   ├── prd-creator.md
-│   │   ├── quality-fixer.md
-│   │   ├── requirement-analyzer.md
-│   │   ├── rule-advisor.md
-│   │   ├── task-decomposer.md
-│   │   ├── task-executor.md
-│   │   ├── technical-designer.md
-│   │   ├── work-planner.md
-│   │   ├── guides/
-│   │   ├── rules/              # Language-agnostic rules
-│   │   │   ├── coding-principles.md
-│   │   │   ├── testing-principles.md
-│   │   │   ├── integration-e2e-testing.md
-│   │   │   ├── documentation-criteria.md
-│   │   │   └── architecture/
-│   │   └── templates/
-│   └── commands/               # Backend commands
-│       ├── implement.md
-│       ├── design.md
-│       ├── plan.md
-│       ├── build.md
-│       ├── review.md
-│       └── task.md
+│   └── .claude-plugin/
+│       └── plugin.json
 │
 ├── frontend/                   # dev-workflows-frontend plugin
-│   ├── .claude-plugin/
-│   │   └── plugin.json
-│   ├── agents/                 # Frontend-specific agents
-│   │   ├── technical-designer-frontend.md
-│   │   ├── task-executor-frontend.md
-│   │   ├── quality-fixer-frontend.md
-│   │   ├── requirement-analyzer.md
-│   │   ├── document-reviewer.md
-│   │   ├── work-planner.md
-│   │   ├── task-decomposer.md
-│   │   ├── code-reviewer.md
-│   │   ├── rules/              # React/TypeScript rules
-│   │   │   ├── react-principles.md
-│   │   │   └── frontend-testing.md
-│   │   └── templates/
-│   └── commands/               # Frontend commands
-│       ├── front-design.md
-│       ├── front-plan.md
-│       ├── front-build.md
-│       ├── task.md
-│       └── review.md
+│   └── .claude-plugin/
+│       └── plugin.json
 │
 ├── LICENSE
 └── README.md

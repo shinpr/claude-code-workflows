@@ -1,3 +1,8 @@
+---
+name: testing-principles
+description: Language-agnostic testing principles including TDD, test quality, coverage standards, and test design patterns. Use when writing tests, designing test strategies, or reviewing test quality.
+---
+
 # Language-Agnostic Testing Principles
 
 ## Core Testing Philosophy
@@ -485,7 +490,3 @@ Eliminate tests that fail intermittently:
 - Add tests for discovered edge cases
 - Improve test coverage where gaps found
 - Share learnings with team
-
----
-
-**Remember**: Quality tests enable confident refactoring, faster development, and fewer production bugs. Invest in test quality as you invest in production code quality.

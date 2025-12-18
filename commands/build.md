@@ -5,11 +5,11 @@ description: Execute decomposed tasks in autonomous execution mode
 
 ## 🎭 Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (orchestrator role only)
-2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md autonomous execution mode exactly**:
+2. **Follow subagents-orchestration-guide skill autonomous execution mode exactly**:
    - Execute: task-decomposer → (task-executor → quality-fixer → commit) loop
    - **Stop immediately** upon detecting requirement changes
 3. **Scope**: Complete when all tasks are committed or escalation occurs
@@ -71,7 +71,7 @@ Generate tasks from the work plan? (y/n):
 **MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → commit`
 
 For EACH task, YOU MUST:
-1. **UPDATE TodoWrite**: Register task steps IMMEDIATELY before execution
+1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **INVOKE task-executor**: Execute the task implementation
 3. **CHECK ESCALATION**: Check task-executor status → If `status: "escalation_needed"` → STOP and escalate to user
 4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY

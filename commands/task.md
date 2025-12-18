@@ -37,6 +37,8 @@ After receiving rule-advisor's JSON response, proceed with:
 
 **STEP 3: Create Task List with TodoWrite**
 
+Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity".
+
 Break down the task based on rule-advisor's guidance:
 - Reflect `taskEssence` in task descriptions
 - Apply `firstActionGuidance` to first task

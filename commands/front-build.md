@@ -74,7 +74,7 @@ Each sub-agent responds in JSON format:
 
 For EACH task, YOU MUST:
 
-1. **UPDATE TodoWrite**: Register task steps IMMEDIATELY before execution
+1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **USE task-executor-frontend**: Execute frontend implementation
    - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/plans/tasks/[filename].md Execute implementation"`
 3. **CHECK ESCALATION**: Check task-executor-frontend status → If `status: "escalation_needed"` → STOP and escalate to user
@@ -84,7 +84,7 @@ For EACH task, YOU MUST:
 6. **EXECUTE commit**: After `approved: true` confirmation, execute git commit IMMEDIATELY
 
 ### Quality Assurance During Autonomous Execution (Details)
-- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **I (Main AI) execute commit** (using Bash tool)
+- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **orchestrator executes commit** (using Bash tool)
 - After quality-fixer-frontend's `approved: true` confirmation, execute git commit IMMEDIATELY
 - Use `changeSummary` for commit message
 

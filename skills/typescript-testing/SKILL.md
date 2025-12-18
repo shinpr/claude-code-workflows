@@ -1,3 +1,8 @@
+---
+name: typescript-testing
+description: Frontend testing rules with Vitest, React Testing Library, and MSW. Includes coverage requirements, test design principles, and quality criteria. Use when writing frontend tests or reviewing test quality.
+---
+
 # TypeScript Testing Rules (Frontend)
 
 ## Test Framework

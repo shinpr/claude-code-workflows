@@ -1,3 +1,8 @@
+---
+name: coding-principles
+description: Language-agnostic coding principles for maintainability, readability, and quality. Use when implementing features, refactoring code, or reviewing code quality.
+---
+
 # Language-Agnostic Coding Principles
 
 ## Core Philosophy
@@ -226,7 +231,3 @@ While these principles are language-agnostic, adapt them to your specific progra
 - Learn from code reviews
 - Study well-maintained open source projects
 - Regularly refactor and improve existing code
-
----
-
-**Remember**: These principles serve code maintainability and team productivity. Apply them with pragmatism, not dogmatism.

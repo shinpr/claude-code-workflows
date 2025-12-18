@@ -7,11 +7,11 @@ description: Create work plan from design document and obtain plan approval
 
 ## 🎭 Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator." (~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md)
+**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (NEVER create plans yourself)
-2. **Follow ~/.claude/plugins/marketplaces/claude-code-workflows/agents/guides/sub-agents.md planning flow exactly**:
+2. **Follow subagents-orchestration-guide skill planning flow exactly**:
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: Complete when work plan receives approval
@@ -44,11 +44,11 @@ Follow the planning process below:
 2. **E2E Test Skeleton Generation Confirmation**
    - Confirm with user whether to generate E2E test skeleton first
    - If user wants generation: Generate test skeleton with acceptance-test-generator
-   - Pass generation results to next process according to sub-agents.md coordination specification
+   - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
 
 3. **Work Plan Creation**
    - Create work plan with work-planner
-   - Utilize deliverables from previous process according to sub-agents.md coordination specification
+   - Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
    - Interact with user to complete plan and obtain approval for plan content
 
 **Think deeply** Create a work plan from the selected design document, clarifying specific implementation steps and risks.

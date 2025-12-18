@@ -1,3 +1,8 @@
+---
+name: frontend-ai-guide
+description: Frontend-specific technical decision criteria, anti-patterns, debugging techniques, and quality check workflow. Use when making frontend technical decisions or performing quality assurance.
+---
+
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection (Frontend)
 
 ## Technical Anti-patterns (Red Flag Patterns)
