@@ -1,9 +1,9 @@
-# Rule File Metadata
-# Manages overview, tags, typical use cases, and size of each rule
+# Skills Metadata Index
+# Used by rule-advisor to select appropriate skills based on task analysis
 
-rules:
+skills:
   coding-principles:
-    file: "coding-principles.md"
+    skill: "coding-principles"
     tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, parameterized-dependencies, performance, security]
     typical-use: "Language-agnostic code creation, modification, and refactoring principles applicable to all programming languages"
     size: medium
@@ -13,7 +13,6 @@ rules:
       - "DRY Principle - The Pragmatic Programmer"
       - "Refactoring - Martin Fowler"
       - "Single Responsibility Principle - SOLID"
-      - "Dependency Management Patterns - Martin Fowler"
     sections:
       - "Core Philosophy"
       - "Code Quality"
@@ -21,19 +20,11 @@ rules:
       - "Error Handling"
       - "Dependency Management"
       - "Performance Considerations"
-      - "Code Organization"
-      - "Commenting Principles"
       - "Refactoring Approach"
-      - "Clean Code Guidelines"
-      - "Testing Considerations"
       - "Security Principles"
-      - "Documentation"
-      - "Version Control Practices"
-      - "Language-Specific Adaptations"
-      - "Continuous Learning"
 
   testing-principles:
-    file: "testing-principles.md"
+    skill: "testing-principles"
     tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd, test-quality-criteria]
     typical-use: "Universal testing principles, TDD practice, test quality criteria, test creation and quality assurance for all programming languages"
     size: large
@@ -42,7 +33,6 @@ rules:
       - "Red-Green-Refactor Cycle - Kent Beck"
       - "AAA Pattern - Arrange-Act-Assert"
       - "Test Pyramid - Mike Cohn"
-      - "Test Doubles - Gerard Meszaros"
     sections:
       - "Core Testing Philosophy"
       - "Test-Driven Development (TDD)"
@@ -51,31 +41,18 @@ rules:
       - "Test Design Principles"
       - "Test Independence"
       - "Mocking and Test Doubles"
-      - "Test Quality Practices"
-      - "What to Test"
       - "Test Quality Criteria"
-      - "Verification Requirements"
-      - "Test Organization"
-      - "Performance Considerations"
-      - "Continuous Integration"
-      - "Common Anti-Patterns to Avoid"
-      - "Regression Testing"
-      - "Testing Best Practices by Language Paradigm"
-      - "Documentation and Communication"
-      - "Continuous Improvement"
 
   ai-development-guide:
-    file: "ai-development-guide.md"
-    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, best-practices, language-agnostic, fail-fast, error-handling, impact-analysis, unused-code, code-deletion]
-    typical-use: "Technical decision criteria, anti-pattern detection, debugging techniques, quality check workflows, impact analysis procedures, unused code deletion guidelines for all programming languages"
+    skill: "ai-development-guide"
+    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, best-practices, fail-fast, error-handling, impact-analysis]
+    typical-use: "Technical decision criteria, anti-pattern detection, debugging techniques, quality check workflows, impact analysis procedures"
     size: large
     key-references:
       - "Rule of Three - Martin Fowler"
       - "5 Whys - Toyota Production System"
       - "DRY Principle - The Pragmatic Programmer"
-      - "Single Responsibility Principle (SRP) - Clean Code"
       - "YAGNI Principle - Extreme Programming"
-      - "Avoiding fallback in distributed systems - AWS Builders' Library"
     sections:
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fail-Fast Fallback Design Principles"
@@ -83,13 +60,10 @@ rules:
       - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
       - "Quality Check Workflow"
-      - "Situations Requiring Technical Decisions"
-      - "Continuous Improvement Mindset"
-      - "Implementation Completeness Assurance"
       - "Impact Analysis"
 
   documentation-criteria:
-    file: "documentation-criteria.md"
+    skill: "documentation-criteria"
     tags: [documentation, decision-making, adr, prd, design-doc, planning, process, scale-assessment]
     typical-use: "Scale assessment at implementation start, document creation criteria, ADR/PRD/Design Doc/Work Plan creation standards"
     size: medium
@@ -99,17 +73,13 @@ rules:
       - "Single Source of Truth"
     sections:
       - "Creation Decision Matrix"
-      - "ADR Creation Conditions (Required if Any Apply)"
+      - "ADR Creation Conditions"
       - "Detailed Document Definitions"
-      - "Creation Process"
       - "Storage Locations"
-      - "ADR Status"
-      - "AI Automation Rules"
       - "Diagram Requirements"
-      - "Common ADR Relationships"
 
   implementation-approach:
-    file: "architecture/implementation-approach.md"
+    skill: "implementation-approach"
     tags: [architecture, implementation, task-decomposition, strategy-patterns, strangler-pattern, facade-pattern, design, planning, verification-levels]
     typical-use: "Implementation strategy selection, task decomposition, design decisions, large-scale change planning"
     size: medium
@@ -117,75 +87,83 @@ rules:
       - "Strangler Fig Pattern - Martin Fowler"
       - "Feature Slicing - Martin Fowler"
       - "Walking Skeleton - Alistair Cockburn"
-      - "Facade Pattern - Gang of Four"
     sections:
       - "Meta-cognitive Strategy Selection Process"
       - "Verification Level Definitions"
       - "Integration Point Definitions"
       - "Anti-patterns"
-      - "Guidelines for Meta-cognitive Execution"
 
-  # Frontend-Specific Rules
-  frontend-ai-development-guide:
-    file: "frontend/ai-development-guide.md"
-    tags: [frontend, react, anti-patterns, technical-judgment, component-design, testing, quality-commands, rule-of-three, typescript]
-    typical-use: "Frontend technical decision criteria, React anti-pattern detection, component quality check workflows"
+  integration-e2e-testing:
+    skill: "integration-e2e-testing"
+    tags: [testing, integration-testing, e2e-testing, test-design, behavior-first, roi, budget-enforcement]
+    typical-use: "Integration and E2E test design principles, ROI-based test selection, behavior-first approach"
+    size: medium
+    key-references:
+      - "Test Pyramid - Mike Cohn"
+      - "Behavior-Driven Development"
+    sections:
+      - "Test Type Definitions"
+      - "ROI Calculation"
+      - "Budget Enforcement"
+      - "Behavior-First Filtering"
+
+  subagents-orchestration-guide:
+    skill: "subagents-orchestration-guide"
+    tags: [orchestration, workflow, subagents, autonomous-execution, planning, design-flow, implementation-flow]
+    typical-use: "Orchestrating subagents through implementation workflows, scale determination, stop points, autonomous execution mode"
     size: large
     key-references:
-      - "Rule of Three - Martin Fowler"
-      - "React Best Practices"
-      - "Props-Driven Design"
-      - "React Testing Library Principles"
+      - "Orchestrator Pattern"
+      - "Conductor Pattern"
     sections:
-      - "Technical Anti-patterns (Red Flag Patterns)"
-      - "Fallback Design Principles"
-      - "Rule of Three - Criteria for Code Duplication"
-      - "Common Failure Patterns and Avoidance Methods"
-      - "Debugging Techniques"
-      - "Quality Check Workflow"
-      - "Situations Requiring Technical Decisions"
-      - "Continuous Improvement Mindset"
-      - "Implementation Completeness Assurance"
-      - "Impact Analysis"
+      - "Orchestration Principles"
+      - "Scale Determination"
+      - "Basic Flow for Work Planning"
+      - "Autonomous Execution Mode"
+      - "Stop Points"
 
-  frontend-typescript:
-    file: "frontend/typescript.md"
-    tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management, architecture]
-    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design, environment variables, security, state management patterns"
+  # Frontend-Specific Skills
+  typescript-rules:
+    skill: "typescript-rules"
+    tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management]
+    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design, type safety, state management patterns"
     size: large
     key-references:
       - "React Function Components"
       - "TypeScript Best Practices"
       - "Props-Driven Design"
-      - "React State Management Patterns"
     sections:
       - "Basic Principles"
-      - "Comment Writing Rules"
       - "Type Safety"
       - "Coding Conventions"
       - "Error Handling"
-      - "Refactoring Techniques"
       - "Performance Optimization"
-      - "Non-functional Requirements"
 
-  frontend-typescript-testing:
-    file: "frontend/typescript-testing.md"
+  typescript-testing:
+    skill: "typescript-testing"
     tags: [frontend, react, testing, react-testing-library, msw, coverage, tdd, test-quality-criteria]
-    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets, test quality criteria"
+    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets"
     size: large
     key-references:
       - "React Testing Library"
       - "Mock Service Worker (MSW)"
-      - "Testing Library Principles"
     sections:
       - "Test Framework"
       - "Basic Testing Policy"
-      - "Red-Green-Refactor Process (Test-First Development)"
+      - "Red-Green-Refactor Process"
       - "Test Design Principles"
-      - "Test Helper Utilization Rules"
-      - "Test Implementation Conventions"
-      - "Test Granularity Principles"
       - "Test Quality Criteria"
-      - "Mock Type Safety Enforcement"
-      - "Continuity Test Scope"
-      - "Basic React Testing Library Example"
+
+  frontend-ai-guide:
+    skill: "frontend-ai-guide"
+    tags: [frontend, react, anti-patterns, technical-judgment, component-design, testing, quality-commands]
+    typical-use: "Frontend technical decision criteria, React anti-pattern detection, component quality check workflows"
+    size: large
+    key-references:
+      - "Rule of Three - Martin Fowler"
+      - "React Best Practices"
+    sections:
+      - "Technical Anti-patterns"
+      - "Common Failure Patterns"
+      - "Debugging Techniques"
+      - "Quality Check Workflow"

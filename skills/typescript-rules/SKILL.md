@@ -1,3 +1,8 @@
+---
+name: typescript-rules
+description: React/TypeScript frontend development rules including type safety, component design, state management, and error handling. Use when implementing React components, TypeScript code, or frontend features.
+---
+
 # TypeScript Development Rules (Frontend)
 
 ## Basic Principles

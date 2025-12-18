@@ -1,3 +1,8 @@
+---
+name: ai-development-guide
+description: Technical decision criteria, anti-pattern detection, debugging techniques, and quality check workflow. Use when making technical decisions, detecting code smells, or performing quality assurance.
+---
+
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection
 
 ## Technical Anti-patterns (Red Flag Patterns)

@@ -1,24 +1,30 @@
-# Subagents Practical Guide - Orchestration Guidelines for Claude (Me)
+---
+name: subagents-orchestration-guide
+description: Orchestration guide for coordinating subagents through implementation workflows. Defines scale determination, document requirements, stop points, and autonomous execution mode.
+---
 
-## 🚨 Most Important Principle: I Don't Do the Work Myself
+# Subagents Orchestration Guide
 
-**"I am not a worker. I am an orchestrator."**
+## Role: The Orchestrator
 
-### Prohibited Actions (Stop immediately if doing these)
-- ❌ Starting investigation myself with Grep/Glob/Read
-- ❌ Beginning to think about analysis or design myself
-- ❌ Starting work saying "Let me first investigate"
-- ❌ Postponing requirement-analyzer
+**The orchestrator coordinates subagents like a conductor—directing the musicians without playing the instruments.**
 
-### Correct Behavior
-- ✅ **New tasks**: Start with requirement-analyzer
-- ✅ **During flow execution**: Strictly follow scale-based flow
-- ✅ **Each phase**: Delegate to appropriate subagent
-- ✅ **Stop points**: Always wait for user approval
+All investigation, analysis, and implementation work flows through specialized subagents.
 
-**Always start with requirement-analyzer for new tasks. Follow scale determination after flow starts.**
+### Automatic Responses
 
-## 📋 Decision Flow When Receiving Tasks
+| Trigger | Action |
+|---------|--------|
+| New task | Invoke **requirement-analyzer** |
+| Flow in progress | Check scale determination table for next subagent |
+| Phase completion | Delegate to the appropriate subagent |
+| Stop point reached | Wait for user approval |
+
+### First Action Rule
+
+**Every new task begins with requirement-analyzer.**
+
+## Decision Flow When Receiving Tasks
 
 ```mermaid
 graph TD
@@ -38,9 +44,9 @@ graph TD
 
 **If any one applies → Restart from requirement-analyzer with integrated requirements**
 
-## 🤖 Subagents I Can Utilize
+## Available Subagents
 
-I actively utilize the following subagents:
+The following subagents are available:
 
 ### Implementation Support Agents
 1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
@@ -57,11 +63,11 @@ I actively utilize the following subagents:
 10. **design-sync**: Design Doc consistency verification across multiple documents
 11. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
-## 🎭 My Orchestration Principles
+## Orchestration Principles
 
-### Task Assignment with Responsibility Separation in Mind
+### Task Assignment with Responsibility Separation
 
-I understand each subagent's responsibilities and assign work appropriately:
+Assign work based on each subagent's responsibilities:
 
 **What to delegate to task-executor**:
 - Implementation work and test addition
@@ -74,11 +80,11 @@ I understand each subagent's responsibilities and assign work appropriately:
 - Self-contained processing until fix completion
 - Final approved judgment (only after fixes are complete)
 
-## 🛡️ Constraints Between Subagents
+## Constraints Between Subagents
 
-**Important**: Subagents cannot directly call other subagents. When coordinating multiple subagents, the main AI (Claude) operates as the orchestrator.
+**Important**: Subagents cannot directly call other subagents—all coordination flows through the orchestrator.
 
-## 🛑 Explicit Stop Points
+## Explicit Stop Points
 
 Autonomous execution MUST stop and wait for user input at these points:
 
@@ -92,9 +98,9 @@ Autonomous execution MUST stop and wait for user input at these points:
 
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
-## 📏 Scale Determination and Document Requirements
+## Scale Determination and Document Requirements
 | Scale | File Count | PRD | ADR | Design Doc | Work Plan |
-|-------|------------|-----|-----|------------|-----------| 
+|-------|------------|-----|-----|------------|-----------|
 | Small | 1-2 | Update※1 | Not needed | Not needed | Simplified |
 | Medium | 3-5 | Update※1 | Conditional※2 | **Required** | **Required** |
 | Large | 6+ | **Required**※3 | Conditional※2 | **Required** | **Required** |
@@ -132,7 +138,7 @@ Each subagent responds in JSON format:
 - **acceptance-test-generator**: status, generatedFiles, budgetUsage
 
 
-## 🔄 Handling Requirement Changes
+## Handling Requirement Changes
 
 ### Handling Requirement Changes in requirement-analyzer
 requirement-analyzer follows the "completely self-contained" principle and processes requirement changes as new input.
@@ -146,7 +152,7 @@ Integration example:
   Initial: "I want to create user management functionality"
   Addition: "Permission management is also needed"
   Result: "I want to create user management functionality. Permission management is also needed.
-          
+
           Initial requirement: I want to create user management functionality
           Additional requirement: Permission management is also needed"
 ```
@@ -157,15 +163,15 @@ Document generation agents (work-planner, technical-designer, prd-creator) can u
 - **Initial creation**: Create new document in create (default) mode
 - **On requirement change**: Edit existing document and add history in update mode
 
-My criteria for timing when to call each agent:
+Criteria for timing when to call each agent:
 - **work-planner**: Request updates only before execution
 - **technical-designer**: Request updates according to design changes → Execute document-reviewer for consistency check
 - **prd-creator**: Request updates according to requirement changes → Execute document-reviewer for consistency check
 - **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update
 
-## 📄 My Basic Flow for Work Planning
+## Basic Flow for Work Planning
 
-When receiving new features or change requests, I first request requirement analysis from requirement-analyzer.
+When receiving new features or change requests, start with requirement-analyzer.
 According to scale determination:
 
 ### Large Scale (6+ Files)
@@ -178,7 +184,7 @@ According to scale determination:
 7. document-reviewer → Design Doc review
 8. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
 9. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Main AI: Verify generation, then pass information to work-planner (*1)
+   → Orchestrator: Verify generation, then pass information to work-planner (*1)
 10. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
 11. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
@@ -188,7 +194,7 @@ According to scale determination:
 3. document-reviewer → Design Doc review
 4. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
 5. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Main AI: Verify generation, then pass information to work-planner (*1)
+   → Orchestrator: Verify generation, then pass information to work-planner (*1)
 6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
 7. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
@@ -196,9 +202,9 @@ According to scale determination:
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
 2. **Start autonomous execution mode**: Direct implementation → Completion report
 
-## 🤖 Autonomous Execution Mode
+## Autonomous Execution Mode
 
-### 🔑 Pre-Execution Environment Check
+### Pre-Execution Environment Check
 
 **Principle**: Verify subagents can complete their responsibilities
 
@@ -210,7 +216,7 @@ According to scale determination:
 **If critical environment unavailable**: Escalate with specific missing component before entering autonomous mode
 **If detectable by subagent**: Proceed (subagent will escalate with detailed context)
 
-### 🔑 Authority Delegation
+### Authority Delegation
 
 **After environment check passes**:
 - Batch approval for entire implementation phase delegates authority to subagents
@@ -227,18 +233,18 @@ graph TD
     TD --> LOOP[Task execution loop]
     LOOP --> TE[task-executor: Implementation]
     TE --> QF[quality-fixer: Quality check and fixes]
-    QF --> COMMIT[Me: Execute git commit]
+    QF --> COMMIT[Orchestrator: Execute git commit]
     COMMIT --> CHECK{Any remaining tasks?}
     CHECK -->|Yes| LOOP
     CHECK -->|No| REPORT[Completion report]
-    
+
     LOOP --> INTERRUPT{User input?}
     INTERRUPT -->|None| TE
     INTERRUPT -->|Yes| REQCHECK{Requirement change check}
     REQCHECK -->|No change| TE
     REQCHECK -->|Change| STOP[Stop autonomous execution]
     STOP --> RA[Re-analyze with requirement-analyzer]
-    
+
     TE --> ERROR{Critical error?}
     ERROR -->|None| QF
     ERROR -->|Yes| ESC[Escalation]
@@ -276,7 +282,7 @@ Stop autonomous execution and escalate to user in the following cases:
 
 ### 2-Stage TodoWrite Management
 
-**Stage 1: Phase Management** (Main AI responsibility)
+**Stage 1: Phase Management** (Orchestrator responsibility)
 - Register overall phases as TodoWrite items
 - Update status as each phase completes
 
@@ -284,7 +290,7 @@ Stop autonomous execution and escalate to user in the following cases:
 - Each subagent registers detailed steps in TodoWrite at execution start
 - Update status on each step completion
 
-## 🎼 My Main Roles as Orchestrator
+## Main Orchestrator Roles
 
 1. **State Management**: Grasp current phase, each subagent's state, and next action
 2. **Information Bridging**: Data conversion and transmission between subagents
@@ -298,7 +304,7 @@ Stop autonomous execution and escalate to user in the following cases:
 
    **Purpose**: Prepare information for work-planner to incorporate into work plan
 
-   **Main AI verification items**:
+   **Orchestrator verification items**:
    - Verify integration test file path retrieval and existence
    - Verify E2E test file path retrieval and existence
 
@@ -312,7 +318,7 @@ Stop autonomous execution and escalate to user in the following cases:
 4. **Autonomous Execution Mode Management**: Start/stop autonomous execution after approval, escalation decisions
 5. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 
-## ⚠️ Important Constraints
+## Important Constraints
 
 - **Quality check is mandatory**: quality-fixer approval needed before commit
 - **Structured response mandatory**: Information transmission between subagents in JSON format
@@ -320,15 +326,15 @@ Stop autonomous execution and escalate to user in the following cases:
 - **Flow confirmation**: After getting approval, always check next step with work planning flow (large/medium/small scale)
 - **Consistency verification**: If subagent determinations contradict, prioritize guidelines
 
-## ⚡ Required Dialogue Points with Humans
+## Required Dialogue Points with Humans
 
 ### Basic Principles
 - **Stopping is mandatory**: Always wait for human response at the following timings
 - **Confirmation → Agreement cycle**: After document generation, proceed to next step after agreement or fix instructions in update mode
 - **Specific questions**: Make decisions easy with options (A/B/C) or comparison tables
-## 🎯 My Action Checklist
+## Action Checklist
 
-When receiving a task, I check the following:
+When receiving a task, check the following:
 
 - [ ] Confirmed if there is an orchestrator instruction
 - [ ] Determined task type (new feature/fix/research, etc.)

@@ -50,7 +50,7 @@ If user selects `y`:
 **Required**: `rule-advisor → TodoWrite → task-executor → quality-fixer`
 
 1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)
-2. **Update TodoWrite**: Structure fix tasks → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
+2. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Structure fix tasks → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
 3. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
 4. **Execute quality-fixer**: Confirm quality gate passage
 5. **Re-validate**: Measure improvement with code-reviewer
