@@ -7,10 +7,10 @@ description: Documentation creation criteria including PRD, ADR, Design Doc, and
 
 ## Templates
 
-- **[prd-template.md](prd-template.md)** - Product Requirements Document template
-- **[adr-template.md](adr-template.md)** - Architecture Decision Record template
-- **[design-template.md](design-template.md)** - Technical Design Document template
-- **[plan-template.md](plan-template.md)** - Work Plan template
+- **[prd-template.md](references/prd-template.md)** - Product Requirements Document template
+- **[adr-template.md](references/adr-template.md)** - Architecture Decision Record template
+- **[design-template.md](references/design-template.md)** - Technical Design Document template
+- **[plan-template.md](references/plan-template.md)** - Work Plan template
 
 ## Creation Decision Matrix
 
@@ -163,10 +163,10 @@ Interface Change Matrix:
 
 | Document | Path | Naming Convention | Template |
 |----------|------|------------------|----------|
-| PRD | `docs/prd/` | `[feature-name]-prd.md` | [prd-template.md](prd-template.md) |
-| ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](adr-template.md) |
-| Design Doc | `docs/design/` | `[feature-name]-design.md` | [design-template.md](design-template.md) |
-| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](plan-template.md) |
+| PRD | `docs/prd/` | `[feature-name]-prd.md` | [prd-template.md](references/prd-template.md) |
+| ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](references/adr-template.md) |
+| Design Doc | `docs/design/` | `[feature-name]-design.md` | [design-template.md](references/design-template.md) |
+| Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](references/plan-template.md) |
 
 *Note: Work plans are excluded by `.gitignore`
 
