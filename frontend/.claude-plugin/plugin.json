@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows-frontend",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Professional frontend development workflows for Claude Code - React/TypeScript specialized agents, commands, and quality patterns for building production-ready web applications",
   "author": {
     "name": "Shinsuke Kagawa",

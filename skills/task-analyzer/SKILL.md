@@ -9,7 +9,7 @@ Provides metacognitive task analysis and skill selection guidance.
 
 ## Skills Index
 
-See **[skills-index.yaml](skills-index.yaml)** for available skills metadata.
+See **[skills-index.yaml](references/skills-index.yaml)** for available skills metadata.
 
 ## Task Analysis Process
 
