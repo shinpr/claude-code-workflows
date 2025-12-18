@@ -282,6 +282,7 @@ These criteria ensure reliable, maintainable tests.
 - Use hardcoded literal values in assertions
 - Calculate expected values independently from the implementation
 - If the implementation has a bug, the test catches it through independent verification
+- If expected value equals mock return value unchanged, the test verifies nothing (no transformation occurred)
 
 ### Result-Based Verification
 
