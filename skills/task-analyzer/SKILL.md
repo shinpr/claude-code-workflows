@@ -1,6 +1,6 @@
 ---
 name: task-analyzer
-description: Metacognitive task analysis and skill selection. Analyzes task essence, estimates scale, and returns appropriate skills with metadata for rule-advisor to process.
+description: Metacognitive task analysis and skill selection. Analyzes task essence, estimates scale, and returns appropriate skills with metadata.
 ---
 
 # Task Analyzer
@@ -99,7 +99,7 @@ selectedSkills:
     sections: [...]  # All sections from yaml, unfiltered
 ```
 
-**Note**: Section selection (choosing which sections are relevant) is done by rule-advisor after reading the actual SKILL.md files.
+**Note**: Section selection (choosing which sections are relevant) is done after reading the actual SKILL.md files.
 
 ## Skill Selection Priority
 

@@ -1,5 +1,5 @@
 # Skills Metadata Index
-# Used by rule-advisor to select appropriate skills based on task analysis
+# Used to select appropriate skills based on task analysis
 
 skills:
   coding-principles:
