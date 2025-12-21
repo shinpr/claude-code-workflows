@@ -34,7 +34,7 @@ Solution derivation is out of scope for this agent.
 
 ## Execution Steps
 
-### Step 1: Investigation Results Review
+### Step 1: Investigation Results Verification Preparation
 
 **For JSON format**:
 - Check hypothesis list from `hypotheses`
@@ -45,6 +45,9 @@ Solution derivation is out of scope for this agent.
 - Extract and list hypothesis-related descriptions
 - Organize supporting/contradicting evidence for each hypothesis
 - Grasp areas explicitly marked as uninvestigated
+
+**impactAnalysis Validity Check**:
+- Verify logical validity of impactAnalysis (without additional searches)
 
 ### Step 2: Triangulation Supplementation
 Explore information sources not confirmed in the investigation:
@@ -66,14 +69,19 @@ Generate at least 3 hypotheses not listed in the investigation:
 
 **Evaluation criteria**: Evaluate by "degree of non-refutation" (not by number of supporting evidence)
 
-### Step 5: Devil's Advocate Evaluation
+### Step 5: Devil's Advocate Evaluation and Critical Verification
 Consider for each hypothesis:
 - Could supporting evidence actually be explained by different causes?
 - Are there overlooked pieces of counter-evidence?
 - Are there incorrect implicit assumptions?
 
-### Step 6: Verification Level Determination and Conclusion Derivation
-Classify each hypothesis by the following levels and derive conclusion:
+**Counter-evidence Weighting**: If counter-evidence based on direct quotes from the following sources exists, automatically lower that hypothesis's confidence to low:
+- Official documentation
+- Language specifications
+- Official documentation of packages in use
+
+### Step 6: Verification Level Determination and Consistency Verification
+Classify each hypothesis by the following levels:
 
 | Level | Definition |
 |-------|------------|
@@ -81,6 +89,11 @@ Classify each hypothesis by the following levels and derive conclusion:
 | indirect | Indirect evidence exists, no direct observation |
 | direct | Direct evidence or observation exists |
 | verified | Reproduced or confirmed |
+
+**User Report Consistency**: Verify that the conclusion is consistent with the user's report
+- Example: "I changed A and B broke" → Does the conclusion explain that causal relationship?
+- Example: "The implementation is wrong" → Was design_gap considered?
+- If inconsistent, explicitly note "Investigation focus may be misaligned with user report"
 
 **Conclusion**: Derive as "the least refuted hypothesis" and output in JSON format
 
@@ -108,6 +121,10 @@ Classify each hypothesis by the following levels and derive conclusion:
       "impactOnHypotheses": "Impact on existing hypotheses"
     }
   ],
+  "scopeValidation": {
+    "verified": true,
+    "concerns": ["Concerns"]
+  },
   "externalResearch": [
     {
       "query": "Search query used",
@@ -159,5 +176,12 @@ Classify each hypothesis by the following levels and derive conclusion:
 - [ ] Collected external information via WebSearch
 - [ ] Generated at least 3 alternative hypotheses
 - [ ] Performed Devil's Advocate evaluation on major hypotheses
+- [ ] Lowered confidence for hypotheses with official documentation-based counter-evidence
+- [ ] Verified consistency with user report
 - [ ] Determined verification level for each hypothesis
 - [ ] Derived final conclusion as "the least refuted hypothesis"
+
+## Prohibited Actions
+
+- Maintaining conclusion without lowering confidence despite discovering official documentation-based counter-evidence
+- Focusing only on technical analysis while ignoring the user's causal relationship hints

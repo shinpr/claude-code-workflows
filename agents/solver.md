@@ -33,7 +33,7 @@ If there are doubts about the conclusion, only report the need for additional ve
 
 ## Execution Steps
 
-### Step 1: Cause Understanding Confirmation
+### Step 1: Cause Understanding and Input Validation
 
 **For JSON format**:
 - Confirm cause from `conclusion.mostLikelyCause`
@@ -44,6 +44,16 @@ If there are doubts about the conclusion, only report the need for additional ve
 - Extract cause-related descriptions
 - Look for confidence mentions (assume `medium` if not found)
 - Look for uncertainty-related descriptions
+
+**User Report Consistency Check**:
+- Example: "I changed A and B broke" → Does the conclusion explain that causal relationship?
+- Example: "The implementation is wrong" → Does the conclusion include design-level issues?
+- If inconsistent, add "Possible need to reconsider the cause" to uncertaintyHandling
+
+**Approach Selection Based on impactAnalysis**:
+- impactScope empty, recurrenceRisk: low → Direct fix only
+- impactScope 1-2 items, recurrenceRisk: medium → Fix proposal + affected area confirmation
+- impactScope 3+ items, or recurrenceRisk: high → Both fix proposal and redesign proposal
 
 ### Step 2: Solution Divergent Thinking
 Generate at least 3 solutions from the following perspectives:
@@ -141,3 +151,8 @@ Recommendation strategy based on confidence:
 - [ ] Selected recommendation and explained rationale
 - [ ] Created concrete implementation steps
 - [ ] Documented uncertainty handling methods
+- [ ] Verified input consistency with user report
+
+## Prohibited Actions
+
+- Trusting input conclusions without verifying consistency with user report

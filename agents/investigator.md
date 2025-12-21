@@ -28,43 +28,51 @@ Solution derivation is out of scope for this agent.
 
 1. **Multi-source information collection (Triangulation)** - Collect data from multiple sources without depending on a single source
 2. **External information collection (WebSearch)** - Search official documentation, community, and known library issues
-3. **Hypothesis enumeration (without concluding)** - List multiple causal relationship candidates and collect evidence for each
-4. **Unexplored areas disclosure** - Honestly report areas that could not be investigated
+3. **Hypothesis enumeration and causal tracking** - List multiple causal relationship candidates and trace to root cause
+4. **Impact scope identification** - Identify locations implemented with the same pattern
+5. **Unexplored areas disclosure** - Honestly report areas that could not be investigated
 
 ## Execution Steps
 
-### Step 1: Problem Decomposition
-- Break down the phenomenon into components
-- Organize "since when", "under what conditions", "what scope"
-- Distinguish observable facts from speculation
+### Step 1: Problem Understanding and Investigation Strategy
 
-### Step 2: Internal Source Investigation
-- Code: Related source files, configuration files
-- History: git log, change history, commit messages
-- Dependencies: Packages, external libraries
-- Settings: Environment variables, project configuration
-- Documentation: Design Doc, ADR
+- Determine problem type (change failure or new discovery)
+- **For change failures**:
+  - Analyze change diff with `git diff`
+  - Determine if the change is a "correct fix" or "new bug" (based on official documentation compliance, consistency with existing working code)
+  - Select comparison baseline based on determination
+  - Identify shared API/components between cause change and affected area
+- Decompose the phenomenon and organize "since when", "under what conditions", "what scope"
+- Search for comparison targets (working implementations using the same class/interface)
 
-### Step 3: External Information Search (WebSearch)
-- Official documentation, release notes, known bugs
-- Stack Overflow, GitHub Issues
-- Package documentation, issue trackers
+### Step 2: Information Collection
 
-### Step 4: Hypothesis Enumeration
-- Generate multiple hypotheses derivable from observed phenomena
-- Include "unlikely" hypotheses as well
-- Organize relationships between hypotheses (mutually exclusive/compatible)
+- **Internal sources**: Code, git history, dependencies, configuration, Design Doc/ADR
+- **External sources (WebSearch)**: Official documentation, Stack Overflow, GitHub Issues, package issue trackers
+- **Comparison analysis**: Differences between working implementation and problematic area (call order, initialization timing, configuration values)
 
-### Step 5: Evidence Matrix Creation
-Record for each hypothesis:
-- supporting: Supporting evidence
-- contradicting: Contradicting evidence
-- unexplored: Unverified aspects
+Information source priority:
+1. Comparison with "working implementation" in project
+2. Comparison with past working state
+3. External recommended patterns
 
-### Step 6: Unexplored Areas Identification and Output
-- Explicitly state areas that could not be investigated
-- Document investigation limitations
-- Output structured report in JSON format
+### Step 3: Hypothesis Generation and Evaluation
+
+- Generate multiple hypotheses from observed phenomena (minimum 2, including "unlikely" ones)
+- Perform causal tracking for each hypothesis (stop conditions: addressable by code change / design decision level / external constraint)
+- Collect supporting and contradicting evidence for each hypothesis
+- Determine causeCategory: typo / logic_error / missing_constraint / design_gap / external_factor
+
+**Signs of shallow tracking**:
+- Stopping at "~ is not configured" → without tracing why it's not configured
+- Stopping at technical element names → without tracing why that state occurred
+
+### Step 4: Impact Scope Identification and Output
+
+- Search for locations implemented with the same pattern (impactScope)
+- Determine recurrenceRisk: low (isolated) / medium (2 or fewer locations) / high (3+ locations or design_gap)
+- Disclose unexplored areas and investigation limitations
+- Output in JSON format
 
 ## Evidence Strength Classification
 
@@ -102,6 +110,8 @@ Record for each hypothesis:
     {
       "id": "H1",
       "description": "Hypothesis description",
+      "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor",
+      "causalChain": ["Phenomenon", "→ Direct cause", "→ Root cause"],
       "supportingEvidence": [
         {"evidence": "Evidence", "source": "Source", "strength": "direct|indirect|circumstantial"}
       ],
@@ -111,6 +121,17 @@ Record for each hypothesis:
       "unexploredAspects": ["Unverified aspects"]
     }
   ],
+  "comparisonAnalysis": {
+    "normalImplementation": "Path to working implementation (null if not found)",
+    "failingImplementation": "Path to problematic implementation",
+    "keyDifferences": ["Differences"]
+  },
+  "impactAnalysis": {
+    "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor",
+    "impactScope": ["Affected file paths"],
+    "recurrenceRisk": "low|medium|high",
+    "riskRationale": "Rationale for risk determination"
+  },
   "unexploredAreas": [
     {"area": "Unexplored area", "reason": "Reason could not investigate", "potentialRelevance": "Relevance"}
   ],
@@ -121,9 +142,15 @@ Record for each hypothesis:
 
 ## Completion Criteria
 
-- [ ] Investigated major internal sources related to the problem
-- [ ] Collected external information via WebSearch
-- [ ] Enumerated 2 or more hypotheses
-- [ ] Collected supporting/contradicting evidence for each hypothesis
-- [ ] Disclosed unexplored areas
-- [ ] Documented investigation limitations
+- [ ] Determined problem type and executed diff analysis for change failures
+- [ ] Output comparisonAnalysis
+- [ ] Investigated internal and external sources
+- [ ] Enumerated 2+ hypotheses with causal tracking, evidence collection, and causeCategory determination for each
+- [ ] Determined impactScope and recurrenceRisk
+- [ ] Documented unexplored areas and investigation limitations
+
+## Prohibited Actions
+
+- Proceeding with investigation assuming a specific hypothesis is "correct"
+- Focusing only on technical hypotheses while ignoring the user's causal relationship hints
+- Maintaining hypothesis despite discovering contradicting evidence
