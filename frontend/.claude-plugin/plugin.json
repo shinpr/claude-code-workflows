@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows-frontend",
-  "version": "0.7.2",
-  "description": "Professional frontend development workflows for Claude Code - React/TypeScript specialized agents, commands, and quality patterns for building production-ready web applications",
+  "version": "0.8.0",
+  "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 11 specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -22,20 +22,24 @@
     "best-practices"
   ],
   "commands": [
+    "./commands/diagnose.md",
+    "./commands/front-build.md",
     "./commands/front-design.md",
     "./commands/front-plan.md",
-    "./commands/front-build.md",
-    "./commands/task.md",
-    "./commands/review.md"
+    "./commands/review.md",
+    "./commands/task.md"
   ],
   "agents": [
-    "./agents/technical-designer-frontend.md",
-    "./agents/task-executor-frontend.md",
+    "./agents/code-reviewer.md",
+    "./agents/document-reviewer.md",
+    "./agents/investigator.md",
     "./agents/quality-fixer-frontend.md",
     "./agents/requirement-analyzer.md",
-    "./agents/document-reviewer.md",
-    "./agents/work-planner.md",
+    "./agents/solver.md",
     "./agents/task-decomposer.md",
-    "./agents/code-reviewer.md"
+    "./agents/task-executor-frontend.md",
+    "./agents/technical-designer-frontend.md",
+    "./agents/verifier.md",
+    "./agents/work-planner.md"
   ]
 }

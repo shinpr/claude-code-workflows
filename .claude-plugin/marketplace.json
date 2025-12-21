@@ -1,23 +1,23 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "owner": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
   },
   "metadata": {
-    "description": "Professional development workflows for backend and frontend - Language-agnostic best practices and React/TypeScript specialized patterns"
+    "description": "Skills + Subagents for Claude Code - Progressive skills for quick wins, orchestrated agents for full agentic coding"
   },
   "plugins": [
     {
       "name": "dev-workflows",
       "source": "./backend",
-      "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software"
+      "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 15 specialized agents"
     },
     {
       "name": "dev-workflows-frontend",
       "source": "./frontend",
-      "description": "Professional frontend development workflows for Claude Code - React/TypeScript specialized agents, commands, and quality patterns for building production-ready web applications"
+      "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 11 specialized agents"
     }
   ]
 }

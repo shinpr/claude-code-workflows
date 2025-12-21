@@ -84,6 +84,18 @@ graph TB
     J --> K[🎉 Ready to Commit]
 ```
 
+### The Diagnosis Workflow
+
+```mermaid
+graph LR
+    P[🐛 Problem] --> INV[🔍 investigator]
+    INV --> |Evidence Matrix| ASS{Complex?}
+    ASS --> |Yes| VER[⚖️ verifier]
+    ASS --> |No| SOL[💡 solver]
+    VER --> |Validated Conclusion| SOL
+    SOL --> |Solutions + Steps| R[📋 Report]
+```
+
 ### What Happens Behind the Scenes
 
 1. **Analysis** - Figures out how complex your task is
@@ -107,6 +119,7 @@ graph TB
 | `/plan` | Generate work plan from design | Planning phase |
 | `/build` | Execute from existing task plan | Resume implementation |
 | `/review` | Verify code against design docs | Post-implementation check |
+| `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 
 ### Frontend Development (dev-workflows-frontend)
 
@@ -117,8 +130,9 @@ graph TB
 | `/front-build` | Execute frontend task plan | Resume React implementation |
 | `/task` | Execute single task with precision | Component fixes, small updates |
 | `/review` | Verify code against design docs | Post-implementation check |
+| `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 
-> **Tip**: Both plugins share `/task` and `/review` commands with the same functionality.
+> **Tip**: Both plugins share `/task`, `/review`, and `/diagnose` commands with the same functionality.
 
 ---
 
@@ -136,6 +150,9 @@ These agents work the same way whether you're building a REST API or a React app
 | **code-reviewer** | Checks your code against design docs to make sure nothing's missing |
 | **document-reviewer** | Reviews single document quality, completeness, and rule compliance |
 | **design-sync** | Verifies consistency across multiple Design Docs and detects conflicts |
+| **investigator** | Collects evidence, enumerates hypotheses, builds evidence matrix for problem diagnosis |
+| **verifier** | Validates investigation results using ACH and Devil's Advocate methods |
+| **solver** | Generates solutions with tradeoff analysis and implementation steps |
 
 ### Backend-Specific Agents (dev-workflows)
 
@@ -273,6 +290,19 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # Catches missing features or inconsistencies
 ```
 
+### Problem Diagnosis (Both Plugins)
+
+```bash
+/diagnose "API returns 500 error on user login"
+
+# What happens:
+# 1. Investigator collects evidence from code, logs, git history
+# 2. Builds evidence matrix with multiple hypotheses
+# 3. Verifier validates findings with ACH and Devil's Advocate
+# 4. Solver generates solutions with tradeoff analysis
+# 5. Presents actionable implementation steps
+```
+
 ---
 
 ## 📂 Repository Structure
@@ -283,36 +313,41 @@ claude-code-workflows/
 │   └── marketplace.json        # Manages both plugins
 │
 ├── agents/                     # Shared agents (symlinked by both plugins)
-│   ├── acceptance-test-generator.md
 │   ├── code-reviewer.md
-│   ├── prd-creator.md
-│   ├── quality-fixer.md
+│   ├── investigator.md         # Diagnosis workflow
+│   ├── verifier.md             # Diagnosis workflow
+│   ├── solver.md               # Diagnosis workflow
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ...
+│   └── ... (15 agents total)
 │
 ├── commands/                   # Shared commands
 │   ├── implement.md
 │   ├── design.md
+│   ├── diagnose.md             # Problem diagnosis
 │   ├── plan.md
 │   ├── build.md
-│   └── ...
+│   └── ... (7 commands for backend, 6 for frontend)
 │
 ├── skills/                     # Skills (auto-loaded by agents)
+│   ├── ai-development-guide/
 │   ├── coding-principles/
 │   ├── testing-principles/
-│   ├── documentation-criteria/
 │   ├── implementation-approach/
-│   ├── ai-development-guide/
 │   ├── typescript-rules/       # Frontend-specific
-│   ├── typescript-testing/     # Frontend-specific
-│   └── ...
+│   └── ... (11 skills total)
 │
 ├── backend/                    # dev-workflows plugin
+│   ├── agents/                 # Symlinks to shared agents
+│   ├── commands/               # Symlinks to shared commands
+│   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │
 ├── frontend/                   # dev-workflows-frontend plugin
+│   ├── agents/                 # Symlinks to shared agents
+│   ├── commands/               # Symlinks to shared commands
+│   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │

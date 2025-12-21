@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows",
-  "version": "0.7.2",
-  "description": "Professional development workflows for Claude Code - Language-agnostic best practices, specialized agents, and quality assurance patterns for building production-ready software",
+  "version": "0.8.0",
+  "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 15 specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -23,6 +23,7 @@
   "commands": [
     "./commands/build.md",
     "./commands/design.md",
+    "./commands/diagnose.md",
     "./commands/implement.md",
     "./commands/plan.md",
     "./commands/review.md",
@@ -33,13 +34,16 @@
     "./agents/code-reviewer.md",
     "./agents/design-sync.md",
     "./agents/document-reviewer.md",
+    "./agents/investigator.md",
     "./agents/prd-creator.md",
     "./agents/quality-fixer.md",
     "./agents/requirement-analyzer.md",
     "./agents/rule-advisor.md",
+    "./agents/solver.md",
     "./agents/task-decomposer.md",
     "./agents/task-executor.md",
     "./agents/technical-designer.md",
+    "./agents/verifier.md",
     "./agents/work-planner.md"
   ]
 }
