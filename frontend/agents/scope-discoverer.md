@@ -1,0 +1,1 @@
+../../agents/scope-discoverer.md

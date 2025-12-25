@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows",
-  "version": "0.8.1",
-  "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 15 specialized agents",
+  "version": "0.9.0",
+  "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 17 specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -26,12 +26,14 @@
     "./commands/diagnose.md",
     "./commands/implement.md",
     "./commands/plan.md",
+    "./commands/reverse-engineer.md",
     "./commands/review.md",
     "./commands/task.md"
   ],
   "agents": [
     "./agents/acceptance-test-generator.md",
     "./agents/code-reviewer.md",
+    "./agents/code-verifier.md",
     "./agents/design-sync.md",
     "./agents/document-reviewer.md",
     "./agents/investigator.md",
@@ -39,6 +41,7 @@
     "./agents/quality-fixer.md",
     "./agents/requirement-analyzer.md",
     "./agents/rule-advisor.md",
+    "./agents/scope-discoverer.md",
     "./agents/solver.md",
     "./agents/task-decomposer.md",
     "./agents/task-executor.md",
