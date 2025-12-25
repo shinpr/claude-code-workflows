@@ -7,7 +7,7 @@ description: Generate PRD and Design Docs from existing codebase through discove
 
 Target: $ARGUMENTS
 
-**TodoWrite Registration**: Register execution steps in TodoWrite and proceed systematically
+**TodoWrite**: Register phases first, then steps within each phase as you enter it.
 
 ## Step 0: Initial Configuration
 
@@ -29,10 +29,12 @@ Use AskUserQuestion to confirm:
 
 ```
 Phase 1: PRD Generation
-  Step 1: Scope Discovery → Step 2: PRD Generation → Step 3: Verification → Step 4: Review → Step 5: Revision
+  Step 1: Scope Discovery (all units)
+  Step 2-5: Per-unit loop (Generation → Verification → Review → Revision)
 
 Phase 2: Design Doc Generation (if requested)
-  Step 6: Scope Discovery → Step 7: Design Doc Generation → Step 8: Verification → Step 9: Review → Step 10: Revision
+  Step 6: Scope Discovery (all components per PRD)
+  Step 7-10: Per-component loop (Generation → Verification → Review → Revision)
 ```
 
 **Context Passing**: Pass structured JSON output between steps. Use `$STEP_N_OUTPUT` placeholder notation.
@@ -40,6 +42,10 @@ Phase 2: Design Doc Generation (if requested)
 ---
 
 ## Phase 1: PRD Generation
+
+**Register in TodoWrite**:
+- Step 1: PRD Scope Discovery
+- Per-unit processing (Steps 2-5 for each unit)
 
 ### Step 1: PRD Scope Discovery
 
@@ -63,9 +69,11 @@ prompt: |
 
 **Human Review Point** (if enabled): Present discovered units for confirmation.
 
-### Step 2: PRD Generation
+### Step 2-5: Per-Unit Processing
 
-For each discovered PRD unit:
+**Complete Steps 2→3→4→5 for each unit before proceeding to the next unit.**
+
+#### Step 2: PRD Generation
 
 **Task invocation**:
 ```
@@ -87,7 +95,7 @@ prompt: |
 
 **Store output as**: `$STEP_2_OUTPUT` (PRD path)
 
-### Step 3: Code Verification
+#### Step 3: Code Verification
 
 **Task invocation**:
 ```
@@ -107,7 +115,7 @@ prompt: |
 - consistencyScore >= 70 → proceed to review
 - consistencyScore < 70 → flag for detailed review
 
-### Step 4: Review
+#### Step 4: Review
 
 **Task invocation**:
 ```
@@ -130,7 +138,7 @@ prompt: |
 
 **Store output as**: `$STEP_4_OUTPUT`
 
-### Step 5: Revision (conditional)
+#### Step 5: Revision (conditional)
 
 **Trigger Conditions** (any one of the following):
 - Review status is "Needs Revision" or "Rejected"
@@ -157,13 +165,22 @@ prompt: |
 
 **Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
 
-**Human Review Point** (if enabled): Present final PRD with review results before Phase 2.
+#### Unit Completion
+
+- [ ] Review status is "Approved" or "Approved with Conditions"
+- [ ] Human review passed (if enabled in Step 0)
+
+**Next**: Proceed to next unit. After all units → Phase 2.
 
 ---
 
 ## Phase 2: Design Doc Generation
 
 *Execute only if Design Docs were requested in Step 0*
+
+**Register in TodoWrite**:
+- Step 6: Design Doc Scope Discovery
+- Per-component processing (Steps 7-10 for each component)
 
 ### Step 6: Design Doc Scope Discovery
 
@@ -187,9 +204,11 @@ prompt: |
 - At least one component discovered → proceed
 - No components → ask user for hints
 
-### Step 7: Design Doc Generation
+### Step 7-10: Per-Component Processing
 
-For each discovered component:
+**Complete Steps 7→8→9→10 for each component before proceeding to the next component.**
+
+#### Step 7: Design Doc Generation
 
 **Task invocation**:
 ```
@@ -212,7 +231,7 @@ prompt: |
 
 **Store output as**: `$STEP_7_OUTPUT`
 
-### Step 8: Code Verification
+#### Step 8: Code Verification
 
 **Task invocation**:
 ```
@@ -228,7 +247,7 @@ prompt: |
 
 **Store output as**: `$STEP_8_OUTPUT`
 
-### Step 9: Review
+#### Step 9: Review
 
 **Task invocation**:
 ```
@@ -254,48 +273,27 @@ prompt: |
 
 **Store output as**: `$STEP_9_OUTPUT`
 
-### Step 10: Revision (conditional)
+#### Step 10: Revision (conditional)
 
 Same logic as Step 5, using technical-designer with update mode.
+
+#### Component Completion
+
+- [ ] Review status is "Approved" or "Approved with Conditions"
+- [ ] Human review passed (if enabled in Step 0)
+
+**Next**: Proceed to next component. After all components → Final Report.
 
 ---
 
 ## Final Report
 
-After all documents are generated and reviewed:
-
-```markdown
-## Reverse Engineering Summary
-
-### Generated Documents
-
-| Type | Name | Consistency | Review Status |
-|------|------|-------------|---------------|
-| PRD | [name] | [score]% | [status] |
-| Design Doc | [name] | [score]% | [status] |
-
-### Action Items
-- Critical discrepancies requiring attention
-- Undocumented features to consider adding
-- Flagged items requiring human review
-
-### Next Steps
-- [ ] Human review of flagged documents
-- [ ] Address listed discrepancies
-```
+Output summary including:
+- Generated documents table (Type, Name, Consistency Score, Review Status)
+- Action items (critical discrepancies, undocumented features, flagged items)
+- Next steps checklist
 
 ---
-
-## Completion Criteria
-
-- [ ] Initial configuration confirmed
-- [ ] PRD scope discovery completed
-- [ ] All PRD units generated and verified
-- [ ] PRD reviews completed (with revisions if needed)
-- [ ] (If requested) Design Doc scope discovery completed
-- [ ] (If requested) All Design Docs generated and verified
-- [ ] (If requested) Design Doc reviews completed
-- [ ] Final summary report presented
 
 ## Error Handling
 
