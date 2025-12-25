@@ -39,8 +39,6 @@ Phase 2: Design Doc Generation (if requested)
 
 **Context Passing**: Pass structured JSON output between steps. Use `$STEP_N_OUTPUT` placeholder notation.
 
----
-
 ## Phase 1: PRD Generation
 
 **Register in TodoWrite**:
@@ -172,8 +170,6 @@ prompt: |
 
 **Next**: Proceed to next unit. After all units → Phase 2.
 
----
-
 ## Phase 2: Design Doc Generation
 
 *Execute only if Design Docs were requested in Step 0*
@@ -284,16 +280,12 @@ Same logic as Step 5, using technical-designer with update mode.
 
 **Next**: Proceed to next component. After all components → Final Report.
 
----
-
 ## Final Report
 
 Output summary including:
 - Generated documents table (Type, Name, Consistency Score, Review Status)
 - Action items (critical discrepancies, undocumented features, flagged items)
 - Next steps checklist
-
----
 
 ## Error Handling
 
