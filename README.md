@@ -96,6 +96,27 @@ graph LR
     SOL --> |Solutions + Steps| R[📋 Report]
 ```
 
+### The Reverse Engineering Workflow
+
+```mermaid
+graph TB
+    subgraph Phase1[Phase 1: PRD Generation]
+        CMD[📜 /reverse-engineer] --> SD1[🔍 scope-discoverer]
+        SD1 --> PRD[📄 prd-creator]
+        PRD --> CV1[✅ code-verifier]
+        CV1 --> DR1[📋 document-reviewer]
+    end
+
+    subgraph Phase2[Phase 2: Design Doc Generation]
+        SD2[🔍 scope-discoverer] --> DD[📐 technical-designer]
+        DD --> CV2[✅ code-verifier]
+        CV2 --> DR2[📋 document-reviewer]
+        DR2 --> DONE[📚 Complete]
+    end
+
+    DR1 --> |All PRDs Approved| SD2
+```
+
 ### What Happens Behind the Scenes
 
 1. **Analysis** - Figures out how complex your task is
@@ -120,6 +141,7 @@ graph LR
 | `/build` | Execute from existing task plan | Resume implementation |
 | `/review` | Verify code against design docs | Post-implementation check |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 
 ### Frontend Development (dev-workflows-frontend)
 
@@ -131,8 +153,9 @@ graph LR
 | `/task` | Execute single task with precision | Component fixes, small updates |
 | `/review` | Verify code against design docs | Post-implementation check |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 
-> **Tip**: Both plugins share `/task`, `/review`, and `/diagnose` commands with the same functionality.
+> **Tip**: Both plugins share `/task`, `/review`, `/diagnose`, and `/reverse-engineer` commands with the same functionality.
 
 ---
 
@@ -153,6 +176,8 @@ These agents work the same way whether you're building a REST API or a React app
 | **investigator** | Collects evidence, enumerates hypotheses, builds evidence matrix for problem diagnosis |
 | **verifier** | Validates investigation results using ACH and Devil's Advocate methods |
 | **solver** | Generates solutions with tradeoff analysis and implementation steps |
+| **scope-discoverer** | Discovers PRD/Design Doc targets from codebase for reverse engineering |
+| **code-verifier** | Validates consistency between documentation and code implementation |
 
 ### Backend-Specific Agents (dev-workflows)
 
@@ -303,6 +328,21 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 5. Presents actionable implementation steps
 ```
 
+### Reverse Engineering (Both Plugins)
+
+```bash
+/reverse-engineer "src/auth module"
+
+# What happens:
+# 1. Discovers PRD targets (user value units) from code
+# 2. Generates PRD for each feature
+# 3. Verifies PRD against actual code
+# 4. Reviews and revises until consistent
+# 5. Discovers Design Doc targets (technical components)
+# 6. Generates Design Docs with code verification
+# 7. Produces complete documentation from existing code
+```
+
 ---
 
 ## 📂 Repository Structure
@@ -317,17 +357,20 @@ claude-code-workflows/
 │   ├── investigator.md         # Diagnosis workflow
 │   ├── verifier.md             # Diagnosis workflow
 │   ├── solver.md               # Diagnosis workflow
+│   ├── scope-discoverer.md     # Reverse engineering workflow
+│   ├── code-verifier.md        # Reverse engineering workflow
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ... (15 agents total)
+│   └── ... (17 agents total)
 │
 ├── commands/                   # Shared commands
 │   ├── implement.md
 │   ├── design.md
 │   ├── diagnose.md             # Problem diagnosis
+│   ├── reverse-engineer.md     # Reverse documentation
 │   ├── plan.md
 │   ├── build.md
-│   └── ... (7 commands for backend, 6 for frontend)
+│   └── ... (8 commands for backend, 7 for frontend)
 │
 ├── skills/                     # Skills (auto-loaded by agents)
 │   ├── ai-development-guide/

@@ -1,0 +1,1 @@
+../../commands/reverse-engineer.md
