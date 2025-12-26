@@ -343,6 +343,9 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 7. Produces complete documentation from existing code
 ```
 
+> If you're working with undocumented legacy code, this command is designed to make it AI-friendly by generating PRD and design docs.
+> For a quick walkthrough, see: [How I Made Legacy Code AI-Friendly with Auto-Generated Docs](https://dev.to/shinpr/how-i-made-legacy-code-ai-friendly-with-auto-generated-docs-4353)
+
 ---
 
 ## 📂 Repository Structure
