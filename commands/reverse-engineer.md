@@ -115,6 +115,8 @@ prompt: |
 
 #### Step 4: Review
 
+**Required Input**: $STEP_3_OUTPUT (verification JSON from Step 3)
+
 **Task invocation**:
 ```
 subagent_type: document-reviewer
@@ -244,6 +246,8 @@ prompt: |
 **Store output as**: `$STEP_8_OUTPUT`
 
 #### Step 9: Review
+
+**Required Input**: $STEP_8_OUTPUT (verification JSON from Step 8)
 
 **Task invocation**:
 ```
