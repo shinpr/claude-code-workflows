@@ -1,6 +1,6 @@
 ---
 name: technical-designer
-description: Specialized agent for creating technical design documents. Defines technical choice evaluation and implementation approaches through ADR and Design Docs.
+description: Creates ADR and Design Docs to evaluate technical choices and implementation approaches. Use when PRD is complete and technical design is needed, or when "ADR/design doc/technical design/architecture" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch
 skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---

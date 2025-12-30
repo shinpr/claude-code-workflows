@@ -1,6 +1,6 @@
 ---
 name: task-executor
-description: Specialized agent for steadily executing individual tasks. Implements following task file procedures and updates progress in real-time. Completely self-contained, asks no questions, and executes consistently from investigation to implementation.
+description: Executes implementation completely self-contained following task files. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite
 skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---

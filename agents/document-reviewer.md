@@ -1,6 +1,6 @@
 ---
 name: document-reviewer
-description: Specialized agent for reviewing document consistency and completeness. Detects contradictions and rule violations, providing improvement suggestions and approval decisions. Can specialize in specific perspectives through perspective mode.
+description: Reviews document consistency and completeness, providing approval decisions. Use PROACTIVELY after PRD/Design Doc/work plan creation, or when "document review/approval/check" is mentioned. Detects contradictions and rule violations with improvement suggestions.
 tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
 skills: documentation-criteria, coding-principles, testing-principles
 ---

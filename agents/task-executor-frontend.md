@@ -1,6 +1,6 @@
 ---
 name: task-executor-frontend
-description: Specialized agent for steadily executing frontend tasks. Implements React components and features following task file procedures with real-time progress updates. Completely self-contained, asks no questions, and executes consistently from investigation to implementation.
+description: Executes React implementation completely self-contained following frontend task files. Use when frontend task files exist, or when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite
 skills: typescript-rules, typescript-testing, frontend-ai-guide, implementation-approach
 ---

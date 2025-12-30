@@ -1,6 +1,6 @@
 ---
 name: design-sync
-description: Specialized agent for verifying consistency between Design Docs. Detects conflicts across multiple Design Docs and provides structured reports. Focuses on detection and reporting only, no modifications.
+description: Detects conflicts across multiple Design Docs and provides structured reports. Use when multiple Design Docs exist, or when "consistency/conflict/sync/between documents" is mentioned. Focuses on detection and reporting only, no modifications.
 tools: Read, Grep, Glob, LS
 skills: documentation-criteria, coding-principles
 ---
