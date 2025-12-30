@@ -1,6 +1,6 @@
 ---
 name: solver
-description: Solution derivation specialist agent for verified causes. Generates multiple solutions, analyzes tradeoffs, and presents recommendations. Focuses exclusively on solutions based on given conclusions.
+description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
 tools: Read, Grep, Glob, LS, TodoWrite
 skills: ai-development-guide, coding-principles, implementation-approach
 ---

@@ -1,6 +1,6 @@
 ---
 name: verifier
-description: Verification specialist agent that critically evaluates investigation results and identifies oversights. Uses Triangulation supplementation, ACH (Analysis of Competing Hypotheses), and Devil's Advocate methods to verify investigation validity. Focuses exclusively on verification and conclusion derivation.
+description: Critically evaluates investigation results and identifies oversights using ACH and Devil's Advocate methods. Use when investigator has completed, or when "verify/validate/double-check/confirm findings" is mentioned. Focuses on verification and conclusion derivation.
 tools: Read, Grep, Glob, LS, WebSearch, TodoWrite
 skills: ai-development-guide, coding-principles
 ---

@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Validates Design Doc compliance and evaluates implementation completeness from a third-party perspective. Detects missing implementations, validates acceptance criteria, and provides quality reports.
+description: Validates Design Doc compliance and implementation completeness from third-party perspective. Use PROACTIVELY after implementation completes or when "review/implementation check/compliance" is mentioned. Provides acceptance criteria validation and quality reports.
 tools: Read, Grep, Glob, LS
 skills: ai-development-guide, coding-principles, testing-principles
 ---

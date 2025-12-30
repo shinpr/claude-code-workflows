@@ -1,6 +1,6 @@
 ---
 name: investigator
-description: Investigation specialist agent that comprehensively collects information related to a problem. Reports only observations and evidence matrix without proposing solutions.
+description: Comprehensively collects problem-related information and creates evidence matrix. Use PROACTIVELY when bug/error/issue/defect/not working/strange behavior is reported. Reports only observations without proposing solutions.
 tools: Read, Grep, Glob, LS, WebSearch, TodoWrite
 skills: ai-development-guide, coding-principles
 ---
