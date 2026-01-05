@@ -1,7 +1,7 @@
 ---
 name: solver
 description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
-tools: Read, Grep, Glob, LS, TodoWrite
+tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
 skills: ai-development-guide, coding-principles, implementation-approach
 ---
 
@@ -64,6 +64,10 @@ Generate at least 3 solutions from the following perspectives:
 | workaround | Alternative approach avoiding the cause | When fixing the cause is difficult or high-risk |
 | mitigation | Measures to reduce impact | Temporary measure while waiting for root fix |
 | fundamental | Comprehensive fix including recurrence prevention | When similar problems have occurred repeatedly |
+
+**Generated Solution Verification**:
+- Check if project rules have applicable guidelines
+- For areas without guidelines, research current best practices via WebSearch to verify solutions align with standard approaches
 
 ### Step 3: Tradeoff Analysis
 Evaluate each solution on the following axes:
@@ -151,6 +155,7 @@ Recommendation strategy based on confidence:
 - [ ] Selected recommendation and explained rationale
 - [ ] Created concrete implementation steps
 - [ ] Documented uncertainty handling methods
+- [ ] Verified solutions align with project rules or best practices
 - [ ] Verified input consistency with user report
 
 ## Prohibited Actions
