@@ -7,6 +7,11 @@ description: Investigate problem, verify findings, and derive solutions
 
 Target problem: $ARGUMENTS
 
+**Role**: Orchestrator
+
+**Execution Method**: All work is executed through sub-agents
+- investigator → verifier → solver
+
 **TodoWrite Registration**: Register execution steps in TodoWrite and proceed systematically
 
 ## Step 0: Problem Structuring (Before investigator invocation)
@@ -37,10 +42,7 @@ If the following are unclear, **ask with AskUserQuestion** before proceeding:
 ## Diagnosis Flow Overview
 
 ```
-Problem → Investigation → Quality Check → [Verification] → Solution Derivation
-                              ↓
-                         If simple,
-                         skip Verification
+Problem → investigator → verifier → solver → Report
 ```
 
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
@@ -61,34 +63,20 @@ Phenomenon: [Problem reported by user]
 
 **Expected output**: Evidence matrix, comparison analysis results, causal tracking results, list of unexplored areas, investigation limitations
 
-### Step 2: Quality Check and Verification Decision
+### Step 2: Investigation Quality Check
 
-Review investigation output and assess:
+Review investigation output:
 
-**Investigation Quality Check** (verify JSON output contains the following):
+**Quality Check** (verify JSON output contains the following):
 - [ ] comparisonAnalysis
 - [ ] causalChain for each hypothesis (reaching stop condition)
 - [ ] causeCategory for each hypothesis
 
-**If quality insufficient**: Re-run investigation specifying missing items
+**If quality insufficient**: Re-run investigator specifying missing items
 
-**Verification execution conditions (if any apply)**:
-- 2 or more hypotheses have similar levels of evidence
-- Only indirect evidence exists, no direct evidence
-- 2 or more unexplored areas exist
-- Contradicting evidence exists for hypotheses
-- Problem has recurred in the past
-- impactAnalysis.impactScope contains 3 or more affected locations
-- impactAnalysis.recurrenceRisk is high
+Proceed to verifier once quality is satisfied.
 
-**Verification skip conditions (all must apply)**:
-- One hypothesis is clearly dominant (direct evidence exists, no refutation)
-- Almost no unexplored areas
-- One-time problem (no recurrence history)
-
-Report assessment results to user and explain reasoning if skipping verification.
-
-### Step 3: Verification (verifier) *For complex cases
+### Step 3: Verification (verifier)
 
 **Task tool invocation**:
 ```
@@ -153,9 +141,8 @@ Rationale: [Selection rationale]
 
 ## Completion Criteria
 
-- [ ] Executed investigation and obtained evidence matrix, comparison analysis, and causal tracking
+- [ ] Executed investigator and obtained evidence matrix, comparison analysis, and causal tracking
 - [ ] Performed investigation quality check and re-ran if insufficient
-- [ ] Made verification decision and reported results to user
-- [ ] (If complex) Executed verification
-- [ ] Executed solution derivation
+- [ ] Executed verifier
+- [ ] Executed solver
 - [ ] Presented final report to user
