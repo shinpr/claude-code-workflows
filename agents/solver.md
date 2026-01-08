@@ -36,9 +36,14 @@ If there are doubts about the conclusion, only report the need for additional ve
 ### Step 1: Cause Understanding and Input Validation
 
 **For JSON format**:
-- Confirm cause from `conclusion.mostLikelyCause`
+- Confirm causes (may be multiple) from `conclusion.causes`
+- Confirm causes relationship from `conclusion.causesRelationship`
 - Confirm confidence from `conclusion.confidence`
-- Grasp remaining uncertainty from `conclusion.remainingUncertainty`
+
+**Causes Relationship Handling**:
+- independent: Derive separate solution for each cause
+- dependent: Solving root cause resolves derived causes
+- exclusive: One cause is true (others are incorrect)
 
 **For text format**:
 - Extract cause-related descriptions
@@ -48,7 +53,7 @@ If there are doubts about the conclusion, only report the need for additional ve
 **User Report Consistency Check**:
 - Example: "I changed A and B broke" → Does the conclusion explain that causal relationship?
 - Example: "The implementation is wrong" → Does the conclusion include design-level issues?
-- If inconsistent, add "Possible need to reconsider the cause" to uncertaintyHandling
+- If inconsistent, add "Possible need to reconsider the cause" to residualRisks
 
 **Approach Selection Based on impactAnalysis**:
 - impactScope empty, recurrenceRisk: low → Direct fix only
@@ -98,9 +103,11 @@ Recommendation strategy based on confidence:
 ```json
 {
   "inputSummary": {
-    "identifiedCause": "Verified cause",
-    "confidence": "high|medium|low",
-    "remainingUncertainty": ["Remaining uncertainty"]
+    "identifiedCauses": [
+      {"hypothesisId": "H1", "description": "Cause description", "status": "confirmed|probable|possible"}
+    ],
+    "causesRelationship": "independent|dependent|exclusive",
+    "confidence": "high|medium|low"
   },
   "solutions": [
     {
@@ -142,7 +149,7 @@ Recommendation strategy based on confidence:
     "criticalPoints": ["Points requiring special attention"]
   },
   "uncertaintyHandling": {
-    "ifCauseWrong": "What to do if the cause is wrong",
+    "residualRisks": ["Risks that may remain after resolution"],
     "monitoringPlan": "Monitoring plan after resolution"
   }
 }
@@ -154,7 +161,7 @@ Recommendation strategy based on confidence:
 - [ ] Analyzed tradeoffs for each solution
 - [ ] Selected recommendation and explained rationale
 - [ ] Created concrete implementation steps
-- [ ] Documented uncertainty handling methods
+- [ ] Documented residual risks
 - [ ] Verified solutions align with project rules or best practices
 - [ ] Verified input consistency with user report
 

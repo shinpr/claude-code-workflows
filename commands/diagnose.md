@@ -32,17 +32,40 @@ If the following are unclear, **ask with AskUserQuestion** before proceeding:
 - What broke (affected area)
 - Relationship between both (shared components, etc.)
 
-### 0.3 Reflecting in investigator Prompt
+### 0.3 Problem Essence Understanding
 
-**For change failures, include the following as mandatory investigation items in prompt**:
-1. Analyze cause change content in detail
-2. Identify commonalities between cause change and affected area
-3. Determine if cause change is a "correct fix" or "new bug" and select comparison baseline based on determination
+**Invoke rule-advisor via Task tool**:
+```
+subagent_type: rule-advisor
+prompt: Identify the essence and required rules for this problem: [Problem reported by user]
+```
+
+Confirm from rule-advisor output:
+- `taskAnalysis.mainFocus`: Primary focus of the problem
+- `mandatoryChecks.taskEssence`: Root problem beyond surface symptoms
+- `selectedRules`: Applicable rule sections
+- `warningPatterns`: Patterns to avoid
+
+### 0.4 Reflecting in investigator Prompt
+
+**Include the following in investigator prompt**:
+1. Problem essence (taskEssence)
+2. Key applicable rules summary (from selectedRules)
+3. Investigation focus (investigationFocus): Convert warningPatterns to "points prone to confusion or oversight in this investigation"
+4. **For change failures, additionally include**:
+   - Detailed analysis of the change content
+   - Commonalities between cause change and affected area
+   - Determination of whether the change is a "correct fix" or "new bug" with comparison baseline selection
 
 ## Diagnosis Flow Overview
 
 ```
-Problem → investigator → verifier → solver → Report
+Problem → investigator → verifier → solver ─┐
+                 ↑                          │
+                 └── confidence < high ─────┘
+                      (max 2 iterations)
+
+confidence=high reached → Report
 ```
 
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
@@ -71,8 +94,19 @@ Review investigation output:
 - [ ] comparisonAnalysis
 - [ ] causalChain for each hypothesis (reaching stop condition)
 - [ ] causeCategory for each hypothesis
+- [ ] Investigation covering investigationFocus items (when provided)
 
 **If quality insufficient**: Re-run investigator specifying missing items
+
+**design_gap Escalation**:
+
+When investigator output contains `causeCategory: design_gap` or `recurrenceRisk: high`:
+1. **Insert user confirmation before verifier execution**
+2. Use AskUserQuestion:
+   "A design-level issue was detected. How should we proceed?"
+   - A: Attempt fix within current design
+   - B: Include design reconsideration
+3. If user selects B, pass `includeRedesign: true` to solver
 
 Proceed to verifier once quality is satisfied.
 
@@ -88,6 +122,11 @@ Investigation results: [Investigation JSON output]
 
 **Expected output**: Alternative hypotheses (at least 3), Devil's Advocate evaluation, final conclusion, confidence
 
+**Confidence Criteria**:
+- **high**: No uncertainty affecting solution selection or implementation
+- **medium**: Uncertainty exists but resolvable with additional investigation
+- **low**: Fundamental information gap exists
+
 ### Step 4: Solution Derivation (solver)
 
 **Task tool invocation**:
@@ -95,26 +134,38 @@ Investigation results: [Investigation JSON output]
 subagent_type: solver
 prompt: Derive solutions based on the following verified conclusion.
 
-Conclusion: [Conclusion portion from verification or investigation]
+Causes: [verifier's conclusion.causes]
+Causes relationship: [causesRelationship: independent/dependent/exclusive]
 Confidence: [high/medium/low]
 ```
 
-**Expected output**: Multiple solutions (at least 3), tradeoff analysis, recommendation and implementation steps
+**Expected output**: Multiple solutions (at least 3), tradeoff analysis, recommendation and implementation steps, residual risks
+
+**Completion condition**: confidence=high
+
+**When not reached**:
+1. Return to Step 1 with uncertainties identified by solver as investigation targets
+2. Maximum 2 additional investigation iterations
+3. After 2 iterations without reaching high, present user with options:
+   - Continue additional investigation
+   - Execute solution at current confidence level
 
 ### Step 5: Final Report Creation
+
+**Prerequisite**: confidence=high achieved
 
 After diagnosis completion, report to user in the following format:
 
 ```
 ## Diagnosis Result Summary
 
-### Identified Cause
-[Verification result conclusion]
-Confidence: [high/medium/low]
+### Identified Causes
+[Cause list from verification results]
+- Causes relationship: [independent/dependent/exclusive]
 
 ### Verification Process
 - Investigation scope: [Scope confirmed in investigation]
-- Verification performed: [Yes/No]
+- Additional investigation iterations: [0/1/2]
 - Alternative hypotheses count: [Number generated in verification]
 
 ### Recommended Solution
@@ -130,9 +181,8 @@ Rationale: [Selection rationale]
 ### Alternatives
 [Alternative description]
 
-### Remaining Uncertainty
-- [Uncertainty 1]
-- [Uncertainty 2]
+### Residual Risks
+[solver's residualRisks]
 
 ### Post-Resolution Verification Items
 - [Verification item 1]
@@ -143,6 +193,7 @@ Rationale: [Selection rationale]
 
 - [ ] Executed investigator and obtained evidence matrix, comparison analysis, and causal tracking
 - [ ] Performed investigation quality check and re-ran if insufficient
-- [ ] Executed verifier
+- [ ] Executed verifier and obtained confidence level
 - [ ] Executed solver
+- [ ] Achieved confidence=high (or obtained user approval after 2 additional iterations)
 - [ ] Presented final report to user
