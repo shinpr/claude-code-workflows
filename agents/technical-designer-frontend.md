@@ -360,6 +360,7 @@ class Button extends React.Component {
 - [ ] Props change matrix completeness
 - [ ] Implementation approach selection rationale (vertical/horizontal/hybrid)
 - [ ] Latest React best practices researched and references cited
+- [ ] **Complexity assessment**: complexity_level set; if medium/high, complexity_rationale specifies (1) requirements/ACs, (2) constraints/risks
 
 ## Acceptance Criteria Creation Guidelines
 
