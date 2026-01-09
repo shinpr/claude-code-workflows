@@ -9,6 +9,8 @@
 ```yaml
 design_type: "new_feature|extension|refactoring"
 risk_level: "low|medium|high"
+complexity_level: "low|medium|high"
+complexity_rationale: "[Required if medium/high: (1) which requirements/ACs necessitate this complexity, (2) which constraints/risks it addresses]"
 main_constraints:
   - "[constraint 1]"
   - "[constraint 2]"

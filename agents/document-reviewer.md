@@ -210,6 +210,7 @@ Include in output when `prior_context_count > 0`:
 - [ ] Fulfillment of approval conditions
 - [ ] Verification of sources for technical claims and consistency with latest information
 - [ ] Failure scenario coverage
+- [ ] Complexity justification: If complexity_level is medium/high, complexity_rationale must specify (1) requirements/ACs necessitating the complexity, (2) constraints/risks it addresses
 
 ## Review Criteria (for Comprehensive Mode)
 
@@ -233,6 +234,7 @@ Include in output when `prior_context_count > 0`:
 - Serious rule violations (severity: high)
 - Blocking issues present
 - Prior context items (if any): 2+ major unresolved OR any critical unresolved
+- complexity_level is medium/high but complexity_rationale lacks (1) requirements/ACs or (2) constraints/risks
 
 ### Rejected
 - Fundamental problems exist
