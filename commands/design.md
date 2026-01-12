@@ -5,7 +5,7 @@ description: Execute from requirement analysis to design document creation
 
 **Command Context**: This command is dedicated to the design phase.
 
-## 🎭 Orchestrator Definition
+## Orchestrator Definition
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 

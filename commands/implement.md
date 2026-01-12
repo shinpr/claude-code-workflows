@@ -5,7 +5,7 @@ description: Orchestrate the complete implementation lifecycle from requirements
 
 **Command Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
 
-## 🎭 Orchestrator Definition
+## Orchestrator Definition
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
@@ -56,7 +56,7 @@ When continuing existing flow, verify:
 - Set currently executing step to `in_progress`
 - **Complete TodoWrite registration before invoking subagents**
 
-## 📋 Subagents Orchestration Guide Compliance Execution
+## Subagents Orchestration Guide Compliance Execution
 
 **Pre-execution Checklist (MANDATORY)**:
 - [ ] Confirmed relevant subagents-orchestration-guide skill flow
@@ -71,7 +71,7 @@ When continuing existing flow, verify:
 - Run quality-fixer before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
-## 🚨 CRITICAL Sub-agent Invocation Constraints
+## CRITICAL Sub-agent Invocation Constraints
 
 **MANDATORY suffix for ALL sub-agent prompts**:
 ```
@@ -81,7 +81,7 @@ This agent operates within implement command scope. Use orchestrator-provided ru
 
 ⚠️ **HIGH RISK**: task-executor/quality-fixer in autonomous mode have elevated crash risk - ALWAYS append this constraint to prompt end
 
-## 🎯 Mandatory Orchestrator Responsibilities
+## Mandatory Orchestrator Responsibilities
 
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 

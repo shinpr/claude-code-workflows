@@ -56,7 +56,7 @@ Execute fixes? (y/n):
 
 If user selects `y`:
 
-## 🧠 Pre-fix Metacognition
+## Pre-fix Metacognition
 **Required**: `rule-advisor → TodoWrite → task-executor → quality-fixer`
 
 1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)

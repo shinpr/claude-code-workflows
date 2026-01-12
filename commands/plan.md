@@ -5,7 +5,7 @@ description: Create work plan from design document and obtain plan approval
 
 **Command Context**: This command is dedicated to the planning phase.
 
-## 🎭 Orchestrator Definition
+## Orchestrator Definition
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
