@@ -18,6 +18,16 @@ description: Execute from requirement analysis to design document creation
 
 **CRITICAL**: NEVER skip document-reviewer, design-sync, or stopping points defined in subagents-orchestration-guide skill flows.
 
+## Workflow Overview
+
+```
+Requirements → requirement-analyzer → [Stop: Scale determination]
+                                           ↓
+                                   technical-designer → document-reviewer
+                                           ↓
+                                      design-sync → [Stop: Design approval]
+```
+
 ## Scope Boundaries
 
 **Included in this command**:
@@ -27,11 +37,7 @@ description: Execute from requirement analysis to design document creation
 - Document review with document-reviewer
 - Design Doc consistency verification with design-sync
 
-**NOT included** (out of scope):
-- PRD creation → Use `/implement` for full lifecycle
-- Work plan creation → Use `/plan` after design approval
-- Test skeleton generation → Use `/plan` after design approval
-- Implementation → Use `/build` after work plan approval
+**Responsibility Boundary**: This command completes with design document approval.
 
 Requirements: $ARGUMENTS
 
@@ -45,6 +51,14 @@ Once requirements are moderately clarified, analyze with requirement-analyzer an
 Clearly present design alternatives and trade-offs.
 
 **Scope**: Up to design document (ADR/Design Doc) approval. Work planning and beyond are outside the scope of this command.
+
+## Completion Criteria
+
+- [ ] Executed requirement-analyzer and determined scale
+- [ ] Created appropriate design document (ADR or Design Doc) with technical-designer
+- [ ] Executed document-reviewer and addressed feedback
+- [ ] Executed design-sync for consistency verification
+- [ ] Obtained user approval for design document
 
 ## Output Example
 Design phase completed.

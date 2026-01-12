@@ -4,7 +4,26 @@ description: Execute from requirement analysis to frontend design document creat
 
 **Command Context**: This command is dedicated to the frontend design phase.
 
-Execute **from requirement analysis to frontend design document creation and approval**.
+## Orchestrator Definition
+
+**Role**: Orchestrator
+
+**Execution Method**:
+- Requirement analysis → performed by requirement-analyzer
+- Design document creation → performed by technical-designer-frontend
+- Document review → performed by document-reviewer
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
+
+## Scope Boundaries
+
+**Included in this command**:
+- Requirement analysis with requirement-analyzer
+- ADR creation (if architecture changes, new technology, or data flow changes)
+- Design Doc creation with technical-designer-frontend
+- Document review with document-reviewer
+
+**Responsibility Boundary**: This command completes with design document approval.
 
 Requirements: $ARGUMENTS
 

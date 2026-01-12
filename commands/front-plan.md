@@ -4,6 +4,24 @@ description: Create frontend work plan from design document and obtain plan appr
 
 **Command Context**: This command is dedicated to the frontend planning phase.
 
+## Orchestrator Definition
+
+**Role**: Orchestrator
+
+**Execution Method**:
+- Work plan creation → performed by work-planner
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
+
+## Scope Boundaries
+
+**Included in this command**:
+- Design document selection
+- Work plan creation with work-planner
+- Plan approval obtainment
+
+**Responsibility Boundary**: This command completes with work plan approval.
+
 Create frontend work plan with the following process:
 
 ## Execution Process
@@ -36,5 +54,3 @@ Please provide separate instructions for implementation.
 
 ❌ **Avoid**: Additional processing after plan approval (task decomposition, implementation start, etc.)
 - Reason: Exceeds the scope of the planning phase
-
-**Responsibility Boundary**: This command is responsible for the frontend planning phase and completes its responsibility with plan content approval. The implementation phase is outside the scope of responsibility, so quality cannot be guaranteed and automatic transition does not occur.
