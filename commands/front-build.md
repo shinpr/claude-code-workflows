@@ -2,11 +2,23 @@
 description: Execute frontend implementation in autonomous execution mode
 ---
 
-**Command Context**: As orchestrator, autonomously completes frontend implementation in autonomous execution mode.
+## Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+
+**Execution Method**:
+- Task decomposition → performed by task-decomposer
+- Frontend implementation → performed by task-executor-frontend
+- Quality checks and fixes → performed by quality-fixer-frontend
+- Commits → performed by orchestrator (Bash tool)
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
+
+**CRITICAL**: Run quality-fixer-frontend before every commit. Obtain batch approval before autonomous mode.
 
 Work plan: $ARGUMENTS
 
-## 📋 Pre-execution Prerequisites
+## Pre-execution Prerequisites
 
 ### Task File Existence Check
 ```bash
@@ -27,7 +39,7 @@ Work plan: $ARGUMENTS
 | No tasks + plan exists | Plan exists but no task files | Confirm with user → run task-decomposer |
 | Neither exists | No plan or task files | Error: Prerequisites not met |
 
-## 🔄 Task Decomposition Phase (Conditional)
+## Task Decomposition Phase (Conditional)
 
 When task files don't exist:
 
@@ -55,7 +67,7 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## 🧠 Task Execution Cycle (4-Step Cycle) - Frontend Specialized
+## Task Execution Cycle (4-Step Cycle) - Frontend Specialized
 
 **MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
 

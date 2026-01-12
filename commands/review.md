@@ -5,6 +5,16 @@ description: Design Doc compliance validation with optional auto-fixes
 
 **Command Context**: Post-implementation quality assurance command
 
+## Execution Method
+
+- Compliance validation → performed by code-reviewer
+- Rule analysis → performed by rule-advisor
+- Fix implementation → performed by task-executor
+- Quality checks → performed by quality-fixer
+- Re-validation → performed by code-reviewer
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
+
 Design Doc (uses most recent if omitted): $ARGUMENTS
 
 **Think deeply** Understand the essence of compliance validation and execute:
@@ -46,7 +56,7 @@ Execute fixes? (y/n):
 
 If user selects `y`:
 
-## 🧠 Pre-fix Metacognition
+## Pre-fix Metacognition
 **Required**: `rule-advisor → TodoWrite → task-executor → quality-fixer`
 
 1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)

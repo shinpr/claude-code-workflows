@@ -5,7 +5,7 @@ description: Create work plan from design document and obtain plan approval
 
 **Command Context**: This command is dedicated to the planning phase.
 
-## 🎭 Orchestrator Definition
+## Orchestrator Definition
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
@@ -26,11 +26,7 @@ description: Create work plan from design document and obtain plan approval
 - Work plan creation with work-planner
 - Plan approval obtainment
 
-**NOT included** (out of scope):
-- Requirement analysis → Use `/design` or `/implement`
-- Design document creation → Use `/design`
-- Task decomposition → Use `/build` after plan approval
-- Implementation → Use `/build` after plan approval
+**Responsibility Boundary**: This command completes with work plan approval.
 
 Follow the planning process below:
 
@@ -64,8 +60,3 @@ Planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
-
-❌ **Avoid**: Additional processing after plan approval (task decomposition, implementation start, etc.)
-- Reason: Exceeds the scope of the planning phase
-
-**Responsibility Boundary**: This command is responsible for the planning phase and completes its responsibility with plan content approval. The implementation phase is outside the scope of responsibility, so quality cannot be guaranteed and automatic transition does not occur.
