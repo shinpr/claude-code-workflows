@@ -9,8 +9,12 @@ Target problem: $ARGUMENTS
 
 **Role**: Orchestrator
 
-**Execution Method**: All work is executed through sub-agents
-- investigator → verifier → solver
+**Execution Method**:
+- Investigation → performed by investigator
+- Verification → performed by verifier
+- Solution derivation → performed by solver
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
 
 **TodoWrite Registration**: Register execution steps in TodoWrite and proceed systematically
 
