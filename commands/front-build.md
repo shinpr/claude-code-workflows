@@ -2,7 +2,19 @@
 description: Execute frontend implementation in autonomous execution mode
 ---
 
-**Command Context**: As orchestrator, autonomously completes frontend implementation in autonomous execution mode.
+## 🎭 Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
+
+**Execution Method**:
+- Task decomposition → performed by task-decomposer
+- Frontend implementation → performed by task-executor-frontend
+- Quality checks and fixes → performed by quality-fixer-frontend
+- Commits → performed by orchestrator (Bash tool)
+
+Orchestrator invokes sub-agents and passes structured JSON between them.
+
+**CRITICAL**: Run quality-fixer-frontend before every commit. Obtain batch approval before autonomous mode.
 
 Work plan: $ARGUMENTS
 
