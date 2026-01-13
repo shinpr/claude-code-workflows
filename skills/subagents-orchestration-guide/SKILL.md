@@ -202,6 +202,32 @@ According to scale determination:
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
 2. **Start autonomous execution mode**: Direct implementation → Completion report
 
+## Existing Codebase Test Addition Flow
+
+For existing backend implementations (e.g., after reverse-engineer), use the dedicated test addition workflow via `/add-integration-tests` command.
+
+### When to Use
+- Design Doc exists but tests are missing
+- After reverse-engineer completes PRD/Design Doc generation
+- Adding test coverage to legacy backend code
+
+### Flow
+1. **[Stop: Confirm Design Doc path]**
+2. acceptance-test-generator → Generate test skeletons
+3. Create task file → `docs/plans/tasks/integration-tests-YYYYMMDD.md`
+4. task-executor → Implement tests following task file
+5. integration-test-reviewer → Review test quality
+   - If `needs_revision` → Return to step 4
+6. quality-fixer → Final quality check
+7. git commit → Commit test files
+8. Completion report
+
+### Key Differences from Standard Flow
+- No implementation phase (code already exists)
+- Uses task file for test implementation (same pattern as review.md)
+- Mandatory integration-test-reviewer step
+- Backend only (acceptance-test-generator limitation)
+
 ## Autonomous Execution Mode
 
 ### Pre-Execution Environment Check
@@ -232,8 +258,13 @@ graph TD
     AUTO --> TD[task-decomposer: Task decomposition]
     TD --> LOOP[Task execution loop]
     LOOP --> TE[task-executor: Implementation]
-    TE --> QF[quality-fixer: Quality check and fixes]
-    QF --> COMMIT[Orchestrator: Execute git commit]
+    TE --> ESCJUDGE{Escalation judgment}
+    ESCJUDGE -->|escalation_needed/blocked| USERESC[Escalate to user]
+    ESCJUDGE -->|testsAdded has int/e2e| ITR[integration-test-reviewer]
+    ESCJUDGE -->|No issues| QF
+    ITR -->|needs_revision| TE
+    ITR -->|approved| QF
+    QF[quality-fixer: Quality check and fixes] --> COMMIT[Orchestrator: Execute git commit]
     COMMIT --> CHECK{Any remaining tasks?}
     CHECK -->|Yes| LOOP
     CHECK -->|No| REPORT[Completion report]
@@ -244,10 +275,6 @@ graph TD
     REQCHECK -->|No change| TE
     REQCHECK -->|Change| STOP[Stop autonomous execution]
     STOP --> RA[Re-analyze with requirement-analyzer]
-
-    TE --> ERROR{Critical error?}
-    ERROR -->|None| QF
-    ERROR -->|Yes| ESC[Escalation]
 ```
 
 ### Conditions for Stopping Autonomous Execution
@@ -273,10 +300,16 @@ Stop autonomous execution and escalate to user in the following cases:
 **Per-task cycle**:
 ```
 1. task-executor → Implementation
-2. Escalation judgment → Check task-executor status
+2. Escalation judgment/Follow-up → Check task-executor status
 3. quality-fixer → Quality check and fixes
 4. git commit → Execute with Bash (on approved: true)
 ```
+
+**Step 2 Execution Details**:
+- `status: escalation_needed` or `status: blocked` → Escalate to user
+- `testsAdded` contains `*.int.test.ts` or `*.e2e.test.ts` → Execute **integration-test-reviewer**
+  - If verdict is `needs_revision` → Return to task-executor with `requiredFixes`
+  - If verdict is `approved` → Proceed to quality-fixer
 
 **Commit trigger**: quality-fixer returns `approved: true`
 

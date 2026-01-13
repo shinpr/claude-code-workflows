@@ -142,6 +142,7 @@ graph TB
 | `/review` | Verify code against design docs | Post-implementation check |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
+| `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
 
 ### Frontend Development (dev-workflows-frontend)
 
@@ -150,12 +151,12 @@ graph TB
 | `/front-design` | Create frontend design docs | React component architecture |
 | `/front-plan` | Generate frontend work plan | Component breakdown planning |
 | `/front-build` | Execute frontend task plan | Resume React implementation |
+| `/front-review` | Verify code against design docs | Post-implementation check |
+| `/front-reverse-design` | Generate frontend Design Docs from existing code using PRD | Frontend component documentation |
 | `/task` | Execute single task with precision | Component fixes, small updates |
-| `/review` | Verify code against design docs | Post-implementation check |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
-| `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 
-> **Tip**: Both plugins share `/task`, `/review`, `/diagnose`, and `/reverse-engineer` commands with the same functionality.
+> **Tip**: Both plugins share `/task` and `/diagnose` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
 
 ---
 
@@ -195,9 +196,12 @@ These agents work the same way whether you're building a REST API or a React app
 
 | Agent | What It Does |
 |-------|--------------|
+| **prd-creator** | Writes product requirement docs for complex features |
 | **technical-designer-frontend** | Plans React component architecture and state management |
 | **task-executor-frontend** | Implements React components with Testing Library |
 | **quality-fixer-frontend** | Handles React-specific tests, TypeScript checks, and builds |
+| **rule-advisor** | Picks the best coding rules for your current task |
+| **design-sync** | Verifies consistency across multiple Design Docs and detects conflicts |
 
 ---
 
@@ -328,7 +332,9 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 5. Presents actionable implementation steps
 ```
 
-### Reverse Engineering (Both Plugins)
+### Reverse Engineering
+
+**Backend (dev-workflows):**
 
 ```bash
 /reverse-engineer "src/auth module"
@@ -339,11 +345,26 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 3. Verifies PRD against actual code
 # 4. Reviews and revises until consistent
 # 5. Discovers Design Doc targets (technical components)
-# 6. Generates Design Docs with code verification
+# 6. Generates backend Design Docs with code verification
 # 7. Produces complete documentation from existing code
 ```
 
-> If you're working with undocumented legacy code, this command is designed to make it AI-friendly by generating PRD and design docs.
+**Frontend (dev-workflows-frontend):**
+
+```bash
+# First, generate PRD using backend plugin's /reverse-engineer
+# Then, generate frontend Design Docs from existing PRD:
+
+/front-reverse-design "docs/prd/my-feature-prd.md"
+
+# What happens:
+# 1. Uses existing PRD as basis
+# 2. Discovers frontend component targets
+# 3. Generates frontend Design Docs with code verification
+# 4. Reviews and revises until consistent
+```
+
+> If you're working with undocumented legacy code, these commands are designed to make it AI-friendly by generating PRD and design docs.
 > For a quick walkthrough, see: [How I Made Legacy Code AI-Friendly with Auto-Generated Docs](https://dev.to/shinpr/how-i-made-legacy-code-ai-friendly-with-auto-generated-docs-4353)
 
 ---
@@ -373,7 +394,7 @@ claude-code-workflows/
 │   ├── reverse-engineer.md     # Reverse documentation
 │   ├── plan.md
 │   ├── build.md
-│   └── ... (8 commands for backend, 7 for frontend)
+│   └── ... (9 commands for backend, 7 for frontend)
 │
 ├── skills/                     # Skills (auto-loaded by agents)
 │   ├── ai-development-guide/
