@@ -202,32 +202,6 @@ According to scale determination:
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
 2. **Start autonomous execution mode**: Direct implementation → Completion report
 
-## Existing Codebase Test Addition Flow
-
-For existing backend implementations (e.g., after reverse-engineer), use the dedicated test addition workflow via `/add-integration-tests` command.
-
-### When to Use
-- Design Doc exists but tests are missing
-- After reverse-engineer completes PRD/Design Doc generation
-- Adding test coverage to legacy backend code
-
-### Flow
-1. **[Stop: Confirm Design Doc path]**
-2. acceptance-test-generator → Generate test skeletons
-3. Create task file → `docs/plans/tasks/integration-tests-YYYYMMDD.md`
-4. task-executor → Implement tests following task file
-5. integration-test-reviewer → Review test quality
-   - If `needs_revision` → Return to step 4
-6. quality-fixer → Final quality check
-7. git commit → Commit test files
-8. Completion report
-
-### Key Differences from Standard Flow
-- No implementation phase (code already exists)
-- Uses task file for test implementation (same pattern as review.md)
-- Mandatory integration-test-reviewer step
-- Backend only (acceptance-test-generator limitation)
-
 ## Autonomous Execution Mode
 
 ### Pre-Execution Environment Check
