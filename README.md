@@ -144,6 +144,10 @@ graph TB
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 | `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
+| `/project-context` | Initialize project-context skill | New project setup |
+| `/brand-context` | Initialize brand-system-guide skill | Brand/design system setup |
+| `/refine-skill` | Improve and refine existing skills | Skill optimization |
+| `/sync-skills` | Synchronize skills across plugins | Skill management |
 
 ### Frontend Development (dev-workflows-frontend)
 
@@ -156,8 +160,10 @@ graph TB
 | `/front-reverse-design` | Generate frontend Design Docs from existing code using PRD | Frontend component documentation |
 | `/task` | Execute single task with precision | Component fixes, small updates |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/project-context` | Initialize project-context skill | New project setup |
+| `/brand-context` | Initialize brand-system-guide skill | Brand/design system setup |
 
-> **Tip**: Both plugins share `/task` and `/diagnose` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
+> **Tip**: Both plugins share `/task`, `/diagnose`, `/project-context`, and `/brand-context` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
 
 ---
 
@@ -199,6 +205,7 @@ These agents work the same way whether you're building a REST API or a React app
 |-------|--------------|
 | **prd-creator** | Writes product requirement docs for complex features |
 | **technical-designer-frontend** | Plans React component architecture and state management |
+| **ux-designer** | Creates UX Requirement Documentation (UXRD) with interaction patterns and accessibility specs |
 | **task-executor-frontend** | Implements React components with Testing Library |
 | **quality-fixer-frontend** | Handles React-specific tests, TypeScript checks, and builds |
 | **rule-advisor** | Picks the best coding rules for your current task |
@@ -214,10 +221,14 @@ The backend plugin includes proven best practices that work with any language:
 - **Testing Principles** - TDD, coverage, test patterns
 - **Implementation Approach** - Design decisions and trade-offs
 - **Documentation Standards** - Clear, maintainable docs
+- **Project Context** - Project-specific context (customizable via `/project-context`)
+- **Technical Spec** - Technical design rules and build/testing commands
 
 These are loaded as skills and automatically applied by agents when relevant.
 
-The frontend plugin has React and TypeScript-specific rules built in.
+The frontend plugin has React and TypeScript-specific rules built in, plus:
+
+- **Brand System Guide** - Design system with colors, typography, accessibility (customizable via `/brand-context`)
 
 ---
 
@@ -384,26 +395,32 @@ claude-code-workflows/
 │   ├── solver.md               # Diagnosis workflow
 │   ├── scope-discoverer.md     # Reverse engineering workflow
 │   ├── code-verifier.md        # Reverse engineering workflow
+│   ├── ux-designer.md          # UX/UI design (frontend)
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ... (17 agents total)
+│   └── ... (22 agents total)
 │
 ├── commands/                   # Shared commands
 │   ├── implement.md
 │   ├── design.md
 │   ├── diagnose.md             # Problem diagnosis
 │   ├── reverse-engineer.md     # Reverse documentation
+│   ├── project-context.md      # Project context initialization
+│   ├── brand-context.md        # Brand system initialization
 │   ├── plan.md
 │   ├── build.md
-│   └── ... (9 commands for backend, 7 for frontend)
+│   └── ... (13 commands for backend, 9 for frontend)
 │
 ├── skills/                     # Skills (auto-loaded by agents)
 │   ├── ai-development-guide/
 │   ├── coding-principles/
 │   ├── testing-principles/
 │   ├── implementation-approach/
+│   ├── project-context/        # Project-specific context
+│   ├── technical-spec/         # Technical design rules
+│   ├── brand-system-guide/     # Brand design system
 │   ├── typescript-rules/       # Frontend-specific
-│   └── ... (11 skills total)
+│   └── ... (14 skills total)
 │
 ├── backend/                    # dev-workflows plugin
 │   ├── agents/                 # Symlinks to shared agents

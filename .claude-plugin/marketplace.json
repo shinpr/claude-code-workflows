@@ -2,8 +2,8 @@
   "name": "claude-code-workflows",
   "version": "0.10.2",
   "owner": {
-    "name": "Shinsuke Kagawa",
-    "url": "https://github.com/shinpr"
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
   },
   "metadata": {
     "description": "Skills + Subagents for Claude Code - Progressive skills for quick wins, orchestrated agents for full agentic coding"

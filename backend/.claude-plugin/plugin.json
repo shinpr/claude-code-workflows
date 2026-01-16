@@ -3,11 +3,11 @@
   "version": "0.10.2",
   "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 18 specialized agents",
   "author": {
-    "name": "Shinsuke Kagawa",
-    "url": "https://github.com/shinpr"
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
   },
-  "homepage": "https://github.com/shinpr/dev-workflows",
-  "repository": "https://github.com/shinpr/dev-workflows.git",
+  "homepage": "https://github.com/tundraray/claude-code-workflows",
+  "repository": "https://github.com/tundraray/claude-code-workflows.git",
   "license": "MIT",
   "keywords": [
     "workflows",
@@ -22,11 +22,13 @@
   ],
   "commands": [
     "./commands/add-integration-tests.md",
+    "./commands/brand-context.md",
     "./commands/build.md",
     "./commands/design.md",
     "./commands/diagnose.md",
     "./commands/implement.md",
     "./commands/plan.md",
+    "./commands/project-context.md",
     "./commands/reverse-engineer.md",
     "./commands/review.md",
     "./commands/task.md"

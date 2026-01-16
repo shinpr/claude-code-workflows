@@ -57,11 +57,13 @@ The following subagents are available:
 ### Document Creation Agents
 5. **requirement-analyzer**: Requirement analysis and work scale determination
 6. **prd-creator**: Product Requirements Document creation
-7. **technical-designer**: ADR/Design Doc creation
-8. **work-planner**: Work plan creation from Design Doc and test skeletons
-9. **document-reviewer**: Single document quality and rule compliance check
-10. **design-sync**: Design Doc consistency verification across multiple documents
-11. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
+7. **ux-designer**: UX Requirement Documentation (UXRD) creation - UI/UX design, interaction patterns, accessibility specs (frontend)
+8. **technical-designer**: ADR/Design Doc creation for backend
+9. **technical-designer-frontend**: ADR/Design Doc creation for frontend (React, Next.js)
+10. **work-planner**: Work plan creation from Design Doc and test skeletons
+11. **document-reviewer**: Single document quality and rule compliance check
+12. **design-sync**: Design Doc consistency verification across multiple documents
+13. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
 ## Orchestration Principles
 
@@ -92,6 +94,7 @@ Autonomous execution MUST stop and wait for user input at these points:
 |-------|------------|---------------------|
 | Requirements | After requirement-analyzer completes | Confirm requirements / Answer questions |
 | PRD | After document-reviewer completes PRD review | Approve PRD |
+| UXRD | After document-reviewer completes UXRD review (if frontend/UI work) | Approve UXRD |
 | ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
 | Design | After design-sync completes consistency verification | Approve Design Doc |
 | Work Plan | After work-planner creates plan | Batch approval for implementation phase |
@@ -99,15 +102,16 @@ Autonomous execution MUST stop and wait for user input at these points:
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation
 
 ## Scale Determination and Document Requirements
-| Scale | File Count | PRD | ADR | Design Doc | Work Plan |
-|-------|------------|-----|-----|------------|-----------|
-| Small | 1-2 | Update※1 | Not needed | Not needed | Simplified |
-| Medium | 3-5 | Update※1 | Conditional※2 | **Required** | **Required** |
-| Large | 6+ | **Required**※3 | Conditional※2 | **Required** | **Required** |
+| Scale | File Count | PRD | UXRD | ADR | Design Doc | Work Plan |
+|-------|------------|-----|------|-----|------------|-----------|
+| Small | 1-2 | Update※1 | Not needed | Not needed | Not needed | Simplified |
+| Medium | 3-5 | Update※1 | Conditional※4 | Conditional※2 | **Required** | **Required** |
+| Large | 6+ | **Required**※3 | Conditional※4 | Conditional※2 | **Required** | **Required** |
 
 ※1: Update if PRD exists for the relevant feature
 ※2: When there are architecture changes, new technology introduction, or data flow changes
 ※3: New creation/update existing/reverse PRD (when no existing PRD)
+※4: When frontend/UI work is involved - UX Requirement Documentation for interaction patterns, accessibility, visual specs
 
 ## How to Call Subagents
 
@@ -158,16 +162,17 @@ Integration example:
 ```
 
 ### Update Mode for Document Generation Agents
-Document generation agents (work-planner, technical-designer, prd-creator) can update existing documents in `update` mode.
+Document generation agents (work-planner, technical-designer, technical-designer-frontend, prd-creator, ux-designer) can update existing documents in `update` mode.
 
 - **Initial creation**: Create new document in create (default) mode
 - **On requirement change**: Edit existing document and add history in update mode
 
 Criteria for timing when to call each agent:
 - **work-planner**: Request updates only before execution
-- **technical-designer**: Request updates according to design changes → Execute document-reviewer for consistency check
+- **technical-designer(-frontend)**: Request updates according to design changes → Execute document-reviewer for consistency check
 - **prd-creator**: Request updates according to requirement changes → Execute document-reviewer for consistency check
-- **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update
+- **ux-designer**: Request updates according to UX/UI requirement changes → Execute document-reviewer for consistency check
+- **document-reviewer**: Always execute before user approval after PRD/ADR/UXRD/Design Doc creation/update
 
 ## Basic Flow for Work Planning
 
@@ -178,25 +183,27 @@ According to scale determination:
 1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop: Requirement confirmation/question handling]**
 2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not)
 3. document-reviewer → PRD review **[Stop: PRD Approval]**
-4. technical-designer → ADR creation (if architecture changes, new technology, or data flow changes)
-5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
-6. technical-designer → Design Doc creation
-7. document-reviewer → Design Doc review
-8. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-9. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Orchestrator: Verify generation, then pass information to work-planner (*1)
-10. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-11. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+4. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
+5. technical-designer(-frontend) → ADR creation (if architecture changes, new technology, or data flow changes)
+6. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
+7. technical-designer(-frontend) → Design Doc creation
+8. document-reviewer → Design Doc review
+9. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
+10. acceptance-test-generator → Integration and E2E test skeleton generation
+    → Orchestrator: Verify generation, then pass information to work-planner (*1)
+11. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+12. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Medium Scale (3-5 Files)
 1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
-2. technical-designer → Design Doc creation
-3. document-reviewer → Design Doc review
-4. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-5. acceptance-test-generator → Integration and E2E test skeleton generation
+2. ux-designer → UXRD creation (if frontend/UI work) → document-reviewer **[Stop: UXRD Approval]**
+3. technical-designer(-frontend) → Design Doc creation
+4. document-reviewer → Design Doc review
+5. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
+6. acceptance-test-generator → Integration and E2E test skeleton generation
    → Orchestrator: Verify generation, then pass information to work-planner (*1)
-6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-7. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+7. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
+8. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
 
 ### Small Scale (1-2 Files)
 1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**

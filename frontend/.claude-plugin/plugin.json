@@ -3,11 +3,11 @@
   "version": "0.10.2",
   "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 16 specialized agents",
   "author": {
-    "name": "Shinsuke Kagawa",
-    "url": "https://github.com/shinpr"
+    "name": "Mikhail Andreev",
+    "url": "https://github.com/tundraray"
   },
-  "homepage": "https://github.com/shinpr/dev-workflows",
-  "repository": "https://github.com/shinpr/dev-workflows.git",
+  "homepage": "https://github.com/tundraray/claude-code-workflows",
+  "repository": "https://github.com/tundraray/claude-code-workflows.git",
   "license": "MIT",
   "keywords": [
     "react",
@@ -22,12 +22,14 @@
     "best-practices"
   ],
   "commands": [
+    "./commands/brand-context.md",
     "./commands/diagnose.md",
     "./commands/front-build.md",
     "./commands/front-design.md",
     "./commands/front-plan.md",
     "./commands/front-reverse-design.md",
     "./commands/front-review.md",
+    "./commands/project-context.md",
     "./commands/task.md"
   ],
   "agents": [
@@ -45,6 +47,7 @@
     "./agents/task-decomposer.md",
     "./agents/task-executor-frontend.md",
     "./agents/technical-designer-frontend.md",
+    "./agents/ux-designer.md",
     "./agents/verifier.md",
     "./agents/work-planner.md"
   ]
