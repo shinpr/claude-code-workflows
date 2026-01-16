@@ -86,6 +86,8 @@ Information source priority:
 
 ## Output Format
 
+**JSON format is mandatory.**
+
 ```json
 {
   "problemSummary": {
