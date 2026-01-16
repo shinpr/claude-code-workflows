@@ -114,6 +114,8 @@ For each claim with collected evidence:
 
 ## Output Format
 
+**JSON format is mandatory.**
+
 ### Essential Output (default)
 
 ```json
