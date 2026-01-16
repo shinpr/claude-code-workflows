@@ -1,8 +1,9 @@
 # Claude Code Workflows 🚀
 
+*Forked from [shinpr/claude-code-workflows](https://github.com/shinpr/claude-code-workflows)*
+
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
 **Build production-ready software with Claude Code** - Workflow plugins that bring best practices, specialized agents, and automated quality checks to your development process.
 
@@ -476,6 +477,14 @@ cat ~/.ssh/id_ed25519.pub
 ssh -T git@github.com
 # → Should see: "Hi username! You've successfully authenticated..."
 ```
+
+---
+
+## 🙏 Acknowledgments
+
+This project is a fork of [shinpr/claude-code-workflows](https://github.com/shinpr/claude-code-workflows).
+
+Special thanks to [Shinsuke Kagawa](https://github.com/shinpr) for creating the original Claude Code Workflows — an excellent foundation for building production-ready software with Claude Code. The well-designed agent orchestration architecture and comprehensive workflow system made this project possible.
 
 ---
 
