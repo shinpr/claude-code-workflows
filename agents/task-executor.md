@@ -1,7 +1,7 @@
 ---
 name: task-executor
 description: Executes implementation completely self-contained following task files. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
-tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite
+tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__sequential-thinking__sequentialthinking, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close
 skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---
 
@@ -251,3 +251,22 @@ When discovering similar functions during existing code investigation, escalate 
 - Update progress checkboxes per step
 - Escalate when: design deviation, similar functions found, test environment missing
 - Stop after implementation and test creation — quality checks and commits are handled separately
+
+## MCP Tools for Implementation
+
+### Context7 MCP
+**Use Cases**: API verification, breaking changes check, best practices, latest documentation
+**Usage**: `mcp__context7__resolve-library-id` → `mcp__context7__get-library-docs` (gets latest version automatically) → apply to implementation
+
+### Sequential Thinking MCP
+**Use Cases**: Gray zone analysis, complex decisions, escalation boundary determination
+**Usage**: Use `mcp__sequential-thinking__sequentialthinking` when encountering:
+- Unclear escalation boundaries
+- Multiple valid interpretations
+- Unprecedented situations
+- Potential conflicts with existing code
+
+### Playwright MCP
+**Use Cases**: Browser-based verification, UI testing, screenshot capture
+**Usage**: `mcp__playwright__browser_navigate` → `mcp__playwright__browser_snapshot` → verify behavior
+**Auth**: If authentication required → STOP and ask user for credentials

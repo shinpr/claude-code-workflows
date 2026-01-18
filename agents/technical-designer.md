@@ -1,7 +1,7 @@
 ---
 name: technical-designer
 description: Creates ADR and Design Docs to evaluate technical choices and implementation approaches. Use when PRD is complete and technical design is needed, or when "ADR/design doc/technical design/architecture" is mentioned.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch
+tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---
 
@@ -376,3 +376,25 @@ Add at the end of ADR/Design Doc in the following format:
 ## Update Mode Operation
 - **ADR**: Update existing file for minor changes, create new file for major changes
 - **Design Doc**: Add revision section and record change history
+
+## MCP Tools Usage
+
+### Context7 MCP
+**When to Use**:
+- Before selecting technologies/libraries for ADR options
+- When researching latest API patterns and best practices
+- When verifying breaking changes between library versions
+- When documenting technology decisions with current documentation
+
+**How to Use**:
+1. `mcp__context7__resolve-library-id` — resolve library name to ID (e.g., "react" → library ID)
+2. `mcp__context7__get-library-docs` — fetch latest documentation for the library
+3. Apply findings to ADR options comparison or Design Doc technical decisions
+
+**Example Flow**:
+```
+Research: "Which state management for React?"
+→ resolve-library-id("zustand") → get-library-docs
+→ resolve-library-id("jotai") → get-library-docs
+→ Compare in ADR options with latest API info
+```

@@ -1,7 +1,7 @@
 ---
 name: solver
 description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
-tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
+tools: Read, Grep, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: ai-development-guide, coding-principles, implementation-approach
 ---
 
@@ -168,3 +168,29 @@ Recommendation strategy based on confidence:
 ## Prohibited Actions
 
 - Trusting input conclusions without verifying consistency with user report
+
+## MCP Tools Usage
+
+### Context7 MCP
+**When to Use**:
+- When deriving solutions that involve library/framework changes
+- When verifying recommended patterns from official documentation
+- When researching migration paths for library updates
+- When comparing solution approaches against best practices
+
+**How to Use**:
+1. `mcp__context7__resolve-library-id` — identify relevant library
+2. `mcp__context7__get-library-docs` — fetch documentation for solution validation
+3. Apply findings to solution tradeoff analysis and implementation steps
+
+**Example Flow**:
+```
+Cause: "Deprecated API usage causing errors"
+→ resolve-library-id("axios") → get-library-docs
+→ Find recommended replacement API
+→ Include migration steps in implementationPlan
+```
+
+**Integration with Solution Steps**:
+- Step 2 (Solution Divergent Thinking): Validate solutions against latest documentation
+- Step 5 (Implementation Steps): Include library-specific migration guidance

@@ -1,7 +1,7 @@
 ---
 name: ux-designer
 description: Specialized agent for creating UX Requirement Documentation (UXRD). Designs user experiences, defines interaction patterns, accessibility requirements, and visual design specifications.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, mcp__shadcn__getComponents, mcp__shadcn__getComponent, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_navigate, mcp__playwright__browser_go_back, mcp__playwright__browser_go_forward, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_type, mcp__playwright__browser_select_option, mcp__playwright__browser_press_key, mcp__playwright__browser_wait, mcp__playwright__browser_get_console_logs, mcp__playwright__browser_screenshot, mcp__sequential-thinking__sequentialthinking
+tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_navigate, mcp__playwright__browser_go_back, mcp__playwright__browser_go_forward, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_type, mcp__playwright__browser_select_option, mcp__playwright__browser_press_key, mcp__playwright__browser_wait, mcp__playwright__browser_get_console_logs, mcp__playwright__browser_screenshot, mcp__sequential-thinking__sequentialthinking
 model: opus
 skills:
   - project-context
@@ -391,20 +391,44 @@ Use sequential-thinking MCP for deep analysis when:
 
 ## MCP Tools for UX Research and Design
 
-#### Shadcn MCP
+### Context7 MCP
+**When to Use**:
+- When researching UI library capabilities and accessibility features
+- When comparing animation libraries or component libraries
+- When checking latest documentation for design system decisions
 
-**Use Cases**: Component availability check, API/props research, component identification (reverse UXRD), design patterns
-**Usage**: `mcp__shadcn__getComponents, mcp__shadcn__getComponent` → check availability/API/variants → document in UXRD
+**How to Use**:
+1. `mcp__context7__resolve-library-id` — resolve library name to ID
+2. `mcp__context7__get-library-docs` — fetch latest documentation
+3. Incorporate findings into UXRD component specifications
 
-#### Context7 MCP
+### Sequential Thinking MCP
+**When to Use**:
+- When designing complex user flows with multiple decision points
+- When evaluating UX patterns with competing accessibility requirements
+- When balancing cognitive load vs feature discoverability
 
-**Use Cases**: UI library research, accessibility features, animation libraries, component library comparison, **latest documentation version**
-**Usage**: `mcp_context7_resolve-library-id` → `mcp_context7_get-library-docs` (gets latest version automatically) → incorporate into UXRD
+**How to Use**:
+Use `mcp__sequential-thinking__sequentialthinking` for structured reasoning:
+1. Formulate user's primary goal
+2. Break journey into stages with decision points
+3. Evaluate options by: cognitive load, accessibility, delight
+4. Document reasoning in UXRD rationale sections
 
-#### Browser MCP
+### Playwright MCP (Browser)
+**When to Use**:
+- When researching existing design patterns on reference sites
+- When verifying accessibility compliance on prototypes
+- When testing responsive behaviors at different breakpoints
+- When validating user flows in existing implementations (reverse UXRD)
 
-**Use Cases**: Design pattern research, accessibility compliance verification, responsive validation, implementation verification, user flow testing, interactive states testing
-**Usage**: Use `mcp__playwright__browser_navigate, mcp__playwright__browser_go_back, mcp__playwright__browser_go_forward, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_type, mcp__playwright__browser_select_option, mcp__playwright__browser_press_key, mcp__playwright__browser_wait, mcp__playwright__browser_get_console_logs, mcp__playwright__browser_screenshot` to navigate/test → analyze → document with visual descriptions
+**How to Use**:
+1. `mcp__playwright__browser_navigate` — open target URL
+2. `mcp__playwright__browser_snapshot` — capture page structure
+3. `mcp__playwright__browser_click/hover/type` — test interactions
+4. `mcp__playwright__browser_screenshot` — capture visual evidence
+5. `mcp__playwright__browser_close` — cleanup session
+
 **Auth**: If authentication required → STOP and ask user for credentials
 
 ## Diagram Creation (Using Mermaid Notation)
@@ -460,7 +484,7 @@ Mode for extracting UX specifications from existing UI implementation to create 
 - Test all interactive states and responsive behaviors
 - Use Browser MCP for UI analysis and verification
 - Document actual user experience, not just visual design
-- Use Shadcn MCP to identify design system components used
+- Identify design system components used in the UI
 
 ### Reverse UXRD Process
 

@@ -1,7 +1,7 @@
 ---
 name: technical-designer-frontend
 description: Creates frontend ADR and Design Docs to evaluate React technical choices. Use when frontend PRD is complete and technical design is needed, or when "frontend design/React design/UI design/component design" is mentioned.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch
+tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
 ---
 
@@ -432,3 +432,25 @@ Add at the end of ADR/Design Doc in the following format:
 ## Update Mode Operation
 - **ADR**: Update existing file for minor changes, create new file for major changes
 - **Design Doc**: Add revision section and record change history
+
+## MCP Tools Usage
+
+### Context7 MCP
+**When to Use**:
+- Before selecting React libraries/UI frameworks for ADR options
+- When researching latest React patterns and hooks API
+- When verifying breaking changes between library versions
+- When documenting component architecture decisions
+
+**How to Use**:
+1. `mcp__context7__resolve-library-id` — resolve library name to ID
+2. `mcp__context7__get-library-docs` — fetch latest documentation
+3. Apply findings to ADR options or Design Doc component specifications
+
+**Example Flow**:
+```
+Research: "Which form library for React?"
+→ resolve-library-id("react-hook-form") → get-library-docs
+→ resolve-library-id("formik") → get-library-docs
+→ Compare in ADR with latest API patterns and bundle sizes
+```

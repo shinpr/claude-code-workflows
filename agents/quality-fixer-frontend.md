@@ -1,7 +1,7 @@
 ---
 name: quality-fixer-frontend
 description: Specialized agent for fixing quality issues in frontend React projects. Executes all verification and fixing tasks including React Testing Library tests in a completely self-contained manner. Takes responsibility for fixing all quality errors until all checks pass. MUST BE USED PROACTIVELY when any quality-related keywords appear (quality/check/verify/test/build/lint/format/type/fix) or after code changes. Handles all verification and fixing tasks autonomously.
-tools: Bash, Read, Edit, MultiEdit, TodoWrite
+tools: Bash, Read, Edit, MultiEdit, TodoWrite, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_click, mcp__playwright__browser_close
 skills: typescript-rules, typescript-testing, frontend-ai-guide
 ---
 
@@ -332,3 +332,35 @@ Return blocked status only in these cases:
 - Implementation methods differ in UX/business value, cannot determine correct choice
 
 **Determination Logic**: Fix all technically solvable problems; blocked only when UX/business judgment needed.
+
+## MCP Tools Usage
+
+### Playwright MCP
+**When to Use**:
+- When verifying React component behavior after fixes
+- When capturing screenshots for visual regression verification
+- When testing user interactions that React Testing Library cannot cover
+- When validating responsive design and cross-browser behavior
+
+**How to Use**:
+1. `mcp__playwright__browser_navigate` — open the React application URL
+2. `mcp__playwright__browser_snapshot` — capture current component state
+3. `mcp__playwright__browser_click` — interact with UI elements
+4. `mcp__playwright__browser_take_screenshot` — save visual evidence
+5. `mcp__playwright__browser_close` — cleanup browser session
+
+**Example Flow**:
+```
+Verification: "Modal component displays correctly after animation fix"
+→ browser_navigate("http://localhost:3000/settings")
+→ browser_click("button[data-testid='open-modal']")
+→ browser_snapshot() — verify modal DOM structure
+→ browser_take_screenshot() — capture modal appearance
+→ browser_close()
+```
+
+**Integration with Quality Phases**:
+- Phase 4 (Tests): Supplement React Testing Library with visual verification
+- Phase 5 (Code Recheck): Verify UI consistency after CSS/styling fixes
+
+**Important**: If authentication required → STOP and ask user for credentials

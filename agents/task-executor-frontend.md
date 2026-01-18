@@ -1,7 +1,7 @@
 ---
 name: task-executor-frontend
 description: Executes React implementation completely self-contained following frontend task files. Use when frontend task files exist, or when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
-tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite
+tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__sequential-thinking__sequentialthinking, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close
 skills: typescript-rules, typescript-testing, frontend-ai-guide, implementation-approach
 ---
 
@@ -262,3 +262,23 @@ When discovering similar components/hooks during existing code investigation, es
 **Escalation Required**:
 - When considering design deviation or shortcut fixes (see judgment criteria above)
 - When discovering similar components/hooks (Pattern 5 compliant)
+
+## MCP Tools for Frontend Implementation
+
+### Context7 MCP
+**Use Cases**: React/library API verification, breaking changes check, best practices, latest docs
+**Usage**: `mcp__context7__resolve-library-id` → `mcp__context7__get-library-docs` → apply to implementation
+
+### Sequential Thinking MCP
+**Use Cases**: Gray zone analysis, complex component decisions, escalation boundary determination
+**Usage**: Use `mcp__sequential-thinking__sequentialthinking` when encountering:
+- Unclear escalation boundaries
+- Multiple valid component patterns
+- Unprecedented UI situations
+- Potential conflicts with existing components
+
+### Playwright MCP
+**Use Cases**: Visual verification, UI testing, screenshot capture, component behavior testing
+**Usage**: `mcp__playwright__browser_navigate` → `mcp__playwright__browser_snapshot` → verify UI
+**Auth**: If authentication required → STOP and ask user for credentials
+
