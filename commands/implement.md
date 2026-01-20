@@ -48,6 +48,13 @@ When continuing existing flow, verify:
 - Recognize mandatory stopping points
 - Invoke next sub-agent defined in flow
 
+### After requirement-analyzer [Stop]
+
+When user responds to questions:
+- If response matches any `scopeDependencies.question` → Check `impact` for scale change
+- If scale changes → Re-execute requirement-analyzer with updated context
+- If `confidence: "confirmed"` or no scale change → Proceed to next step
+
 ### 4. Register All Flow Steps to TodoWrite (MANDATORY)
 
 **After scale determination, register all steps of the applicable flow to TodoWrite**:

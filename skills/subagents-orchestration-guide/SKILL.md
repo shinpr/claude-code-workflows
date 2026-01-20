@@ -22,7 +22,7 @@ All investigation, analysis, and implementation work flows through specialized s
 
 ### First Action Rule
 
-**Every new task begins with requirement-analyzer.**
+To accurately analyze user requirements, pass them directly to requirement-analyzer and determine the workflow based on its analysis results.
 
 ## Decision Flow When Receiving Tasks
 
@@ -86,7 +86,8 @@ Assign work based on each subagent's responsibilities:
 
 ## Explicit Stop Points
 
-Autonomous execution MUST stop and wait for user input at these points:
+Autonomous execution MUST stop and wait for user input at these points.
+**Use AskUserQuestion to present confirmations and questions.**
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
@@ -130,6 +131,7 @@ Call subagents using the Task tool:
 ## Structured Response Specification
 
 Subagents respond in JSON format. Key fields for orchestrator decisions:
+- **requirement-analyzer**: scale, confidence, adrRequired, scopeDependencies, questions
 - **task-executor**: status (escalation_needed/blocked/completed), testsAdded
 - **quality-fixer**: approved (true/false)
 - **document-reviewer**: approvalReady (true/false)
