@@ -14,7 +14,7 @@ description: Orchestrate the complete implementation lifecycle from requirements
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
+   - **Stop at every `[Stop: ...]` marker** → Use AskUserQuestion for confirmation and wait for approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
 **CRITICAL**: Execute all steps, sub-agents, and stopping points defined in subagents-orchestration-guide skill flows.
@@ -47,6 +47,13 @@ When continuing existing flow, verify:
 - Confirm autonomous execution mode conditions
 - Recognize mandatory stopping points
 - Invoke next sub-agent defined in flow
+
+### After requirement-analyzer [Stop]
+
+When user responds to questions:
+- If response matches any `scopeDependencies.question` → Check `impact` for scale change
+- If scale changes → Re-execute requirement-analyzer with updated context
+- If `confidence: "confirmed"` or no scale change → Proceed to next step
 
 ### 4. Register All Flow Steps to TodoWrite (MANDATORY)
 
