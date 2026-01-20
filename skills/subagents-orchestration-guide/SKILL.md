@@ -174,33 +174,34 @@ Criteria for timing when to call each agent:
 When receiving new features or change requests, start with requirement-analyzer.
 According to scale determination:
 
-### Large Scale (6+ Files)
-1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop: Requirement confirmation/question handling]**
-2. prd-creator → PRD creation (update if existing, new creation with thorough investigation if not)
+### Large Scale (6+ Files) - 11 Steps
+
+1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop]**
+2. prd-creator → PRD creation
 3. document-reviewer → PRD review **[Stop: PRD Approval]**
-4. technical-designer → ADR creation (if architecture changes, new technology, or data flow changes)
+4. technical-designer → ADR creation (if architecture/technology/data flow changes)
 5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
 6. technical-designer → Design Doc creation
 7. document-reviewer → Design Doc review
-8. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-9. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Orchestrator: Verify generation, then pass information to work-planner (*1)
-10. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-11. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+8. design-sync → Consistency verification **[Stop: Design Doc Approval]**
+9. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
+10. work-planner → Work plan creation **[Stop: Batch approval]**
+11. task-decomposer → Autonomous execution → Completion report
 
-### Medium Scale (3-5 Files)
-1. requirement-analyzer → Requirement analysis **[Stop: Requirement confirmation/question handling]**
+### Medium Scale (3-5 Files) - 7 Steps
+
+1. requirement-analyzer → Requirement analysis **[Stop]**
 2. technical-designer → Design Doc creation
 3. document-reviewer → Design Doc review
-4. design-sync → Design Doc consistency verification **[Stop: Design Doc Approval]**
-5. acceptance-test-generator → Integration and E2E test skeleton generation
-   → Orchestrator: Verify generation, then pass information to work-planner (*1)
-6. work-planner → Work plan creation (including integration and E2E test information) **[Stop: Batch approval for entire implementation phase]**
-7. **Start autonomous execution mode**: task-decomposer → Execute all tasks → Completion report
+4. design-sync → Consistency verification **[Stop: Design Doc Approval]**
+5. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
+6. work-planner → Work plan creation **[Stop: Batch approval]**
+7. task-decomposer → Autonomous execution → Completion report
 
-### Small Scale (1-2 Files)
-1. Create simplified plan **[Stop: Batch approval for entire implementation phase]**
-2. **Start autonomous execution mode**: Direct implementation → Completion report
+### Small Scale (1-2 Files) - 2 Steps
+
+1. Create simplified plan **[Stop: Batch approval]**
+2. Direct implementation → Completion report
 
 ## Autonomous Execution Mode
 
