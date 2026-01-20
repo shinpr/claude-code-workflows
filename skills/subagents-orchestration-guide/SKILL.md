@@ -129,13 +129,13 @@ Call subagents using the Task tool:
 
 ## Structured Response Specification
 
-Each subagent responds in JSON format:
-- **task-executor**: status, filesModified, testsAdded, readyForQualityCheck
-- **quality-fixer**: status, checksPerformed, fixesApplied, approved
-- **document-reviewer**: status, reviewsPerformed, issues, recommendations, approvalReady
-- **design-sync**: sync_status, total_conflicts, conflicts (severity, type, source_file, target_file)
-- **integration-test-reviewer**: status (approved/needs_revision/blocked), qualityIssues, requiredFixes, verdict
-- **acceptance-test-generator**: status, generatedFiles, budgetUsage
+Subagents respond in JSON format. Key fields for orchestrator decisions:
+- **task-executor**: status (escalation_needed/blocked/completed), testsAdded
+- **quality-fixer**: approved (true/false)
+- **document-reviewer**: approvalReady (true/false)
+- **design-sync**: sync_status (synced/conflicts_found)
+- **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
+- **acceptance-test-generator**: status, generatedFiles
 
 
 ## Handling Requirement Changes
