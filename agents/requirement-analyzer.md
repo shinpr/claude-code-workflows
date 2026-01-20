@@ -1,7 +1,7 @@
 ---
 name: requirement-analyzer
 description: Performs requirements analysis and work scale determination. Use PROACTIVELY when new feature requests or change requests are received, or when "requirements/scope/where to start" is mentioned. Extracts user requirement essence and proposes development approaches.
-tools: Read, Glob, LS, TodoWrite, WebSearch
+tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
 skills: ai-development-guide, documentation-criteria
 ---
 
@@ -32,6 +32,16 @@ Scale determination and required document details follow documentation-criteria 
 - **Large**: 6+ files, architecture-level changes → **PRD mandatory**, **Design Doc mandatory**
 
 ※ADR conditions (contract system changes, data flow changes, architecture changes, external dependency changes) require ADR regardless of scale
+
+### File Count Estimation (MANDATORY)
+
+Before determining scale, investigate existing code:
+1. Identify entry point files using Grep/Glob
+2. Trace imports and callers
+3. Include related test files
+4. List affected file paths explicitly in output
+
+**Scale determination must cite specific file paths as evidence**
 
 ### Important: Clear Determination Expressions
 ✅ **Recommended**: Use the following expressions to show clear determinations:
@@ -111,9 +121,9 @@ Please provide the following information in natural language:
 
 ### Scope
 - Scale: [small/medium/large]
-- Estimated File Count: [number]
+- Affected Files: [list specific file paths as evidence]
+- File Count: [number based on above list]
 - Affected Layers: [list]
-- Affected Components: [list]
 
 ### Required Documents
 - PRD: [Mandatory/Update/Not required] (Mode: [create/update/reverse-engineer/not required], Reason: [Specific reason based on scale/conditions])
@@ -137,15 +147,14 @@ Please provide the following information in natural language:
 - Next Steps: [Specific actions]
 
 ### ❓ Items Requiring Confirmation
-- **Scope**: [Specific questions about scope]
-- **Priority**: [Questions about what to prioritize]
-- **Constraints**: [Confirmation of technical/business constraints]
 
-(Additional questions in structured format as needed)
-1. **[Question Category]**
-   - Question: [Specific question]
-   - Options: A) [Option 1] B) [Option 2] C) [Option 3]
-   - Reason: [Why this needs to be confirmed]
+Verify the following before finalizing scale:
+- **Boundary**: What is explicitly OUT of scope?
+- **Existing code**: Modification or new creation?
+- **Dependencies**: External systems affected?
+
+If unclear, list questions:
+1. **[Category]**: [Question] - Options: A) / B) / C)
 ```
 
 ## Quality Checklist
