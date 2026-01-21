@@ -1,5 +1,7 @@
 ---
+name: front-build
 description: Execute frontend implementation in autonomous execution mode
+argument-hint: (no arguments - uses existing task files)
 ---
 
 ## Orchestrator Definition

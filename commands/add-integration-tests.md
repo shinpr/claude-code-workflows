@@ -1,6 +1,7 @@
 ---
 name: add-integration-tests
 description: Add integration/E2E tests to existing backend codebase using Design Doc
+argument-hint: <design doc name or path>
 ---
 
 **Command Context**: Test addition workflow for existing backend implementations

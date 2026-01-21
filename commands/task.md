@@ -1,6 +1,7 @@
 ---
 name: task
 description: Execute tasks following appropriate rules with rule-advisor metacognition
+argument-hint: <task description>
 ---
 
 # Task Execution with Metacognitive Analysis

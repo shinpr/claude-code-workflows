@@ -1,5 +1,7 @@
 ---
+name: sync-skills
 description: Synchronize skill metadata and optimize rule-advisor precision after skill edits
+argument-hint: (no arguments - syncs all skills)
 ---
 
 **Command Context**: Post-editing maintenance workflow for skill files

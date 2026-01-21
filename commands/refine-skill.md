@@ -1,5 +1,7 @@
 ---
+name: refine-skill
 description: Implement user skill change requests with maximum precision optimization
+argument-hint: <change request for skill>
 ---
 
 Change request: $ARGUMENTS

@@ -1,6 +1,6 @@
 {
   "name": "node-workflow",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Backend development with orchestrated agents, coding best-practices skills, and MCP integration (context7, sequential-thinking, playwright)",
   "author": {
     "name": "Mikhail Andreev",
@@ -22,15 +22,16 @@
   ],
   "commands": [
     "./commands/add-integration-tests.md",
-    "./commands/brand-context.md",
     "./commands/build.md",
     "./commands/design.md",
     "./commands/diagnose.md",
     "./commands/implement.md",
     "./commands/plan.md",
     "./commands/project-context.md",
+    "./commands/refine-skill.md",
     "./commands/reverse-engineer.md",
     "./commands/review.md",
+    "./commands/sync-skills.md",
     "./commands/task.md"
   ],
   "agents": [
@@ -55,7 +56,6 @@
   ],
   "skills": [
     "./skills/ai-development-guide",
-    "./skills/brand-system-guide",
     "./skills/coding-principles",
     "./skills/documentation-criteria",
     "./skills/implementation-approach",
