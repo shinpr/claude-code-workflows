@@ -7,19 +7,18 @@ description: Add integration/E2E tests to existing backend codebase using Design
 
 **Scope**: Backend only (acceptance-test-generator supports backend only)
 
-## Execution Method
+**Role**: Orchestrator
 
-- Skeleton generation → performed by acceptance-test-generator
-- Task file creation → following task template (see documentation-criteria skill)
-- Test implementation → performed by task-executor
-- Test review → performed by integration-test-reviewer
-- Quality checks → performed by quality-fixer
-
-Orchestrator invokes sub-agents and passes structured JSON between them.
+**Execution Method**:
+- Skeleton generation → delegate to acceptance-test-generator
+- Task file creation → orchestrator creates directly
+- Test implementation → delegate to task-executor
+- Test review → delegate to integration-test-reviewer
+- Quality checks → delegate to quality-fixer
 
 Design Doc path: $ARGUMENTS
 
-**Think deeply** Understand the essence of test addition and execute:
+**TodoWrite**: Register steps and update as each completes.
 
 ## Prerequisites
 - Design Doc must exist (created manually or via reverse-engineer)
@@ -27,48 +26,91 @@ Design Doc path: $ARGUMENTS
 
 ## Execution Flow
 
-### 1. Validate Design Doc
+### 1. Validate Design Doc (Orchestrator)
 ```bash
 # Verify Design Doc exists
 ls $ARGUMENTS || ls docs/design/*.md | grep -v template | tail -1
 ```
 
-### 2. Execute acceptance-test-generator
-Generate test skeletons from Design Doc:
-- Extract Acceptance Criteria (AC)
-- Generate integration test skeletons (`*.int.test.ts`)
-- Generate E2E test skeletons if applicable (`*.e2e.test.ts`)
+### 2. Skeleton Generation
 
-### 3. Create Task File
+**Task tool invocation**:
+```
+subagent_type: acceptance-test-generator
+prompt: |
+  Generate test skeletons from Design Doc.
+
+  Design Doc: [path from Step 1]
+
+  Output:
+  - Integration test skeletons (*.int.test.ts)
+  - E2E test skeletons if applicable (*.e2e.test.ts)
+```
+
+**Expected output**: `generatedFiles` containing integration and e2e paths
+
+### 3. Create Task File (Orchestrator)
+
 Create task file following task template (see documentation-criteria skill):
 - Path: `docs/plans/tasks/integration-tests-YYYYMMDD.md`
 - Content: Test implementation tasks based on generated skeletons
-- Include skeleton file paths in Target Files section
+- Include skeleton file paths from Step 2 output in Target Files section
 
-### 4. Execute task-executor
-Implement tests following the task file:
-- Follow TDD principles (Red-Green-Refactor)
-- Implement each skeleton test case
-- Run tests and verify they pass
+### 4. Test Implementation
 
-### 5. Execute integration-test-reviewer
-Review test quality:
-- Verify skeleton compliance
-- Check test coverage
-- If `needs_revision` → Return to step 4 with `requiredFixes`
-- If `approved` → Proceed to quality check
+**Task tool invocation**:
+```
+subagent_type: task-executor
+prompt: |
+  Implement tests following the task file.
 
-### 6. Execute quality-fixer
-Final quality assurance:
-- Run all tests
-- Verify coverage meets requirements
-- Fix any quality issues
+  Task file: docs/plans/tasks/integration-tests-YYYYMMDD.md
 
-### 7. Commit
-Commit test files with appropriate message.
+  Requirements:
+  - Follow TDD principles (Red-Green-Refactor)
+  - Implement each skeleton test case
+  - Run tests and verify they pass
+```
 
-## Delegation
-- acceptance-test-generator: Skeleton generation
-- task-executor: Test implementation
-- integration-test-reviewer: Test quality review
-- quality-fixer: Final quality check
+**Expected output**: `status`, `testsAdded`
+
+### 5. Test Review
+
+**Task tool invocation**:
+```
+subagent_type: integration-test-reviewer
+prompt: |
+  Review test quality.
+
+  Test files: [paths from Step 2 generatedFiles]
+  Skeleton files: [original skeleton paths]
+```
+
+**Expected output**: `status` (approved/needs_revision), `requiredFixes`
+
+**Flow control**:
+- `status: needs_revision` → Return to Step 4 with `requiredFixes`
+- `status: approved` → Proceed to Step 6
+
+### 6. Quality Check
+
+**Task tool invocation**:
+```
+subagent_type: quality-fixer
+prompt: |
+  Final quality assurance for test files.
+
+  Scope: Test files added in this workflow
+
+  Requirements:
+  - Run all tests
+  - Verify coverage meets requirements
+  - Fix any quality issues
+```
+
+**Expected output**: `approved` (true/false)
+
+### 7. Commit (Orchestrator)
+
+On `approved: true` from quality-fixer:
+- Commit test files with appropriate message using Bash
