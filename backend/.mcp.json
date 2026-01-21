@@ -2,19 +2,27 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
       "description": "Library documentation lookup - resolves library IDs and fetches latest docs"
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-sequential-thinking"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking@latest"
+      ],
       "description": "Sequential thinking for complex reasoning and gray zone analysis"
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-playwright"],
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
       "description": "Browser automation for testing and verification"
     }
   }
 }
-
