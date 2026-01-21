@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "owner": {
     "name": "Mikhail Andreev",
     "url": "https://github.com/tundraray"
@@ -10,14 +10,14 @@
   },
   "plugins": [
     {
-      "name": "dev-workflows",
+      "name": "node-workflow",
       "source": "./backend",
-      "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 18 specialized agents"
+      "description": "Backend development with orchestrated agents, coding best-practices skills, and MCP integration"
     },
     {
-      "name": "dev-workflows-frontend",
+      "name": "react-workflow",
       "source": "./frontend",
-      "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 16 specialized agents"
+      "description": "React/TypeScript frontend with orchestrated agents, component design skills, and MCP integration"
     }
   ]
 }
