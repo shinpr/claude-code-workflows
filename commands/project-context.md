@@ -1,5 +1,7 @@
 ---
+name: project-context
 description: Inject project-specific context into project-context.md
+argument-hint: (no arguments - interactive setup)
 ---
 
 **Command Context**: When using the boilerplate, collect project-specific context and update project-context.md.

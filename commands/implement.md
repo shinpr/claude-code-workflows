@@ -1,6 +1,7 @@
 ---
 name: implement
 description: Orchestrate the complete implementation lifecycle from requirements to deployment
+argument-hint: <feature description>
 ---
 
 **Command Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)

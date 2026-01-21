@@ -1,6 +1,7 @@
 ---
 name: front-review
 description: Design Doc compliance validation with optional auto-fixes
+argument-hint: (no arguments - reviews current implementation)
 ---
 
 **Command Context**: Post-implementation quality assurance command for React/TypeScript frontend

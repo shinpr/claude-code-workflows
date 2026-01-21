@@ -1,6 +1,7 @@
 ---
 name: design
 description: Execute from requirement analysis to design document creation
+argument-hint: <feature description>
 ---
 
 **Command Context**: This command is dedicated to the design phase.

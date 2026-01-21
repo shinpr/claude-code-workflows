@@ -1,5 +1,7 @@
 ---
+name: front-design
 description: Execute from requirement analysis to frontend design document creation
+argument-hint: <feature description>
 ---
 
 **Command Context**: This command is dedicated to the frontend design phase.

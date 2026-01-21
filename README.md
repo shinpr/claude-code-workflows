@@ -13,22 +13,22 @@
 
 This marketplace includes two plugins:
 
-- **dev-workflows** - Backend and general-purpose development
-- **dev-workflows-frontend** - React/TypeScript specialized workflows
+- **node-workflow** - Node.js/TypeScript backend development
+- **react-workflow** - React/TypeScript frontend development
 
 Choose what fits your project:
 
-### Backend or General Development
+### Backend Development (Node.js/TypeScript)
 
 ```bash
 # 1. Start Claude Code
 claude
 
 # 2. Install the marketplace
-/plugin marketplace add shinpr/claude-code-workflows
+/plugin marketplace add tundraray/claude-code-workflows
 
 # 3. Install backend plugin
-/plugin install dev-workflows@claude-code-workflows
+/plugin install node-workflow@claude-code-workflows
 
 # 4. Restart session (required)
 # Exit and restart Claude Code
@@ -43,7 +43,7 @@ claude
 # 1-2. Same as above (start Claude Code and add marketplace)
 
 # 3. Install frontend plugin
-/plugin install dev-workflows-frontend@claude-code-workflows
+/plugin install react-workflow@claude-code-workflows
 
 # 4-5. Same as above (restart and start building)
 
@@ -56,6 +56,11 @@ claude
 Install both plugins to get the complete toolkit for backend and frontend work.
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
+>
+> **Windows users**: For development/contribution, clone with symlinks enabled:
+> ```bash
+> git clone -c core.symlinks=true git@github.com:tundraray/claude-code-workflows.git
+> ```
 
 ---
 
@@ -131,7 +136,7 @@ graph TB
 
 ## ⚡ Workflow Commands
 
-### Backend & General Development (dev-workflows)
+### Backend Development (node-workflow)
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
@@ -145,11 +150,10 @@ graph TB
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 | `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
 | `/project-context` | Initialize project-context skill | New project setup |
-| `/brand-context` | Initialize brand-system-guide skill | Brand/design system setup |
 | `/refine-skill` | Improve and refine existing skills | Skill optimization |
 | `/sync-skills` | Synchronize skills across plugins | Skill management |
 
-### Frontend Development (dev-workflows-frontend)
+### Frontend Development (react-workflow)
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
@@ -162,8 +166,10 @@ graph TB
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/project-context` | Initialize project-context skill | New project setup |
 | `/brand-context` | Initialize brand-system-guide skill | Brand/design system setup |
+| `/refine-skill` | Improve and refine existing skills | Skill optimization |
+| `/sync-skills` | Synchronize skills across plugins | Skill management |
 
-> **Tip**: Both plugins share `/task`, `/diagnose`, `/project-context`, and `/brand-context` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
+> **Tip**: Both plugins share `/task`, `/diagnose`, `/project-context`, `/refine-skill`, and `/sync-skills`. `/brand-context` is only in react-workflow. For reverse engineering, use `/reverse-engineer` (node-workflow) to generate PRD, then `/front-reverse-design` (react-workflow) to generate frontend Design Docs from that PRD.
 
 ---
 
@@ -187,7 +193,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **scope-discoverer** | Discovers PRD/Design Doc targets from codebase for reverse engineering |
 | **code-verifier** | Validates consistency between documentation and code implementation |
 
-### Backend-Specific Agents (dev-workflows)
+### Backend-Specific Agents (node-workflow)
 
 | Agent | What It Does |
 |-------|--------------|
@@ -199,7 +205,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **quality-fixer** | Runs tests, fixes type errors, handles linting - everything quality-related |
 | **rule-advisor** | Picks the best coding rules for your current task |
 
-### Frontend-Specific Agents (dev-workflows-frontend)
+### Frontend-Specific Agents (react-workflow)
 
 | Agent | What It Does |
 |-------|--------------|
@@ -213,22 +219,35 @@ These agents work the same way whether you're building a REST API or a React app
 
 ---
 
-## 📚 Built-in Best Practices
+## 📚 Skills (Best Practices)
 
-The backend plugin includes proven best practices that work with any language:
+Skills are knowledge modules that agents load automatically when relevant.
 
-- **Coding Principles** - Code quality standards
-- **Testing Principles** - TDD, coverage, test patterns
-- **Implementation Approach** - Design decisions and trade-offs
-- **Documentation Standards** - Clear, maintainable docs
-- **Project Context** - Project-specific context (customizable via `/project-context`)
-- **Technical Spec** - Technical design rules and build/testing commands
+### node-workflow (10 skills)
 
-These are loaded as skills and automatically applied by agents when relevant.
+| Skill | Description |
+|-------|-------------|
+| **ai-development-guide** | AI-assisted development patterns and anti-patterns |
+| **coding-principles** | Code quality standards |
+| **documentation-criteria** | PRD/ADR/Design Doc templates and criteria |
+| **implementation-approach** | Design decisions and trade-offs |
+| **integration-e2e-testing** | Integration and E2E test patterns |
+| **project-context** | Project-specific context (customizable via `/project-context`) |
+| **subagents-orchestration-guide** | Agent coordination rules |
+| **task-analyzer** | Task complexity analysis |
+| **technical-spec** | Technical design rules and build/testing commands |
+| **testing-principles** | TDD, coverage, test patterns |
 
-The frontend plugin has React and TypeScript-specific rules built in, plus:
+### react-workflow (13 skills)
 
-- **Brand System Guide** - Design system with colors, typography, accessibility (customizable via `/brand-context`)
+All skills from node-workflow (except integration-e2e-testing) plus:
+
+| Skill | Description |
+|-------|-------------|
+| **brand-system-guide** | Design system setup (customizable via `/brand-context`) |
+| **frontend-ai-guide** | React-specific AI development patterns |
+| **typescript-rules** | TypeScript best practices for React |
+| **typescript-testing** | React Testing Library patterns |
 
 ---
 
@@ -346,7 +365,7 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 
 ### Reverse Engineering
 
-**Backend (dev-workflows):**
+**Backend (node-workflow):**
 
 ```bash
 /reverse-engineer "src/auth module"
@@ -361,10 +380,10 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 7. Produces complete documentation from existing code
 ```
 
-**Frontend (dev-workflows-frontend):**
+**Frontend (react-workflow):**
 
 ```bash
-# First, generate PRD using backend plugin's /reverse-engineer
+# First, generate PRD using node-workflow's /reverse-engineer
 # Then, generate frontend Design Docs from existing PRD:
 
 /front-reverse-design "docs/prd/my-feature-prd.md"
@@ -422,17 +441,17 @@ claude-code-workflows/
 │   ├── typescript-rules/       # Frontend-specific
 │   └── ... (14 skills total)
 │
-├── backend/                    # dev-workflows plugin
+├── backend/                    # node-workflow plugin
 │   ├── agents/                 # Symlinks to shared agents
 │   ├── commands/               # Symlinks to shared commands
-│   ├── skills/                 # Symlinks to shared skills
+│   ├── skills/                 # Symlinks to shared skills (10 skills)
 │   └── .claude-plugin/
 │       └── plugin.json
 │
-├── frontend/                   # dev-workflows-frontend plugin
+├── frontend/                   # react-workflow plugin
 │   ├── agents/                 # Symlinks to shared agents
 │   ├── commands/               # Symlinks to shared commands
-│   ├── skills/                 # Symlinks to shared skills
+│   ├── skills/                 # Symlinks to shared skills (13 skills)
 │   └── .claude-plugin/
 │       └── plugin.json
 │
@@ -447,8 +466,8 @@ claude-code-workflows/
 **Q: Which plugin should I install?**
 
 A: Depends on what you're building:
-- **Backend, APIs, CLI tools, or general programming** → Install `dev-workflows`
-- **React apps** → Install `dev-workflows-frontend`
+- **Node.js backend, APIs, CLI tools** → Install `node-workflow`
+- **React/TypeScript frontend** → Install `react-workflow`
 - **Full-stack projects** → Install both
 
 Both plugins can run side-by-side without conflicts.

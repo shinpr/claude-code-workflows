@@ -1,6 +1,7 @@
 ---
 name: build
 description: Execute decomposed tasks in autonomous execution mode
+argument-hint: (no arguments - uses existing task files)
 ---
 
 ## Orchestrator Definition

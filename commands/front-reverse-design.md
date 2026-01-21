@@ -1,6 +1,7 @@
 ---
 name: front-reverse-design
 description: Generate frontend Design Docs from existing codebase using existing PRD
+argument-hint: <PRD name or path>
 ---
 
 **Command Context**: Reverse engineering workflow to create frontend Design Docs from existing code

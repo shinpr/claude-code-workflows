@@ -1,5 +1,7 @@
 ---
+name: brand-context
 description: Inject brand-specific design system into brand-system-guide skill
+argument-hint: (no arguments - interactive setup)
 ---
 
 **Command Context**: Collect project-specific brand guidelines and update brand-system-guide/SKILL.md.

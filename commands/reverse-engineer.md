@@ -1,6 +1,7 @@
 ---
 name: reverse-engineer
 description: Generate PRD and Design Docs from existing codebase through discovery, generation, verification, and review workflow
+argument-hint: <target path or module scope>
 ---
 
 **Command Context**: Reverse engineering workflow to create documentation from existing code

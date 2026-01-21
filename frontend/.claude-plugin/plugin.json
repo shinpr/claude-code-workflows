@@ -1,6 +1,6 @@
 {
   "name": "react-workflow",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "React/TypeScript frontend with orchestrated agents, component design skills, and MCP integration (context7, sequential-thinking, playwright)",
   "author": {
     "name": "Mikhail Andreev",
@@ -30,6 +30,8 @@
     "./commands/front-reverse-design.md",
     "./commands/front-review.md",
     "./commands/project-context.md",
+    "./commands/refine-skill.md",
+    "./commands/sync-skills.md",
     "./commands/task.md"
   ],
   "agents": [

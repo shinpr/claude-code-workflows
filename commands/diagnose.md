@@ -1,6 +1,7 @@
 ---
 name: diagnose
 description: Investigate problem, verify findings, and derive solutions
+argument-hint: <problem description>
 ---
 
 **Command Context**: Diagnosis flow to identify root cause and present solutions

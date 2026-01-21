@@ -1,6 +1,7 @@
 ---
 name: plan
 description: Create work plan from design document and obtain plan approval
+argument-hint: <design doc name or path>
 ---
 
 **Command Context**: This command is dedicated to the planning phase.
