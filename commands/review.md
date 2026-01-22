@@ -60,38 +60,26 @@ Execute fixes? (y/n):
 
 ### Step 4: Execute Skill
 
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Execute Skill: documentation-criteria (for task file template)
+If user selects `n` or compliance sufficient: Skip Steps 4-9, proceed to Step 10.
+
+Execute Skill: documentation-criteria (for task file template)
 
 ### Step 5: Execute rule-advisor
 
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Invoke rule-advisor to understand fix essence
+Invoke rule-advisor to understand fix essence (symptomatic treatment vs root solution)
 
 ### Step 6: Create Task File
 
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD.md`
+Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD.md`
 
 ### Step 7: Execute Fixes
-
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Invoke task-executor with task file (stops at 5 files)
 
 Invoke task-executor using Task tool:
 - `subagent_type`: "task-executor"
 - `description`: "Execute review fixes"
-- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD.md. Apply staged fixes."
+- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD.md. Apply staged fixes (stops at 5 files)."
 
 ### Step 8: Quality Check
-
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Invoke quality-fixer
 
 Invoke quality-fixer using Task tool:
 - `subagent_type`: "quality-fixer"
@@ -99,10 +87,6 @@ Invoke quality-fixer using Task tool:
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 9: Re-validate
-
-Check Step 3 result:
-- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
-- User selects `y` → Invoke code-reviewer to measure improvement
 
 Invoke code-reviewer using Task tool:
 - `subagent_type`: "code-reviewer"
