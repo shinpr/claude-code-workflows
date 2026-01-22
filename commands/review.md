@@ -9,7 +9,7 @@ description: Design Doc compliance validation with optional auto-fixes
 
 **Core Identity**: "I am not a worker. I am an orchestrator."
 
-**First Action**: Register Steps 1-4 to TodoWrite before any execution.
+**First Action**: Register Steps 1-10 to TodoWrite before any execution.
 
 ## Execution Method
 
@@ -55,30 +55,62 @@ Validation Result: [X]% compliance
 Unfulfilled items:
 - [item list]
 
-Execute fixes? (y/n): 
+Execute fixes? (y/n):
 ```
 
-If user selects `y`:
+### Step 4: Execute Skill
 
-## Pre-fix Flow (if user selects fixes)
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Execute Skill: documentation-criteria (for task file template)
 
-### Step 3.1: Execute Skill
+### Step 5: Execute rule-advisor
 
-Execute Skill: documentation-criteria (for task file template)
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Invoke rule-advisor to understand fix essence
 
-### Step 3.2: Execute rule-advisor
+### Step 6: Create Task File
 
-Understand fix essence (symptomatic treatment vs root solution)
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD.md`
 
-### Step 3.3: Create task file and execute fixes
+### Step 7: Execute Fixes
 
-1. **Update TodoWrite**: Register fix steps
-2. **Create task file**: `docs/plans/tasks/review-fixes-YYYYMMDD.md`
-3. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
-4. **Execute quality-fixer**: Confirm quality gate passage
-5. **Re-validate**: Measure improvement with code-reviewer
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Invoke task-executor with task file (stops at 5 files)
 
-### Step 4: Final Report
+Invoke task-executor using Task tool:
+- `subagent_type`: "task-executor"
+- `description`: "Execute review fixes"
+- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD.md. Apply staged fixes."
+
+### Step 8: Quality Check
+
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Invoke quality-fixer
+
+Invoke quality-fixer using Task tool:
+- `subagent_type`: "quality-fixer"
+- `description`: "Quality gate check"
+- `prompt`: "Confirm quality gate passage for fixed files."
+
+### Step 9: Re-validate
+
+Check Step 3 result:
+- User selects `n` or compliance sufficient → Mark complete, proceed to Step 10
+- User selects `y` → Invoke code-reviewer to measure improvement
+
+Invoke code-reviewer using Task tool:
+- `subagent_type`: "code-reviewer"
+- `description`: "Re-validate compliance"
+- `prompt`: "Re-validate Design Doc compliance after fixes."
+
+### Step 10: Final Report
+
 ```
 Initial compliance: [X]%
 Final compliance: [Y]% (if fixes executed)
