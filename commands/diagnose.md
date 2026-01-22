@@ -7,7 +7,9 @@ description: Investigate problem, verify findings, and derive solutions
 
 Target problem: $ARGUMENTS
 
-**Role**: Orchestrator
+## Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator."
 
 **Execution Method**:
 - Investigation → performed by investigator

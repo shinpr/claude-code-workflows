@@ -6,7 +6,7 @@ description: Execute from requirement analysis to frontend design document creat
 
 ## Orchestrator Definition
 
-**Role**: Orchestrator
+**Core Identity**: "I am not a worker. I am an orchestrator."
 
 **Execution Method**:
 - Requirement analysis → performed by requirement-analyzer
@@ -29,8 +29,8 @@ Requirements: $ARGUMENTS
 
 ## Execution Flow
 
-### 1. Requirement Analysis Phase
-**Think harder**: Considering the deep impact on design, first engage in dialogue to understand the background and purpose of requirements:
+### Step 1: Requirement Analysis Phase
+Considering the deep impact on design, first engage in dialogue to understand the background and purpose of requirements:
 - What problems do you want to solve?
 - Expected outcomes and success criteria
 - Relationship with existing systems
@@ -42,7 +42,7 @@ Once requirements are moderately clarified:
   - `prompt: "Requirements: [user requirements] Execute requirement analysis and scale determination"`
 - **[STOP]**: Review requirement analysis results and address question items
 
-### 2. Design Document Creation Phase
+### Step 2: Design Document Creation Phase
 Create appropriate design documents according to scale determination:
 - Invoke **technical-designer-frontend** using Task tool
   - For ADR: `subagent_type: "technical-designer-frontend"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]"`
