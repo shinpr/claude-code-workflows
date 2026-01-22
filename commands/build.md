@@ -31,7 +31,7 @@ Work plan: $ARGUMENTS
 
 ### Task Generation Decision Flow
 
-**THINK DEEPLY AND SYSTEMATICALLY** Analyze task file existence state and determine the EXACT action required:
+Analyze task file existence state and determine the action required:
 
 | State | Criteria | Next Action |
 |-------|----------|-------------|
@@ -52,12 +52,10 @@ Generate tasks from the work plan? (y/n):
 ```
 
 ### 2. Task Decomposition (if approved)
-```
-@task-decomposer Read work plan and decompose into atomic tasks:
-- Input: docs/plans/[plan-name].md
-- Output: Individual task files in docs/plans/tasks/
-- Granularity: 1 task = 1 commit = independently executable
-```
+Invoke task-decomposer using Task tool:
+- `subagent_type`: "task-decomposer"
+- `description`: "Decompose work plan"
+- `prompt`: "Read work plan at docs/plans/[plan-name].md and decompose into atomic tasks. Output: Individual task files in docs/plans/tasks/. Granularity: 1 task = 1 commit = independently executable"
 
 ### 3. Verify Generation
 ```bash

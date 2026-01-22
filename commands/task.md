@@ -9,13 +9,13 @@ Task: $ARGUMENTS
 
 ## Mandatory Execution Process
 
-**STEP 1: Rule Selection via rule-advisor (REQUIRED)**
+**Step 1: Rule Selection via rule-advisor (REQUIRED)**
 
 Execute rule-advisor to analyze the task and select appropriate rules for: $ARGUMENTS
 
 Provide context about current situation and prerequisites when invoking.
 
-**STEP 2: Utilize rule-advisor Output**
+**Step 2: Utilize rule-advisor Output**
 
 After receiving rule-advisor's JSON response, proceed with:
 
@@ -35,7 +35,7 @@ After receiving rule-advisor's JSON response, proceed with:
    - Start with recommended action
    - Use suggested tools first
 
-**STEP 3: Create Task List with TodoWrite**
+**Step 3: Create Task List with TodoWrite**
 
 Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity".
 
@@ -45,7 +45,7 @@ Break down the task based on rule-advisor's guidance:
 - Restructure tasks considering `warningPatterns`
 - Set appropriate priorities
 
-**STEP 4: Execute Implementation**
+**Step 4: Execute Implementation**
 
 Proceed with task execution following:
 - Selected rules from rule-advisor

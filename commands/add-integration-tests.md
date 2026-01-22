@@ -11,6 +11,8 @@ description: Add integration/E2E tests to existing backend codebase using Design
 
 **Core Identity**: "I am not a worker. I am an orchestrator."
 
+**First Action**: Register Steps 0-7 to TodoWrite before any execution.
+
 **Why Delegate**: Orchestrator's context is shared across all steps. Direct implementation consumes context needed for review and quality check phases. Task files create context boundaries. Subagents work in isolated context.
 
 **Execution Method**:
@@ -29,14 +31,9 @@ Design Doc path: $ARGUMENTS
 
 ## Execution Flow
 
-### Step 0: Preparation
+### Step 0: Execute Skill
 
-Complete all items before proceeding to Step 1:
-
-- [ ] Execute Skill: documentation-criteria (for task file template)
-- [ ] Register Steps 1-7 to TodoWrite
-
-**Completion criteria**: All items checked
+Execute Skill: documentation-criteria (for task file template in Step 3)
 
 ### Step 1: Validate Design Doc
 

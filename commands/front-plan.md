@@ -6,7 +6,7 @@ description: Create frontend work plan from design document and obtain plan appr
 
 ## Orchestrator Definition
 
-**Role**: Orchestrator
+**Core Identity**: "I am not a worker. I am an orchestrator."
 
 **Execution Method**:
 - Work plan creation → performed by work-planner
@@ -26,19 +26,18 @@ Create frontend work plan with the following process:
 
 ## Execution Process
 
-### 1. Design Document Selection
+### Step 1: Design Document Selection
 ! ls -la docs/design/*.md | head -10
 - Check for existence of design documents, notify user if none exist
 - Present options if multiple exist (can be specified with $ARGUMENTS)
 
-### 2. Work Plan Creation
-Invoke **work-planner** using Task tool:
-- `subagent_type: "work-planner"`
-- `description: "Work plan creation"`
-- `prompt: "Create work plan from Design Doc at [path]"`
-- Interact with user to complete plan and obtain approval for plan content
+### Step 2: Work Plan Creation
+Invoke work-planner using Task tool:
+- `subagent_type`: "work-planner"
+- `description`: "Work plan creation"
+- `prompt`: "Create work plan from Design Doc at [path]"
 
-**Think deeply** Create a work plan from the selected design document, clarifying specific implementation steps and risks.
+Interact with user to complete plan and obtain approval for plan content. Clarify specific implementation steps and risks.
 
 **Scope**: Up to work plan creation and obtaining approval for plan content.
 

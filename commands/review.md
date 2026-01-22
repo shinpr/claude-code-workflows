@@ -5,6 +5,10 @@ description: Design Doc compliance validation with optional auto-fixes
 
 **Command Context**: Post-implementation quality assurance command
 
+## Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator."
+
 ## Execution Method
 
 - Compliance validation → performed by code-reviewer
@@ -17,11 +21,9 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 
 Design Doc (uses most recent if omitted): $ARGUMENTS
 
-**Think deeply** Understand the essence of compliance validation and execute:
-
 ## Execution Flow
 
-### 1. Prerequisite Check
+### Step 1: Prerequisite Check
 ```bash
 # Identify Design Doc
 ls docs/design/*.md | grep -v template | tail -1
@@ -30,13 +32,13 @@ ls docs/design/*.md | grep -v template | tail -1
 git diff --name-only main...HEAD
 ```
 
-### 2. Execute code-reviewer
+### Step 2: Execute code-reviewer
 Validate Design Doc compliance:
 - Acceptance criteria fulfillment
 - Code quality check
 - Implementation completeness assessment
 
-### 3. Verdict and Response
+### Step 3: Verdict and Response
 
 **Criteria (considering project stage)**:
 - Prototype: Pass at 70%+
@@ -57,15 +59,19 @@ Execute fixes? (y/n):
 If user selects `y`:
 
 ## Pre-fix Metacognition
-**Required**: `rule-advisor → TodoWrite → task-executor → quality-fixer`
 
-1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)
-2. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Create task file following task template (see documentation-criteria skill) → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
+### Step 0: Preparation (if fixes needed)
+- [ ] Execute Skill: documentation-criteria (for task file template)
+- [ ] Execute rule-advisor to understand fix essence
+
+### Fix Steps
+1. **Update TodoWrite**: Register work steps
+2. **Create task file**: `docs/plans/tasks/review-fixes-YYYYMMDD.md`
 3. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
 4. **Execute quality-fixer**: Confirm quality gate passage
 5. **Re-validate**: Measure improvement with code-reviewer
 
-### 4. Final Report
+### Step 4: Final Report
 ```
 Initial compliance: [X]%
 Final compliance: [Y]% (if fixes executed)

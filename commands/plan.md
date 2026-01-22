@@ -32,22 +32,21 @@ Follow the planning process below:
 
 ## Execution Process
 
-1. **Design Document Selection**
+### Step 1: Design Document Selection
    ! ls -la docs/design/*.md | head -10
    - Check for existence of design documents, notify user if none exist
    - Present options if multiple exist (can be specified with $ARGUMENTS)
 
-2. **E2E Test Skeleton Generation Confirmation**
+### Step 2: E2E Test Skeleton Generation Confirmation
    - Confirm with user whether to generate E2E test skeleton first
    - If user wants generation: Generate test skeleton with acceptance-test-generator
    - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
 
-3. **Work Plan Creation**
-   - Create work plan with work-planner
-   - Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
-   - Interact with user to complete plan and obtain approval for plan content
-
-**Think deeply** Create a work plan from the selected design document, clarifying specific implementation steps and risks.
+### Step 3: Work Plan Creation
+- Create work plan with work-planner
+- Utilize deliverables from previous process according to subagents-orchestration-guide skill coordination specification
+- Interact with user to complete plan and obtain approval for plan content
+- Clarify specific implementation steps and risks
 
 **Scope**: Up to work plan creation and obtaining approval for plan content.
 
