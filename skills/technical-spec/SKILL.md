@@ -1,6 +1,6 @@
 ---
 name: technical-spec
-description: Technical design rules including environment variable management, architecture design, and build/testing commands.
+description: This skill provides technical design rules including environment variable management, architecture design, and build/testing commands. Automatically loaded when discussing architecture, environment variables, build commands, or when "tech stack", "architecture pattern", "environment config", or "build command" are mentioned.
 ---
 
 # Technical Design Rules

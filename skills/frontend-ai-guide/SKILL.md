@@ -1,6 +1,6 @@
 ---
 name: frontend-ai-guide
-description: Frontend-specific technical decision criteria, anti-patterns, debugging techniques, and quality check workflow. Use when making frontend technical decisions or performing quality assurance.
+description: This skill provides frontend-specific technical decision criteria, anti-patterns, debugging techniques, and quality check workflow. Automatically loaded when making frontend technical decisions, performing React/TypeScript quality assurance, or when "React anti-pattern", "frontend code smell", or "component quality" are mentioned.
 ---
 
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection (Frontend)

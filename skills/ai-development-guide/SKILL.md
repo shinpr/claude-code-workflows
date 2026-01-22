@@ -1,6 +1,6 @@
 ---
 name: ai-development-guide
-description: Technical decision criteria, anti-pattern detection, debugging techniques, and quality check workflow. Use when making technical decisions, detecting code smells, or performing quality assurance.
+description: This skill provides technical decision criteria, anti-pattern detection, debugging techniques, and quality check workflow. Automatically loaded when making technical decisions, detecting code smells, performing quality assurance, or when patterns like "code smell", "anti-pattern", "technical debt", or "quality check" are mentioned.
 ---
 
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection

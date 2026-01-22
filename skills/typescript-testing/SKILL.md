@@ -1,6 +1,6 @@
 ---
 name: typescript-testing
-description: Frontend testing rules with Vitest, React Testing Library, and MSW. Includes coverage requirements, test design principles, and quality criteria. Use when writing frontend tests or reviewing test quality.
+description: This skill provides frontend testing rules with Vitest, React Testing Library, and MSW. Automatically loaded when writing frontend tests, reviewing test quality, or when "Vitest", "React Testing Library", "MSW", "component test", or "frontend test coverage" are mentioned.
 ---
 
 # TypeScript Testing Rules (Frontend)

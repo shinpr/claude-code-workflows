@@ -1,6 +1,6 @@
 ---
 name: implementation-approach
-description: Implementation strategy selection framework with meta-cognitive approach, verification levels, and integration point definitions. Use when planning implementation strategy, selecting development approach, or defining verification criteria.
+description: This skill provides implementation strategy selection framework with meta-cognitive approach, verification levels, and integration point definitions. Automatically loaded when planning implementation strategy, selecting development approach, defining verification criteria, or when "vertical slice", "horizontal slice", "verification level", or "implementation strategy" are mentioned.
 ---
 
 # Implementation Strategy Selection Framework (Meta-cognitive Approach)

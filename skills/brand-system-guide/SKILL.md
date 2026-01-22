@@ -1,6 +1,6 @@
 ---
 name: brand-system-guide
-description: Enforce brand design standards: OKLCH color palette, AI gradient usage, accessibility compliance (WCAG 2.1 AA), dark mode patterns, and CSS utility classes for consistent UI implementation. Use when implementing UI components, styling, or ensuring visual consistency.
+description: This skill enforces brand design standards including OKLCH color palette, AI gradient usage, accessibility compliance (WCAG 2.1 AA), dark mode patterns, and CSS utility classes. Automatically loaded when implementing UI components, styling, ensuring visual consistency, or when "brand colors", "OKLCH", "accessibility", "dark mode", or "design system" are mentioned.
 ---
 
 # Brand System Guide

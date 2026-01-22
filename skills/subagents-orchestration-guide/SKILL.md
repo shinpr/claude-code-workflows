@@ -1,6 +1,6 @@
 ---
 name: subagents-orchestration-guide
-description: Guides subagent coordination through implementation workflows. Use when orchestrating multiple agents, managing workflow phases, or determining autonomous execution mode. Defines scale determination, document requirements, and stop points.
+description: This skill guides subagent coordination through implementation workflows. Automatically loaded when orchestrating multiple agents, managing workflow phases, determining autonomous execution mode, or when "orchestration", "workflow phases", "scale determination", "stop points", or "autonomous mode" are mentioned.
 ---
 
 # Subagents Orchestration Guide
@@ -86,6 +86,28 @@ Assign work based on each subagent's responsibilities:
 
 **Important**: Subagents cannot directly call other subagents—all coordination flows through the orchestrator.
 
+### Orchestrator Never Writes Directly
+
+**All document and code operations MUST go through agents.**
+
+### File Ownership by Agent
+
+| File Pattern | Owner Agent |
+|--------------|-------------|
+| `docs/prd/*.md` | prd-creator |
+| `docs/uxrd/*.md` | ux-designer |
+| `docs/adr/*.md` | technical-designer(-frontend) |
+| `docs/design/*.md` | technical-designer(-frontend) |
+| `docs/plans/*.md` (work plans) | work-planner |
+| `docs/plans/tasks/<plan-name>/*.md` | task-decomposer |
+| `src/**/*`, `tests/**/*` (code) | task-executor(-frontend) |
+| Any file (quality fixes) | quality-fixer(-frontend) |
+
+**Rules**:
+- Create/edit files only through the owner agent
+- For revisions after review: call owner agent with `mode: update`
+- When document-reviewer returns `needs_revision`: use `revision_agent` field to identify owner
+
 ## Explicit Stop Points
 
 Autonomous execution MUST stop and wait for user input at these points:
@@ -129,7 +151,7 @@ Call subagents using the Task tool:
 ### Call Example (task-executor)
 - subagent_type: "task-executor"
 - description: "Task execution"
-- prompt: "Task file: docs/plans/tasks/[filename].md Please complete the implementation"
+- prompt: "Task file: docs/plans/tasks/[plan-name]/task-01.md Please complete the implementation"
 
 ## Structured Response Specification
 

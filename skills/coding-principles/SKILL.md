@@ -1,6 +1,6 @@
 ---
 name: coding-principles
-description: Language-agnostic coding principles for maintainability, readability, and quality. Use when implementing features, refactoring code, or reviewing code quality.
+description: This skill provides language-agnostic coding principles for maintainability, readability, and quality. Automatically loaded when implementing features, refactoring code, reviewing code quality, or when the user mentions "clean code", "best practices", "code quality", or "maintainability".
 ---
 
 # Language-Agnostic Coding Principles

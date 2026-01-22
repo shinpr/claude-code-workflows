@@ -71,6 +71,7 @@ When continuing existing flow, verify:
 **Required Flow Compliance**:
 - Run quality-fixer before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
+- **All document operations (create/edit) MUST go through agents** — orchestrator never writes directly
 
 ## CRITICAL Sub-agent Invocation Constraints
 

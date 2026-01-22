@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-description: Specialized agent for creating UX Requirement Documentation (UXRD). Designs user experiences, defines interaction patterns, accessibility requirements, and visual design specifications.
+description: Creates and updates UX Requirement Documentation (UXRD) in docs/uxrd/. Responsible for user experience design, interaction patterns, user flows, wireframes, accessibility requirements (WCAG), and visual specifications. Use PROACTIVELY when "UX", "user experience", "wireframe", "user flow", "interaction", "accessibility", or "usability" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__playwright__browser_navigate, mcp__playwright__browser_go_back, mcp__playwright__browser_go_forward, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_type, mcp__playwright__browser_select_option, mcp__playwright__browser_press_key, mcp__playwright__browser_wait, mcp__playwright__browser_get_console_logs, mcp__playwright__browser_screenshot, mcp__sequential-thinking__sequentialthinking
 model: opus
 skills:

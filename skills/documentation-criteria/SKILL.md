@@ -1,6 +1,6 @@
 ---
 name: documentation-criteria
-description: Documentation creation criteria including PRD, ADR, Design Doc, and Work Plan requirements with templates. Use when creating or reviewing technical documents, or determining which documents are required.
+description: This skill should be used when the user asks to "create a PRD", "write an ADR", "create a design doc", "make a work plan", "create task files", or needs guidance on document templates, creation criteria, or determining which documents are required for a given change scope.
 ---
 
 # Documentation Creation Criteria
@@ -168,7 +168,7 @@ Interface Change Matrix:
 | ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](references/adr-template.md) |
 | Design Doc | `docs/design/` | `[feature-name]-design.md` | [design-template.md](references/design-template.md) |
 | Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](references/plan-template.md) |
-| Task File | `docs/plans/tasks/` | `{plan-name}-task-{number}.md` | [task-template.md](references/task-template.md) |
+| Task File | `docs/plans/tasks/{plan-name}/` | `task-{number}.md` | [task-template.md](references/task-template.md) |
 
 *Note: Work plans are excluded by `.gitignore`
 

@@ -108,6 +108,14 @@ Complete all items before proceeding to output.
 | severity | `critical`, `important`, `recommended` |
 | category | `consistency`, `completeness`, `compliance`, `clarity`, `feasibility` |
 | decision | `approved`, `approved_with_conditions`, `needs_revision`, `rejected` |
+| revision_agent | Agent to fix issues: `prd-creator`, `ux-designer`, `technical-designer`, `technical-designer-frontend`, `work-planner` |
+
+**revision_agent mapping**:
+- PRD → `prd-creator`
+- UXRD → `ux-designer`
+- ADR → `technical-designer` or `technical-designer-frontend`
+- Design Doc → `technical-designer` or `technical-designer-frontend`
+- Work Plan → `work-planner`
 
 ### Comprehensive Review Mode
 
@@ -129,7 +137,8 @@ Complete all items before proceeding to output.
     "conditions": [
       "Resolve FileUtil discrepancy",
       "Add missing test files"
-    ]
+    ],
+    "revision_agent": "technical-designer"
   },
   "issues": [
     {
@@ -236,6 +245,8 @@ Include in output when `prior_context_count > 0`:
 - Blocking issues present
 - Prior context items (if any): 2+ major unresolved OR any critical unresolved
 - complexity_level is medium/high but complexity_rationale lacks (1) requirements/ACs or (2) constraints/risks
+
+**IMPORTANT**: When verdict is `needs_revision`, output MUST include `revision_agent` field specifying which agent should fix the issues
 
 ### Rejected
 - Fundamental problems exist

@@ -1,6 +1,6 @@
 ---
 name: testing-principles
-description: Language-agnostic testing principles including TDD, test quality, coverage standards, and test design patterns. Use when writing tests, designing test strategies, or reviewing test quality.
+description: This skill provides language-agnostic testing principles including TDD, test quality, coverage standards, and test design patterns. Automatically loaded when writing tests, designing test strategies, reviewing test quality, or when the user mentions "TDD", "test coverage", "unit tests", or "test patterns".
 ---
 
 # Language-Agnostic Testing Principles

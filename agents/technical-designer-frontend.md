@@ -1,7 +1,7 @@
 ---
 name: technical-designer-frontend
 model: opus
-description: Creates frontend ADR and Design Docs to evaluate React technical choices. Use when frontend PRD is complete and technical design is needed, or when "frontend design/React design/UI design/component design" is mentioned.
+description: Creates and updates frontend ADR (docs/adr/) and Design Documents (docs/design/). Responsible for frontend architecture, component hierarchy, state management, React/TypeScript patterns, and UI component design. Use PROACTIVELY when "component architecture", "React design", "frontend structure", "state management", or "UI design" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
 ---

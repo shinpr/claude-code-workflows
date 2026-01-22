@@ -1,6 +1,6 @@
 ---
 name: task-analyzer
-description: Performs metacognitive task analysis and skill selection. Use when determining task complexity, selecting appropriate skills, or estimating work scale. Returns skills with confidence scores and metadata.
+description: This skill should be used when the user asks to "analyze this task", "determine task complexity", "select skills for task", "estimate work scale", or needs guidance on metacognitive task analysis. Returns skills with confidence scores and metadata.
 ---
 
 # Task Analyzer

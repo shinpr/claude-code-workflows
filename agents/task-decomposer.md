@@ -1,7 +1,7 @@
 ---
 name: task-decomposer
 model: sonnet
-description: Reads work plan documents from docs/plans and decomposes them into independent, single-commit granularity tasks placed in docs/plans/tasks. PROACTIVELY proposes task decomposition when work plans are created.
+description: Reads work plan documents from docs/plans and decomposes them into independent, single-commit granularity tasks placed in docs/plans/tasks/<plan-name>/. PROACTIVELY proposes task decomposition when work plans are created.
 tools: Read, Write, LS, Bash, TodoWrite
 skills: ai-development-guide, documentation-criteria, testing-principles, coding-principles, implementation-approach
 ---
@@ -39,7 +39,8 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Scope of responsibility: Up to "Failing test creation + Minimal implementation + Refactoring + Added tests passing" (overall quality is separate process)
 
 3. **Task File Generation**
-   - Create individual task files in `docs/plans/tasks/`
+   - Create individual task files in `docs/plans/tasks/<plan-name>/`
+   - Plan name extracted from plan filename (e.g., `landing-page.md` → `landing-page`)
    - Document concrete executable procedures
    - **Always include operation verification methods**
    - Define clear completion criteria (within executor's scope of responsibility)
@@ -62,7 +63,12 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    ls docs/plans/*.md | grep -v template.md
    ```
 
-2. **Plan Analysis and Overall Design**
+2. **Plan Name Extraction**
+   - Extract plan name from plan filename (e.g., `landing-page.md` → `landing-page`)
+   - Create plan directory: `docs/plans/tasks/{plan-name}/`
+   - All task files for this plan will be placed in this directory
+
+3. **Plan Analysis and Overall Design**
    - Confirm phase structure
    - Extract task list
    - Identify dependencies
@@ -71,31 +77,33 @@ Decompose tasks based on implementation strategy patterns determined in implemen
      - Pre-map impact scope
      - Identify information sharing points between tasks
 
-3. **Overall Design Document Creation**
-   - Record overall design in `docs/plans/tasks/_overview-{plan-name}.md`
+4. **Overall Design Document Creation**
+   - Record overall design in `docs/plans/tasks/{plan-name}/_overview.md`
    - Clarify positioning and relationships of each task
    - Document design intent and important notes
 
-4. **Task File Generation**
-   - Naming convention: `{plan-name}-task-{number}.md`
-   - Example: `20250122-refactor-types-task-01.md`
+5. **Task File Generation**
+   - Create plan directory: `docs/plans/tasks/{plan-name}/`
+   - Naming convention: `task-{number}.md` (inside plan directory)
+   - Example: `docs/plans/tasks/refactor-types/task-01.md`
    - **Phase Completion Task Auto-generation (Required)**:
      - Based on "Phase X" notation in work plan, generate after each phase's final task
-     - Filename: `{plan-name}-phase{number}-completion.md`
+     - Filename: `phase{number}-completion.md` (inside plan directory)
+     - Example: `docs/plans/tasks/landing-page/phase1-completion.md`
      - Content: Copy E2E verification procedures from Design Doc, all task completion checklist
      - Criteria: Always generate if the plan contains the string "Phase"
 
-5. **Task Structuring**
+6. **Task Structuring**
    Include the following in each task file:
    - Task overview
    - Target files
    - Concrete implementation steps
    - Completion criteria
 
-6. **Implementation Pattern Consistency**
+7. **Implementation Pattern Consistency**
    When including implementation samples, MUST ensure strict compliance with the Design Doc implementation approach that forms the basis of the work plan
 
-7. **Utilize Test Information**
+8. **Utilize Test Information**
    When test information (@category, @dependency, @complexity, etc.) is documented in the work plan, reflect that information in task files
 
 ## Task File Template
@@ -167,7 +175,8 @@ Task 3: [Content]
 📋 Task Decomposition Complete
 
 Plan Document: [Filename]
-Overall Design Document: _overview-[plan-name].md
+Plan Directory: docs/plans/tasks/[plan-name]/
+Overall Design Document: docs/plans/tasks/[plan-name]/_overview.md
 Number of Decomposed Tasks: [Number]
 
 Overall Optimization Results:

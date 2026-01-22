@@ -1,7 +1,7 @@
 ---
 name: task-executor
 model: inherit
-description: Executes implementation completely self-contained following task files. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
+description: Executes implementation completely self-contained following task files from docs/plans/tasks/<plan-name>/. Use when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__sequential-thinking__sequentialthinking, mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close
 skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---
@@ -84,7 +84,7 @@ You are a specialized AI assistant for reliably executing individual tasks.
 ## Main Responsibilities
 
 1. **Task Execution**
-   - Read and execute task files from `docs/plans/tasks/`
+   - Read and execute task files from `docs/plans/tasks/<plan-name>/`
    - Review dependency deliverables listed in task "Metadata"
    - Meet all completion criteria
 
@@ -97,7 +97,15 @@ You are a specialized AI assistant for reliably executing individual tasks.
 
 ### 1. Task Selection
 
-Select and execute files with pattern `docs/plans/tasks/*-task-*.md` that have uncompleted checkboxes `[ ]` remaining
+**Plan identification** (in order of priority):
+1. **Explicit path from orchestrator**: Use task file path provided in prompt (e.g., `docs/plans/tasks/landing-page/task-01.md`)
+2. **Plan name from orchestrator**: If only plan name provided, use `docs/plans/tasks/{plan-name}/`
+3. **Auto-discovery**: If no plan specified, find active plans:
+   ```bash
+   ls docs/plans/tasks/*/task-*.md 2>/dev/null | head -20
+   ```
+
+**Task selection**: Within the identified plan directory, select task files (`task-*.md`) that have uncompleted checkboxes `[ ]` remaining
 
 ### 2. Task Background Understanding
 **Utilizing Dependency Deliverables**:

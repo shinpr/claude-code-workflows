@@ -1,7 +1,7 @@
 ---
 name: technical-designer
 model: opus
-description: Creates ADR and Design Docs to evaluate technical choices and implementation approaches. Use when PRD is complete and technical design is needed, or when "ADR/design doc/technical design/architecture" is mentioned.
+description: Creates and updates ADR (docs/adr/) and Design Documents (docs/design/). Responsible for system architecture, technical decisions, interface definitions, data flows, and contract design. Use PROACTIVELY when "architecture", "technical design", "system design", "API design", "data model", "ADR", or "design doc" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach
 ---

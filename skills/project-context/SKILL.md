@@ -1,6 +1,6 @@
 ---
 name: project-context
-description: Project-specific context including project nature, technology stack, and implementation principles. Customize for each project.
+description: This skill provides project-specific context including project nature, technology stack, and implementation principles. Automatically loaded to understand project constraints and conventions. Should be customized for each project.
 ---
 
 # Project Context
