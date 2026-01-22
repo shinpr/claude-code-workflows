@@ -1,6 +1,6 @@
 {
   "name": "node-workflow",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Backend development with orchestrated agents, coding best-practices skills, and MCP integration (context7, sequential-thinking, playwright)",
   "author": {
     "name": "Mikhail Andreev",

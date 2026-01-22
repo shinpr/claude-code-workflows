@@ -84,27 +84,44 @@ This agent operates within implement command scope. Use orchestrator-provided ru
 
 ## Mandatory Orchestrator Responsibilities
 
-### Task Execution Quality Cycle (4-Step Cycle per Task)
+### Commit Strategy Selection (MANDATORY before implementation)
+
+**After requirement-analyzer and before batch approval**, ask user:
+
+"Which commit strategy do you prefer?"
+- **per-task** (default) — Commit after each task. Atomic commits, easy rollback
+- **per-phase** — Commit after each phase completes. Balanced granularity
+- **per-feature** — Single commit at the end. Clean history
+- **manual** — You decide when to commit. Full control
+
+Store selected strategy for autonomous execution mode.
+
+### Task Execution Quality Cycle (per Task)
 
 **Per-task cycle** (complete each task before starting next):
 ```
 1. task-executor → Implementation
 2. Escalation judgment → Check task-executor status
 3. quality-fixer → Quality check and fixes
-4. git commit → Execute with Bash (on approved: true)
+4. [Conditional] git commit → Based on selected commit strategy
 ```
 
 **Rules**:
 1. Execute ONE task completely before starting next
 2. Check task-executor status before quality-fixer (escalation check)
 3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit MUST execute when quality-fixer returns `approved: true`
+4. Commit execution depends on strategy (see subagents-orchestration-guide)
+
+**Commit by strategy**:
+- **per-task**: Commit when quality-fixer returns `approved: true`
+- **per-phase**: Accumulate, commit when phase completes
+- **per-feature**: Accumulate all, single commit at end
+- **manual**: Wait for user to request commit
 
 **Violations**:
-- ✗ Batching tasks for "efficiency"
 - ✗ Skipping escalation check
 - ✗ Skipping quality-fixer
-- ✗ Deferring commits to end
+- ✗ Committing without asking strategy first
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

@@ -276,14 +276,32 @@ Stop autonomous execution and escalate to user in the following cases:
 4. **When user explicitly stops**
    - Direct stop instruction or interruption
 
-### Task Management: 4-Step Cycle
+### Commit Strategy Selection
+
+**Ask user at workflow start** (after requirement-analyzer, before implementation):
+
+| Strategy | When to Commit | Best For |
+|----------|----------------|----------|
+| **per-task** | After each task completes | Atomic commits, easy rollback, CI-friendly |
+| **per-phase** | After each phase (Design, Implementation, etc.) | Balanced granularity |
+| **per-feature** | Single commit at feature completion | Clean history, squash-like |
+| **manual** | User explicitly requests | Full control, interactive workflow |
+
+**Default**: `per-task` (recommended for autonomous mode)
+
+**Strategy affects**:
+- When `git commit` is executed
+- How quality-fixer cycles are grouped
+- Commit message granularity
+
+### Task Management: 3-Step Cycle
 
 **Per-task cycle**:
 ```
 1. task-executor → Implementation
 2. Escalation judgment/Follow-up → Check task-executor status
 3. quality-fixer → Quality check and fixes
-4. git commit → Execute with Bash (on approved: true)
+4. [Conditional] git commit → Based on commit strategy
 ```
 
 **Step 2 Execution Details**:
@@ -292,7 +310,16 @@ Stop autonomous execution and escalate to user in the following cases:
   - If verdict is `needs_revision` → Return to task-executor with `requiredFixes`
   - If verdict is `approved` → Proceed to quality-fixer
 
-**Commit trigger**: quality-fixer returns `approved: true`
+**Commit execution by strategy**:
+
+| Strategy | Commit Trigger |
+|----------|----------------|
+| **per-task** | quality-fixer returns `approved: true` → Commit immediately |
+| **per-phase** | All tasks in phase complete + quality-fixer `approved: true` → Commit |
+| **per-feature** | All phases complete + final quality-fixer `approved: true` → Single commit |
+| **manual** | User says "commit" or "save progress" → Commit staged changes |
+
+**Note**: quality-fixer MUST still run after each task regardless of commit strategy
 
 ### 2-Stage TodoWrite Management
 

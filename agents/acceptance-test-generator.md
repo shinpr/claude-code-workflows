@@ -1,5 +1,6 @@
 ---
 name: acceptance-test-generator
+model: inherit
 description: Generates high-ROI integration/E2E test skeletons from Design Doc ACs. Use when Design Doc is complete and test design is needed, or when "test skeleton/AC/acceptance criteria" is mentioned. Behavior-first approach for minimal tests with maximum coverage.
 tools: Read, Write, Glob, LS, TodoWrite, Grep
 skills: testing-principles, documentation-criteria, integration-e2e-testing

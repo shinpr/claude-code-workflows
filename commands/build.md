@@ -68,15 +68,29 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## Task Execution Cycle (4-Step Cycle)
-**MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → commit`
+## Commit Strategy Selection (Before Autonomous Mode)
+
+**Ask user before starting execution**:
+
+"Which commit strategy do you prefer?"
+- **per-task** (default) — Commit after each task. Atomic commits, easy rollback
+- **per-phase** — Commit after each phase completes. Balanced granularity
+- **per-feature** — Single commit at the end. Clean history
+- **manual** — You decide when to commit. Full control
+
+## Task Execution Cycle
+**MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → [conditional commit]`
 
 For EACH task, YOU MUST:
 1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **INVOKE task-executor**: Execute the task implementation
 3. **CHECK ESCALATION**: Check task-executor status → If `status: "escalation_needed"` → STOP and escalate to user
 4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY
-5. **COMMIT on approval**: After `approved: true` from quality-fixer → Execute git commit
+5. **COMMIT based on strategy**:
+   - **per-task**: Commit immediately after `approved: true`
+   - **per-phase**: Accumulate, commit when phase completes
+   - **per-feature**: Accumulate all, single commit at end
+   - **manual**: Wait for user to request commit
 
 **CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.
 

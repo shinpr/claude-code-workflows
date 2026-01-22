@@ -1,5 +1,6 @@
 ---
 name: scope-discoverer
+model: inherit
 description: Discovers PRD/Design Doc scope from existing codebase. Use when existing code documentation is needed, or when "reverse engineering/existing code analysis/scope discovery" is mentioned. Identifies targets through multi-source discovery.
 tools: Read, Grep, Glob, LS, TodoWrite
 skills: documentation-criteria, ai-development-guide, coding-principles

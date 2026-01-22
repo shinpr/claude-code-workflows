@@ -1,5 +1,6 @@
 ---
 name: design-sync
+model: sonnet
 description: Detects conflicts across multiple Design Docs and provides structured reports. Use when multiple Design Docs exist, or when "consistency/conflict/sync/between documents" is mentioned. Focuses on detection and reporting only, no modifications.
 tools: Read, Grep, Glob, LS
 skills: documentation-criteria, coding-principles

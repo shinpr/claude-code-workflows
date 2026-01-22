@@ -69,9 +69,19 @@ Generate tasks from the work plan? (y/n):
 
 ✅ **Flow**: Task generation → Autonomous execution (in this order)
 
-## Task Execution Cycle (4-Step Cycle) - Frontend Specialized
+## Commit Strategy Selection (Before Autonomous Mode)
 
-**MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
+**Ask user before starting execution**:
+
+"Which commit strategy do you prefer?"
+- **per-task** (default) — Commit after each task. Atomic commits, easy rollback
+- **per-phase** — Commit after each phase completes. Balanced granularity
+- **per-feature** — Single commit at the end. Clean history
+- **manual** — You decide when to commit. Full control
+
+## Task Execution Cycle - Frontend Specialized
+
+**MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → [conditional commit]`
 
 ### Sub-agent Invocation Method
 Use Task tool to invoke sub-agents:
@@ -95,11 +105,14 @@ For EACH task, YOU MUST:
 4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer-frontend IMMEDIATELY
 5. **USE quality-fixer-frontend**: Execute all quality checks (Lighthouse, bundle size, tests, etc.)
    - Invocation example: `subagent_type: "quality-fixer-frontend"`, `description: "Quality check"`, `prompt: "Execute all frontend quality checks and fixes"`
-6. **EXECUTE commit**: After `approved: true` confirmation, execute git commit IMMEDIATELY
+6. **COMMIT based on strategy**:
+   - **per-task**: Commit immediately after `approved: true`
+   - **per-phase**: Accumulate, commit when phase completes
+   - **per-feature**: Accumulate all, single commit at end
+   - **manual**: Wait for user to request commit
 
 ### Quality Assurance During Autonomous Execution (Details)
-- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **orchestrator executes commit** (using Bash tool)
-- After quality-fixer-frontend's `approved: true` confirmation, execute git commit IMMEDIATELY
+- task-executor-frontend execution → escalation check → quality-fixer-frontend execution → **orchestrator executes commit based on strategy** (using Bash tool)
 - Use `changeSummary` for commit message
 
 **CRITICAL**: Monitor ALL structured responses WITHOUT EXCEPTION and ENSURE every quality gate is passed.

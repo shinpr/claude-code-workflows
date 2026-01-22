@@ -1,5 +1,6 @@
 ---
 name: document-reviewer
+model: inherit
 description: Reviews document consistency and completeness, providing approval decisions. Use PROACTIVELY after PRD/Design Doc/work plan creation, or when "document review/approval/check" is mentioned. Detects contradictions and rule violations with improvement suggestions.
 tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
 skills: documentation-criteria, coding-principles, testing-principles

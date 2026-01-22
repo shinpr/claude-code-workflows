@@ -1,5 +1,6 @@
 ---
 name: work-planner
+model: inherit
 description: Creates work plan documents with trackable execution plans. Use when Design Doc is complete and implementation planning is needed, or when "work plan/implementation plan/task planning" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite
 skills: ai-development-guide, documentation-criteria, coding-principles, testing-principles, implementation-approach

@@ -1,5 +1,6 @@
 ---
 name: rule-advisor
+model: sonnet
 description: Selects optimal rulesets for tasks and performs metacognitive analysis. MUST BE USED before any implementation task starts (CLAUDE.md required process). Analyzes task essence with task-analyzer skill and returns structured JSON.
 tools: Read, Grep, LS
 skills: task-analyzer

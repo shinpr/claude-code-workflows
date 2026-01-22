@@ -1,5 +1,6 @@
 ---
 name: solver
+model: inherit
 description: Derives multiple solutions for verified causes and analyzes tradeoffs. Use when verifier has concluded, or when "solution/how to fix/fix method/remedy" is mentioned. Focuses on solutions from given conclusions without investigation.
 tools: Read, Grep, Glob, LS, TodoWrite, WebSearch, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: ai-development-guide, coding-principles, implementation-approach

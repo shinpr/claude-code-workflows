@@ -1,5 +1,6 @@
 ---
 name: verifier
+model: opus
 description: Critically evaluates investigation results and identifies oversights using ACH and Devil's Advocate methods. Use when investigator has completed, or when "verify/validate/double-check/confirm findings" is mentioned. Focuses on verification and conclusion derivation.
 tools: Read, Grep, Glob, LS, WebSearch, TodoWrite
 skills: ai-development-guide, coding-principles

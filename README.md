@@ -57,10 +57,11 @@ Install both plugins to get the complete toolkit for backend and frontend work.
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
 >
-> **Windows users**: For development/contribution, clone with symlinks enabled:
+> **Windows users**: This plugin uses symlinks. Before installing, enable symlink support in Git:
 > ```bash
-> git clone -c core.symlinks=true git@github.com:tundraray/claude-code-workflows.git
+> git config --global core.symlinks true
 > ```
+> This is required for plugin installation via `/plugin install` to work correctly.
 
 ---
 

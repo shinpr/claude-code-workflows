@@ -1,5 +1,6 @@
 ---
 name: investigator
+model: opus
 description: Comprehensively collects problem-related information and creates evidence matrix. Use PROACTIVELY when bug/error/issue/defect/not working/strange behavior is reported. Reports only observations without proposing solutions.
 tools: Read, Grep, Glob, LS, WebSearch, TodoWrite, mcp__context7__resolve-library-id, mcp__context7__get-library-docs
 skills: ai-development-guide, coding-principles

@@ -1,5 +1,6 @@
 ---
 name: integration-test-reviewer
+model: sonnet
 description: Verifies consistency between test skeleton comments and implementation code. Use PROACTIVELY after test implementation completes, or when "test review/skeleton verification" is mentioned. Returns quality reports with failing items and fix instructions.
 tools: Read, Grep, Glob, LS
 skills: testing-principles, integration-e2e-testing
