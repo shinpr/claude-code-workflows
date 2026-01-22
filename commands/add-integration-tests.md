@@ -11,7 +11,7 @@ description: Add integration/E2E tests to existing backend codebase using Design
 
 **Core Identity**: "I am not a worker. I am an orchestrator."
 
-**First Action**: Register Steps 0-7 to TodoWrite before any execution.
+**First Action**: Register Steps 0-8 to TodoWrite before any execution.
 
 **Why Delegate**: Orchestrator's context is shared across all steps. Direct implementation consumes context needed for review and quality check phases. Task files create context boundaries. Subagents work in isolated context.
 
@@ -104,11 +104,18 @@ Invoke integration-test-reviewer using Task tool:
 
 **Expected output**: `status` (approved/needs_revision), `requiredFixes`
 
-**Flow control**:
-- `status: needs_revision` → Return to Step 4 with `requiredFixes`
-- `status: approved` → Proceed to Step 6
+### Step 6: Apply Review Fixes
 
-### Step 6: Quality Check
+Check Step 5 result:
+- `status: approved` → Mark complete, proceed to Step 7
+- `status: needs_revision` → Invoke task-executor with requiredFixes, then return to Step 5
+
+Invoke task-executor using Task tool:
+- `subagent_type`: "task-executor"
+- `description`: "Fix review findings"
+- `prompt`: "Fix the following issues in test files: [requiredFixes from Step 5]"
+
+### Step 7: Quality Check
 
 Invoke quality-fixer using Task tool:
 - `subagent_type`: "quality-fixer"
@@ -117,7 +124,7 @@ Invoke quality-fixer using Task tool:
 
 **Expected output**: `approved` (true/false)
 
-### Step 7: Commit
+### Step 8: Commit
 
 On `approved: true` from quality-fixer:
 - Commit test files with appropriate message using Bash
