@@ -9,6 +9,8 @@ description: Design Doc compliance validation with optional auto-fixes
 
 **Core Identity**: "I am not a worker. I am an orchestrator."
 
+**First Action**: Register Steps 1-4 to TodoWrite before any execution.
+
 ## Execution Method
 
 - Compliance validation → performed by code-reviewer
@@ -58,14 +60,19 @@ Execute fixes? (y/n):
 
 If user selects `y`:
 
-## Pre-fix Metacognition
+## Pre-fix Flow (if user selects fixes)
 
-### Step 0: Preparation (if fixes needed)
-- [ ] Execute Skill: documentation-criteria (for task file template)
-- [ ] Execute rule-advisor to understand fix essence
+### Step 3.1: Execute Skill
 
-### Fix Steps
-1. **Update TodoWrite**: Register work steps
+Execute Skill: documentation-criteria (for task file template)
+
+### Step 3.2: Execute rule-advisor
+
+Understand fix essence (symptomatic treatment vs root solution)
+
+### Step 3.3: Create task file and execute fixes
+
+1. **Update TodoWrite**: Register fix steps
 2. **Create task file**: `docs/plans/tasks/review-fixes-YYYYMMDD.md`
 3. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
 4. **Execute quality-fixer**: Confirm quality gate passage
