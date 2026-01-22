@@ -110,7 +110,8 @@ Assign work based on each subagent's responsibilities:
 
 ## Explicit Stop Points
 
-Autonomous execution MUST stop and wait for user input at these points:
+Autonomous execution MUST stop and wait for user input at these points.
+**Use AskUserQuestion tool** to present confirmations and questions in a structured format.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
@@ -155,10 +156,11 @@ Call subagents using the Task tool:
 
 ## Structured Response Specification
 
-Each subagent responds in JSON format:
+Each subagent responds in JSON format. Key fields for orchestrator decisions:
+- **requirement-analyzer**: scale, confidence, fileCount, requiredDocuments (prd, uxrd, adr, designDoc, workPlan), scopeDependencies, questions
 - **task-executor**: status, filesModified, testsAdded, readyForQualityCheck
 - **quality-fixer**: status, checksPerformed, fixesApplied, approved
-- **document-reviewer**: status, reviewsPerformed, issues, recommendations, approvalReady
+- **document-reviewer**: status, decision, revision_agent, issues, approvalReady
 - **design-sync**: sync_status, total_conflicts, conflicts (severity, type, source_file, target_file)
 - **integration-test-reviewer**: status (approved/needs_revision/blocked), qualityIssues, requiredFixes, verdict
 - **acceptance-test-generator**: status, generatedFiles, budgetUsage

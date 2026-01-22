@@ -6,10 +6,15 @@ argument-hint: (no arguments - reviews current implementation)
 
 **Command Context**: Post-implementation quality assurance command
 
+## Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator."
+
+**First Action**: Register Steps 1-9 to TodoWrite before any execution.
+
 ## Execution Method
 
 - Compliance validation → performed by code-reviewer
-- Rule analysis → performed by rule-advisor
 - Fix implementation → performed by task-executor
 - Quality checks → performed by quality-fixer
 - Re-validation → performed by code-reviewer
@@ -18,11 +23,9 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 
 Design Doc (uses most recent if omitted): $ARGUMENTS
 
-**Think deeply** Understand the essence of compliance validation and execute:
-
 ## Execution Flow
 
-### 1. Prerequisite Check
+### Step 1: Prerequisite Check
 ```bash
 # Identify Design Doc
 ls docs/design/*.md | grep -v template | tail -1
@@ -31,13 +34,18 @@ ls docs/design/*.md | grep -v template | tail -1
 git diff --name-only main...HEAD
 ```
 
-### 2. Execute code-reviewer
-Validate Design Doc compliance:
+### Step 2: Execute code-reviewer
+Invoke code-reviewer using Task tool:
+- `subagent_type`: "code-reviewer"
+- `description`: "Validate compliance"
+- `prompt`: "Validate Design Doc compliance for [path from Step 1]"
+
+Validate:
 - Acceptance criteria fulfillment
 - Code quality check
 - Implementation completeness assessment
 
-### 3. Verdict and Response
+### Step 3: Verdict and Response
 
 **Criteria (considering project stage)**:
 - Prototype: Pass at 70%+
@@ -52,21 +60,77 @@ Validation Result: [X]% compliance
 Unfulfilled items:
 - [item list]
 
-Execute fixes? (y/n): 
+Execute fixes? (y/n):
 ```
 
-If user selects `y`:
+### Step 4: Execute Skill
 
-## Pre-fix Metacognition
-**Required**: `rule-advisor → TodoWrite → task-executor → quality-fixer`
+If user selects `n` or compliance sufficient: Skip Steps 4-8, proceed to Step 9.
 
-1. **Execute rule-advisor**: Understand fix essence (symptomatic treatment vs root solution)
-2. **Update TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Create task file following task template (see documentation-criteria skill) → `docs/plans/tasks/review-fixes-YYYYMMDD.md`
-3. **Execute task-executor**: Staged auto-fixes (stops at 5 files)
-4. **Execute quality-fixer**: Confirm quality gate passage
-5. **Re-validate**: Measure improvement with code-reviewer
+Execute Skill: documentation-criteria (for task file template)
 
-### 4. Final Report
+### Step 5: Create Task File
+
+Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD/task-01.md`
+
+**Template**:
+```markdown
+---
+name: Review compliance fixes
+type: fix-implementation
+---
+
+## Objective
+
+Fix compliance issues identified by code-reviewer.
+
+## Target Files
+
+- Design Doc: [path from Step 1]
+- Implementation files: [files from git diff]
+
+## Tasks
+
+- [ ] [Unfulfilled item 1]
+- [ ] [Unfulfilled item 2]
+- [ ] Verify fixes pass quality checks
+
+## Acceptance Criteria
+
+- All fixable items resolved
+- Quality checks passing
+- No regressions introduced
+```
+
+**Output**: "Task file created at [path]. Ready for Step 6."
+
+### Step 6: Execute Fixes
+
+Invoke task-executor using Task tool:
+- `subagent_type`: "task-executor"
+- `description`: "Execute review fixes"
+- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD/task-01.md. Apply staged fixes (stops at 5 files)."
+
+**Expected output**: `status`, `filesModified`
+
+### Step 7: Quality Check
+
+Invoke quality-fixer using Task tool:
+- `subagent_type`: "quality-fixer"
+- `description`: "Quality gate check"
+- `prompt`: "Confirm quality gate passage for fixed files."
+
+**Expected output**: `approved` (true/false)
+
+### Step 8: Re-validate
+
+Invoke code-reviewer using Task tool:
+- `subagent_type`: "code-reviewer"
+- `description`: "Re-validate compliance"
+- `prompt`: "Re-validate Design Doc compliance after fixes."
+
+### Step 9: Final Report
+
 ```
 Initial compliance: [X]%
 Final compliance: [Y]% (if fixes executed)

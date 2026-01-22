@@ -8,6 +8,12 @@ argument-hint: (no arguments - uses existing task files)
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**First Action**: Register execution steps to TodoWrite before any execution:
+- Step 1: Prerequisites check
+- Step 2: Task decomposition (if needed)
+- Step 3: Commit strategy selection
+- Step 4-N: Task execution cycles
+
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents (orchestrator role only)
 2. **Follow subagents-orchestration-guide skill autonomous execution mode exactly**:

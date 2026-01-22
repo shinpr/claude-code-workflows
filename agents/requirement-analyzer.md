@@ -33,6 +33,17 @@ Scale determination and required document details follow documentation-criteria 
 - **Large**: 6+ files, architecture-level changes → **PRD mandatory**, **Design Doc mandatory**
 
 ※ADR conditions (contract system changes, data flow changes, architecture changes, external dependency changes) require ADR regardless of scale
+※UXRD conditions (frontend/UI work, user interaction patterns, accessibility requirements) require UXRD regardless of scale
+
+### File Count Estimation (MANDATORY)
+
+Before determining scale, investigate existing code:
+1. Identify entry point files using Grep/Glob
+2. Trace imports and callers
+3. Include related test files
+4. List affected file paths explicitly in output
+
+**Scale determination must cite specific file paths as evidence**
 
 ### Important: Clear Determination Expressions
 ✅ **Recommended**: Use the following expressions to show clear determinations:
@@ -57,8 +68,12 @@ Detailed ADR creation conditions follow documentation-criteria skill.
 ### Determination Logic
 1. **Scale determination**: Use file count as highest priority criterion
 2. **Document determination**: Automatically apply mandatory requirements based on scale
-3. **Condition determination**: Check ADR conditions individually
-4. **PRD determination**: 
+3. **ADR determination**: Check ADR conditions individually (architecture, data flow, contracts, dependencies)
+4. **UXRD determination**: Check UXRD conditions individually
+   - Frontend/UI components affected → UXRD mandatory
+   - User interaction patterns changed → UXRD mandatory
+   - Accessibility requirements involved → UXRD mandatory
+5. **PRD determination**:
    - Large scale (6+ files) → PRD mandatory
    - Existing PRD present → update mode selection
    - Large scale modification without existing PRD → reverse-engineer mode selection
@@ -101,53 +116,75 @@ Please provide the following information in natural language:
 
 ## Output Format
 
+**JSON format is mandatory.**
+
+```json
+{
+  "taskType": "feature|fix|refactor|performance|security",
+  "purpose": "Essential purpose of request (1-2 sentences)",
+  "userStory": "As a ~, I want to ~. Because ~.",
+  "scale": "small|medium|large",
+  "confidence": "confirmed|provisional",
+  "affectedFiles": ["path/to/file1.ts", "path/to/file2.ts"],
+  "fileCount": 3,
+  "affectedLayers": ["layer1", "layer2"],
+  "affectedComponents": ["component1", "component2"],
+  "requiredDocuments": {
+    "prd": {
+      "required": true,
+      "mode": "create|update|reverse-engineer|not_required",
+      "reason": "specific reason based on scale/conditions"
+    },
+    "uxrd": {
+      "required": true,
+      "reason": "Frontend/UI work detected - UX requirements needed"
+    },
+    "adr": {
+      "required": true,
+      "reason": "specific ADR condition met, or null if not required"
+    },
+    "designDoc": {
+      "required": true,
+      "reason": "Scale determination: Mandatory for medium scale and above"
+    },
+    "workPlan": {
+      "required": true,
+      "mode": "full|simplified",
+      "reason": "Based on scale determination"
+    }
+  },
+  "technicalConsiderations": {
+    "constraints": ["list"],
+    "risks": ["list"],
+    "dependencies": ["list"]
+  },
+  "recommendations": {
+    "approach": "Recommended implementation approach",
+    "priority": "high|medium|low",
+    "nextSteps": ["step1", "step2"]
+  },
+  "scopeDependencies": [
+    {
+      "question": "specific question that affects scale",
+      "impact": { "if_yes": "large", "if_no": "medium" },
+      "reason": "why this matters"
+    }
+  ],
+  "questions": [
+    {
+      "category": "scope|priority|constraints|boundary|existing_code|dependencies",
+      "question": "specific question",
+      "options": ["A", "B", "C"],
+      "reason": "why this needs to be confirmed"
+    }
+  ]
+}
 ```
-📋 Requirements Analysis Results
 
-### Analysis Results
-- Task Type: [feature/fix/refactor/performance/security]
-- Purpose: [Essential purpose of request (1-2 sentences)]
-- User Story: "As a ~, I want to ~. Because ~."
-- Main Requirements: [List of functional and non-functional requirements]
-
-### Scope
-- Scale: [small/medium/large]
-- Estimated File Count: [number]
-- Affected Layers: [list]
-- Affected Components: [list]
-
-### Required Documents
-- PRD: [Mandatory/Update/Not required] (Mode: [create/update/reverse-engineer/not required], Reason: [Specific reason based on scale/conditions])
-- ADR: [Mandatory/Not required] (Reason: [Applicable ADR conditions or scale determination])
-- Design Doc: [Mandatory/Not required] (Reason: [Scale determination: Mandatory for medium scale and above])
-- Work Plan: [Mandatory/Simplified/Not required] (Reason: [Based on scale determination])
-
-### Determination Rationale
-- File Count: [number] (Scale: [small/medium/large])
-- ADR Conditions Met: [None/List specific conditions]
-
-### Technical Considerations
-- Constraints: [list]
-- Risks: [list]
-- Dependencies: [list]
-
-### Recommendations
-- Approach: [Recommended implementation approach]
-- Priority: [high/medium/low]
-- Estimated Effort: [days or hours]
-- Next Steps: [Specific actions]
-
-### ❓ Items Requiring Confirmation
-- **Scope**: [Specific questions about scope]
-- **Priority**: [Questions about what to prioritize]
-- **Constraints**: [Confirmation of technical/business constraints]
-
-(Additional questions in structured format as needed)
-1. **[Question Category]**
-   - Question: [Specific question]
-   - Options: A) [Option 1] B) [Option 2] C) [Option 3]
-   - Reason: [Why this needs to be confirmed]
-```
+**Field descriptions**:
+- `confidence`: "confirmed" if scale is certain, "provisional" if questions remain
+- `scopeDependencies`: Questions whose answers may change the scale determination (include only if confidence is provisional)
+- `questions`: Items requiring user confirmation before proceeding
 
 ## Quality Checklist
 
