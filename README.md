@@ -4,16 +4,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
-**Build production-ready software with Claude Code** - Workflow plugins that bring best practices, specialized agents, and automated quality checks to your development process.
+**Build production-ready software with Claude Code** - Plugins and tools that bring best practices, specialized agents, automated quality checks, and safety guardrails to your development process.
 
 ---
 
 ## ⚡ Quick Start
 
-This marketplace includes two plugins:
+This marketplace includes the following plugins:
 
 - **dev-workflows** - Backend and general-purpose development
 - **dev-workflows-frontend** - React/TypeScript specialized workflows
+
+### External Plugins
+
+- **[metronome](https://github.com/shinpr/metronome)** - During repetitive tasks, Claude may switch to bulk bash operations under the guise of "working efficiently," potentially breaking files. This plugin detects that behavior and intercepts execution, nudging Claude to slow down and proceed step by step.
 
 Choose what fits your project:
 
@@ -53,6 +57,13 @@ claude
 ### Full-Stack Development
 
 Install both plugins to get the complete toolkit for backend and frontend work.
+
+### External Plugins
+
+```bash
+# Install metronome (prevents shortcut-taking behavior)
+/plugin install metronome@claude-code-workflows
+```
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
 
