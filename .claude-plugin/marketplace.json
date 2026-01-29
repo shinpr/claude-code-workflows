@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "owner": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -18,6 +18,16 @@
       "name": "dev-workflows-frontend",
       "source": "./frontend",
       "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 16 specialized agents"
+    },
+    {
+      "name": "metronome",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/shinpr/metronome.git"
+      },
+      "description": "Detects shortcut-taking behavior and guides Claude to follow procedures step by step",
+      "category": "productivity",
+      "homepage": "https://github.com/shinpr/metronome"
     }
   ]
 }
