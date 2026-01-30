@@ -154,6 +154,7 @@ graph TB
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 | `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
+| `/update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
 
 ### Frontend Development (dev-workflows-frontend)
 
@@ -166,8 +167,9 @@ graph TB
 | `/front-reverse-design` | Generate frontend Design Docs from existing code using PRD | Frontend component documentation |
 | `/task` | Execute single task with precision | Component fixes, small updates |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
 
-> **Tip**: Both plugins share `/task` and `/diagnose` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
+> **Tip**: Both plugins share `/task`, `/diagnose`, and `/update-doc` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
 
 ---
 
@@ -405,7 +407,7 @@ claude-code-workflows/
 │   ├── reverse-engineer.md     # Reverse documentation
 │   ├── plan.md
 │   ├── build.md
-│   └── ... (9 commands for backend, 7 for frontend)
+│   └── ... (10 commands for backend, 8 for frontend)
 │
 ├── skills/                     # Skills (auto-loaded by agents)
 │   ├── ai-development-guide/

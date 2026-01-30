@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows",
-  "version": "0.10.6",
+  "version": "0.10.7",
   "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 18 specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
@@ -29,7 +29,8 @@
     "./commands/plan.md",
     "./commands/reverse-engineer.md",
     "./commands/review.md",
-    "./commands/task.md"
+    "./commands/task.md",
+    "./commands/update-doc.md"
   ],
   "agents": [
     "./agents/acceptance-test-generator.md",
