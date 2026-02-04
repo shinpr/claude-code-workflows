@@ -105,6 +105,10 @@ description: Documentation creation criteria including PRD, ADR, Design Doc, and
 - Complete enumeration of integration points
 - Data contract clarification
 - **Agreement checklist** (agreements with stakeholders)
+- **Code inspection evidence** (inspected files/functions during investigation)
+- **Field propagation map** (when fields cross component boundaries)
+- **Data representation decision** (when introducing new structures)
+- **Applicable standards** (explicit/implicit classification)
 - **Prerequisite ADRs** (including common ADRs)
 
 **Required Structural Elements**:
@@ -156,6 +160,7 @@ Interface Change Matrix:
 ## Creation Process
 
 1. **Problem Analysis**: Change scale assessment, ADR condition check
+   - Identify explicit and implicit project standards before investigation
 2. **ADR Option Consideration** (ADR only): Compare 3+ options, specify trade-offs
 3. **Creation**: Use templates, include measurable conditions
 4. **Approval**: "Accepted" after review enables implementation
