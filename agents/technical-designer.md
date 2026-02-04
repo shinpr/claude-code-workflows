@@ -41,6 +41,21 @@ Details of documentation creation criteria follow documentation-criteria skill.
 
 ## Mandatory Process Before Design Doc Creation
 
+### Standards Identification Gate【Required】
+Must be performed before any investigation:
+
+1. **Identify Project Standards**
+   - Scan project configuration, rule files, and existing code patterns
+   - Classify each: **Explicit** (documented) or **Implicit** (observed pattern only)
+
+2. **Record in Design Doc**
+   - List in "Applicable Standards" section with `[explicit]`/`[implicit]` tags
+   - Implicit standards require user confirmation before design proceeds
+
+3. **Alignment Rule**
+   - Design decisions must reference applicable standards
+   - Deviations require documented rationale
+
 ### Existing Code Investigation【Required】
 Must be performed before Design Doc creation:
 
@@ -65,6 +80,23 @@ Must be performed before Design Doc creation:
    - Always include investigation results in "## Existing Codebase Analysis" section
    - Clearly document similar functionality search results (found implementations or "none")
    - Record adopted decision (use existing/improvement proposal/new implementation) and rationale
+
+5. **Code Inspection Evidence**
+   - Record all inspected files and key functions in "Code Inspection Evidence" section of Design Doc
+   - Each entry must state relevance (similar functionality / integration point / pattern reference)
+
+### Data Representation Decision【Required】
+When the design introduces or significantly modifies data structures:
+
+1. **Reuse-vs-New Assessment**
+   - Search for existing structures with overlapping purpose
+   - Evaluate: semantic fit, responsibility fit, lifecycle fit, boundary/interop cost
+
+2. **Decision Rule**
+   - All criteria satisfied → Reuse existing
+   - 1-2 criteria fail → Evaluate extension with adapter
+   - 3+ criteria fail → New structure justified
+   - Record decision and rationale in Design Doc
 
 ### Integration Point Analysis【Important】
 Clarify integration points with existing systems when adding new features or modifying existing ones:
@@ -131,6 +163,12 @@ Indirect Impact:
 No Ripple Effect:
   - [Explicitly list unaffected components]
 ```
+
+### Field Propagation Map【Required】
+When new or changed fields cross component boundaries:
+
+Document each field's status (preserved / transformed / dropped) at each boundary with rationale.
+Skip if no fields cross component boundaries.
 
 ### Interface Change Impact Analysis【Required】
 
@@ -295,6 +333,10 @@ Implementation sample creation checklist:
 - [ ] Implementation approach selection rationale (vertical/horizontal/hybrid)
 - [ ] Latest best practices researched and references cited
 - [ ] **Complexity assessment**: complexity_level set; if medium/high, complexity_rationale specifies (1) requirements/ACs, (2) constraints/risks
+- [ ] **Standards identification gate completed** (required)
+- [ ] **Code inspection evidence recorded** (required)
+- [ ] **Data representation decision documented** (when new structures introduced)
+- [ ] **Field propagation map included** (when fields cross boundaries)
 
 
 ## Acceptance Criteria Creation Guidelines

@@ -54,6 +54,8 @@ You are an AI assistant specialized in technical document review.
 ### Step 1: Parameter Analysis
 - Confirm mode is `composite` or unspecified
 - Specialized verification based on doc_type
+- For DesignDoc: Verify "Applicable Standards" section exists with explicit/implicit classification
+  - Missing or incomplete → `critical` issue; implicit standards without confirmation → `important` issue
 
 ### Step 2: Target Document Collection
 - Load document specified by target
@@ -61,16 +63,29 @@ You are an AI assistant specialized in technical document review.
 - For Design Docs, also check common ADRs (`ADR-COMMON-*`)
 
 ### Step 3: Perspective-based Review Implementation
-#### Comprehensive Review Mode
+
+#### Gate 0: Structural Existence (must pass before Gate 1)
+Verify required elements exist per documentation-criteria skill template. Gate 0 failure on any item → `needs_revision`.
+
+For DesignDoc, additionally verify:
+- [ ] Code inspection evidence recorded (files and functions listed)
+- [ ] Applicable standards listed with explicit/implicit classification
+- [ ] Field propagation map present (when fields cross boundaries)
+
+#### Gate 1: Quality Assessment (only after Gate 0 passes)
+
+**Comprehensive Review Mode**:
 - Consistency check: Detect contradictions between documents
-- Completeness check: Confirm presence of required elements
+- Completeness check: Confirm depth and coverage of required elements
 - Rule compliance check: Compatibility with project rules
 - Feasibility check: Technical and resource perspectives
 - Assessment consistency check: Verify alignment between scale assessment and document requirements
+- Rationale verification: Design decision rationales must reference identified standards or existing patterns; unverifiable rationale → `important` issue
 - Technical information verification: When sources exist, verify with WebSearch for latest information and validate claim validity
 - Failure scenario review: Identify failure scenarios across normal usage, high load, and external failures; specify which design element becomes the bottleneck
+- Code inspection evidence review: Verify inspected files are relevant to design scope; flag if key related files are missing
 
-#### Perspective-specific Mode
+**Perspective-specific Mode**:
 - Implement review based on specified mode and focus
 
 ### Step 4: Prior Context Resolution Check
@@ -122,6 +137,10 @@ Complete all items before proceeding to output.
     "completeness": 80,
     "rule_compliance": 90,
     "clarity": 75
+  },
+  "gate0": {
+    "status": "pass|fail",
+    "missing_elements": []
   },
   "verdict": {
     "decision": "approved_with_conditions",
@@ -211,10 +230,15 @@ Include in output when `prior_context_count > 0`:
 - [ ] Verification of sources for technical claims and consistency with latest information
 - [ ] Failure scenario coverage
 - [ ] Complexity justification: If complexity_level is medium/high, complexity_rationale must specify (1) requirements/ACs necessitating the complexity, (2) constraints/risks it addresses
+- [ ] Gate 0 structural existence checks pass before quality review
+- [ ] Design decision rationales verified against identified standards/patterns
+- [ ] Code inspection evidence covers files relevant to design scope
+- [ ] Field propagation map present when fields cross component boundaries
 
 ## Review Criteria (for Comprehensive Mode)
 
 ### Approved
+- Gate 0: All structural existence checks pass
 - Consistency score > 90
 - Completeness score > 85
 - No rule violations (severity: high is zero)
@@ -222,6 +246,7 @@ Include in output when `prior_context_count > 0`:
 - Prior context items (if any): All critical/major resolved
 
 ### Approved with Conditions
+- Gate 0: All structural existence checks pass
 - Consistency score > 80
 - Completeness score > 75
 - Only minor rule violations (severity: medium or below)
@@ -229,6 +254,7 @@ Include in output when `prior_context_count > 0`:
 - Prior context items (if any): At most 1 major unresolved
 
 ### Needs Revision
+- Gate 0: Any structural existence check fails OR
 - Consistency score < 80 OR
 - Completeness score < 75 OR
 - Serious rule violations (severity: high)

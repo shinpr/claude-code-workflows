@@ -44,6 +44,10 @@ unknowns:
 - [ ] Backward compatibility: [Required/Not required]
 - [ ] Performance measurement: [Required/Not required]
 
+#### Applicable Standards
+- [ ] [Standard/convention] `[explicit]` - Source: [config / rule file / documentation path]
+- [ ] [Observed pattern] `[implicit]` - Evidence: [file paths] - Confirmed: [Yes/No]
+
 ### Problem to Solve
 
 [Specific problems or challenges this feature aims to address]
@@ -103,6 +107,12 @@ Keywords determine test type and reduce ambiguity.
 - **Integration Target**: [What to connect with]
 - **Invocation Method**: [How it will be invoked]
 
+### Code Inspection Evidence
+
+| File/Function | Relevance |
+|---------------|-----------|
+| [path:function] | [similar functionality / integration point / pattern reference] |
+
 ## Design
 
 ### Change Impact Map
@@ -150,6 +160,17 @@ No Ripple Effect:
 - **Interface**: [APIs and contract definitions provided]
 - **Dependencies**: [Relationships with other components]
 
+### Data Representation Decision (When Introducing New Structures)
+
+| Criterion | Assessment | Reason |
+|-----------|-----------|--------|
+| Semantic Fit | [Yes/No] | [Does existing structure's meaning align?] |
+| Responsibility Fit | [Yes/No] | [Same bounded context?] |
+| Lifecycle Fit | [Yes/No] | [Same creation/mutation/deletion timing?] |
+| Boundary/Interop Cost | [Low/Medium/High] | [Cost of sharing across boundaries?] |
+
+**Decision**: [reuse / extend / new] — [rationale in 1-2 sentences]
+
 ### Contract Definitions
 
 ```
@@ -174,6 +195,12 @@ Output:
 Invariants:
   - [Conditions that remain unchanged before and after processing]
 ```
+
+### Field Propagation Map (When Fields Cross Boundaries)
+
+| Field | Boundary | Status | Detail |
+|-------|----------|--------|--------|
+| [field name] | [Component A → B] | preserved / transformed / dropped | [logic or reason] |
 
 ### State Transitions and Invariants (When Applicable)
 
