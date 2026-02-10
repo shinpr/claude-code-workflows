@@ -1,7 +1,7 @@
 ---
 name: requirement-analyzer
 description: Performs requirements analysis and work scale determination. Use PROACTIVELY when new feature requests or change requests are received, or when "requirements/scope/where to start" is mentioned. Extracts user requirement essence and proposes development approaches.
-tools: Read, Grep, Glob, LS, TodoWrite, WebSearch
+tools: Read, Grep, Glob, LS, Bash, TodoWrite, WebSearch
 skills: ai-development-guide, documentation-criteria
 ---
 

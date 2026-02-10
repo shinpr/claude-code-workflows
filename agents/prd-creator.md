@@ -1,7 +1,7 @@
 ---
 name: prd-creator
 description: Creates PRD and structures business requirements. Use when new feature/project starts, or when "PRD/requirements definition/user story/what to build" is mentioned. Defines user value and success metrics.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, TodoWrite, WebSearch
+tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TodoWrite, WebSearch
 skills: documentation-criteria
 ---
 
