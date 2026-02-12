@@ -1,6 +1,7 @@
 # Claude Code Workflows 🚀
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple)](https://claude.ai/code)
+[![GitHub Stars](https://img.shields.io/github/stars/shinpr/claude-code-workflows?style=social)](https://github.com/shinpr/claude-code-workflows)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
@@ -15,9 +16,10 @@ This marketplace includes the following plugins:
 - **dev-workflows** - Backend and general-purpose development
 - **dev-workflows-frontend** - React/TypeScript specialized workflows
 
-### External Plugins
-
+**External:**
 - **[metronome](https://github.com/shinpr/metronome)** - During repetitive tasks, Claude may switch to bulk bash operations under the guise of "working efficiently," potentially breaking files. This plugin detects that behavior and intercepts execution, nudging Claude to slow down and proceed step by step.
+
+Want to contribute a plugin? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Choose what fits your project:
 
@@ -489,6 +491,14 @@ cat ~/.ssh/id_ed25519.pub
 ssh -T git@github.com
 # → Should see: "Hi username! You've successfully authenticated..."
 ```
+
+---
+
+## 🔌 Contributing External Plugins
+
+This marketplace focuses on plugins that improve **control, reliability, and safety** in agentic coding. If your plugin helps developers trust and manage AI coding agents in production workflows, we'd like to hear from you.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for submission guidelines and acceptance criteria.
 
 ---
 
