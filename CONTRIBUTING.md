@@ -58,11 +58,7 @@ Not sure if your plugin fits? Open an issue to discuss before spending time on a
    }
    ```
 3. Add a brief entry to the **External Plugins** section in `README.md`
-4. Open a Pull Request with the following information:
-   - What your plugin does
-   - **Why it fits this marketplace's focus** (this is the most important part)
-   - Link to your repository
-   - How you've tested it in real projects
+4. [Open a Pull Request using the external plugin template](https://github.com/shinpr/claude-code-workflows/compare/main...main?template=external-plugin.md) and fill in the required information
 
 ## Review Process
 
