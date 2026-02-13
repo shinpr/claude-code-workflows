@@ -77,7 +77,9 @@ Decompose tasks based on implementation strategy patterns determined in implemen
 
 4. **Task File Generation**
    - Naming convention: `{plan-name}-task-{number}.md`
-   - Example: `20250122-refactor-types-task-01.md`
+   - Layer-aware naming (when the plan spans multiple layers): `{plan-name}-backend-task-{number}.md`, `{plan-name}-frontend-task-{number}.md`
+   - Layer is determined from the task's Target files paths
+   - Examples: `20250122-refactor-types-task-01.md`, `20250122-auth-backend-task-01.md`, `20250122-auth-frontend-task-02.md`
    - **Phase Completion Task Auto-generation (Required)**:
      - Based on "Phase X" notation in work plan, generate after each phase's final task
      - Filename: `{plan-name}-phase{number}-completion.md`

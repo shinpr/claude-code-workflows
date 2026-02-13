@@ -32,7 +32,7 @@ Please provide the following information in natural language:
 - **Requirements Analysis Results**: Requirements analysis results (scale determination, technical requirements, etc.)
 - **PRD**: PRD document (if created)
 - **ADR**: ADR document (if created)
-- **Design Doc**: Design Doc document (if created)
+- **Design Doc(s)**: Design Doc document(s) (if created, may be multiple for cross-layer features)
 - **Test Design Information** (reflect in plan if provided from previous process):
   - Test definition file path
   - Test case descriptions (it.todo format, etc.)
@@ -178,7 +178,7 @@ When creating work plans, **Phase Structure Diagrams** and **Task Dependency Dia
 
 ## Quality Checklist
 
-- [ ] Design Doc consistency verification
+- [ ] Design Doc(s) consistency verification
 - [ ] Phase composition based on technical dependencies
 - [ ] All requirements converted to tasks
 - [ ] Quality assurance exists in final phase
