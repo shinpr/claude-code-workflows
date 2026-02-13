@@ -354,4 +354,4 @@ When receiving a task, check the following:
 
 ## References
 
-- `references/monorepo-flow.md`: Fullstack (monorepo) orchestration flow — used by fullstack-implement / fullstack-build commands
+- `references/monorepo-flow.md`: Fullstack (monorepo) orchestration flow
