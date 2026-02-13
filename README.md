@@ -60,6 +60,16 @@ claude
 
 Install both plugins to get the complete toolkit for backend and frontend work.
 
+```bash
+# Use fullstack commands for cross-layer features
+/fullstack-implement "Add user authentication with JWT + login form"
+
+# Or execute from existing fullstack work plan
+/fullstack-build
+```
+
+The fullstack commands create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
+
 ### External Plugins
 
 ```bash
@@ -148,10 +158,12 @@ graph TB
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/implement` | End-to-end feature development | New features, complete workflows |
+| `/fullstack-implement` | End-to-end fullstack development | Cross-layer features (requires both plugins) |
 | `/task` | Execute single task with precision | Bug fixes, small changes |
 | `/design` | Create design documentation | Architecture planning |
 | `/plan` | Generate work plan from design | Planning phase |
 | `/build` | Execute from existing task plan | Resume implementation |
+| `/fullstack-build` | Execute fullstack task plan | Resume cross-layer implementation (requires both plugins) |
 | `/review` | Verify code against design docs | Post-implementation check |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
@@ -316,6 +328,25 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 4. Fixes lint and build errors
 ```
 
+### Fullstack Workflow
+
+```bash
+/fullstack-implement "Add user authentication with JWT + React login form"
+
+# What happens:
+# 1. Analyzes requirements (same as /implement)
+# 2. Creates PRD covering the entire feature
+# 3. Creates separate Design Docs for backend AND frontend
+# 4. Verifies cross-layer consistency via design-sync
+# 5. Creates work plan with vertical feature slices
+# 6. Decomposes into layer-aware tasks (backend/frontend/fullstack)
+# 7. Routes each task to the appropriate executor
+# 8. Runs layer-appropriate quality checks
+# 9. Commits vertical slices for early integration
+```
+
+> **Requires both plugins installed.** The fullstack commands create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`).
+
 ### Quick Fixes (Both Plugins)
 
 ```bash
@@ -452,7 +483,7 @@ Both plugins can run side-by-side without conflicts.
 
 **Q: Can I use both plugins at the same time?**
 
-A: Yes! They're designed to work together. Install both if you're building a full-stack app.
+A: Yes! They're designed to work together. Install both if you're building a full-stack app. Use `/fullstack-implement` for features that span both backend and frontend — it creates separate Design Docs per layer and routes tasks to the appropriate executor automatically.
 
 **Q: Do I need to learn special commands?**
 

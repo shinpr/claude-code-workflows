@@ -351,3 +351,7 @@ When receiving a task, check the following:
 - [ ] Considered appropriate subagent utilization
 - [ ] Decided next action according to decision flow
 - [ ] Monitored requirement changes and errors during autonomous execution mode
+
+## References
+
+- `references/monorepo-flow.md`: Fullstack (monorepo) orchestration flow — used by fullstack-implement / fullstack-build commands

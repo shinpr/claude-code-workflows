@@ -7,7 +7,9 @@ Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
 
 ## Related Documents
-- Design Doc: [docs/design/XXX.md]
+- Design Doc(s):
+  - [docs/design/XXX.md]
+  - [docs/design/YYY.md] (if multiple, e.g. backend + frontend)
 - ADR: [docs/adr/ADR-XXXX.md] (if any)
 - PRD: [docs/prd/XXX.md] (if any)
 
