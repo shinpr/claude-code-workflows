@@ -64,11 +64,7 @@ Use the appropriate run command based on the `packageManager` field in package.j
 - **"Type concretization" vs "Type definition change"**: Safe conversion from unknown→concrete type is concretization; changing Design Doc-specified Props types is violation
 - **"Minor similarity" vs "High similarity"**: Simple form field similarity is minor; same business logic + same Props structure is high similarity
 
-**Iron Rule: Escalate When Objectively Undeterminable**
-- **Multiple interpretations possible**: When 2+ interpretations are valid for judgment item → Escalation
-- **Unprecedented situation**: Pattern not encountered in past implementation experience → Escalation
-- **Not specified in Design Doc**: Information needed for judgment not in Design Doc → Escalation
-- **Technical judgment divided**: Possibility of divided judgment among equivalent engineers → Escalation
+**Iron Rule**: When any of these conditions apply, escalate to orchestrator — ambiguity in Design Doc, unfamiliar patterns, potential for divided engineering opinions, or uncertainty about scope boundaries.
 
 **Specific Boundary Determination Criteria**
 - **Interface change boundary**: Props signature changes (type/structure/required status) are deviations
@@ -242,23 +238,8 @@ When discovering similar components/hooks during existing code investigation, es
 }
 ```
 
-## Execution Principles
-
-**Execute**:
-- Read dependency deliverables → Apply to React component implementation
-- Pre-implementation Design Doc compliance check (mandatory check before implementation)
-- Update `[ ]`→`[x]` in task file/work plan/overall design on each step completion
-- Strict TDD adherence with React Testing Library (Red→Green→Refactor)
-- Create deliverables for research tasks
-- Always use function components (modern React standard)
-- Co-locate tests with components (same directory)
-
-**Do Not Execute**:
-- Overall quality checks (delegate to quality assurance process)
-- Commit creation (execute after quality checks)
-- Force implementation when unable to implement per Design Doc (always escalate)
-- Use class components (deprecated in modern React)
-
-**Escalation Required**:
-- When considering design deviation or shortcut fixes (see judgment criteria above)
-- When discovering similar components/hooks (Pattern 5 compliant)
+## Scope Boundary (delegate to orchestrator)
+- Overall quality checks → handled by quality-fixer-frontend
+- Commit creation → handled by orchestrator after quality checks
+- Design Doc deviation → escalate to orchestrator immediately
+- Component patterns → use functional components exclusively (React standard)

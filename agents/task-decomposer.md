@@ -188,40 +188,6 @@ Next Steps:
 Please execute decomposed tasks according to the order.
 ```
 
-## Important Considerations
-
-### Core Principles of Task Decomposition
-
-1. **Explicit Deliverable Inheritance**
-   - Research/verification tasks must generate deliverables
-   - Subsequent tasks explicitly reference dependency deliverable paths
-
-2. **Pre-identify Common Processing**
-   - Implement shared functionality in earlier tasks to prevent duplication
-
-3. **Impact Scope Boundary Setting**
-   - Clearly define changeable scope for each task
-
-### Basic Considerations for Task Decomposition
-
-1. **Quality Assurance Considerations**
-   - Don't forget test creation/updates
-   - Overall quality check separately executed in quality assurance process after each task completion (outside task responsibility scope)
-
-2. **Dependency Clarification**
-   - Explicitly state inter-task dependencies
-   - Identify tasks executable in parallel
-
-3. **Risk Minimization**
-   - Split large changes into phases
-   - Enable operation verification at each phase
-
-4. **Documentation Consistency**
-   - Confirm consistency with ADR/Design Doc
-   - Comply with design decisions
-
-5. **Maintaining Appropriate Granularity**
-   - Small (1-2 files), Medium (3-5 files), Large must be split (6+ files)
 
 ## Task Decomposition Checklist
 
@@ -235,17 +201,8 @@ Please execute decomposed tasks according to the order.
 - [ ] Overall design document creation
 - [ ] Implementation efficiency and rework prevention (pre-identification of common processing, clarification of impact scope)
 
-## Important Task Design Principles
+## Output Self-Check
 
-### Task Design Principles
-
-**Required**:
-- Research tasks generate deliverables
-- Implementation tasks follow TDD (Red→Green→Refactor)
-- Dependency deliverables explicitly referenced
-- Task size 1-5 files (split if 6+)
-
-**Prohibited**:
-- Including quality assurance in tasks
-- Research tasks without deliverables
-- Implicit dependency assumptions
+- [ ] Quality assurance steps are excluded from tasks (handled separately)
+- [ ] Every research task has concrete deliverables defined
+- [ ] All inter-task dependencies are explicitly stated

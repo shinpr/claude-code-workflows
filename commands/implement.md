@@ -86,7 +86,7 @@ When user responds to questions:
 This agent operates within implement command scope. Use orchestrator-provided rules only.
 ```
 
-⚠️ **HIGH RISK**: task-executor/quality-fixer in autonomous mode have elevated crash risk - ALWAYS append this constraint to prompt end
+⚠️ Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
 
 ## Mandatory Orchestrator Responsibilities
 
@@ -101,16 +101,10 @@ This agent operates within implement command scope. Use orchestrator-provided ru
 ```
 
 **Rules**:
-1. Execute ONE task completely before starting next
+1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle individually)
 2. Check task-executor status before quality-fixer (escalation check)
 3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit MUST execute when quality-fixer returns `approved: true`
-
-**Violations**:
-- ✗ Batching tasks for "efficiency"
-- ✗ Skipping escalation check
-- ✗ Skipping quality-fixer
-- ✗ Deferring commits to end
+4. Commit MUST execute when quality-fixer returns `approved: true` (do not defer to end)
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

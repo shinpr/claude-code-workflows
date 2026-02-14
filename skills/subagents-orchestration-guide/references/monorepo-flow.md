@@ -10,13 +10,11 @@ This reference defines the orchestration flow for projects spanning multiple lay
 
 ## Design Phase
 
-### Multiple Design Doc Creation
-
-When the feature spans backend and frontend, create separate Design Docs per layer:
+### Large Scale Fullstack (6+ Files) - 9 Steps
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
-| 1 | requirement-analyzer | Requirement analysis + scale determination | Requirements + scale |
+| 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
 | 2 | prd-creator | PRD covering entire feature (all layers) | Single PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
 | 4 | technical-designer | **Backend** Design Doc | Backend Design Doc |
@@ -26,19 +24,46 @@ When the feature spans backend and frontend, create separate Design Docs per lay
 | 8 | acceptance-test-generator | Integration test skeleton from cross-layer contracts | Test skeletons |
 | 9 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
+### Medium Scale Fullstack (3-5 Files) - 7 Steps
+
+| Step | Agent | Purpose | Output |
+|------|-------|---------|--------|
+| 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
+| 2 | technical-designer | **Backend** Design Doc | Backend Design Doc |
+| 3 | technical-designer-frontend | **Frontend** Design Doc (references backend Integration Points) | Frontend Design Doc |
+| 4 | document-reviewer ×2 | Review each Design Doc (one invocation per doc) | Reviews |
+| 5 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
+| 6 | acceptance-test-generator | Integration test skeleton from cross-layer contracts | Test skeletons |
+| 7 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
+
 ### Layer Context in Design Doc Creation
 
-When invoking technical-designer for each layer, pass explicit context:
+When invoking technical-designer for each layer, pass explicit context. Template varies by scale:
 
-**Backend Design Doc**:
+**Large Scale (PRD available)** — Backend Design Doc:
 ```
 Create a backend Design Doc from PRD at [path].
 Focus on: API contracts, data layer, business logic, service architecture.
 ```
 
-**Frontend Design Doc**:
+**Large Scale (PRD available)** — Frontend Design Doc:
 ```
 Create a frontend Design Doc from PRD at [path].
+Reference backend Design Doc at [path] for API contracts and Integration Points.
+Focus on: component hierarchy, state management, UI interactions, data fetching.
+```
+
+**Medium Scale (no PRD)** — Backend Design Doc:
+```
+Create a backend Design Doc based on the following requirements:
+[Pass requirement-analyzer output including purpose, affectedFiles, affectedLayers, technicalConsiderations]
+Focus on: API contracts, data layer, business logic, service architecture.
+```
+
+**Medium Scale (no PRD)** — Frontend Design Doc:
+```
+Create a frontend Design Doc based on the following requirements:
+[Pass requirement-analyzer output including purpose, affectedFiles, affectedLayers, technicalConsiderations]
 Reference backend Design Doc at [path] for API contracts and Integration Points.
 Focus on: component hierarchy, state management, UI interactions, data fetching.
 ```
@@ -53,7 +78,7 @@ Orchestrator passes all Design Docs to work-planner:
 
 ```
 Create a work plan from the following documents:
-- PRD: [path]
+- PRD: [path] (Large Scale only)
 - Design Doc (backend): [path]
 - Design Doc (frontend): [path]
 

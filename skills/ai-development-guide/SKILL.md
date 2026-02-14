@@ -28,7 +28,7 @@ Immediately stop and reconsider design when detecting the following patterns:
 ## Fail-Fast Fallback Design Principles
 
 ### Core Principle
-Prioritize primary code reliability over fallback implementations. In distributed systems, excessive fallback mechanisms can mask errors and make debugging difficult.
+Make errors explicit with full context. Prioritize primary code reliability over fallback implementations. Never hide errors with silent fallbacks—excessive fallback mechanisms mask errors and make debugging difficult.
 
 ### Implementation Guidelines
 
@@ -68,8 +68,6 @@ Prioritize primary code reliability over fallback implementations. In distribute
 4. Add monitoring/alerting for fallback activation
 
 ### Implementation Pattern
-
-**Core principle**: Make errors explicit with full context. Never hide errors with silent fallbacks.
 
 ```
 ❌ AVOID: Silent fallback that hides errors
@@ -260,12 +258,6 @@ Auto-fix capabilities (when available):
 - Overly detailed contracts reduce maintainability
 - Design interfaces that appropriately express domain
 - Use abstraction mechanisms to reduce duplication
-
-## Continuous Improvement Mindset
-
-- **Humility**: Perfect code doesn't exist, welcome feedback
-- **Courage**: Execute necessary refactoring boldly
-- **Transparency**: Clearly document technical decision reasoning
 
 ## Implementation Completeness Assurance
 

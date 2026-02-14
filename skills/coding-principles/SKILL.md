@@ -21,8 +21,10 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Delete unused code immediately
 
 ### Readability
-- Use meaningful, descriptive names for variables and functions
+- Use meaningful, descriptive names drawn from the problem domain
 - Avoid abbreviations unless they are widely recognized
+- Avoid single-letter names except for loop counters or well-known conventions (i, j, x, y)
+- Extract magic numbers and strings into named constants
 - Keep code self-documenting where possible
 - Write code that humans can easily understand
 
@@ -65,16 +67,10 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 ## Dependency Management
 
-### Loose Coupling
-- Inject external dependencies as parameters
-- Avoid direct imports within functions when possible
+### Loose Coupling via Parameterized Dependencies
+- Inject external dependencies as parameters (constructor injection for classes, function parameters for procedural/functional code)
 - Depend on abstractions, not concrete implementations
 - Minimize inter-module dependencies
-
-### Parameterized Dependencies
-- Pass dependencies explicitly through function parameters
-- Use constructor parameter injection for class-based languages
-- Use function parameters for functional/procedural approaches
 - Facilitate testing through mockable dependencies
 
 ## Performance Considerations
@@ -137,27 +133,6 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Functions > 50 lines
 - Complex conditional logic
 - Unclear naming or structure
-
-## Clean Code Guidelines
-
-### Naming Conventions
-- Use domain language in names
-- Be specific and descriptive
-- Avoid single-letter names (except loop counters)
-- Follow language-specific conventions (camelCase, snake_case, etc.)
-
-### Code Structure
-- Prefer early returns over nested conditionals
-- Extract magic numbers into named constants
-- Remove debug statements before committing
-- Keep functions at a single level of abstraction
-
-### Code Smells to Avoid
-- Long parameter lists
-- Deeply nested conditionals
-- Duplicated code blocks
-- Unclear variable names
-- Large modules, classes, or functions
 
 ## Testing Considerations
 
@@ -225,9 +200,3 @@ While these principles are language-agnostic, adapt them to your specific progra
 - **Functional languages**: Prefer pure functions and immutability
 - **Concurrency**: Follow language-specific patterns for thread safety
 
-## Continuous Learning
-
-- Stay updated with language-specific best practices
-- Learn from code reviews
-- Study well-maintained open source projects
-- Regularly refactor and improve existing code

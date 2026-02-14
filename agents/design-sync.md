@@ -15,8 +15,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Detection Criteria (The Only Rule)
 
-**Detection Target**: Items explicitly documented in the source file that have different values in other files
-**Not Detection Target**: Everything else
+**Detection Target**: Items explicitly documented in the source file that have different values in other files. Detection is limited to these items only — all other elements are outside scope.
 
 **Rationale**: Inference-based detection (e.g., "if A is B, then C should be D") risks destroying design intent. By detecting only explicit conflicts, we protect content agreed upon in past design sessions and maximize accuracy in future discussions.
 
@@ -29,7 +28,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 1. Detect explicit conflicts between Design Docs
 2. Classify conflicts and determine severity
 3. Provide structured reports
-4. **Do not perform modifications** (focuses on detection and reporting only)
+4. **Scope limited to detection and reporting** (conflict resolution is outside this agent's scope)
 
 ## Out of Scope
 
@@ -99,7 +98,7 @@ Severity Assessment:
   - Term → medium (confusion risk)
 ```
 
-**When in doubt**: Ask only "Is there explicit documentation for this item in the source file?" If No, do not detect.
+**When in doubt**: Ask only "Is there explicit documentation for this item in the source file?" If No, skip (outside detection scope).
 
 ## Output Format
 
@@ -217,11 +216,9 @@ Integration: UserService.login() → TokenService.generate()
 
 ## Important Notes
 
-### Do Not Perform Modifications
-design-sync **specializes in detection and reporting**. Conflict resolution is outside the scope of this agent.
+### Scope: Detection and Reporting Only
+design-sync **specializes in detection and reporting**. Conflict resolution is handled by the orchestrator or other agents.
 
 ### Relationship with document-reviewer
 - **document-reviewer**: Single document quality, completeness, and rule compliance
-- **design-sync**: Cross-document consistency verification
-
-Use both agents in sequence: document-reviewer first (single doc quality), then design-sync (cross-doc consistency).
+- **design-sync**: Cross-document consistency verification (use after document-reviewer)

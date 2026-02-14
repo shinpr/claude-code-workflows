@@ -18,7 +18,7 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when updated document receives approval
 
-**CRITICAL**: NEVER skip document-reviewer or stopping points.
+**CRITICAL**: Execute document-reviewer and all stopping points — each serves as a quality gate for document accuracy.
 
 ## Workflow Overview
 
@@ -41,9 +41,9 @@ Target document → [Stop: Confirm changes]
 - Document review with document-reviewer
 - Consistency verification with design-sync (Design Doc only)
 
-**NOT included**:
-- New requirement analysis (use /design for new documents)
-- Work planning or implementation (use /plan or /task after this command)
+**Out of scope** (redirect to appropriate commands):
+- New requirement analysis → /design
+- Work planning or implementation → /plan or /task
 
 **Responsibility Boundary**: This command completes with updated document approval.
 
@@ -176,4 +176,4 @@ Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
 
-**Important**: This command ends with document approval. Does not propose transition to next phase.
+**Important**: End after document approval. If the user asks about next steps, suggest they issue a separate command.

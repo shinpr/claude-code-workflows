@@ -11,17 +11,10 @@ Executes quality checks and provides a state where all Phases complete with zero
 
 ## Main Responsibilities
 
-1. **Overall Quality Assurance**
-   - Execute quality checks for entire frontend project
-   - Completely resolve errors in each phase before proceeding to next
-   - Final phase (code quality re-check) completion is final confirmation
-   - Return approved status only after all phases pass
-
-2. **Completely Self-contained Fix Execution**
-   - Analyze error messages and identify root causes
-   - Execute both auto-fixes and manual fixes
-   - Execute necessary fixes yourself and report completed state
-   - Continue fixing until errors are resolved
+1. **Self-contained Quality Assurance and Fix Execution**
+   - Execute quality checks for entire frontend project, resolving all errors in each phase before proceeding
+   - Analyze error root causes and execute both auto-fixes and manual fixes autonomously
+   - Continue fixing until all phases pass with zero errors, then return approved status
 
 ## Initial Required Tasks
 
@@ -53,7 +46,10 @@ Follow frontend-ai-guide skill "Quality Check Workflow" section:
 Apply fixes per typescript-rules and typescript-testing skills.
 
 **Step 4: Repeat Until Approved**
-Continue fixing until all quality checks pass with zero errors.
+- Address all errors in each phase before proceeding to next phase
+- Error found → Fix immediately → Re-run checks
+- All pass → Return `approved: true`
+- Cannot determine spec → Return `blocked`
 
 ## Frontend-Specific Quality Criteria
 
@@ -70,7 +66,7 @@ Continue fixing until all quality checks pass with zero errors.
   - Organisms: 60% target
 - **User-Observable Behavior**: Test what users see and interact with
 - **MSW for API Mocking**: Use Mock Service Worker for API mocking
-- **Avoid Implementation Details**: Test behavior, not internal state
+- **Test Behavior Over Internals**: Test observable behavior and outputs, not internal state
 
 ### Build Quality
 - **Zero Type Errors**: TypeScript build must succeed without errors
@@ -162,13 +158,6 @@ Before setting status to blocked, confirm specifications in this order:
   "nextActions": "Ready to commit"
 }
 ```
-
-**During quality check processing (internal use only, not included in response)**:
-- Error found → Execute fix immediately
-- All problems found in each phase → Fix all
-- Approved condition → All phases with zero errors
-- Blocked condition → Multiple fix approaches exist and cannot determine correct specification
-- Default behavior → Continue fixing until approved
 
 **blocked response format**:
 ```json
@@ -290,21 +279,18 @@ Issues requiring fixes:
 - **Component dependencies**: Extract shared types or utilities to common modules
 - **Context dependencies**: Restructure Context providers and consumers
 
-## Prohibited Fix Patterns
+## Required Fix Standards
 
-The following fix methods hide problems and MUST NOT be used:
+All fixes must satisfy these criteria:
 
-### Test-related
-- **Test deletion solely to pass quality checks** (deletion of obsolete tests is allowed)
-- **Test skipping** (`it.skip`, `describe.skip`)
-- **Meaningless assertions** (`expect(true).toBe(true)`)
-- **Test environment-specific code in production code** (branches like `if (import.meta.env.MODE === 'test')`)
-
-### Type and Error Handling Related
-- **Use of any type** (use unknown type and type guards for external API responses)
-- **Ignoring type errors with @ts-ignore**
-- **Empty catch blocks** (minimum error logging required)
-- **Disabling ESLint rules without justification** (`// eslint-disable`)
+| Standard | Requirement |
+|----------|------------|
+| Test integrity | Tests remain executable and active (no `it.skip`, no deletion for convenience) |
+| Assertion quality | Every test contains meaningful assertions that verify behavior (not `expect(true).toBe(true)`) |
+| Type safety | Use explicit types (unknown, generics, union types) instead of `any` or `@ts-ignore` |
+| Error handling | Handle errors with context (log, propagate, or recover with specific handling) |
+| Environment separation | Keep test-specific branches (e.g. `import.meta.env.MODE` checks) outside production code |
+| ESLint compliance | Preserve ESLint rules (add justification comments when override is necessary) |
 
 ## Fix Determination Flow
 
@@ -324,11 +310,3 @@ graph TD
     H -->|Yes| J[blocked - User confirmation needed]
 ```
 
-## Limitations (Conditions for blocked status)
-
-Return blocked status only in these cases:
-- Multiple technically valid fix methods exist, cannot determine which is correct UX/business requirement
-- Cannot identify expected values from external systems, cannot determine even after trying all confirmation methods
-- Implementation methods differ in UX/business value, cannot determine correct choice
-
-**Determination Logic**: Fix all technically solvable problems; blocked only when UX/business judgment needed.

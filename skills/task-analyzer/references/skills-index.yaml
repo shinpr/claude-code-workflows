@@ -20,8 +20,14 @@ skills:
       - "Error Handling"
       - "Dependency Management"
       - "Performance Considerations"
+      - "Code Organization"
+      - "Commenting Principles"
       - "Refactoring Approach"
+      - "Testing Considerations"
       - "Security Principles"
+      - "Documentation"
+      - "Version Control Practices"
+      - "Language-Specific Adaptations"
 
   testing-principles:
     skill: "testing-principles"
@@ -41,7 +47,17 @@ skills:
       - "Test Design Principles"
       - "Test Independence"
       - "Mocking and Test Doubles"
+      - "Test Quality Practices"
+      - "What to Test"
       - "Test Quality Criteria"
+      - "Verification Requirements"
+      - "Test Organization"
+      - "Performance Considerations"
+      - "Continuous Integration"
+      - "Common Anti-Patterns to Avoid"
+      - "Regression Testing"
+      - "Testing Best Practices by Language Paradigm"
+      - "Documentation and Communication"
 
   ai-development-guide:
     skill: "ai-development-guide"
@@ -60,6 +76,8 @@ skills:
       - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
       - "Quality Check Workflow"
+      - "Situations Requiring Technical Decisions"
+      - "Implementation Completeness Assurance"
       - "Impact Analysis"
 
   documentation-criteria:
@@ -72,11 +90,16 @@ skills:
       - "Design Doc Culture - Google Engineering Practices"
       - "Single Source of Truth"
     sections:
+      - "Templates"
       - "Creation Decision Matrix"
-      - "ADR Creation Conditions"
+      - "ADR Creation Conditions (Required if Any Apply)"
       - "Detailed Document Definitions"
+      - "Creation Process"
       - "Storage Locations"
+      - "ADR Status"
+      - "AI Automation Rules"
       - "Diagram Requirements"
+      - "Common ADR Relationships"
 
   implementation-approach:
     skill: "implementation-approach"
@@ -92,20 +115,25 @@ skills:
       - "Verification Level Definitions"
       - "Integration Point Definitions"
       - "Anti-patterns"
+      - "Guidelines for Meta-cognitive Execution"
 
   integration-e2e-testing:
     skill: "integration-e2e-testing"
-    tags: [testing, integration-testing, e2e-testing, test-design, behavior-first, roi, budget-enforcement]
-    typical-use: "Integration and E2E test design principles, ROI-based test selection, behavior-first approach"
+    tags: [testing, integration-testing, e2e-testing, test-design, behavior-first, roi, test-skeleton, ears-format]
+    typical-use: "Integration and E2E test design principles, ROI-based test selection, behavior-first approach, test skeleton specification"
     size: medium
     key-references:
       - "Test Pyramid - Mike Cohn"
       - "Behavior-Driven Development"
     sections:
-      - "Test Type Definitions"
+      - "Test Type Definition and Limits"
+      - "Behavior-First Principle"
       - "ROI Calculation"
-      - "Budget Enforcement"
-      - "Behavior-First Filtering"
+      - "Test Skeleton Specification"
+      - "EARS Format Mapping"
+      - "Test File Naming Convention"
+      - "Review Criteria"
+      - "Quality Standards"
 
   subagents-orchestration-guide:
     skill: "subagents-orchestration-guide"
@@ -116,11 +144,23 @@ skills:
       - "Orchestrator Pattern"
       - "Conductor Pattern"
     sections:
+      - "Role: The Orchestrator"
+      - "Decision Flow When Receiving Tasks"
+      - "Available Subagents"
       - "Orchestration Principles"
-      - "Scale Determination"
+      - "Constraints Between Subagents"
+      - "Explicit Stop Points"
+      - "Scale Determination and Document Requirements"
+      - "How to Call Subagents"
+      - "Structured Response Specification"
+      - "Handling Requirement Changes"
       - "Basic Flow for Work Planning"
       - "Autonomous Execution Mode"
-      - "Stop Points"
+      - "Main Orchestrator Roles"
+      - "Important Constraints"
+      - "Required Dialogue Points with Humans"
+      - "Action Checklist"
+      - "References"
 
   # Frontend-Specific Skills
   typescript-rules:
@@ -134,10 +174,13 @@ skills:
       - "Props-Driven Design"
     sections:
       - "Basic Principles"
+      - "Comment Writing Rules"
       - "Type Safety"
       - "Coding Conventions"
       - "Error Handling"
+      - "Refactoring Techniques"
       - "Performance Optimization"
+      - "Non-functional Requirements"
 
   typescript-testing:
     skill: "typescript-testing"
@@ -150,9 +193,15 @@ skills:
     sections:
       - "Test Framework"
       - "Basic Testing Policy"
-      - "Red-Green-Refactor Process"
+      - "Red-Green-Refactor Process (Test-First Development)"
       - "Test Design Principles"
+      - "Test Helper Utilization Rules"
+      - "Test Implementation Conventions"
+      - "Test Granularity Principles"
       - "Test Quality Criteria"
+      - "Mock Type Safety Enforcement"
+      - "Continuity Test Scope"
+      - "Basic React Testing Library Example"
 
   frontend-ai-guide:
     skill: "frontend-ai-guide"
@@ -163,7 +212,12 @@ skills:
       - "Rule of Three - Martin Fowler"
       - "React Best Practices"
     sections:
-      - "Technical Anti-patterns"
-      - "Common Failure Patterns"
+      - "Technical Anti-patterns (Red Flag Patterns)"
+      - "Fallback Design Principles"
+      - "Rule of Three - Criteria for Code Duplication"
+      - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
       - "Quality Check Workflow"
+      - "Situations Requiring Technical Decisions"
+      - "Implementation Completeness Assurance"
+      - "Impact Analysis"
