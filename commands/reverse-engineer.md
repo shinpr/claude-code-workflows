@@ -205,6 +205,8 @@ Map `$STEP_1_OUTPUT` units to Design Doc generation targets, carrying forward:
 
 #### Step 7: Design Doc Generation
 
+**Scope**: Document current architecture as-is. This is a documentation task, not a design improvement task.
+
 **Standard mode (fullstack=No)**:
 
 **Task invocation**:
@@ -223,7 +225,7 @@ prompt: |
 
   Parent PRD: $APPROVED_PRD_PATH
 
-  Document current architecture. Do not propose changes.
+  Document current architecture as-is.
 ```
 
 **Store output as**: `$STEP_7_OUTPUT`
@@ -249,7 +251,7 @@ prompt: |
   Parent PRD: $APPROVED_PRD_PATH
 
   Focus on: API contracts, data layer, business logic, service architecture.
-  Document current architecture. Do not propose changes.
+  Document current architecture as-is.
 ```
 
 **Store output as**: `$STEP_7a_OUTPUT`
@@ -273,7 +275,7 @@ prompt: |
 
   Reference backend Design Doc for API contracts.
   Focus on: component hierarchy, state management, UI interactions, data fetching.
-  Document current architecture. Do not propose changes.
+  Document current architecture as-is.
 ```
 
 **Store output as**: `$STEP_7b_OUTPUT`
@@ -350,5 +352,5 @@ Output summary including:
 |-------|--------|
 | Discovery finds nothing | Ask user for project structure hints |
 | Generation fails | Log failure, continue with other units, report in summary |
-| consistencyScore < 50 | Flag for mandatory human review, do not auto-approve |
+| consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
 | Review rejects after 2 revisions | Stop loop, flag for human intervention |

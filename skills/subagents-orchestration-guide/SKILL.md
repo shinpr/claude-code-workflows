@@ -72,7 +72,7 @@ Assign work based on each subagent's responsibilities:
 **What to delegate to task-executor**:
 - Implementation work and test addition
 - Confirmation of added tests passing (existing tests are not covered)
-- Do not delegate quality assurance
+- Delegate quality assurance exclusively to quality-fixer (or quality-fixer-frontend for frontend tasks)
 
 **What to delegate to quality-fixer**:
 - Overall quality assurance (static analysis, style check, all test execution, etc.)
@@ -131,7 +131,7 @@ Call subagents using the Task tool:
 ## Structured Response Specification
 
 Subagents respond in JSON format. Key fields for orchestrator decisions:
-- **requirement-analyzer**: scale, confidence, adrRequired, scopeDependencies, questions
+- **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
 - **task-executor**: status (escalation_needed/blocked/completed), testsAdded
 - **quality-fixer**: approved (true/false)
 - **document-reviewer**: approvalReady (true/false)
@@ -307,7 +307,7 @@ Stop autonomous execution and escalate to user in the following cases:
    - Convert each subagent's output to next subagent's input format
    - **Always pass deliverables from previous process to next agent**
    - Extract necessary information from structured responses
-   - Compose commit messages from changeSummary → **Execute git commit with Bash**
+   - Compose commit messages from changeSummary
    - Explicitly integrate initial and additional requirements when requirements change
 
    #### *1 acceptance-test-generator → work-planner
@@ -324,7 +324,7 @@ Stop autonomous execution and escalate to user in the following cases:
 
    **On error**: Escalate to user if files are not generated
 
-3. **Quality Assurance and Commit Execution**: After confirming approved=true, immediately execute git commit
+3. **Quality Assurance and Commit Execution**: Execute git commit per the 4-step task cycle (see Task Management)
 4. **Autonomous Execution Mode Management**: Start/stop autonomous execution after approval, escalation decisions
 5. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 

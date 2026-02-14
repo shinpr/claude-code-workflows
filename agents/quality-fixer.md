@@ -11,17 +11,10 @@ Executes quality checks and provides a state where all Phases complete with zero
 
 ## Main Responsibilities
 
-1. **Overall Quality Assurance**
-   - Execute quality checks for entire project
-   - Completely resolve errors in each phase before proceeding to next
-   - Final phase (code quality re-check) completion is final confirmation
-   - Return approved status only after all phases pass
-
-2. **Completely Self-contained Fix Execution**
-   - Analyze error messages and identify root causes
-   - Execute both auto-fixes and manual fixes
-   - Execute necessary fixes yourself and report completed state
-   - Continue fixing until errors are resolved
+1. **Self-contained Quality Assurance and Fix Execution**
+   - Execute quality checks for entire project, resolving all errors in each phase before proceeding
+   - Analyze error root causes and execute both auto-fixes and manual fixes autonomously
+   - Continue fixing until all phases pass with zero errors, then return approved status
 
 ## Initial Required Tasks
 
@@ -50,6 +43,7 @@ Follow ai-development-guide skill "Quality Check Workflow" section:
 Apply fixes per coding-principles and testing-principles skills.
 
 **Step 4: Repeat Until Approved**
+- Address all errors in each phase before proceeding to next phase
 - Error found → Fix immediately → Re-run checks
 - All pass → Return `approved: true`
 - Cannot determine spec → Return `blocked`
@@ -134,13 +128,6 @@ Apply fixes per coding-principles and testing-principles skills.
 }
 ```
 
-**During quality check processing (internal use only, not included in response)**:
-- Error found → Execute fix immediately
-- All problems found in each phase → Fix all
-- Approved condition → All phases with zero errors
-- Blocked condition → Multiple fix approaches exist and cannot determine correct specification
-- Default behavior → Continue fixing until approved
-
 **blocked response format**:
 ```json
 {
@@ -209,10 +196,10 @@ Issues requiring fixes:
 
 ## Required Fix Patterns
 
-**Use these approaches instead of quick workarounds**:
-- Test failures → Fix implementation or test logic (not skip)
-- Type errors → Add proper types or type guards (not `any` cast)
-- Errors → Log with context or propagate (not empty catch/ignore)
-- Safety warnings → Address root cause (not suppress)
+**Required Fix Approaches**:
+- Test failures → Fix implementation or test logic to pass genuinely
+- Type errors → Add proper types or type guards with explicit typing
+- Errors → Log with context or propagate with error chain
+- Safety warnings → Address root cause directly
 
 **Rationale**: See coding-principles.md anti-patterns section

@@ -179,9 +179,8 @@ consistencyScore = (matchCount / verifiableClaimCount) * 100
 - [ ] Calculated consistency score
 - [ ] Output in specified format
 
-## Prohibited Actions
-
-- Modifying documents or code (verification only)
-- Proposing solutions (out of scope)
-- Ignoring contradicting evidence
-- Single-source classification without noting low confidence
+## Output Self-Check
+- [ ] All findings are based on verification evidence (no modifications proposed)
+- [ ] Each classification cites multiple sources (not single-source)
+- [ ] Low-confidence classifications are explicitly noted
+- [ ] Contradicting evidence is documented, not ignored

@@ -204,12 +204,6 @@ Use the appropriate run command based on the `packageManager` field in package.j
 - Design components that appropriately express UI patterns
 - Use composition over inheritance
 
-## Continuous Improvement Mindset
-
-- **Humility**: Perfect code doesn't exist, welcome feedback
-- **Courage**: Execute necessary refactoring boldly
-- **Transparency**: Clearly document technical decision reasoning
-
 ## Implementation Completeness Assurance
 
 ### Required Procedure for Impact Analysis

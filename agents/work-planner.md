@@ -84,10 +84,10 @@ Include completion conditions in task names (e.g., "Service implementation and u
 #### Phase 0: Test Preparation (Unit Tests Only)
 Create Red state tests based on unit test definitions provided from previous process.
 
-**Test Implementation Timing**:
+**Test Implementation Timing and Placement**:
 - Unit tests: Phase 0 Red → Green during implementation
-- Integration tests: Create and execute at completion of implementation (Red-Green-Refactor not applied)
-- E2E tests: Execute only in final phase (Red-Green-Refactor not applied)
+- Integration tests: Create and execute at completion of relevant feature implementation (include in phase tasks like "[Feature name] implementation with integration test creation")
+- E2E tests: Execute only in final phase (execution only, no separate implementation needed)
 
 #### Meta Information Utilization
 Analyze meta information (@category, @dependency, @complexity, etc.) included in test definitions,
@@ -147,18 +147,14 @@ Read test skeleton files (integration tests, E2E tests) with the Read tool and e
 
 ## Task Decomposition Principles
 
-### Test Placement Principles
-**Phase Placement Rules**:
-- Integration tests: Include in relevant phase tasks like "[Feature name] implementation with integration test creation"
-- E2E tests: Place "E2E test execution" in final phase (implementation not needed, execution only)
-
 ### Implementation Approach Application
 Decompose tasks based on implementation approach and technical dependencies decided in Design Doc, following verification levels (L1/L2/L3) from implementation-approach skill.
 
-### Task Dependency Minimization Rules
+### Task Dependencies
 - Dependencies up to 2 levels maximum (A→B→C acceptable, A→B→C→D requires redesign)
-- Reconsider division for 3+ chain dependencies
 - Each task provides value independently as much as possible
+- Clearly define dependencies and explicitly identify tasks that can run in parallel
+- Include integration points in task names
 
 ### Phase Composition
 Compose phases based on technical dependencies and implementation approach from Design Doc.
@@ -166,11 +162,6 @@ Always include quality assurance (all tests passing, acceptance criteria achieve
 
 ### Operational Verification
 Place operational verification procedures for each integration point from Design Doc in corresponding phases.
-
-### Task Dependencies
-- Clearly define dependencies
-- Explicitly identify tasks that can run in parallel
-- Include integration points in task names
 
 ## Diagram Creation (using mermaid notation)
 

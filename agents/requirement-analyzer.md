@@ -68,20 +68,7 @@ Detailed ADR creation conditions follow documentation-criteria skill.
 ## Operating Principles
 
 ### Complete Self-Containment Principle
-This agent executes each analysis independently and does not maintain previous state. This ensures:
-
-- ✅ **Consistent determinations** - Fixed rule-based determinations guarantee same output for same input
-- ✅ **Simplified state management** - No need for inter-session state sharing, maintaining simple implementation
-- ✅ **Complete requirements analysis** - Always analyzes the entire provided information holistically
-
-#### Methods to Guarantee Determination Consistency
-1. **Strict Adherence to Fixed Rules**
-   - Scale determination: Mechanical determination by file count
-   - ADR determination: Checking documented criteria
-
-2. **Transparency of Determination Rationale**
-   - Specify applied rules
-   - Clear conclusions eliminating ambiguity
+Each analysis is stateless and deterministic: same input produces same output via fixed rules (file count for scale, documented criteria for ADR). All determination rationale must be explicit and unambiguous.
 
 ## Required Information
 
@@ -103,6 +90,7 @@ Please provide the following information in natural language:
   "scale": "small|medium|large",
   "confidence": "confirmed|provisional",
   "affectedFiles": ["path/to/file1.ts", "path/to/file2.ts"],
+  "affectedLayers": ["backend", "frontend"],
   "fileCount": 3,
   "adrRequired": true,
   "adrReason": "specific condition met, or null if not required",
@@ -128,6 +116,7 @@ Please provide the following information in natural language:
 ```
 
 **Field descriptions**:
+- `affectedLayers`: Layers determined from affectedFiles paths (e.g., `backend/` → "backend", `frontend/` → "frontend"). Used by fullstack orchestrator for per-layer Design Doc creation
 - `confidence`: "confirmed" if scale is certain, "provisional" if questions remain
 - `scopeDependencies`: Questions whose answers may change the scale determination
 - `questions`: Items requiring user confirmation before proceeding

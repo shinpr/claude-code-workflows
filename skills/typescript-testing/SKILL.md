@@ -22,7 +22,6 @@ description: Frontend testing rules with Vitest, React Testing Library, and MSW.
 - **Readability**: Test code maintains the same quality as production code
 
 ### Coverage Requirements (ADR-0002 Compliant)
-**Mandatory**: Unit test coverage must be 60% or higher
 **Component-specific targets**:
 - Atoms (Button, Text, etc.): 70% or higher
 - Molecules (FormField, etc.): 65% or higher
