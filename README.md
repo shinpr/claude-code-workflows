@@ -124,20 +124,19 @@ graph LR
 ```mermaid
 graph TB
     subgraph Phase1[Phase 1: PRD Generation]
-        CMD[📜 /reverse-engineer] --> SD1[🔍 scope-discoverer]
-        SD1 --> PRD[📄 prd-creator]
+        CMD[📜 /reverse-engineer] --> SD[🔍 scope-discoverer unified]
+        SD --> PRD[📄 prd-creator]
         PRD --> CV1[✅ code-verifier]
         CV1 --> DR1[📋 document-reviewer]
     end
 
     subgraph Phase2[Phase 2: Design Doc Generation]
-        SD2[🔍 scope-discoverer] --> DD[📐 technical-designer]
-        DD --> CV2[✅ code-verifier]
+        TD[📐 technical-designer] --> CV2[✅ code-verifier]
         CV2 --> DR2[📋 document-reviewer]
         DR2 --> DONE[📚 Complete]
     end
 
-    DR1 --> |All PRDs Approved| SD2
+    DR1 --> |"All PRDs Approved (reuse scope)"| TD
 ```
 
 ### What Happens Behind the Scenes
@@ -178,12 +177,11 @@ graph TB
 | `/front-plan` | Generate frontend work plan | Component breakdown planning |
 | `/front-build` | Execute frontend task plan | Resume React implementation |
 | `/front-review` | Verify code against design docs | Post-implementation check |
-| `/front-reverse-design` | Generate frontend Design Docs from existing code using PRD | Frontend component documentation |
 | `/task` | Execute single task with precision | Component fixes, small updates |
 | `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
 
-> **Tip**: Both plugins share `/task`, `/diagnose`, and `/update-doc` commands with the same functionality. For reverse engineering, use `/reverse-engineer` (backend) to generate PRD, then `/front-reverse-design` (frontend) to generate frontend Design Docs from that PRD.
+> **Tip**: Both plugins share `/task`, `/diagnose`, and `/update-doc` commands with the same functionality. For reverse engineering, use `/reverse-engineer` with the fullstack option to generate both backend and frontend Design Docs in a single workflow.
 
 ---
 
@@ -204,7 +202,7 @@ These agents work the same way whether you're building a REST API or a React app
 | **investigator** | Collects evidence, enumerates hypotheses, builds evidence matrix for problem diagnosis |
 | **verifier** | Validates investigation results using ACH and Devil's Advocate methods |
 | **solver** | Generates solutions with tradeoff analysis and implementation steps |
-| **scope-discoverer** | Discovers PRD/Design Doc targets from codebase for reverse engineering |
+| **scope-discoverer** | Discovers functional scope from codebase for reverse engineering |
 | **code-verifier** | Validates consistency between documentation and code implementation |
 
 ### Backend-Specific Agents (dev-workflows)
@@ -345,7 +343,7 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 # 9. Commits vertical slices for early integration
 ```
 
-> **Requires both plugins installed.** The fullstack commands create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`).
+> **Requires both plugins installed.** The fullstack commands create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/reverse-engineer` with the fullstack option.
 
 ### Quick Fixes (Both Plugins)
 
@@ -380,34 +378,30 @@ Built in 1.5 days - Complete creative tool with multi-image blending and charact
 
 ### Reverse Engineering
 
-**Backend (dev-workflows):**
-
 ```bash
 /reverse-engineer "src/auth module"
 
 # What happens:
-# 1. Discovers PRD targets (user value units) from code
-# 2. Generates PRD for each feature
+# 1. Discovers functional scope (user-value + technical) in a single pass
+# 2. Generates PRD for each feature unit
 # 3. Verifies PRD against actual code
 # 4. Reviews and revises until consistent
-# 5. Discovers Design Doc targets (technical components)
-# 6. Generates backend Design Docs with code verification
+# 5. Maps scope to Design Doc targets (no re-discovery)
+# 6. Generates Design Docs with code verification
 # 7. Produces complete documentation from existing code
 ```
 
-**Frontend (dev-workflows-frontend):**
+**With fullstack option:**
 
 ```bash
-# First, generate PRD using backend plugin's /reverse-engineer
-# Then, generate frontend Design Docs from existing PRD:
+/reverse-engineer "src/auth module"
+# When prompted, select Fullstack design: Yes
 
-/front-reverse-design "docs/prd/my-feature-prd.md"
-
-# What happens:
-# 1. Uses existing PRD as basis
-# 2. Discovers frontend component targets
-# 3. Generates frontend Design Docs with code verification
-# 4. Reviews and revises until consistent
+# Additional behavior:
+# - Each feature unit gets both backend AND frontend Design Docs
+# - Backend Design Doc: API contracts, data layer, business logic
+# - Frontend Design Doc: component hierarchy, state management, UI interactions
+# - Frontend Design Doc references backend Design Doc for API contracts
 ```
 
 > If you're working with undocumented legacy code, these commands are designed to make it AI-friendly by generating PRD and design docs.
