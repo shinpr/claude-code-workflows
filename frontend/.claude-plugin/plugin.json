@@ -1,6 +1,6 @@
 {
   "name": "dev-workflows-frontend",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run commands for full orchestrated agentic coding with 16 specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
@@ -26,7 +26,6 @@
     "./commands/front-build.md",
     "./commands/front-design.md",
     "./commands/front-plan.md",
-    "./commands/front-reverse-design.md",
     "./commands/front-review.md",
     "./commands/task.md",
     "./commands/update-doc.md"

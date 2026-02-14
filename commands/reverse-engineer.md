@@ -18,6 +18,9 @@ Use AskUserQuestion to confirm:
 2. **Depth**: PRD only, or PRD + Design Docs
 3. **Reference Architecture**: layered / mvc / clean / hexagonal / none
 4. **Human review**: Yes (recommended) / No (fully autonomous)
+5. **Fullstack design**: Yes / No
+   - Yes: For each functional unit, generate backend + frontend Design Docs
+   - Note: Requires both agents (technical-designer, technical-designer-frontend)
 
 ### 0.2 Output Configuration
 
@@ -29,12 +32,13 @@ Use AskUserQuestion to confirm:
 
 ```
 Phase 1: PRD Generation
-  Step 1: Scope Discovery (all units)
+  Step 1: Scope Discovery (unified, single pass)
   Step 2-5: Per-unit loop (Generation → Verification → Review → Revision)
 
 Phase 2: Design Doc Generation (if requested)
-  Step 6: Scope Discovery (all components per PRD)
-  Step 7-10: Per-component loop (Generation → Verification → Review → Revision)
+  Step 6: Design Doc Scope Mapping (reuse Step 1 results, no re-discovery)
+  Step 7-10: Per-unit loop (Generation → Verification → Review → Revision)
+  ※ fullstack=Yes: each unit produces backend + frontend Design Docs
 ```
 
 **Context Passing**: Pass structured JSON output between steps. Use `$STEP_N_OUTPUT` placeholder notation.
@@ -51,9 +55,8 @@ Phase 2: Design Doc Generation (if requested)
 ```
 subagent_type: scope-discoverer
 prompt: |
-  Discover PRD targets in the codebase.
+  Discover functional scope targets in the codebase.
 
-  scope_type: prd
   target_path: $USER_TARGET_PATH
   reference_architecture: $USER_RA_CHOICE
   focus_area: $USER_FOCUS_AREA (if specified)
@@ -62,7 +65,7 @@ prompt: |
 **Store output as**: `$STEP_1_OUTPUT`
 
 **Quality Gate**:
-- At least one PRD unit discovered → proceed
+- At least one unit discovered → proceed
 - No units discovered → ask user for hints
 
 **Human Review Point** (if enabled): Present discovered units for confirmation.
@@ -177,50 +180,46 @@ prompt: |
 *Execute only if Design Docs were requested in Step 0*
 
 **Register in TodoWrite**:
-- Step 6: Design Doc Scope Discovery
-- Per-component processing (Steps 7-10 for each component)
+- Step 6: Design Doc Scope Mapping
+- Per-unit processing (Steps 7-10 for each unit)
 
-### Step 6: Design Doc Scope Discovery
+### Step 6: Design Doc Scope Mapping
 
-For each approved PRD:
+**No additional discovery required.** Use `$STEP_1_OUTPUT` (scope discovery results) directly.
 
-**Task invocation**:
-```
-subagent_type: scope-discoverer
-prompt: |
-  Discover Design Doc targets within PRD scope.
+Each PRD unit from Phase 1 maps to Design Doc unit(s):
+- **Standard mode (fullstack=No)**: 1 PRD unit → 1 Design Doc (using technical-designer)
+- **Fullstack mode (fullstack=Yes)**: 1 PRD unit → 2 Design Docs (technical-designer + technical-designer-frontend)
 
-  scope_type: design-doc
-  existing_prd: $APPROVED_PRD_PATH
-  target_path: $PRD_RELATED_PATHS
-  reference_architecture: $USER_RA_CHOICE
-```
+Map `$STEP_1_OUTPUT` units to Design Doc generation targets, carrying forward:
+- `technicalProfile.primaryModules` → Primary Files
+- `technicalProfile.publicInterfaces` → Public Interfaces
+- `dependencies` → Dependencies
+- `relatedFiles` → Scope boundary
 
 **Store output as**: `$STEP_6_OUTPUT`
 
-**Quality Gate**:
-- At least one component discovered → proceed
-- No components → ask user for hints
+### Step 7-10: Per-Unit Processing
 
-### Step 7-10: Per-Component Processing
-
-**Complete Steps 7→8→9→10 for each component before proceeding to the next component.**
+**Complete Steps 7→8→9→10 for each unit before proceeding to the next unit.**
 
 #### Step 7: Design Doc Generation
+
+**Standard mode (fullstack=No)**:
 
 **Task invocation**:
 ```
 subagent_type: technical-designer
 prompt: |
-  Create Design Doc for the following component based on existing code.
+  Create Design Doc for the following feature based on existing code.
 
   Operation Mode: create
 
-  Component: $COMPONENT_NAME (from $STEP_6_OUTPUT)
-  Responsibility: $COMPONENT_RESPONSIBILITY
-  Primary Files: $COMPONENT_PRIMARY_FILES
-  Public Interfaces: $COMPONENT_PUBLIC_INTERFACES
-  Dependencies: $COMPONENT_DEPENDENCIES
+  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
+  Description: $UNIT_DESCRIPTION
+  Primary Files: $UNIT_PRIMARY_MODULES
+  Public Interfaces: $UNIT_PUBLIC_INTERFACES
+  Dependencies: $UNIT_DEPENDENCIES
 
   Parent PRD: $APPROVED_PRD_PATH
 
@@ -229,17 +228,71 @@ prompt: |
 
 **Store output as**: `$STEP_7_OUTPUT`
 
+**Fullstack mode (fullstack=Yes)**:
+
+For each unit, invoke BOTH:
+
+**7a. Backend Design Doc**:
+```
+subagent_type: technical-designer
+prompt: |
+  Create a backend Design Doc for the following feature based on existing code.
+
+  Operation Mode: create
+
+  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
+  Description: $UNIT_DESCRIPTION
+  Primary Files: $UNIT_PRIMARY_MODULES
+  Public Interfaces: $UNIT_PUBLIC_INTERFACES
+  Dependencies: $UNIT_DEPENDENCIES
+
+  Parent PRD: $APPROVED_PRD_PATH
+
+  Focus on: API contracts, data layer, business logic, service architecture.
+  Document current architecture. Do not propose changes.
+```
+
+**Store output as**: `$STEP_7a_OUTPUT`
+
+**7b. Frontend Design Doc**:
+```
+subagent_type: technical-designer-frontend
+prompt: |
+  Create a frontend Design Doc for the following feature based on existing code.
+
+  Operation Mode: create
+
+  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
+  Description: $UNIT_DESCRIPTION
+  Primary Files: $UNIT_PRIMARY_MODULES
+  Public Interfaces: $UNIT_PUBLIC_INTERFACES
+  Dependencies: $UNIT_DEPENDENCIES
+
+  Parent PRD: $APPROVED_PRD_PATH
+  Backend Design Doc: $STEP_7a_OUTPUT
+
+  Reference backend Design Doc for API contracts.
+  Focus on: component hierarchy, state management, UI interactions, data fetching.
+  Document current architecture. Do not propose changes.
+```
+
+**Store output as**: `$STEP_7b_OUTPUT`
+
 #### Step 8: Code Verification
 
-**Task invocation**:
+**Standard mode**: Verify `$STEP_7_OUTPUT` against `$UNIT_PRIMARY_MODULES`.
+
+**Fullstack mode**: Verify each Design Doc separately.
+
+**Task invocation (per Design Doc)**:
 ```
 subagent_type: code-verifier
 prompt: |
   Verify consistency between Design Doc and code implementation.
 
   doc_type: design-doc
-  document_path: $STEP_7_OUTPUT
-  code_paths: $COMPONENT_PRIMARY_FILES
+  document_path: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
+  code_paths: $UNIT_PRIMARY_MODULES
   verbose: false
 ```
 
@@ -249,14 +302,14 @@ prompt: |
 
 **Required Input**: $STEP_8_OUTPUT (verification JSON from Step 8)
 
-**Task invocation**:
+**Task invocation (per Design Doc)**:
 ```
 subagent_type: document-reviewer
 prompt: |
   Review the following Design Doc considering code verification findings.
 
   doc_type: DesignDoc
-  target: $STEP_7_OUTPUT
+  target: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
   mode: composite
 
   ## Code Verification Results
@@ -268,21 +321,21 @@ prompt: |
   ## Additional Review Focus
   - Technical accuracy of documented interfaces
   - Consistency with parent PRD scope
-  - Completeness of component boundary definitions
+  - Completeness of unit boundary definitions
 ```
 
 **Store output as**: `$STEP_9_OUTPUT`
 
 #### Step 10: Revision (conditional)
 
-Same logic as Step 5, using technical-designer with update mode.
+Same logic as Step 5, using technical-designer (or technical-designer-frontend for frontend Design Docs) with update mode.
 
-#### Component Completion
+#### Unit Completion
 
 - [ ] Review status is "Approved" or "Approved with Conditions"
 - [ ] Human review passed (if enabled in Step 0)
 
-**Next**: Proceed to next component. After all components → Final Report.
+**Next**: Proceed to next unit. After all units → Final Report.
 
 ## Final Report
 
