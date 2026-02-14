@@ -23,7 +23,7 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 - Design Doc creation with technical-designer-frontend
 - Document review with document-reviewer
 
-**Responsibility Boundary**: This command completes with design document approval.
+**Responsibility Boundary**: This command completes with frontend design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
 
 Requirements: $ARGUMENTS
 
@@ -51,11 +51,9 @@ Create appropriate design documents according to scale determination:
   - `subagent_type: "document-reviewer"`, `description: "Document review"`, `prompt: "Review [document path] for consistency and completeness"`
 - **[STOP]**: Present design alternatives and trade-offs, obtain user approval
 
-**Scope**: Up to frontend design document (ADR/Design Doc) approval. Work planning and beyond are outside the scope of this command.
-
 ## Output Example
 Frontend design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
 
-**Important**: This command ends with design approval. Does not propose transition to next phase.
+**Important**: End after design approval. If the user asks about next steps, suggest they issue a separate command.

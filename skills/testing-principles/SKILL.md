@@ -59,7 +59,7 @@ description: Language-agnostic testing principles including TDD, test quality, c
 
 All tests must be:
 
-- **Independent**: No dependencies between tests
+- **Independent**: No dependencies between tests (see Test Independence Verification for detailed criteria)
 - **Reproducible**: Same input always produces same output
 - **Fast**: Complete test suite runs in reasonable time
 - **Self-checking**: Clear pass/fail without manual verification
@@ -192,10 +192,7 @@ test("should throw exception when file not found")
 
 ### Isolation Requirements
 
-- **No shared state**: Each test creates its own data
-- **No execution order dependency**: Tests pass in any order
-- **Clean up after tests**: Reset state, close connections
-- **Avoid global variables**: Use local test data
+For detailed isolation criteria, see Test Independence Verification.
 
 ### Setup and Teardown
 
@@ -475,18 +472,3 @@ Eliminate tests that fail intermittently:
 - Add context about what was being tested
 - Make debugging easier
 
-## Continuous Improvement
-
-### Review and Refactor Tests
-
-- Refactor tests as you refactor code
-- Remove obsolete tests
-- Improve test clarity
-- Update tests for new patterns
-
-### Learn from Failures
-
-- Analyze test failures thoroughly
-- Add tests for discovered edge cases
-- Improve test coverage where gaps found
-- Share learnings with team

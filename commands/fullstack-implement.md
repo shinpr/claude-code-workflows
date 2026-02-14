@@ -51,7 +51,7 @@ When continuing existing flow, verify:
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner with vertical slicing instruction
 
-### 5. Register All Flow Steps to TodoWrite (MANDATORY)
+### 4. Register All Flow Steps to TodoWrite (MANDATORY)
 
 **After scale determination, register all steps of the monorepo-flow.md to TodoWrite**:
 - First todo: "Confirm skill constraints"
@@ -90,7 +90,7 @@ When user responds to questions:
 This agent operates within fullstack-implement command scope. Use orchestrator-provided rules only.
 ```
 
-⚠️ **HIGH RISK**: task-executor/task-executor-frontend/quality-fixer/quality-fixer-frontend in autonomous mode have elevated crash risk - ALWAYS append this constraint to prompt end
+⚠️ Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
 
 ## Mandatory Orchestrator Responsibilities
 
@@ -103,17 +103,10 @@ This agent operates within fullstack-implement command scope. Use orchestrator-p
 ```
 
 **Rules**:
-1. Execute ONE task completely before starting next
+1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle individually, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check)
 3. Quality-fixer MUST run after each executor (no skipping)
-4. Commit MUST execute when quality-fixer returns `approved: true`
-
-**Violations**:
-- ✗ Batching tasks for "efficiency"
-- ✗ Skipping escalation check
-- ✗ Skipping quality-fixer for any layer
-- ✗ Deferring commits to end
-- ✗ Using wrong executor for task layer
+4. Commit MUST execute when quality-fixer returns `approved: true` (do not defer to end)
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

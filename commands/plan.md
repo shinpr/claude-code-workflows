@@ -16,7 +16,7 @@ description: Create work plan from design document and obtain plan approval
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: Complete when work plan receives approval
 
-**CRITICAL**: NEVER skip acceptance-test-generator when user requests test generation.
+**CRITICAL**: When the user requests test generation, always execute acceptance-test-generator first — it provides the test skeleton that work-planner depends on.
 
 ## Scope Boundaries
 
