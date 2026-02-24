@@ -28,6 +28,16 @@
       "description": "Detects shortcut-taking behavior and guides Claude to follow procedures step by step",
       "category": "productivity",
       "homepage": "https://github.com/shinpr/metronome"
+    },
+    {
+      "name": "dev-workflows-governance",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/francismiles1/dev-workflows-governance.git"
+      },
+      "description": "Governance layer for agentic coding - enforces TIDY stage, human signoff checkpoint, and operation-specific checklists to prevent premature completion and rationalisation",
+      "category": "productivity",
+      "homepage": "https://github.com/francismiles1/dev-workflows-governance"
     }
   ]
 }

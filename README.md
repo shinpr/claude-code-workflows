@@ -18,6 +18,7 @@ This marketplace includes the following plugins:
 
 **External:**
 - **[metronome](https://github.com/shinpr/metronome)** - During repetitive tasks, Claude may switch to bulk bash operations under the guise of "working efficiently," potentially breaking files. This plugin detects that behavior and intercepts execution, nudging Claude to slow down and proceed step by step.
+- **[dev-workflows-governance](https://github.com/francismiles1/dev-workflows-governance)** - Enforces a TIDY stage and human signoff checkpoint before deployment, with operation-specific checklists generated from your actual codebase. Prevents premature completion and rationalisation of incomplete work.
 
 Want to contribute a plugin? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -71,10 +72,12 @@ Install both plugins to get the complete toolkit for backend and frontend work.
 The fullstack commands create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
 
 ### External Plugins
-
 ```bash
 # Install metronome (prevents shortcut-taking behavior)
 /plugin install metronome@claude-code-workflows
+
+# Install dev-workflows-governance (TIDY stage + signoff checkpoint)
+/plugin install dev-workflows-governance@claude-code-workflows
 ```
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
