@@ -13,16 +13,20 @@
 
 This marketplace includes the following plugins:
 
+**Core plugins:**
 - **dev-workflows** - Backend and general-purpose development
 - **dev-workflows-frontend** - React/TypeScript specialized workflows
 
-**External:**
-- **[metronome](https://github.com/shinpr/metronome)** - During repetitive tasks, Claude may switch to bulk bash operations under the guise of "working efficiently," potentially breaking files. This plugin detects that behavior and intercepts execution, nudging Claude to slow down and proceed step by step.
-- **[dev-workflows-governance](https://github.com/francismiles1/dev-workflows-governance)** - Enforces a TIDY stage and human signoff checkpoint before deployment, with operation-specific checklists generated from your actual codebase. Prevents premature completion and rationalisation of incomplete work.
+**Optional add-ons** (enhance core plugins):
+- **[metronome](https://github.com/shinpr/metronome)** - Detects shortcut-taking behavior and nudges Claude to proceed step by step
+- **[dev-workflows-governance](https://github.com/francismiles1/dev-workflows-governance)** - Enforces TIDY stage and human signoff checkpoint before deployment
+
+**Skills only** (for users with existing workflows):
+- **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow commands
 
 Want to contribute a plugin? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Choose what fits your project:
+The core value is the end-to-end workflow. Choose what fits your project:
 
 ### Backend or General Development
 
@@ -81,6 +85,39 @@ The fullstack commands create separate Design Docs per layer (backend + frontend
 ```
 
 > **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
+
+### Skills Only (For Users with Existing Workflows)
+
+If you already have your own orchestration (custom prompts, scripts, CI-driven loops) and just want the best-practice guides, use `dev-skills`. If you want Claude to plan, execute, and verify end-to-end, install `dev-workflows` instead.
+
+- Minimal context footprint — no agents or commands loaded
+- Drop-in best practices without changing your workflow
+- Works as a ruleset layer for your own orchestrator
+
+> **Do not install alongside dev-workflows or dev-workflows-frontend** — duplicate skills will be silently ignored. See [details below](#warning-duplicate-skills).
+
+```bash
+# Install skills-only plugin
+/plugin install dev-skills@claude-code-workflows
+```
+
+Skills auto-load when relevant — `coding-principles` activates during implementation, `testing-principles` during test writing, etc.
+
+**Switching between plugins:**
+
+```bash
+# dev-skills → dev-workflows
+/plugin uninstall dev-skills@claude-code-workflows
+/plugin install dev-workflows@claude-code-workflows
+
+# dev-workflows → dev-skills
+/plugin uninstall dev-workflows@claude-code-workflows
+/plugin install dev-skills@claude-code-workflows
+```
+
+<a id="warning-duplicate-skills"></a>
+
+> **Warning:** dev-skills and dev-workflows / dev-workflows-frontend share the same skills. Installing both causes skill descriptions to appear twice in the system context. Claude Code limits skill descriptions to ~2% of the context window — exceeding this limit causes skills to be silently ignored.
 
 ---
 
@@ -461,6 +498,11 @@ claude-code-workflows/
 │   └── .claude-plugin/
 │       └── plugin.json
 │
+├── skills-only/                # dev-skills plugin (skills only, no commands/agents)
+│   ├── skills/                 # Symlinks to shared skills (9 of 11 — workflow-specific skills excluded)
+│   └── .claude-plugin/
+│       └── plugin.json
+│
 ├── LICENSE
 └── README.md
 ```
@@ -489,6 +531,10 @@ A: Not really. For backend, just use `/implement`. For frontend, use `/front-des
 **Q: What if there are errors?**
 
 A: The quality-fixer agents (one in each plugin) automatically fix most issues like test failures, type errors, and lint problems. If something can't be auto-fixed, you'll get clear guidance on what needs attention.
+
+**Q: What's the difference between dev-skills and dev-workflows?**
+
+A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow commands or agents. `dev-workflows` includes the same skills plus commands like `/implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
 
 **Q: SSH authentication error during plugin installation?**
 A: Set up SSH keys for GitHub:
