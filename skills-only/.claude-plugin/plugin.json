@@ -1,0 +1,23 @@
+{
+  "name": "dev-skills",
+  "version": "0.12.3",
+  "description": "Lightweight skills for users with existing workflows - coding best practices, testing principles, and design guidelines without commands or agents",
+  "author": {
+    "name": "Shinsuke Kagawa",
+    "url": "https://github.com/shinpr"
+  },
+  "homepage": "https://github.com/shinpr/claude-code-workflows",
+  "repository": "https://github.com/shinpr/claude-code-workflows.git",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "best-practices",
+    "coding-standards",
+    "testing",
+    "tdd",
+    "design-docs",
+    "typescript",
+    "react",
+    "quality"
+  ]
+}
