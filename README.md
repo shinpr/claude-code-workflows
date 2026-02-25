@@ -24,8 +24,6 @@ This marketplace includes the following plugins:
 **Skills only** (for users with existing workflows):
 - **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow commands
 
-Want to contribute a plugin? See [CONTRIBUTING.md](CONTRIBUTING.md).
-
 The core value is the end-to-end workflow. Choose what fits your project:
 
 ### Backend or General Development
