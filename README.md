@@ -82,8 +82,6 @@ The fullstack commands create separate Design Docs per layer (backend + frontend
 /plugin install dev-workflows-governance@claude-code-workflows
 ```
 
-> **Note**: If you encounter SSH errors during installation, see [SSH Setup FAQ](#ssh-authentication-error-during-plugin-installation) below.
-
 ### Skills Only (For Users with Existing Workflows)
 
 If you already have your own orchestration (custom prompts, scripts, CI-driven loops) and just want the best-practice guides, use `dev-skills`. If you want Claude to plan, execute, and verify end-to-end, install `dev-workflows` instead.
@@ -533,36 +531,6 @@ A: The quality-fixer agents (one in each plugin) automatically fix most issues l
 **Q: What's the difference between dev-skills and dev-workflows?**
 
 A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow commands or agents. `dev-workflows` includes the same skills plus commands like `/implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
-
-**Q: SSH authentication error during plugin installation?**
-A: Set up SSH keys for GitHub:
-
-```bash
-# 1. Check if SSH key already exists
-ls ~/.ssh/id_ed25519.pub
-
-# 2. Generate new SSH key (if needed)
-ssh-keygen -t ed25519 -C "your_email@example.com"
-# → Press Enter to save to default location
-# → Enter a strong passphrase when prompted (recommended for security)
-
-# 3. Add SSH key to ssh-agent
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-
-# 4. Copy public key to clipboard
-cat ~/.ssh/id_ed25519.pub
-# → Copy the output
-
-# 5. Add to GitHub
-# Go to https://github.com/settings/keys
-# Click "New SSH key"
-# Paste your public key and save
-
-# 6. Test connection
-ssh -T git@github.com
-# → Should see: "Hi username! You've successfully authenticated..."
-```
 
 ---
 
