@@ -408,22 +408,10 @@ The frontend plugin is built specifically for React development:
 # 2. Generates PRD for each feature unit
 # 3. Verifies PRD against actual code
 # 4. Reviews and revises until consistent
-# 5. Maps scope to Design Doc targets (no re-discovery)
-# 6. Generates Design Docs with code verification
-# 7. Produces complete documentation from existing code
-```
-
-**With fullstack option:**
-
-```bash
-/reverse-engineer "src/auth module"
-# When prompted, select Fullstack design: Yes
-
-# Additional behavior:
-# - Each feature unit gets both backend AND frontend Design Docs
-# - Backend Design Doc: API contracts, data layer, business logic
-# - Frontend Design Doc: component hierarchy, state management, UI interactions
-# - Frontend Design Doc references backend Design Doc for API contracts
+# 5. Generates Design Docs with code verification
+# 6. Produces complete documentation from existing code
+#
+# Fullstack option: generates both backend and frontend Design Docs per feature unit
 ```
 
 > If you're working with undocumented legacy code, these commands are designed to make it AI-friendly by generating PRD and design docs.
