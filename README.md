@@ -312,20 +312,6 @@ The frontend plugin is built specifically for React development:
 
 ---
 
-## 💡 Real-World Examples
-
-### What People Have Built
-
-#### [Sub-Agents MCP Server](https://github.com/shinpr/sub-agents-mcp)
-Built in 2 days - 30 TypeScript files with full test coverage, now running in production.
-
-#### [MCP Image Generator](https://github.com/shinpr/mcp-image)
-Built in 1.5 days - Complete creative tool with multi-image blending and character consistency.
-
-> The right workflow structure + specialized agents = production-quality code at AI speed.
-
----
-
 ## 🎯 Typical Workflows
 
 ### Backend Feature Development
