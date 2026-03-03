@@ -12,7 +12,7 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
 **First Action**: Register Steps 1-6 to TodoWrite before any execution.
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER edit documents yourself)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Execute update flow**:
    - Identify target → Clarify changes → Update document → Review → Consistency check
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
@@ -126,9 +126,23 @@ prompt: |
   - Completeness of change history
 ```
 
+**Store output as**: `$STEP_5_OUTPUT`
+
 **On review result**:
 - Approved → Proceed to Step 6
-- Needs revision → Return to Step 4 with reviewer feedback (max 2 iterations)
+- Needs revision → Return to Step 4 with the following prompt (max 2 iterations):
+  ```
+  subagent_type: [Update Agent from Step 2]
+  description: "Revise [Type from Step 2]"
+  prompt: |
+    Operation Mode: update
+    Existing Document: [path from Step 1]
+
+    ## Review Feedback to Address
+    $STEP_5_OUTPUT
+
+    Address each issue raised in the review feedback.
+  ```
 - **After 2 rejections** → Flag for human review, present accumulated feedback to user and end
 
 Present review result to user for approval.

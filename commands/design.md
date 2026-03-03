@@ -10,7 +10,7 @@ description: Execute from requirement analysis to design document creation
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER investigate/analyze yourself)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Follow subagents-orchestration-guide skill design flow exactly**:
    - Execute: requirement-analyzer → technical-designer → document-reviewer → design-sync
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding

@@ -10,7 +10,7 @@ description: Create work plan from design document and obtain plan approval
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (NEVER create plans yourself)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Follow subagents-orchestration-guide skill planning flow exactly**:
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion

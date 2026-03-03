@@ -39,6 +39,8 @@ Validate Design Doc compliance:
 - Code quality check
 - Implementation completeness assessment
 
+**Store output as**: `$STEP_2_OUTPUT`
+
 ### Step 3: Verdict and Response
 
 **Criteria (considering project stage)**:
@@ -86,7 +88,7 @@ Invoke quality-fixer using Task tool:
 Invoke code-reviewer using Task tool:
 - `subagent_type`: "code-reviewer"
 - `description`: "Re-validate compliance"
-- `prompt`: "Re-validate Design Doc compliance after fixes."
+- `prompt`: "Re-validate Design Doc compliance after fixes. Prior compliance issues: $STEP_2_OUTPUT. Verify each prior issue is resolved."
 
 ### Step 9: Final Report
 

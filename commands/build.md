@@ -8,7 +8,7 @@ description: Execute decomposed tasks in autonomous execution mode
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (orchestrator role only)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Follow subagents-orchestration-guide skill autonomous execution mode exactly**:
    - Execute: task-decomposer → (task-executor → quality-fixer → commit) loop
    - **Stop immediately** upon detecting requirement changes

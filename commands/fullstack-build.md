@@ -13,7 +13,7 @@ description: Execute decomposed fullstack tasks with layer-aware agent routing
 
 ## Execution Protocol
 
-1. **Delegate all work** to sub-agents (orchestrator role only)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Route agents by task filename pattern** (see monorepo-flow.md reference):
    - `*-backend-task-*` → task-executor + quality-fixer
    - `*-frontend-task-*` → task-executor-frontend + quality-fixer-frontend
