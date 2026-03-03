@@ -15,7 +15,7 @@ description: Orchestrate full-cycle implementation across backend and frontend l
 
 ## Execution Protocol
 
-1. **Delegate all work** to sub-agents (orchestrator role only, no direct implementation)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Follow monorepo-flow.md** for the design phase (multiple Design Docs, design-sync, vertical slicing)
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"

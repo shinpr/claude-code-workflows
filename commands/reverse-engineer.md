@@ -7,6 +7,15 @@ description: Generate PRD and Design Docs from existing codebase through discove
 
 Target: $ARGUMENTS
 
+## Orchestrator Definition
+
+**Core Identity**: "I am not a worker. I am an orchestrator."
+
+**Execution Protocol**:
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
+2. **Process one step at a time**: Execute steps sequentially within each unit (2 → 3 → 4 → 5). Each step's output is the required input for the next step. Complete all steps for one unit before starting the next
+3. **Pass `$STEP_N_OUTPUT` as-is** to sub-agents — the orchestrator bridges data without processing or filtering it
+
 **TodoWrite**: Register phases first, then steps within each phase as you enter it.
 
 ## Step 0: Initial Configuration
@@ -41,8 +50,6 @@ Phase 2: Design Doc Generation (if requested)
   ※ fullstack=Yes: each unit produces backend + frontend Design Docs
 ```
 
-**Context Passing**: Pass structured JSON output between steps. Use `$STEP_N_OUTPUT` placeholder notation.
-
 ## Phase 1: PRD Generation
 
 **Register in TodoWrite**:
@@ -72,7 +79,7 @@ prompt: |
 
 ### Step 2-5: Per-Unit Processing
 
-**Complete Steps 2→3→4→5 for each unit before proceeding to the next unit.**
+**FOR** each unit in `$STEP_1_OUTPUT.discoveredUnits` **(sequential, one unit at a time)**:
 
 #### Step 2: PRD Generation
 
@@ -97,6 +104,8 @@ prompt: |
 **Store output as**: `$STEP_2_OUTPUT` (PRD path)
 
 #### Step 3: Code Verification
+
+**Prerequisite**: $STEP_2_OUTPUT (PRD path from Step 2)
 
 **Task invocation**:
 ```
@@ -152,7 +161,7 @@ prompt: |
 ```
 subagent_type: prd-creator
 prompt: |
-  Update PRD based on review feedback.
+  Update PRD based on review feedback and code verification results.
 
   Operation Mode: update
   Existing PRD: $STEP_2_OUTPUT
@@ -160,10 +169,11 @@ prompt: |
   ## Review Feedback
   $STEP_4_OUTPUT
 
-  ## Discrepancies to Address
-  (Extract critical and major discrepancies from $STEP_3_OUTPUT)
+  ## Code Verification Results
+  $STEP_3_OUTPUT
 
-  Apply corrections and improvements.
+  Address discrepancies by severity. Critical and major items require correction.
+  Minor items: correct if straightforward, otherwise leave as-is with rationale.
 ```
 
 **Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
@@ -201,7 +211,7 @@ Map `$STEP_1_OUTPUT` units to Design Doc generation targets, carrying forward:
 
 ### Step 7-10: Per-Unit Processing
 
-**Complete Steps 7→8→9→10 for each unit before proceeding to the next unit.**
+**FOR** each unit in `$STEP_6_OUTPUT` **(sequential, one unit at a time)**:
 
 #### Step 7: Design Doc Generation
 
@@ -232,7 +242,7 @@ prompt: |
 
 **Fullstack mode (fullstack=Yes)**:
 
-For each unit, invoke BOTH:
+For each unit, invoke 7a then 7b sequentially (7b depends on 7a output):
 
 **7a. Backend Design Doc**:
 ```
@@ -330,7 +340,31 @@ prompt: |
 
 #### Step 10: Revision (conditional)
 
-Same logic as Step 5, using technical-designer (or technical-designer-frontend for frontend Design Docs) with update mode.
+**Trigger Conditions** (same as Step 5):
+- Review status is "Needs Revision" or "Rejected"
+- Critical discrepancies exist in `$STEP_8_OUTPUT`
+- consistencyScore < 70
+
+**Task invocation (per Design Doc)**:
+```
+subagent_type: technical-designer (or technical-designer-frontend for frontend Design Docs)
+prompt: |
+  Update Design Doc based on review feedback and code verification results.
+
+  Operation Mode: update
+  Existing Design Doc: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
+
+  ## Review Feedback
+  $STEP_9_OUTPUT
+
+  ## Code Verification Results
+  $STEP_8_OUTPUT
+
+  Address discrepancies by severity. Critical and major items require correction.
+  Minor items: correct if straightforward, otherwise leave as-is with rationale.
+```
+
+**Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
 
 #### Unit Completion
 

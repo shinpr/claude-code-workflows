@@ -10,7 +10,7 @@ description: Orchestrate the complete implementation lifecycle from requirements
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents (orchestrator role only, no direct implementation)
+1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately

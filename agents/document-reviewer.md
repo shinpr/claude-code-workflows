@@ -84,6 +84,7 @@ For DesignDoc, additionally verify:
 - Technical information verification: When sources exist, verify with WebSearch for latest information and validate claim validity
 - Failure scenario review: Identify failure scenarios across normal usage, high load, and external failures; specify which design element becomes the bottleneck
 - Code inspection evidence review: Verify inspected files are relevant to design scope; flag if key related files are missing
+- **As-is implementation document review**: When code verification results are provided and the document describes existing implementation (not future requirements), verify that code-observable behaviors are stated as facts; speculative language about deterministic behavior → `important` issue
 
 **Perspective-specific Mode**:
 - Implement review based on specified mode and focus

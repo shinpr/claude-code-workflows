@@ -175,6 +175,8 @@ When external scope is NOT provided:
 - Comprehensively confirm related files, tests, and configurations
 - Write specifications with confidence (minimize speculation and assumptions)
 
+**Language Standard**: Code is the single source of truth. Describe observable behavior in definitive form. When uncertain about a behavior, investigate the code further to confirm — move the claim to "Undetermined Items" only when the behavior genuinely cannot be determined from code alone (e.g., business intent behind a design choice).
+
 ### Confidence Gating
 
 Before documenting any claim, assess confidence level:
@@ -189,6 +191,7 @@ Before documenting any claim, assess confidence level:
 - Never document Unverified claims as facts
 - Inferred claims require explicit rationale
 - Prioritize Verified claims in core requirements
+- Before classifying as Inferred, attempt to verify by reading the relevant code — classify as Inferred only after confirming the code is inaccessible or ambiguous
 
 ### Reverse PRD Process
 1. **Investigation Phase** (skip if External Scope Provided)
