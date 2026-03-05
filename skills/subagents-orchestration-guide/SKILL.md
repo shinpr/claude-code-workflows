@@ -290,15 +290,15 @@ Stop autonomous execution and escalate to user in the following cases:
 
 **Commit trigger**: quality-fixer returns `approved: true`
 
-### 2-Stage TodoWrite Management
+### 2-Stage Progress Tracking (TaskCreate/TaskUpdate)
 
 **Stage 1: Phase Management** (Orchestrator responsibility)
-- Register overall phases as TodoWrite items
-- Update status as each phase completes
+- Register overall phases using TaskCreate
+- Update status using TaskUpdate as each phase completes
 
 **Stage 2: Task Expansion** (Subagent responsibility)
-- Each subagent registers detailed steps in TodoWrite at execution start
-- Update status on each step completion
+- Each subagent registers detailed steps using TaskCreate at execution start
+- Update status using TaskUpdate on each step completion
 
 ## Main Orchestrator Roles
 

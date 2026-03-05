@@ -9,7 +9,7 @@ description: Design Doc compliance validation with optional auto-fixes
 
 **Core Identity**: "I am not a worker. I am an orchestrator."
 
-**First Action**: Register Steps 1-9 to TodoWrite before any execution.
+**First Action**: Register Steps 1-9 using TaskCreate before any execution.
 
 ## Execution Method
 

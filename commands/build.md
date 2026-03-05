@@ -69,7 +69,7 @@ Invoke task-decomposer using Task tool:
 **MANDATORY EXECUTION CYCLE**: `task-executor → escalation check → quality-fixer → commit`
 
 For EACH task, YOU MUST:
-1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
+1. **Register tasks using TaskCreate**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **INVOKE task-executor**: Execute the task implementation
 3. **CHECK ESCALATION**: Check task-executor status → If `status: "escalation_needed"` → STOP and escalate to user
 4. **PROCESS structured responses**: When `readyForQualityCheck: true` is detected → EXECUTE quality-fixer IMMEDIATELY

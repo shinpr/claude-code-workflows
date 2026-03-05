@@ -35,9 +35,9 @@ After receiving rule-advisor's JSON response, proceed with:
    - Start with recommended action
    - Use suggested tools first
 
-**Step 3: Create Task List with TodoWrite**
+**Step 3: Create Task List with TaskCreate**
 
-Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity".
+Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity".
 
 Break down the task based on rule-advisor's guidance:
 - Reflect `taskEssence` in task descriptions
@@ -49,12 +49,12 @@ Break down the task based on rule-advisor's guidance:
 
 Proceed with task execution following:
 - Selected rules from rule-advisor
-- TodoWrite task structure
+- Task structure (managed via TaskCreate/TaskUpdate)
 - Quality standards from applicable rules
 
 ## Important Notes
 
 - **Execute rule-advisor first**: Mandatory metacognitive step before implementation
-- **Update TodoWrite after rule-advisor**: Reflect insights in task structure
+- **Update tasks after rule-advisor**: Reflect insights in task structure using TaskUpdate
 - **Follow firstActionGuidance**: Start with recommended action
 - **Monitor warningPatterns**: Watch for failure patterns throughout execution

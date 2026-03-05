@@ -134,4 +134,4 @@ The orchestrator selects agents by **filename pattern matching** — no conditio
 *-frontend-task-*  → task-executor-frontend + quality-fixer-frontend
 ```
 
-All other orchestration rules (stop points, structured responses, escalation handling, TodoWrite management) follow the standard subagents-orchestration-guide.
+All other orchestration rules (stop points, structured responses, escalation handling, task management) follow the standard subagents-orchestration-guide.

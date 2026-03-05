@@ -55,13 +55,13 @@ When user responds to questions:
 - If scale changes → Re-execute requirement-analyzer with updated context
 - If `confidence: "confirmed"` or no scale change → Proceed to next step
 
-### 4. Register All Flow Steps to TodoWrite (MANDATORY)
+### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-**After scale determination, register all steps of the applicable flow to TodoWrite**:
-- First todo: "Confirm skill constraints"
-- Register each step as individual Todo
-- Set currently executing step to `in_progress`
-- **Complete TodoWrite registration before invoking subagents**
+**After scale determination, register all steps of the applicable flow using TaskCreate**:
+- First task: "Confirm skill constraints"
+- Register each step as individual task
+- Set currently executing step to `in_progress` using TaskUpdate
+- **Complete task registration before invoking subagents**
 
 ## Subagents Orchestration Guide Compliance Execution
 
