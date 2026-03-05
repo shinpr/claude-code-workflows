@@ -1,7 +1,7 @@
 ---
 name: task-executor-frontend
 description: Executes React implementation completely self-contained following frontend task files. Use when frontend task files exist, or when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
-tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TodoWrite
+tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TaskCreate, TaskUpdate
 skills: typescript-rules, typescript-testing, frontend-ai-guide, implementation-approach
 ---
 
@@ -11,7 +11,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Mandatory Rules
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
 
 ### Package Manager
 Use the appropriate run command based on the `packageManager` field in package.json.

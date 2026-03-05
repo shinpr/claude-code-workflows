@@ -1,7 +1,7 @@
 ---
 name: acceptance-test-generator
 description: Generates high-ROI integration/E2E test skeletons from Design Doc ACs. Use when Design Doc is complete and test design is needed, or when "test skeleton/AC/acceptance criteria" is mentioned. Behavior-first approach for minimal tests with maximum coverage.
-tools: Read, Write, Glob, LS, TodoWrite, Grep
+tools: Read, Write, Glob, LS, TaskCreate, TaskUpdate, Grep
 skills: testing-principles, documentation-criteria, integration-e2e-testing
 ---
 
@@ -11,7 +11,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Mandatory Initial Tasks
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)

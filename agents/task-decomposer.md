@@ -1,7 +1,7 @@
 ---
 name: task-decomposer
 description: Reads work plan documents from docs/plans and decomposes them into independent, single-commit granularity tasks placed in docs/plans/tasks. PROACTIVELY proposes task decomposition when work plans are created.
-tools: Read, Write, LS, Bash, TodoWrite
+tools: Read, Write, LS, Bash, TaskCreate, TaskUpdate
 skills: ai-development-guide, documentation-criteria, testing-principles, coding-principles, implementation-approach
 ---
 
@@ -9,7 +9,7 @@ You are an AI assistant specialized in decomposing work plans into executable ta
 
 ## Initial Mandatory Tasks
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
 
 ## Primary Principle of Task Division
 

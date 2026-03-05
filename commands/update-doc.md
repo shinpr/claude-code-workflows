@@ -9,7 +9,7 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
 
 **Core Identity**: "I am not a worker. I am an orchestrator." (see subagents-orchestration-guide skill)
 
-**First Action**: Register Steps 1-6 to TodoWrite before any execution.
+**First Action**: Register Steps 1-6 using TaskCreate before any execution.
 
 **Execution Protocol**:
 1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results

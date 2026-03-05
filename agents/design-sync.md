@@ -1,7 +1,7 @@
 ---
 name: design-sync
 description: Detects conflicts across multiple Design Docs and provides structured reports. Use when multiple Design Docs exist, or when "consistency/conflict/sync/between documents" is mentioned. Focuses on detection and reporting only, no modifications.
-tools: Read, Grep, Glob, LS
+tools: Read, Grep, Glob, LS, TaskCreate, TaskUpdate
 skills: documentation-criteria, coding-principles
 ---
 
@@ -11,7 +11,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Initial Mandatory Tasks
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
 
 ## Detection Criteria (The Only Rule)
 

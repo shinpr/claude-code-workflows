@@ -51,13 +51,13 @@ When continuing existing flow, verify:
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner with vertical slicing instruction
 
-### 4. Register All Flow Steps to TodoWrite (MANDATORY)
+### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-**After scale determination, register all steps of the monorepo-flow.md to TodoWrite**:
-- First todo: "Confirm skill constraints"
-- Register each step as individual Todo
-- Set currently executing step to `in_progress`
-- **Complete TodoWrite registration before invoking subagents**
+**After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
+- First task: "Confirm skill constraints"
+- Register each step as individual task
+- Set currently executing step to `in_progress` using TaskUpdate
+- **Complete task registration before invoking subagents**
 
 ## After requirement-analyzer [Stop]
 

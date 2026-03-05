@@ -16,7 +16,7 @@ Target: $ARGUMENTS
 2. **Process one step at a time**: Execute steps sequentially within each unit (2 → 3 → 4 → 5). Each step's output is the required input for the next step. Complete all steps for one unit before starting the next
 3. **Pass `$STEP_N_OUTPUT` as-is** to sub-agents — the orchestrator bridges data without processing or filtering it
 
-**TodoWrite**: Register phases first, then steps within each phase as you enter it.
+**Task Registration**: Register phases first using TaskCreate, then steps within each phase as you enter it. Update status using TaskUpdate.
 
 ## Step 0: Initial Configuration
 
@@ -52,7 +52,7 @@ Phase 2: Design Doc Generation (if requested)
 
 ## Phase 1: PRD Generation
 
-**Register in TodoWrite**:
+**Register using TaskCreate**:
 - Step 1: PRD Scope Discovery
 - Per-unit processing (Steps 2-5 for each unit)
 
@@ -189,7 +189,7 @@ prompt: |
 
 *Execute only if Design Docs were requested in Step 0*
 
-**Register in TodoWrite**:
+**Register using TaskCreate**:
 - Step 6: Design Doc Scope Mapping
 - Per-unit processing (Steps 7-10 for each unit)
 

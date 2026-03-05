@@ -84,7 +84,7 @@ Each sub-agent responds in JSON format:
 
 For EACH task, YOU MUST:
 
-1. **UPDATE TodoWrite**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
+1. **Register tasks using TaskCreate**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
 2. **USE task-executor-frontend**: Execute frontend implementation
    - Invocation example: `subagent_type: "task-executor-frontend"`, `description: "Task execution"`, `prompt: "Task file: docs/plans/tasks/[filename].md Execute implementation"`
 3. **CHECK ESCALATION**: Check task-executor-frontend status → If `status: "escalation_needed"` → STOP and escalate to user

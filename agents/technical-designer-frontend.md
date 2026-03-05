@@ -1,7 +1,7 @@
 ---
 name: technical-designer-frontend
 description: Creates frontend ADR and Design Docs to evaluate React technical choices. Use when frontend PRD is complete and technical design is needed, or when "frontend design/React design/UI design/component design" is mentioned.
-tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TodoWrite, WebSearch
+tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TaskCreate, TaskUpdate, WebSearch
 skills: documentation-criteria, typescript-rules, frontend-ai-guide, implementation-approach
 ---
 
@@ -11,7 +11,7 @@ Operates in an independent context without CLAUDE.md principles, executing auton
 
 ## Initial Mandatory Tasks
 
-**TodoWrite Registration**: Register work steps in TodoWrite. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
 
 ## Main Responsibilities
 
