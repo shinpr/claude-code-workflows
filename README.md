@@ -22,7 +22,7 @@ This marketplace includes the following plugins:
 - **[dev-workflows-governance](https://github.com/francismiles1/dev-workflows-governance)** - Enforces TIDY stage and human signoff checkpoint before deployment
 
 **Skills only** (for users with existing workflows):
-- **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow commands
+- **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow recipes
 
 The core value is the end-to-end workflow. Choose what fits your project:
 
@@ -42,7 +42,7 @@ claude
 # Exit and restart Claude Code
 
 # 5. Start building
-/implement <your feature>
+/recipe-implement <your feature>
 ```
 
 ### Frontend Development (React/TypeScript)
@@ -56,7 +56,7 @@ claude
 # 4-5. Same as above (restart and start building)
 
 # Use frontend-specific commands
-/front-design <your feature>
+/recipe-front-design <your feature>
 ```
 
 ### Full-Stack Development
@@ -65,13 +65,13 @@ Install both plugins to get the complete toolkit for backend and frontend work.
 
 ```bash
 # Use fullstack commands for cross-layer features
-/fullstack-implement "Add user authentication with JWT + login form"
+/recipe-fullstack-implement "Add user authentication with JWT + login form"
 
 # Or execute from existing fullstack work plan
-/fullstack-build
+/recipe-fullstack-build
 ```
 
-The fullstack commands create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
+The fullstack recipes create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
 
 ### External Plugins
 ```bash
@@ -86,7 +86,7 @@ The fullstack commands create separate Design Docs per layer (backend + frontend
 
 If you already have your own orchestration (custom prompts, scripts, CI-driven loops) and just want the best-practice guides, use `dev-skills`. If you want Claude to plan, execute, and verify end-to-end, install `dev-workflows` instead.
 
-- Minimal context footprint — no agents or commands loaded
+- Minimal context footprint — no agents or recipe skills loaded
 - Drop-in best practices without changing your workflow
 - Works as a ruleset layer for your own orchestrator
 
@@ -160,7 +160,7 @@ graph LR
 ```mermaid
 graph TB
     subgraph Phase1[Phase 1: PRD Generation]
-        CMD[📜 /reverse-engineer] --> SD[🔍 scope-discoverer unified]
+        CMD[📜 /recipe-reverse-engineer] --> SD[🔍 scope-discoverer unified]
         SD --> PRD[📄 prd-creator]
         PRD --> CV1[✅ code-verifier]
         CV1 --> DR1[📋 document-reviewer]
@@ -186,38 +186,40 @@ graph TB
 
 ---
 
-## ⚡ Workflow Commands
+## ⚡ Workflow Recipes
+
+All workflow entry points use the `recipe-` prefix to distinguish them from knowledge skills. Type `/recipe-` and use tab completion to see all available recipes.
 
 ### Backend & General Development (dev-workflows)
 
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `/implement` | End-to-end feature development | New features, complete workflows |
-| `/fullstack-implement` | End-to-end fullstack development | Cross-layer features (requires both plugins) |
-| `/task` | Execute single task with precision | Bug fixes, small changes |
-| `/design` | Create design documentation | Architecture planning |
-| `/plan` | Generate work plan from design | Planning phase |
-| `/build` | Execute from existing task plan | Resume implementation |
-| `/fullstack-build` | Execute fullstack task plan | Resume cross-layer implementation (requires both plugins) |
-| `/review` | Verify code against design docs | Post-implementation check |
-| `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
-| `/reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
-| `/add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
-| `/update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
+| Recipe | Purpose | When to Use |
+|--------|---------|-------------|
+| `/recipe-implement` | End-to-end feature development | New features, complete workflows |
+| `/recipe-fullstack-implement` | End-to-end fullstack development | Cross-layer features (requires both plugins) |
+| `/recipe-task` | Execute single task with precision | Bug fixes, small changes |
+| `/recipe-design` | Create design documentation | Architecture planning |
+| `/recipe-plan` | Generate work plan from design | Planning phase |
+| `/recipe-build` | Execute from existing task plan | Resume implementation |
+| `/recipe-fullstack-build` | Execute fullstack task plan | Resume cross-layer implementation (requires both plugins) |
+| `/recipe-review` | Verify code against design docs | Post-implementation check |
+| `/recipe-diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/recipe-reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
+| `/recipe-add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
+| `/recipe-update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
 
 ### Frontend Development (dev-workflows-frontend)
 
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `/front-design` | Create frontend design docs | React component architecture |
-| `/front-plan` | Generate frontend work plan | Component breakdown planning |
-| `/front-build` | Execute frontend task plan | Resume React implementation |
-| `/front-review` | Verify code against design docs | Post-implementation check |
-| `/task` | Execute single task with precision | Component fixes, small updates |
-| `/diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
-| `/update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
+| Recipe | Purpose | When to Use |
+|--------|---------|-------------|
+| `/recipe-front-design` | Create frontend design docs | React component architecture |
+| `/recipe-front-plan` | Generate frontend work plan | Component breakdown planning |
+| `/recipe-front-build` | Execute frontend task plan | Resume React implementation |
+| `/recipe-front-review` | Verify code against design docs | Post-implementation check |
+| `/recipe-task` | Execute single task with precision | Component fixes, small updates |
+| `/recipe-diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
+| `/recipe-update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
 
-> **Tip**: Both plugins share `/task`, `/diagnose`, and `/update-doc` commands with the same functionality. For reverse engineering, use `/reverse-engineer` with the fullstack option to generate both backend and frontend Design Docs in a single workflow.
+> **Tip**: Both plugins share `/recipe-task`, `/recipe-diagnose`, and `/recipe-update-doc` with the same functionality. For reverse engineering, use `/recipe-reverse-engineer` with the fullstack option to generate both backend and frontend Design Docs in a single workflow.
 
 ---
 
@@ -317,7 +319,7 @@ The frontend plugin is built specifically for React development:
 ### Backend Feature Development
 
 ```bash
-/implement "Add user authentication with JWT"
+/recipe-implement "Add user authentication with JWT"
 
 # What happens:
 # 1. Analyzes your requirements
@@ -331,7 +333,7 @@ The frontend plugin is built specifically for React development:
 ### Frontend Feature Development
 
 ```bash
-/front-design "Build a user profile dashboard"
+/recipe-front-design "Build a user profile dashboard"
 
 # What happens:
 # 1. Plans React component structure
@@ -339,7 +341,7 @@ The frontend plugin is built specifically for React development:
 # 3. Creates work plan
 #
 # Then run:
-/front-build
+/recipe-front-build
 
 # This:
 # 1. Implements components with Testing Library
@@ -351,10 +353,10 @@ The frontend plugin is built specifically for React development:
 ### Fullstack Workflow
 
 ```bash
-/fullstack-implement "Add user authentication with JWT + React login form"
+/recipe-fullstack-implement "Add user authentication with JWT + React login form"
 
 # What happens:
-# 1. Analyzes requirements (same as /implement)
+# 1. Analyzes requirements (same as /recipe-implement)
 # 2. Creates PRD covering the entire feature
 # 3. Creates separate Design Docs for backend AND frontend
 # 4. Verifies cross-layer consistency via design-sync
@@ -365,12 +367,12 @@ The frontend plugin is built specifically for React development:
 # 9. Commits vertical slices for early integration
 ```
 
-> **Requires both plugins installed.** The fullstack commands create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/reverse-engineer` with the fullstack option.
+> **Requires both plugins installed.** The fullstack recipes create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/recipe-reverse-engineer` with the fullstack option.
 
 ### Quick Fixes (Both Plugins)
 
 ```bash
-/task "Fix validation error message"
+/recipe-task "Fix validation error message"
 
 # Direct implementation with quality checks
 # Works the same in both plugins
@@ -379,7 +381,7 @@ The frontend plugin is built specifically for React development:
 ### Code Review
 
 ```bash
-/review
+/recipe-review
 
 # Checks your implementation against design docs
 # Catches missing features or inconsistencies
@@ -388,7 +390,7 @@ The frontend plugin is built specifically for React development:
 ### Problem Diagnosis (Both Plugins)
 
 ```bash
-/diagnose "API returns 500 error on user login"
+/recipe-diagnose "API returns 500 error on user login"
 
 # What happens:
 # 1. Investigator collects evidence from code, logs, git history
@@ -401,7 +403,7 @@ The frontend plugin is built specifically for React development:
 ### Reverse Engineering
 
 ```bash
-/reverse-engineer "src/auth module"
+/recipe-reverse-engineer "src/auth module"
 
 # What happens:
 # 1. Discovers functional scope (user-value + technical) in a single pass
@@ -437,39 +439,36 @@ claude-code-workflows/
 │   ├── technical-designer.md
 │   └── ... (17 agents total)
 │
-├── commands/                   # Shared commands
-│   ├── implement.md
-│   ├── design.md
-│   ├── diagnose.md             # Problem diagnosis
-│   ├── reverse-engineer.md     # Reverse documentation
-│   ├── plan.md
-│   ├── build.md
-│   └── ... (10 commands for backend, 8 for frontend)
+├── skills/                     # Shared skills (knowledge + recipe workflows)
+│   ├── recipe-implement/       # Workflow entry points (recipe-* prefix)
+│   ├── recipe-design/
+│   ├── recipe-diagnose/
+│   ├── recipe-reverse-engineer/
+│   ├── recipe-plan/
+│   ├── recipe-build/
+│   ├── ... (16 recipe skills total)
 │
-├── skills/                     # Skills (auto-loaded by agents)
-│   ├── ai-development-guide/
+│   ├── ai-development-guide/   # Knowledge skills (auto-loaded by agents)
 │   ├── coding-principles/
 │   ├── testing-principles/
 │   ├── implementation-approach/
 │   ├── typescript-rules/       # Frontend-specific
-│   └── ... (11 skills total)
+│   └── ... (27 skills total: 16 recipes + 11 knowledge)
 │
 ├── backend/                    # dev-workflows plugin
 │   ├── agents/                 # Symlinks to shared agents
-│   ├── commands/               # Symlinks to shared commands
 │   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │
 ├── frontend/                   # dev-workflows-frontend plugin
 │   ├── agents/                 # Symlinks to shared agents
-│   ├── commands/               # Symlinks to shared commands
 │   ├── skills/                 # Symlinks to shared skills
 │   └── .claude-plugin/
 │       └── plugin.json
 │
-├── skills-only/                # dev-skills plugin (skills only, no commands/agents)
-│   ├── skills/                 # Symlinks to shared skills (9 of 11 — workflow-specific skills excluded)
+├── skills-only/                # dev-skills plugin (knowledge skills only, no recipes/agents)
+│   ├── skills/                 # Symlinks to shared knowledge skills (9 of 11 — workflow-specific skills excluded)
 │   └── .claude-plugin/
 │       └── plugin.json
 │
@@ -492,11 +491,11 @@ Both plugins can run side-by-side without conflicts.
 
 **Q: Can I use both plugins at the same time?**
 
-A: Yes! They're designed to work together. Install both if you're building a full-stack app. Use `/fullstack-implement` for features that span both backend and frontend — it creates separate Design Docs per layer and routes tasks to the appropriate executor automatically.
+A: Yes! They're designed to work together. Install both if you're building a full-stack app. Use `/recipe-fullstack-implement` for features that span both backend and frontend — it creates separate Design Docs per layer and routes tasks to the appropriate executor automatically.
 
 **Q: Do I need to learn special commands?**
 
-A: Not really. For backend, just use `/implement`. For frontend, use `/front-design`. The plugins handle everything else automatically.
+A: Not really. For backend, just use `/recipe-implement`. For frontend, use `/recipe-front-design`. The plugins handle everything else automatically.
 
 **Q: What if there are errors?**
 
@@ -504,7 +503,7 @@ A: The quality-fixer agents (one in each plugin) automatically fix most issues l
 
 **Q: What's the difference between dev-skills and dev-workflows?**
 
-A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow commands or agents. `dev-workflows` includes the same skills plus commands like `/implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
+A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
 
 ---
 

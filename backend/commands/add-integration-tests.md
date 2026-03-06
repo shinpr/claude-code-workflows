@@ -1,1 +1,0 @@
-../../commands/add-integration-tests.md

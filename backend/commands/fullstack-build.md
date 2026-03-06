@@ -1,1 +1,0 @@
-../../commands/fullstack-build.md

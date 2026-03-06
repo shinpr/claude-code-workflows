@@ -1,1 +1,0 @@
-../../commands/fullstack-implement.md
