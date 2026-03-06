@@ -1,1 +1,0 @@
-../../commands/front-build.md

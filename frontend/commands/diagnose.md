@@ -1,1 +1,0 @@
-../../commands/diagnose.md

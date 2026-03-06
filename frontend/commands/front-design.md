@@ -1,1 +1,0 @@
-../../commands/front-design.md
