@@ -4,7 +4,7 @@ description: Execute from requirement analysis to design document creation
 disable-model-invocation: true
 ---
 
-**Command Context**: This command is dedicated to the design phase.
+**Context**: Dedicated to the design phase.
 
 ## Orchestrator Definition
 
@@ -31,14 +31,14 @@ Requirements → requirement-analyzer → [Stop: Scale determination]
 
 ## Scope Boundaries
 
-**Included in this command**:
+**Included in this skill**:
 - Requirement analysis with requirement-analyzer
 - ADR creation (if architecture changes, new technology, or data flow changes)
 - Design Doc creation with technical-designer
 - Document review with document-reviewer
 - Design Doc consistency verification with design-sync
 
-**Responsibility Boundary**: This command completes with design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
+**Responsibility Boundary**: This skill completes with design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
 
 Requirements: $ARGUMENTS
 
@@ -66,4 +66,4 @@ Design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
 
-**Important**: End after design approval. If the user asks about next steps, suggest they issue a separate command.
+**Important**: End after design approval. If the user asks about next steps, suggest they invoke a separate skill.

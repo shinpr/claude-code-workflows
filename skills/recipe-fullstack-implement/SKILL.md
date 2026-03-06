@@ -4,7 +4,7 @@ description: Orchestrate full-cycle implementation across backend and frontend l
 disable-model-invocation: true
 ---
 
-**Command Context**: Full-cycle fullstack implementation management (Requirements Analysis → Design (backend + frontend) → Planning → Implementation → Quality Assurance)
+**Context**: Full-cycle fullstack implementation management (Requirements Analysis → Design (backend + frontend) → Planning → Implementation → Quality Assurance)
 
 ## Orchestrator Definition
 
@@ -88,7 +88,7 @@ When user responds to questions:
 **MANDATORY suffix for ALL sub-agent prompts**:
 ```
 [SYSTEM CONSTRAINT]
-This agent operates within fullstack-implement command scope. Use orchestrator-provided rules only.
+This agent operates within fullstack-implement skill scope. Use orchestrator-provided rules only.
 ```
 
 ⚠️ Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.

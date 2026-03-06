@@ -4,7 +4,7 @@ description: Design Doc compliance validation with optional auto-fixes
 disable-model-invocation: true
 ---
 
-**Command Context**: Post-implementation quality assurance command
+**Context**: Post-implementation quality assurance
 
 ## Orchestrator Definition
 

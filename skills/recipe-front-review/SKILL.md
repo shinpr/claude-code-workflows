@@ -4,7 +4,7 @@ description: Design Doc compliance validation with optional auto-fixes
 disable-model-invocation: true
 ---
 
-**Command Context**: Post-implementation quality assurance command for React/TypeScript frontend
+**Context**: Post-implementation quality assurance for React/TypeScript frontend
 
 ## Execution Method
 

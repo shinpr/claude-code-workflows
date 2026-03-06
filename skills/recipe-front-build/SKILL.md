@@ -113,4 +113,3 @@ Frontend implementation phase completed.
 - Quality checks: All passed (Lighthouse, bundle size, tests)
 - Commits: [number] commits created
 
-**Important**: This command manages the entire autonomous execution flow for FRONTEND implementation from task decomposition to completion. Automatically uses frontend-specialized agents (task-executor-frontend, quality-fixer-frontend).

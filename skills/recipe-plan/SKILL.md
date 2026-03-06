@@ -4,7 +4,7 @@ description: Create work plan from design document and obtain plan approval
 disable-model-invocation: true
 ---
 
-**Command Context**: This command is dedicated to the planning phase.
+**Context**: Dedicated to the planning phase.
 
 ## Orchestrator Definition
 
@@ -21,13 +21,13 @@ disable-model-invocation: true
 
 ## Scope Boundaries
 
-**Included in this command**:
+**Included in this skill**:
 - Design document selection
 - Test skeleton generation with acceptance-test-generator
 - Work plan creation with work-planner
 - Plan approval obtainment
 
-**Responsibility Boundary**: This command completes with work plan approval.
+**Responsibility Boundary**: This skill completes with work plan approval.
 
 Follow the planning process below:
 

@@ -4,7 +4,7 @@ description: Add integration/E2E tests to existing backend codebase using Design
 disable-model-invocation: true
 ---
 
-**Command Context**: Test addition workflow for existing backend implementations
+**Context**: Test addition workflow for existing backend implementations
 
 **Scope**: Backend only (acceptance-test-generator supports backend only)
 

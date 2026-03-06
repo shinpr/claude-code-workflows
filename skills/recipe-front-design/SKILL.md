@@ -4,7 +4,7 @@ description: Execute from requirement analysis to frontend design document creat
 disable-model-invocation: true
 ---
 
-**Command Context**: This command is dedicated to the frontend design phase.
+**Context**: Dedicated to the frontend design phase.
 
 ## Orchestrator Definition
 
@@ -19,13 +19,13 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 
 ## Scope Boundaries
 
-**Included in this command**:
+**Included in this skill**:
 - Requirement analysis with requirement-analyzer
 - ADR creation (if architecture changes, new technology, or data flow changes)
 - Design Doc creation with technical-designer-frontend
 - Document review with document-reviewer
 
-**Responsibility Boundary**: This command completes with frontend design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
+**Responsibility Boundary**: This skill completes with frontend design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
 
 Requirements: $ARGUMENTS
 
@@ -58,4 +58,4 @@ Frontend design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
 
-**Important**: End after design approval. If the user asks about next steps, suggest they issue a separate command.
+**Important**: End after design approval. If the user asks about next steps, suggest they invoke a separate skill.

@@ -4,7 +4,7 @@ description: Investigate problem, verify findings, and derive solutions
 disable-model-invocation: true
 ---
 
-**Command Context**: Diagnosis flow to identify root cause and present solutions
+**Context**: Diagnosis flow to identify root cause and present solutions
 
 Target problem: $ARGUMENTS
 

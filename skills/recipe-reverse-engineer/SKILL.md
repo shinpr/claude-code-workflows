@@ -4,7 +4,7 @@ description: Generate PRD and Design Docs from existing codebase through discove
 disable-model-invocation: true
 ---
 
-**Command Context**: Reverse engineering workflow to create documentation from existing code
+**Context**: Reverse engineering workflow to create documentation from existing code
 
 Target: $ARGUMENTS
 

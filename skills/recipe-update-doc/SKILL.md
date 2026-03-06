@@ -4,7 +4,7 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
 disable-model-invocation: true
 ---
 
-**Command Context**: This command is dedicated to updating existing design documents.
+**Context**: Dedicated to updating existing design documents.
 
 ## Orchestrator Definition
 
@@ -35,18 +35,18 @@ Target document → [Stop: Confirm changes]
 
 ## Scope Boundaries
 
-**Included in this command**:
+**Included in this skill**:
 - Existing document identification and selection
 - Change content clarification with user
 - Document update with appropriate agent (update mode)
 - Document review with document-reviewer
 - Consistency verification with design-sync (Design Doc only)
 
-**Out of scope** (redirect to appropriate commands):
+**Out of scope** (redirect to appropriate skills):
 - New requirement analysis → /recipe-design
 - Work planning or implementation → /recipe-plan or /recipe-task
 
-**Responsibility Boundary**: This command completes with updated document approval.
+**Responsibility Boundary**: This skill completes with updated document approval.
 
 Target document: $ARGUMENTS
 
@@ -166,7 +166,7 @@ prompt: |
 - No conflicts → Present result to user for final approval
 - Conflicts detected → Present conflicts to user with AskUserQuestion:
   - A: Return to Step 4 to resolve conflicts in this document
-  - B: End command and address conflicts separately
+  - B: End and address conflicts separately
 
 ## Error Handling
 
@@ -191,4 +191,4 @@ Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
 
-**Important**: End after document approval. If the user asks about next steps, suggest they issue a separate command.
+**Important**: End after document approval. If the user asks about next steps, suggest they invoke a separate skill.

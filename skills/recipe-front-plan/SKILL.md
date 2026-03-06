@@ -4,7 +4,7 @@ description: Create frontend work plan from design document and obtain plan appr
 disable-model-invocation: true
 ---
 
-**Command Context**: This command is dedicated to the frontend planning phase.
+**Context**: Dedicated to the frontend planning phase.
 
 ## Orchestrator Definition
 
@@ -17,12 +17,12 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 
 ## Scope Boundaries
 
-**Included in this command**:
+**Included in this skill**:
 - Design document selection
 - Work plan creation with work-planner
 - Plan approval obtainment
 
-**Responsibility Boundary**: This command completes with work plan approval.
+**Responsibility Boundary**: This skill completes with work plan approval.
 
 Create frontend work plan with the following process:
 

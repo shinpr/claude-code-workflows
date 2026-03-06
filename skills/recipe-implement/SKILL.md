@@ -4,7 +4,7 @@ description: Orchestrate the complete implementation lifecycle from requirements
 disable-model-invocation: true
 ---
 
-**Command Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
+**Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
 
 ## Orchestrator Definition
 
@@ -84,7 +84,7 @@ When user responds to questions:
 **MANDATORY suffix for ALL sub-agent prompts**:
 ```
 [SYSTEM CONSTRAINT]
-This agent operates within implement command scope. Use orchestrator-provided rules only.
+This agent operates within implement skill scope. Use orchestrator-provided rules only.
 ```
 
 ⚠️ Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
