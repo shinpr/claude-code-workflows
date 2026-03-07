@@ -126,6 +126,7 @@ skills:
       - "Test Pyramid - Mike Cohn"
       - "Behavior-Driven Development"
     sections:
+      - "References"
       - "Test Type Definition and Limits"
       - "Behavior-First Principle"
       - "ROI Calculation"
