@@ -1,9 +1,4 @@
----
-name: typescript-testing
-description: Frontend testing rules with Vitest, React Testing Library, and MSW. Includes coverage requirements, test design principles, and quality criteria. Use when writing frontend tests or reviewing test quality.
----
-
-# TypeScript Testing Rules (Frontend)
+# Frontend Test Implementation (RTL + Vitest + MSW)
 
 ## Test Framework
 - **Vitest**: This project uses Vitest
@@ -44,13 +39,6 @@ description: Frontend testing rules with Vitest, React Testing Library, and MSW.
    - No actual DB connections (backend manages DB)
    - Verify major functional flows
 
-3. **Cross-functional Verification in E2E Tests**
-   - Mandatory verification of impact on existing features when adding new features
-   - Cover integration points with "High" and "Medium" impact levels from Design Doc's "Integration Point Map"
-   - Verification pattern: Existing feature operation → Enable new feature → Verify continuity of existing features
-   - Success criteria: No change in displayed content, rendering time within 5 seconds
-   - Designed for automatic execution in CI/CD pipelines
-
 ## Red-Green-Refactor Process (Test-First Development)
 
 **Recommended Principle**: Always start code changes with tests
@@ -85,11 +73,11 @@ description: Frontend testing rules with Vitest, React Testing Library, and MSW.
 
 ### Mock and Stub Usage Policy
 
-✅ **Recommended: Mock external dependencies in unit tests**
+**Recommended: Mock external dependencies in unit tests**
 - Merit: Ensures test independence and reproducibility
 - Practice: Mock API calls with MSW, mock external libraries
 
-❌ **Avoid: Actual API connections in unit tests**
+**Avoid: Actual API connections in unit tests**
 - Reason: Slows test speed and causes environment-dependent problems
 
 ### Test Failure Response Decision Criteria
@@ -99,9 +87,6 @@ description: Frontend testing rules with Vitest, React Testing Library, and MSW.
 **When in doubt**: Confirm with user
 
 ## Test Helper Utilization Rules
-
-### Basic Principles
-Use test helpers to reduce duplication and improve maintainability.
 
 ### Decision Criteria
 | Mock Characteristics | Response Policy |
@@ -113,15 +98,13 @@ Use test helpers to reduce duplication and improve maintainability.
 
 ### Test Helper Usage Examples
 ```typescript
-// ✅ Builder pattern for test data
+// Builder pattern for test data
 const testUser = createTestUser({ name: 'Test User', email: 'test@example.com' })
 
-// ✅ Custom render function with providers
+// Custom render function with providers
 function renderWithProviders(ui: React.ReactElement) {
   return render(<TestProvider>{ui}</TestProvider>)
 }
-
-// ❌ Individual implementation of duplicate complex mocks
 ```
 
 ## Test Implementation Conventions
@@ -136,11 +119,6 @@ src/
         └── index.ts
 ```
 
-**Rationale**:
-- React Testing Library best practice
-- ADR-0002 Co-location principle
-- Easy to find and maintain tests alongside implementation
-
 ### Naming Conventions
 - Test files: `{ComponentName}.test.tsx`
 - Integration test files: `{FeatureName}.integration.test.tsx`
@@ -149,13 +127,12 @@ src/
 
 ### Test Code Quality Rules
 
-✅ **Recommended: Keep all tests always active**
-- Merit: Guarantees test suite completeness
-- Practice: Fix problematic tests and activate them
+**Keep all tests always active**
+- Fix problematic tests and activate them
 
-❌ **Avoid: test.skip() or commenting out**
-- Reason: Creates test gaps and incomplete quality checks
-- Solution: Completely delete unnecessary tests
+**Avoid: test.skip() or commenting out**
+- Creates test gaps and incomplete quality checks
+- Completely delete unnecessary tests
 
 ## Test Granularity Principles
 
@@ -164,19 +141,17 @@ src/
 **MUST NOT Test**: Component internal state, implementation details, CSS class names
 
 ```typescript
-// ✅ Test user-observable behavior
+// Test user-observable behavior
 expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
 
-// ❌ Test implementation details
+// NOT implementation details
 expect(component.state.count).toBe(0)
 ```
 
 ## Test Quality Criteria
 
-These criteria ensure reliable, maintainable tests.
-
 ### Literal Expected Values
-Use hardcoded literal values for assertions. This ensures independent verification of implementation correctness.
+Use hardcoded literal values for assertions.
 ```typescript
 expect(formatPrice(1000)).toBe('¥1,000')
 expect(calculateTax(100)).toBe(10)
@@ -184,7 +159,7 @@ expect(user.role).toBe('admin')
 ```
 
 ### Result-Based Verification
-Verify final results and outcomes. Use `toHaveBeenCalledWith` for argument verification.
+Verify final results and outcomes.
 ```typescript
 expect(mockOnSubmit).toHaveBeenCalledWith({ name: 'test' })
 expect(result).toEqual({ id: '1', status: 'success' })
@@ -193,16 +168,9 @@ expect(screen.getByText('Submitted')).toBeInTheDocument()
 
 ### Meaningful Assertions
 Every test must include at least one `expect()` that validates observable behavior.
-```typescript
-it('displays error message on invalid input', () => {
-  render(<Form />)
-  fireEvent.click(screen.getByRole('button', { name: 'Submit' }))
-  expect(screen.getByText('Required field')).toBeInTheDocument()
-})
-```
 
 ### Appropriate Mock Scope
-Mock only direct external I/O dependencies (API clients, database connections). Internal utilities should use real implementations.
+Mock only direct external I/O dependencies. Internal utilities should use real implementations.
 ```typescript
 vi.mock('./api/userApi')  // External API - mock
 vi.mock('./lib/database') // External I/O - mock
@@ -213,7 +181,6 @@ vi.mock('./lib/database') // External I/O - mock
 
 ### MSW (Mock Service Worker) Setup
 ```typescript
-// ✅ Type-safe MSW handler
 import { rest } from 'msw'
 
 const handlers = [
@@ -225,14 +192,8 @@ const handlers = [
 
 ### Component Mock Type Safety
 ```typescript
-// ✅ Only required parts
 type TestProps = Pick<ButtonProps, 'label' | 'onClick'>
 const mockProps: TestProps = { label: 'Click', onClick: vi.fn() }
-
-// Only when absolutely necessary, with clear justification
-const mockRouter = {
-  push: vi.fn()
-} as unknown as Router // Complex router type structure
 ```
 
 ## Continuity Test Scope

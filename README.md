@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
-**Build production-ready software with Claude Code** - Plugins and tools that bring best practices, specialized agents, automated quality checks, and safety guardrails to your development process.
+**End-to-end development workflows for Claude Code** - Specialized agents handle requirements, design, implementation, and quality checks so you get reviewable code, not just generated code.
 
 ---
 
@@ -24,7 +24,7 @@ This marketplace includes the following plugins:
 **Skills only** (for users with existing workflows):
 - **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow recipes
 
-The core value is the end-to-end workflow. Choose what fits your project:
+These plugins provide end-to-end workflows for AI-assisted development. Choose what fits your project:
 
 ### Backend or General Development
 
@@ -178,11 +178,11 @@ graph TB
 ### What Happens Behind the Scenes
 
 1. **Analysis** - Figures out how complex your task is
-2. **Planning** - Creates the right docs (PRD, design doc, work plan) based on complexity
+2. **Planning** - Creates the right docs (PRD, UI Spec, Design Doc, work plan) based on complexity
 3. **Execution** - Specialized agents handle implementation autonomously
 4. **Quality** - Runs tests, checks types, fixes errors automatically
 5. **Review** - Makes sure everything matches the design
-6. **Done** - Clean, production-ready code
+6. **Done** - Reviewed, tested, ready to commit
 
 ---
 
@@ -211,7 +211,7 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
-| `/recipe-front-design` | Create frontend design docs | React component architecture |
+| `/recipe-front-design` | Create UI Spec + frontend Design Doc | React component architecture, UI Spec |
 | `/recipe-front-plan` | Generate frontend work plan | Component breakdown planning |
 | `/recipe-front-build` | Execute frontend task plan | Resume React implementation |
 | `/recipe-front-review` | Verify code against design docs | Post-implementation check |
@@ -224,6 +224,8 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 ---
 
 ## 📦 Specialized Agents
+
+The workflow uses specialized agents for each stage of the development lifecycle.
 
 ### Shared Agents (Available in Both Plugins)
 
@@ -260,6 +262,7 @@ These agents work the same way whether you're building a REST API or a React app
 | Agent | What It Does |
 |-------|--------------|
 | **prd-creator** | Writes product requirement docs for complex features |
+| **ui-spec-designer** | Creates UI Specifications from PRD and optional prototype code |
 | **technical-designer-frontend** | Plans React component architecture and state management |
 | **task-executor-frontend** | Implements React components with Testing Library |
 | **quality-fixer-frontend** | Handles React-specific tests, TypeScript checks, and builds |
@@ -283,34 +286,23 @@ The frontend plugin has React and TypeScript-specific rules built in.
 
 ---
 
-## 🚀 Why Use These Plugins?
+## 🚀 What These Plugins Do
 
-### The Problem
+Each phase runs in a fresh agent context, so quality doesn't degrade as the task grows:
 
-When building with AI coding assistants, you often run into:
+- **Analyze** → requirement-analyzer determines scale and workflow
+- **Design** → technical-designer (+ ui-spec-designer for frontend) produces testable specs with acceptance criteria
+- **Plan** → work-planner schedules integration by value unit, not by layer — so each phase delivers a working vertical slice
+- **Implement** → task-executor builds and tests each task, quality-fixer verifies before every commit
+- **Verify** → acceptance criteria trace from design through test skeletons, so nothing is left implicit
 
-- Context gets exhausted in long sessions
-- Code quality drops over time
-- Patterns become inconsistent
-- You end up fixing test failures and type errors manually
+The frontend plugin adds React-specific agents (component architecture, Testing Library, TypeScript-first quality checks) and UI Spec generation from optional prototype code.
 
-### The Solution
+### Why UI Spec Exists
 
-These plugins fix that by:
+Prototypes show what the UI looks like, but not how it behaves across states, errors, and API boundaries. The gaps surface during integration — each task works alone but the whole doesn't hold up.
 
-- **Fresh context for each phase** - Specialized agents handle different parts without context exhaustion
-- **Enforced best practices** - Language-agnostic rules (backend) and React patterns (frontend) keep quality consistent
-- **Automated quality checks** - Tests, types, and linting run automatically and get fixed if they fail
-- **Complete lifecycle** - From requirements to implementation to review
-
-### Frontend-Specific Benefits
-
-The frontend plugin is built specifically for React development:
-
-- Component architecture planning with state management decisions
-- React Testing Library integration from the start
-- TypeScript-first approach with automatic type generation
-- Handles build errors, test failures, and type issues automatically
+UI Spec bridges this by capturing component states, interactions, and acceptance criteria from the prototype. These criteria trace into the Design Doc and test skeletons, and the work plan uses them to schedule integration by value unit rather than by layer. The result is that design decisions are verified by tests, and breakage is caught early.
 
 ---
 
@@ -336,9 +328,10 @@ The frontend plugin is built specifically for React development:
 /recipe-front-design "Build a user profile dashboard"
 
 # What happens:
-# 1. Plans React component structure
-# 2. Defines state management approach
-# 3. Creates work plan
+# 1. Analyzes requirements
+# 2. Asks for prototype code (optional)
+# 3. Creates UI Specification (screen structure, components, interactions)
+# 4. Creates frontend Design Doc (inherits UI Spec decisions)
 #
 # Then run:
 /recipe-front-build
@@ -358,13 +351,14 @@ The frontend plugin is built specifically for React development:
 # What happens:
 # 1. Analyzes requirements (same as /recipe-implement)
 # 2. Creates PRD covering the entire feature
-# 3. Creates separate Design Docs for backend AND frontend
-# 4. Verifies cross-layer consistency via design-sync
-# 5. Creates work plan with vertical feature slices
-# 6. Decomposes into layer-aware tasks (backend/frontend/fullstack)
-# 7. Routes each task to the appropriate executor
-# 8. Runs layer-appropriate quality checks
-# 9. Commits vertical slices for early integration
+# 3. Asks for prototype code, creates UI Specification
+# 4. Creates separate Design Docs for backend AND frontend
+# 5. Verifies cross-layer consistency via design-sync
+# 6. Creates work plan with vertical feature slices
+# 7. Decomposes into layer-aware tasks (backend/frontend/fullstack)
+# 8. Routes each task to the appropriate executor
+# 9. Runs layer-appropriate quality checks
+# 10. Commits vertical slices for early integration
 ```
 
 > **Requires both plugins installed.** The fullstack recipes create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/recipe-reverse-engineer` with the fullstack option.
@@ -437,7 +431,7 @@ claude-code-workflows/
 │   ├── code-verifier.md        # Reverse engineering workflow
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ... (17 agents total)
+│   └── ...
 │
 ├── skills/                     # Shared skills (knowledge + recipe workflows)
 │   ├── recipe-implement/       # Workflow entry points (recipe-* prefix)
@@ -503,7 +497,7 @@ A: The quality-fixer agents (one in each plugin) automatically fix most issues l
 
 **Q: What's the difference between dev-skills and dev-workflows?**
 
-A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
+A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
 
 ---
 
@@ -523,4 +517,4 @@ See [LICENSE](LICENSE) for full details.
 
 ---
 
-**Happy Coding with Claude Code Workflows!** 🚀✨
+Built and maintained by [@shinpr](https://github.com/shinpr).

@@ -44,15 +44,31 @@ When continuing existing flow, verify:
 - Current phase position (Requirements/Design/Planning/Implementation/QA)
 - Identify next step in monorepo-flow.md
 
-### 3. Design Phase and Work Planning
+### 3. UI Specification Phase (Frontend Layer)
+
+Before creating the frontend Design Doc, create a UI Specification:
+
+**Ask the user**: "Do you have prototype code for this feature? If so, please provide the path. The prototype will be placed in `docs/ui-spec/assets/` as reference material."
+
+- **[STOP]**: Wait for user response about prototype code availability
+
+Then invoke **ui-spec-designer**:
+- `subagent_type: "ui-spec-designer"`
+- If prototype provided: `prompt: "Create UI Spec from PRD at [path]. Prototype code is at [user-provided path]."`
+- If no prototype: `prompt: "Create UI Spec from PRD at [path]. No prototype code available."`
+
+Invoke **document-reviewer** for UI Spec review, then **[STOP]** for user approval.
+
+### 4. Design Phase and Work Planning
 
 **Follow monorepo-flow.md** for the complete design-through-planning flow. Key differences from `/recipe-implement`:
 - Create separate Design Docs per layer (see monorepo-flow.md "Layer Context in Design Doc Creation")
+- **Frontend Design Doc must reference the approved UI Spec** (pass UI Spec path to technical-designer-frontend)
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner with vertical slicing instruction
 
-### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
+### 5. Register All Flow Steps Using TaskCreate (MANDATORY)
 
 **After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
 - First task: "Confirm skill constraints"

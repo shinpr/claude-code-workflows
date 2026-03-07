@@ -143,6 +143,8 @@ These are outside the scope of this document. PRDs should focus solely on "what 
 - [ ] Is there consistency with existing systems?
 - [ ] Are important relationships clearly expressed in mermaid diagrams?
 - [ ] **Do implementation phases or work plans NOT exist?**
+- [ ] **For UI features: Are accessibility requirements documented?**
+- [ ] **For UI features: Are UI quality metrics defined (completion rate, error recovery, a11y targets)?**
 
 ## Update Mode Operation
 

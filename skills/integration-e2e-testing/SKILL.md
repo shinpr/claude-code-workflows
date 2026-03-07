@@ -5,6 +5,10 @@ description: Integration and E2E test design principles, ROI calculation, test s
 
 # Integration and E2E Testing Principles
 
+## References
+
+**E2E test design with Playwright**: See [references/e2e-design.md](references/e2e-design.md) for UI Spec-driven E2E test candidate selection and Playwright test architecture.
+
 ## Test Type Definition and Limits
 
 | Test Type | Purpose | Scope | Limit per Feature | Implementation Timing |

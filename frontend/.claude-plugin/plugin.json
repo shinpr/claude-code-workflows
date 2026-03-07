@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows-frontend",
-  "version": "0.13.0",
-  "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with 16 specialized agents",
+  "version": "0.14.0",
+  "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -22,10 +22,12 @@
     "best-practices"
   ],
   "agents": [
+    "./agents/acceptance-test-generator.md",
     "./agents/code-reviewer.md",
     "./agents/code-verifier.md",
     "./agents/design-sync.md",
     "./agents/document-reviewer.md",
+    "./agents/integration-test-reviewer.md",
     "./agents/investigator.md",
     "./agents/prd-creator.md",
     "./agents/quality-fixer-frontend.md",
@@ -36,6 +38,7 @@
     "./agents/task-decomposer.md",
     "./agents/task-executor-frontend.md",
     "./agents/technical-designer-frontend.md",
+    "./agents/ui-spec-designer.md",
     "./agents/verifier.md",
     "./agents/work-planner.md"
   ]

@@ -4,6 +4,10 @@
 
 [Explain the purpose and overview of this feature in 2-3 sentences]
 
+### Referenced UI Spec (when feature includes frontend)
+- UI Spec path: [docs/ui-spec/xxx-ui-spec.md]
+- Component structure and state design are inherited from UI Spec
+
 ## Design Summary (Meta)
 
 ```yaml
@@ -215,6 +219,26 @@ State Transitions:
 System Invariants:
   - [Conditions that hold in any state]
 ```
+
+### UI Error State Design (when feature includes frontend)
+
+| Component / Screen | Loading | Empty | Error | Partial |
+|-------------------|---------|-------|-------|---------|
+| [Component name] | [Skeleton / spinner] | [Empty state + CTA] | [Error message + Retry] | [Cached display + Banner] |
+
+### Client State Design (when feature includes frontend)
+
+| State Category | State | Management Method | Sync Strategy |
+|---------------|-------|-------------------|---------------|
+| Server state | [Fetched data] | [Cache library / custom hook] | [Polling / WebSocket / manual refresh] |
+| Local UI state | [Modal open, tab selection] | [useState / useReducer] | - |
+| Temporary state | [Form input, draft] | [useState / form library] | [Auto-save / manual save] |
+
+### UI Action - API Contract Mapping (when feature includes frontend)
+
+| UI Action | API Endpoint | Request | Response | Error Contract |
+|-----------|-------------|---------|----------|----------------|
+| [Button click / form submit] | [POST /api/xxx] | [Request body fields] | [Response fields] | [Error codes and UI handling] |
 
 ### Error Handling
 

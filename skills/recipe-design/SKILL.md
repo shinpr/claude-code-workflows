@@ -65,5 +65,3 @@ Execute the process below within design scope.
 Design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
-
-**Important**: End after design approval. If the user asks about next steps, suggest they invoke a separate skill.
