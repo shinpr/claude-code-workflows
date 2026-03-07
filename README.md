@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
-**Build production-ready software with Claude Code** - Plugins and tools that bring best practices, specialized agents, automated quality checks, and safety guardrails to your development process.
+**End-to-end development workflows for Claude Code** - Specialized agents handle requirements, design, implementation, and quality checks so you get reviewable code, not just generated code.
 
 ---
 
@@ -24,7 +24,7 @@ This marketplace includes the following plugins:
 **Skills only** (for users with existing workflows):
 - **dev-skills** - Coding best practices, testing principles, and design guidelines — no workflow recipes
 
-The core value is the end-to-end workflow. Choose what fits your project:
+These plugins provide end-to-end workflows for AI-assisted development. Choose what fits your project:
 
 ### Backend or General Development
 
@@ -182,7 +182,7 @@ graph TB
 3. **Execution** - Specialized agents handle implementation autonomously
 4. **Quality** - Runs tests, checks types, fixes errors automatically
 5. **Review** - Makes sure everything matches the design
-6. **Done** - Clean, production-ready code
+6. **Done** - Reviewed, tested, ready to commit
 
 ---
 
@@ -224,6 +224,8 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 ---
 
 ## 📦 Specialized Agents
+
+The workflow uses specialized agents for each stage of the development lifecycle.
 
 ### Shared Agents (Available in Both Plugins)
 
@@ -284,34 +286,17 @@ The frontend plugin has React and TypeScript-specific rules built in.
 
 ---
 
-## 🚀 Why Use These Plugins?
+## 🚀 What These Plugins Do
 
-### The Problem
+Each phase runs in a fresh agent context, so quality doesn't degrade as the task grows:
 
-When building with AI coding assistants, you often run into:
+- **Analyze** → requirement-analyzer determines scale and workflow
+- **Design** → technical-designer (+ ui-spec-designer for frontend) produces testable specs with acceptance criteria
+- **Plan** → work-planner schedules integration by value unit, not by layer — so each phase delivers a working vertical slice
+- **Implement** → task-executor builds and tests each task, quality-fixer verifies before every commit
+- **Verify** → acceptance criteria trace from design through test skeletons, so nothing is left implicit
 
-- Context gets exhausted in long sessions
-- Code quality drops over time
-- Patterns become inconsistent
-- You end up fixing test failures and type errors manually
-
-### The Solution
-
-These plugins fix that by:
-
-- **Fresh context for each phase** - Specialized agents handle different parts without context exhaustion
-- **Enforced best practices** - Language-agnostic rules (backend) and React patterns (frontend) keep quality consistent
-- **Automated quality checks** - Tests, types, and linting run automatically and get fixed if they fail
-- **Complete lifecycle** - From requirements to implementation to review
-
-### Frontend-Specific Benefits
-
-The frontend plugin is built specifically for React development:
-
-- Component architecture planning with state management decisions
-- React Testing Library integration from the start
-- TypeScript-first approach with automatic type generation
-- Handles build errors, test failures, and type issues automatically
+The frontend plugin adds React-specific agents (component architecture, Testing Library, TypeScript-first quality checks) and UI Spec generation from optional prototype code.
 
 ### Why UI Spec Exists
 
@@ -532,4 +517,4 @@ See [LICENSE](LICENSE) for full details.
 
 ---
 
-**Happy Coding with Claude Code Workflows!** 🚀✨
+Built and maintained by [@shinpr](https://github.com/shinpr).
