@@ -116,7 +116,7 @@ description: Documentation creation criteria including PRD, ADR, Design Doc, and
 - Existing component reuse map (reuse/extend/new decisions)
 
 **Prototype Code Handling**:
-- Prototype code provided by user is placed in `docs/ui-spec/assets/{feature-slug}/`
+- Prototype code provided by user is placed in `docs/ui-spec/assets/{feature-name}/`
 - Prototype is an attachment to UI Spec, never the source of truth
 - UI Spec + Design Doc are the canonical specifications
 
@@ -205,7 +205,7 @@ Interface Change Matrix:
 | PRD | `docs/prd/` | `[feature-name]-prd.md` | [prd-template.md](references/prd-template.md) |
 | ADR | `docs/adr/` | `ADR-[4-digits]-[title].md` | [adr-template.md](references/adr-template.md) |
 | UI Spec | `docs/ui-spec/` | `[feature-name]-ui-spec.md` | [ui-spec-template.md](references/ui-spec-template.md) |
-| UI Spec Assets | `docs/ui-spec/assets/{feature-slug}/` | Prototype code files | - |
+| UI Spec Assets | `docs/ui-spec/assets/{feature-name}/` | Prototype code files | - |
 | Design Doc | `docs/design/` | `[feature-name]-design.md` | [design-template.md](references/design-template.md) |
 | Work Plan | `docs/plans/` | `YYYYMMDD-{type}-{description}.md` | [plan-template.md](references/plan-template.md) |
 | Task File | `docs/plans/tasks/` | `{plan-name}-task-{number}.md` | [task-template.md](references/task-template.md) |

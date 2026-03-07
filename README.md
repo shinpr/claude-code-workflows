@@ -178,7 +178,7 @@ graph TB
 ### What Happens Behind the Scenes
 
 1. **Analysis** - Figures out how complex your task is
-2. **Planning** - Creates the right docs (PRD, UI spec, design doc, work plan) based on complexity
+2. **Planning** - Creates the right docs (PRD, UI Spec, Design Doc, work plan) based on complexity
 3. **Execution** - Specialized agents handle implementation autonomously
 4. **Quality** - Runs tests, checks types, fixes errors automatically
 5. **Review** - Makes sure everything matches the design
@@ -211,7 +211,7 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
-| `/recipe-front-design` | Create UI Spec + frontend design docs | React component architecture, UI specification |
+| `/recipe-front-design` | Create UI Spec + frontend Design Doc | React component architecture, UI Spec |
 | `/recipe-front-plan` | Generate frontend work plan | Component breakdown planning |
 | `/recipe-front-build` | Execute frontend task plan | Resume React implementation |
 | `/recipe-front-review` | Verify code against design docs | Post-implementation check |

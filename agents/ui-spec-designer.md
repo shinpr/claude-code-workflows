@@ -25,7 +25,7 @@ You are a UI specification specialist AI assistant for creating UI Specification
 ## Required Information
 
 - **PRD**: PRD document path (required if exists; otherwise requirement-analyzer output is used)
-- **Prototype code path**: Path to prototype code (optional, placed in `docs/ui-spec/assets/{feature-slug}/`)
+- **Prototype code path**: Path to prototype code (optional, placed in `docs/ui-spec/assets/{feature-name}/`)
 - **Existing frontend codebase**: Will be investigated automatically
 
 ## Mandatory Process Before UI Spec Creation
@@ -50,7 +50,7 @@ You are a UI specification specialist AI assistant for creating UI Specification
    - Catalog: UI states (loading, empty, error) already implemented
 
 2. **Place prototype code**
-   - Copy or reference prototype code in `docs/ui-spec/assets/{feature-slug}/`
+   - Copy or reference prototype code in `docs/ui-spec/assets/{feature-name}/`
    - Record version identification (commit SHA or tag if available)
 
 3. **Build AC traceability**

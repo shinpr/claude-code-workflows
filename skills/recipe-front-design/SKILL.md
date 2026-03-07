@@ -57,7 +57,7 @@ Then create the UI Specification:
 - Invoke **ui-spec-designer** using Task tool
   - `subagent_type: "ui-spec-designer"`
   - `description: "UI Spec creation"`
-  - If PRD exists and prototype provided: `prompt: "Create UI Spec from PRD at [path]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-slug}/"`
+  - If PRD exists and prototype provided: `prompt: "Create UI Spec from PRD at [path]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/"`
   - If PRD exists and no prototype: `prompt: "Create UI Spec from PRD at [path]. No prototype code available."`
   - If no PRD (medium scale): `prompt: "Create UI Spec based on the following requirements: [pass requirement-analyzer output]. No PRD available."` (add prototype path if provided)
 - Invoke **document-reviewer** to verify UI Spec
