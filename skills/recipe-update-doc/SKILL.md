@@ -190,5 +190,3 @@ prompt: |
 Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
-
-**Important**: End after document approval. If the user asks about next steps, suggest they invoke a separate skill.

@@ -178,7 +178,7 @@ graph TB
 ### What Happens Behind the Scenes
 
 1. **Analysis** - Figures out how complex your task is
-2. **Planning** - Creates the right docs (PRD, design doc, work plan) based on complexity
+2. **Planning** - Creates the right docs (PRD, UI spec, design doc, work plan) based on complexity
 3. **Execution** - Specialized agents handle implementation autonomously
 4. **Quality** - Runs tests, checks types, fixes errors automatically
 5. **Review** - Makes sure everything matches the design
@@ -211,7 +211,7 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
-| `/recipe-front-design` | Create frontend design docs | React component architecture |
+| `/recipe-front-design` | Create UI Spec + frontend design docs | React component architecture, UI specification |
 | `/recipe-front-plan` | Generate frontend work plan | Component breakdown planning |
 | `/recipe-front-build` | Execute frontend task plan | Resume React implementation |
 | `/recipe-front-review` | Verify code against design docs | Post-implementation check |
@@ -260,6 +260,7 @@ These agents work the same way whether you're building a REST API or a React app
 | Agent | What It Does |
 |-------|--------------|
 | **prd-creator** | Writes product requirement docs for complex features |
+| **ui-spec-designer** | Creates UI Specifications from PRD and optional prototype code |
 | **technical-designer-frontend** | Plans React component architecture and state management |
 | **task-executor-frontend** | Implements React components with Testing Library |
 | **quality-fixer-frontend** | Handles React-specific tests, TypeScript checks, and builds |
@@ -312,6 +313,12 @@ The frontend plugin is built specifically for React development:
 - TypeScript-first approach with automatic type generation
 - Handles build errors, test failures, and type issues automatically
 
+### Bridging the Prototype-to-Production Gap
+
+AI prototyping tools (v0, Bolt, Lovable, or Claude itself) can generate working UI in minutes — but prototypes are not specifications. Screen transitions, component states, error handling, and accessibility are implied at best, missing at worst.
+
+The frontend workflow treats prototype code as **input, not output**. `/recipe-front-design` accepts optional prototype code, analyzes it, and produces a formal UI Specification that captures what the prototype demonstrates but doesn't document. This specification then feeds into the Design Doc and work plan, connecting rapid prototyping to structured implementation.
+
 ---
 
 ## 🎯 Typical Workflows
@@ -336,9 +343,10 @@ The frontend plugin is built specifically for React development:
 /recipe-front-design "Build a user profile dashboard"
 
 # What happens:
-# 1. Plans React component structure
-# 2. Defines state management approach
-# 3. Creates work plan
+# 1. Analyzes requirements
+# 2. Asks for prototype code (optional)
+# 3. Creates UI Specification (screen structure, components, interactions)
+# 4. Creates frontend Design Doc (inherits UI Spec decisions)
 #
 # Then run:
 /recipe-front-build
@@ -358,13 +366,14 @@ The frontend plugin is built specifically for React development:
 # What happens:
 # 1. Analyzes requirements (same as /recipe-implement)
 # 2. Creates PRD covering the entire feature
-# 3. Creates separate Design Docs for backend AND frontend
-# 4. Verifies cross-layer consistency via design-sync
-# 5. Creates work plan with vertical feature slices
-# 6. Decomposes into layer-aware tasks (backend/frontend/fullstack)
-# 7. Routes each task to the appropriate executor
-# 8. Runs layer-appropriate quality checks
-# 9. Commits vertical slices for early integration
+# 3. Asks for prototype code, creates UI Specification
+# 4. Creates separate Design Docs for backend AND frontend
+# 5. Verifies cross-layer consistency via design-sync
+# 6. Creates work plan with vertical feature slices
+# 7. Decomposes into layer-aware tasks (backend/frontend/fullstack)
+# 8. Routes each task to the appropriate executor
+# 9. Runs layer-appropriate quality checks
+# 10. Commits vertical slices for early integration
 ```
 
 > **Requires both plugins installed.** The fullstack recipes create separate Design Docs per layer and route tasks to backend or frontend executors based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/recipe-reverse-engineer` with the fullstack option.
@@ -437,7 +446,7 @@ claude-code-workflows/
 │   ├── code-verifier.md        # Reverse engineering workflow
 │   ├── task-executor.md
 │   ├── technical-designer.md
-│   └── ... (17 agents total)
+│   └── ...
 │
 ├── skills/                     # Shared skills (knowledge + recipe workflows)
 │   ├── recipe-implement/       # Workflow entry points (recipe-* prefix)
@@ -503,7 +512,7 @@ A: The quality-fixer agents (one in each plugin) automatically fix most issues l
 
 **Q: What's the difference between dev-skills and dev-workflows?**
 
-A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and 18 specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
+A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
 
 ---
 

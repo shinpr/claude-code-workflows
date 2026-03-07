@@ -182,26 +182,17 @@ skills:
       - "Performance Optimization"
       - "Non-functional Requirements"
 
-  typescript-testing:
-    skill: "typescript-testing"
-    tags: [frontend, react, testing, react-testing-library, msw, coverage, tdd, test-quality-criteria]
-    typical-use: "Frontend testing rules, React Testing Library patterns, MSW for API mocking, coverage targets"
+  test-implement:
+    skill: "test-implement"
+    tags: [testing, frontend, react, react-testing-library, msw, playwright, e2e, coverage, tdd]
+    typical-use: "Test implementation patterns. references/frontend.md for RTL+Vitest+MSW, references/e2e.md for Playwright E2E"
     size: large
     key-references:
-      - "React Testing Library"
-      - "Mock Service Worker (MSW)"
+      - "references/frontend.md"
+      - "references/e2e.md"
     sections:
-      - "Test Framework"
-      - "Basic Testing Policy"
-      - "Red-Green-Refactor Process (Test-First Development)"
-      - "Test Design Principles"
-      - "Test Helper Utilization Rules"
-      - "Test Implementation Conventions"
-      - "Test Granularity Principles"
-      - "Test Quality Criteria"
-      - "Mock Type Safety Enforcement"
-      - "Continuity Test Scope"
-      - "Basic React Testing Library Example"
+      - "Reference Selection"
+      - "Common Principles"
 
   frontend-ai-guide:
     skill: "frontend-ai-guide"

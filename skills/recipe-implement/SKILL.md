@@ -94,18 +94,15 @@ This agent operates within implement skill scope. Use orchestrator-provided rule
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
-```
 1. task-executor → Implementation
-2. Escalation judgment → Check task-executor status
+2. Check task-executor response:
+   - `status: escalation_needed` or `blocked` → Escalate to user
+   - `testsAdded` contains `*.int.test.ts` or `*.e2e.test.ts` → Execute **integration-test-reviewer**
+     - `needs_revision` → Return to step 1 with `requiredFixes`
+     - `approved` → Proceed to step 3
+   - Otherwise → Proceed to step 3
 3. quality-fixer → Quality check and fixes
-4. git commit → Execute with Bash (on approved: true)
-```
-
-**Rules**:
-1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle individually)
-2. Check task-executor status before quality-fixer (escalation check)
-3. quality-fixer MUST run after each task-executor (no skipping)
-4. Commit MUST execute when quality-fixer returns `approved: true` (do not defer to end)
+4. git commit → Execute with Bash (on `approved: true`)
 
 ### Test Information Communication
 After acceptance-test-generator execution, when calling work-planner, communicate:

@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "owner": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
@@ -12,12 +12,12 @@
     {
       "name": "dev-workflows",
       "source": "./backend",
-      "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with 18 specialized agents"
+      "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents"
     },
     {
       "name": "dev-workflows-frontend",
       "source": "./frontend",
-      "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with 16 specialized agents"
+      "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents"
     },
     {
       "name": "dev-skills",

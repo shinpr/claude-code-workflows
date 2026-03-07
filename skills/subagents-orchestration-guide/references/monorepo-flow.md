@@ -10,31 +10,37 @@ This reference defines the orchestration flow for projects spanning multiple lay
 
 ## Design Phase
 
-### Large Scale Fullstack (6+ Files) - 9 Steps
+### Large Scale Fullstack (6+ Files) - 12 Steps
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
 | 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
 | 2 | prd-creator | PRD covering entire feature (all layers) | Single PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
-| 4 | technical-designer | **Backend** Design Doc | Backend Design Doc |
-| 5 | technical-designer-frontend | **Frontend** Design Doc (references backend Integration Points) | Frontend Design Doc |
-| 6 | document-reviewer ×2 | Review each Design Doc (one invocation per doc) | Reviews |
-| 7 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 8 | acceptance-test-generator | Integration test skeleton from cross-layer contracts | Test skeletons |
-| 9 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
+| 4 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
+| 5 | ui-spec-designer | UI Spec from PRD + optional prototype | UI Spec |
+| 6 | document-reviewer | UI Spec review **[Stop]** | Approval |
+| 7 | technical-designer | **Backend** Design Doc | Backend Design Doc |
+| 8 | technical-designer-frontend | **Frontend** Design Doc (references backend Integration Points + UI Spec) | Frontend Design Doc |
+| 9 | document-reviewer ×2 | Review each Design Doc (one invocation per doc) | Reviews |
+| 10 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
+| 11 | acceptance-test-generator | Integration/E2E test skeleton from cross-layer contracts | Test skeletons |
+| 12 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
-### Medium Scale Fullstack (3-5 Files) - 7 Steps
+### Medium Scale Fullstack (3-5 Files) - 10 Steps
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
 | 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
-| 2 | technical-designer | **Backend** Design Doc | Backend Design Doc |
-| 3 | technical-designer-frontend | **Frontend** Design Doc (references backend Integration Points) | Frontend Design Doc |
-| 4 | document-reviewer ×2 | Review each Design Doc (one invocation per doc) | Reviews |
-| 5 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 6 | acceptance-test-generator | Integration test skeleton from cross-layer contracts | Test skeletons |
-| 7 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
+| 2 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
+| 3 | ui-spec-designer | UI Spec from requirements + optional prototype | UI Spec |
+| 4 | document-reviewer | UI Spec review **[Stop]** | Approval |
+| 5 | technical-designer | **Backend** Design Doc | Backend Design Doc |
+| 6 | technical-designer-frontend | **Frontend** Design Doc (references backend Integration Points + UI Spec) | Frontend Design Doc |
+| 7 | document-reviewer ×2 | Review each Design Doc (one invocation per doc) | Reviews |
+| 8 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
+| 9 | acceptance-test-generator | Integration/E2E test skeleton from cross-layer contracts | Test skeletons |
+| 10 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
 ### Layer Context in Design Doc Creation
 
@@ -50,6 +56,7 @@ Focus on: API contracts, data layer, business logic, service architecture.
 ```
 Create a frontend Design Doc from PRD at [path].
 Reference backend Design Doc at [path] for API contracts and Integration Points.
+Reference UI Spec at [path] for component structure and state design.
 Focus on: component hierarchy, state management, UI interactions, data fetching.
 ```
 
@@ -65,12 +72,24 @@ Focus on: API contracts, data layer, business logic, service architecture.
 Create a frontend Design Doc based on the following requirements:
 [Pass requirement-analyzer output including purpose, affectedFiles, affectedLayers, technicalConsiderations]
 Reference backend Design Doc at [path] for API contracts and Integration Points.
+Reference UI Spec at [path] for component structure and state design.
 Focus on: component hierarchy, state management, UI interactions, data fetching.
 ```
 
 ### design-sync for Cross-Layer Verification
 
 Call design-sync with `source_design` = frontend Design Doc (created last, referencing backend's Integration Points). design-sync auto-discovers other Design Docs in `docs/design/` for comparison.
+
+## Test Skeleton Generation Phase
+
+Orchestrator passes all Design Docs and UI Spec to acceptance-test-generator:
+
+```
+Generate test skeletons from the following documents:
+- Design Doc (backend): [path]
+- Design Doc (frontend): [path]
+- UI Spec: [path] (if exists)
+```
 
 ## Work Planning Phase
 

@@ -60,6 +60,12 @@ So that [expected value/benefit]
 ### Scalability
 - [Considerations for future scaling]
 
+### Accessibility (when feature includes UI)
+- Compliance standard: [Default: WCAG 2.1 AA (use organization standard if available)]
+- Target assistive technologies: [Screen reader, keyboard operation, voice control, etc.]
+- Platform requirements: [e.g., app store review requirements]
+- Known constraints: [e.g., external library limitations]
+
 ## Success Criteria
 
 ### Quantitative Metrics
@@ -70,6 +76,10 @@ So that [expected value/benefit]
 ### Qualitative Metrics
 1. [User experience metric 1]
 2. [User experience metric 2]
+
+### UI Quality Metrics (when feature includes UI)
+1. [Key operation completion rate / error recovery rate / retry success rate]
+2. [Accessibility audit target score]
 
 ## Technical Considerations
 

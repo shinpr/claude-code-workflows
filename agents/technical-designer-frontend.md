@@ -177,6 +177,16 @@ Boundary Name: [Component Integration Point]
 
 Confirm and document conflicts with existing components (naming conventions, Props patterns, etc.) to prevent integration inconsistencies.
 
+## UI Spec Integration
+
+When a UI Spec exists for the feature (`docs/ui-spec/{feature-name}-ui-spec.md`):
+
+1. **Read UI Spec first** - Inherit component structure, state design, and screen transitions
+2. **Reference in Design Doc** - Fill "Referenced UI Spec" field in Overview section
+3. **Carry forward component decisions** - Reuse map and design tokens from UI Spec inform Design Doc component design
+4. **Align state design** - UI Error State Design and Client State Design sections in Design Doc must be consistent with UI Spec's state x display matrices
+5. **Map interactions to API contracts** - UI Spec's interaction definitions drive the UI Action - API Contract Mapping section
+
 ## Required Information
 
 - **Operation Mode**:
@@ -185,6 +195,7 @@ Confirm and document conflicts with existing components (naming conventions, Pro
 
 - **Requirements Analysis Results**: Requirements analysis results (scale determination, technical requirements, etc.)
 - **PRD**: PRD document (if exists)
+- **UI Spec**: UI Specification document (if exists, for frontend features)
 - **Documents to Create**: ADR, Design Doc, or both
 - **Existing Architecture Information**:
   - Current technology stack (React, build tool, Tailwind CSS, etc.)

@@ -57,11 +57,12 @@ The following subagents are available:
 ### Document Creation Agents
 5. **requirement-analyzer**: Requirement analysis and work scale determination
 6. **prd-creator**: Product Requirements Document creation
-7. **technical-designer**: ADR/Design Doc creation
-8. **work-planner**: Work plan creation from Design Doc and test skeletons
-9. **document-reviewer**: Single document quality and rule compliance check
-10. **design-sync**: Design Doc consistency verification across multiple documents
-11. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
+7. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
+8. **technical-designer**: ADR/Design Doc creation
+9. **work-planner**: Work plan creation from Design Doc and test skeletons
+10. **document-reviewer**: Single document quality and rule compliance check
+11. **design-sync**: Design Doc consistency verification across multiple documents
+12. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
 ## Orchestration Principles
 
@@ -93,6 +94,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 |-------|------------|---------------------|
 | Requirements | After requirement-analyzer completes | Confirm requirements / Answer questions |
 | PRD | After document-reviewer completes PRD review | Approve PRD |
+| UI Spec | After document-reviewer completes UI Spec review (frontend/fullstack) | Approve UI Spec |
 | ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
 | Design | After design-sync completes consistency verification | Approve Design Doc |
 | Work Plan | After work-planner creates plan | Batch approval for implementation phase |
@@ -176,29 +178,33 @@ Criteria for timing when to call each agent:
 When receiving new features or change requests, start with requirement-analyzer.
 According to scale determination:
 
-### Large Scale (6+ Files) - 11 Steps
+### Large Scale (6+ Files) - 11 Steps (backend) / 13 Steps (frontend/fullstack)
 
 1. requirement-analyzer → Requirement analysis + Check existing PRD **[Stop]**
 2. prd-creator → PRD creation
 3. document-reviewer → PRD review **[Stop: PRD Approval]**
-4. technical-designer → ADR creation (if architecture/technology/data flow changes)
-5. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
-6. technical-designer → Design Doc creation
-7. document-reviewer → Design Doc review
-8. design-sync → Consistency verification **[Stop: Design Doc Approval]**
-9. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
-10. work-planner → Work plan creation **[Stop: Batch approval]**
-11. task-decomposer → Autonomous execution → Completion report
+4. **(frontend/fullstack only)** Ask user for prototype code → ui-spec-designer → UI Spec creation
+5. **(frontend/fullstack only)** document-reviewer → UI Spec review **[Stop: UI Spec Approval]**
+6. technical-designer → ADR creation (if architecture/technology/data flow changes)
+7. document-reviewer → ADR review (if ADR created) **[Stop: ADR Approval]**
+8. technical-designer → Design Doc creation
+9. document-reviewer → Design Doc review
+10. design-sync → Consistency verification **[Stop: Design Doc Approval]**
+11. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
+12. work-planner → Work plan creation **[Stop: Batch approval]**
+13. task-decomposer → Autonomous execution → Completion report
 
-### Medium Scale (3-5 Files) - 7 Steps
+### Medium Scale (3-5 Files) - 7 Steps (backend) / 9 Steps (frontend/fullstack)
 
 1. requirement-analyzer → Requirement analysis **[Stop]**
-2. technical-designer → Design Doc creation
-3. document-reviewer → Design Doc review
-4. design-sync → Consistency verification **[Stop: Design Doc Approval]**
-5. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
-6. work-planner → Work plan creation **[Stop: Batch approval]**
-7. task-decomposer → Autonomous execution → Completion report
+2. **(frontend/fullstack only)** Ask user for prototype code → ui-spec-designer → UI Spec creation
+3. **(frontend/fullstack only)** document-reviewer → UI Spec review **[Stop: UI Spec Approval]**
+4. technical-designer → Design Doc creation
+5. document-reviewer → Design Doc review
+6. design-sync → Consistency verification **[Stop: Design Doc Approval]**
+7. acceptance-test-generator → Test skeleton generation, pass to work-planner (*1)
+8. work-planner → Work plan creation **[Stop: Batch approval]**
+9. task-decomposer → Autonomous execution → Completion report
 
 ### Small Scale (1-2 Files) - 2 Steps
 
@@ -275,20 +281,15 @@ Stop autonomous execution and escalate to user in the following cases:
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-```
 1. task-executor → Implementation
-2. Escalation judgment/Follow-up → Check task-executor status
+2. Check task-executor response:
+   - `status: escalation_needed` or `blocked` → Escalate to user
+   - `testsAdded` contains `*.int.test.ts` or `*.e2e.test.ts` → Execute **integration-test-reviewer**
+     - `needs_revision` → Return to step 1 with `requiredFixes`
+     - `approved` → Proceed to step 3
+   - Otherwise → Proceed to step 3
 3. quality-fixer → Quality check and fixes
-4. git commit → Execute with Bash (on approved: true)
-```
-
-**Step 2 Execution Details**:
-- `status: escalation_needed` or `status: blocked` → Escalate to user
-- `testsAdded` contains `*.int.test.ts` or `*.e2e.test.ts` → Execute **integration-test-reviewer**
-  - If verdict is `needs_revision` → Return to task-executor with `requiredFixes`
-  - If verdict is `approved` → Proceed to quality-fixer
-
-**Commit trigger**: quality-fixer returns `approved: true`
+4. git commit → Execute with Bash (on `approved: true`)
 
 ### 2-Stage Progress Tracking (TaskCreate/TaskUpdate)
 
@@ -313,6 +314,10 @@ Stop autonomous execution and escalate to user in the following cases:
    #### *1 acceptance-test-generator → work-planner
 
    **Purpose**: Prepare information for work-planner to incorporate into work plan
+
+   **Pass to acceptance-test-generator**:
+   - Design Doc: [path]
+   - UI Spec: [path] (if exists)
 
    **Orchestrator verification items**:
    - Verify integration test file path retrieval and existence
