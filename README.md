@@ -313,11 +313,11 @@ The frontend plugin is built specifically for React development:
 - TypeScript-first approach with automatic type generation
 - Handles build errors, test failures, and type issues automatically
 
-### Bridging the Prototype-to-Production Gap
+### Why UI Spec Exists
 
-AI prototyping tools (v0, Bolt, Lovable, or Claude itself) can generate working UI in minutes — but prototypes are not specifications. Screen transitions, component states, error handling, and accessibility are implied at best, missing at worst.
+Prototypes show what the UI looks like, but not how it behaves across states, errors, and API boundaries. The gaps surface during integration — each task works alone but the whole doesn't hold up.
 
-The frontend workflow treats prototype code as **input, not output**. `/recipe-front-design` accepts optional prototype code, analyzes it, and produces a formal UI Specification that captures what the prototype demonstrates but doesn't document. This specification then feeds into the Design Doc and work plan, connecting rapid prototyping to structured implementation.
+UI Spec bridges this by capturing component states, interactions, and acceptance criteria from the prototype. These criteria trace into the Design Doc and test skeletons, and the work plan uses them to schedule integration by value unit rather than by layer. The result is that design decisions are verified by tests, and breakage is caught early.
 
 ---
 
