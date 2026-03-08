@@ -1,6 +1,6 @@
 ---
 name: test-implement
-description: Test implementation patterns and conventions. Use when implementing unit tests, integration tests, or E2E tests. See references/frontend.md for RTL+Vitest+MSW component testing, references/e2e.md for Playwright E2E testing.
+description: Test implementation patterns and conventions. Use when implementing unit tests, integration tests, or E2E tests, including RTL+Vitest+MSW component testing and Playwright E2E testing.
 ---
 
 # Test Implementation Patterns

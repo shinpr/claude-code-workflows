@@ -1,6 +1,6 @@
 {
   "name": "dev-skills",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Lightweight skills for users with existing workflows - coding best practices, testing principles, and design guidelines without commands or agents",
   "author": {
     "name": "Shinsuke Kagawa",
