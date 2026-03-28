@@ -510,6 +510,10 @@ A: `dev-skills` provides only coding best practices as skills (`coding-principle
 
 ---
 
+## 🔗 Related Tools
+
+- [claude-dash](https://github.com/krabat-l/claude-dash) - Real-time statusline for Claude Code showing context, cost, quota, cache, tools, and git status. Zero dependencies.
+
 ## 🔌 Contributing External Plugins
 
 This marketplace supports the full lifecycle of building products with AI — from product quality and discovery through implementation control and verification. If your plugin helps developers build better products with AI coding agents, we'd like to hear from you.
