@@ -1,1 +1,0 @@
-../../agents/technical-designer.md

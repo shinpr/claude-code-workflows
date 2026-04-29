@@ -1,1 +1,0 @@
-../../agents/design-sync.md
