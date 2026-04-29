@@ -1,1 +1,0 @@
-../../agents/acceptance-test-generator.md

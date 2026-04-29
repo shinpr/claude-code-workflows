@@ -11,8 +11,6 @@
 
 ## ⚡ Quick Start
 
-> **Windows:** This repo uses symlinks. Git doesn't create them by default. Use WSL, or clone with `git clone -c core.symlinks=true` in an admin PowerShell, then install plugins from the local clone. Admin is only needed for initial setup.
-
 This marketplace includes the following plugins:
 
 **Core plugins:**
@@ -433,9 +431,9 @@ UI Spec bridges this by capturing component states, interactions, and acceptance
 ```
 claude-code-workflows/
 ├── .claude-plugin/
-│   └── marketplace.json        # Manages both plugins
+│   └── marketplace.json        # Defines all plugins and curates per-plugin agent/skill subsets
 │
-├── agents/                     # Shared agents (symlinked by both plugins)
+├── agents/                     # Shared agents (curated per plugin via marketplace.json)
 │   ├── codebase-analyzer.md     # Pre-design codebase analysis
 │   ├── code-reviewer.md
 │   ├── code-verifier.md        # Design verification & reverse engineering
@@ -462,23 +460,6 @@ claude-code-workflows/
 │   ├── implementation-approach/
 │   ├── typescript-rules/       # Frontend-specific
 │   └── ... (27 skills total: 16 recipes + 11 knowledge)
-│
-├── backend/                    # dev-workflows plugin
-│   ├── agents/                 # Symlinks to shared agents
-│   ├── skills/                 # Symlinks to shared skills
-│   └── .claude-plugin/
-│       └── plugin.json
-│
-├── frontend/                   # dev-workflows-frontend plugin
-│   ├── agents/                 # Symlinks to shared agents
-│   ├── skills/                 # Symlinks to shared skills
-│   └── .claude-plugin/
-│       └── plugin.json
-│
-├── skills-only/                # dev-skills plugin (knowledge skills only, no recipes/agents)
-│   ├── skills/                 # Symlinks to shared knowledge skills (9 of 11 — workflow-specific skills excluded)
-│   └── .claude-plugin/
-│       └── plugin.json
 │
 ├── LICENSE
 └── README.md

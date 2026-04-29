@@ -1,1 +1,0 @@
-../../agents/task-executor-frontend.md

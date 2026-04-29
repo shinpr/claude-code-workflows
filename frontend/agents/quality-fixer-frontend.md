@@ -1,1 +1,0 @@
-../../agents/quality-fixer-frontend.md

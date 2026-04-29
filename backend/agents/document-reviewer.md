@@ -1,1 +1,0 @@
-../../agents/document-reviewer.md
