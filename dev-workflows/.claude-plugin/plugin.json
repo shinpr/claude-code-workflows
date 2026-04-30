@@ -1,0 +1,23 @@
+{
+  "name": "dev-workflows",
+  "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
+  "version": "0.16.16",
+  "author": {
+    "name": "Shinsuke Kagawa",
+    "url": "https://github.com/shinpr"
+  },
+  "homepage": "https://github.com/shinpr/claude-code-workflows",
+  "repository": "https://github.com/shinpr/claude-code-workflows.git",
+  "license": "MIT",
+  "keywords": [
+    "workflows",
+    "best-practices",
+    "sub-agents",
+    "quality",
+    "development",
+    "coding-standards",
+    "testing",
+    "architecture",
+    "backend"
+  ]
+}
