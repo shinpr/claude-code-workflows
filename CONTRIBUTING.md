@@ -79,3 +79,15 @@ Not sure if your plugin fits? Open an issue to discuss before spending time on a
 ## Questions
 
 If you have any questions, feel free to open an issue.
+
+## Editing the In-Repo Plugins
+
+The bundled plugins (`dev-workflows`, `dev-workflows-frontend`, `dev-skills`) live in subdirectories at the repo root, but those subdirectories are **generated**. The canonical sources are the top-level `agents/` and `skills/` directories — edit only there. The per-plugin curation lives in `.claude-plugin/marketplace.json` (`agents` / `skills` arrays per entry).
+
+Setup:
+
+```sh
+pnpm install   # installs lefthook and registers the pre-commit hook
+```
+
+Requires Node.js >= 22 and `pnpm`. The pre-commit hook runs `pnpm sync` to regenerate the subdirectories and then `claude plugin validate` on each, so committing changes to `agents/`, `skills/`, or `marketplace.json` will keep everything consistent automatically. Run `pnpm sync` manually if you need to inspect the result without committing.

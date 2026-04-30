@@ -1,0 +1,23 @@
+{
+  "name": "claude-code-workflows",
+  "version": "0.16.16",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "prepare": "lefthook install",
+    "sync": "node scripts/sync-plugins.mjs",
+    "sync:check": "node scripts/sync-plugins.mjs --check"
+  },
+  "devDependencies": {
+    "lefthook": "^2.1.6"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "lefthook"
+    ]
+  }
+}

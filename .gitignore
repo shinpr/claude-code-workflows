@@ -32,6 +32,9 @@ temp/
 .env.local
 .env.*.local
 
+# Node
+node_modules/
+
 # Misc
 *.bak
 *.backup

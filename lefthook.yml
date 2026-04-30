@@ -1,0 +1,25 @@
+pre-commit:
+  jobs:
+    - name: sync-plugins
+      glob:
+        - "agents/**"
+        - "skills/**"
+        - ".claude-plugin/marketplace.json"
+        - "dev-workflows/**"
+        - "dev-workflows-frontend/**"
+        - "dev-skills/**"
+      run: pnpm sync && git add dev-workflows dev-workflows-frontend dev-skills
+
+    - name: validate-plugins
+      glob:
+        - "agents/**"
+        - "skills/**"
+        - ".claude-plugin/marketplace.json"
+        - "dev-workflows/**"
+        - "dev-workflows-frontend/**"
+        - "dev-skills/**"
+      run: |
+        claude plugin validate .claude-plugin/marketplace.json && \
+        claude plugin validate dev-workflows && \
+        claude plugin validate dev-workflows-frontend && \
+        claude plugin validate dev-skills
