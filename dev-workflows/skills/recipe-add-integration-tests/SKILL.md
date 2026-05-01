@@ -159,3 +159,15 @@ Check quality-fixer response:
 
 On `approved` from quality-fixer:
 - Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
+
+## Scope Boundary for Subagents
+
+Append the following block to every subagent prompt invoked from this recipe:
+
+```
+Scope boundary for subagents:
+Operate within the task scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
+```
+

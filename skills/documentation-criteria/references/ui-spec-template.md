@@ -5,7 +5,7 @@
 [Purpose and scope of this UI Specification in 2-3 sentences]
 
 ### Target PRD
-- PRD path: [docs/prd/xxx-prd.md | "N/A — based on requirement-analyzer output"]
+- PRD path: [docs/prd/xxx-prd.md | "N/A — based on requirements analysis output"]
 - Feature scope: [Which PRD requirements this UI Spec covers | Summary of analyzed requirements]
 
 ### Design Source

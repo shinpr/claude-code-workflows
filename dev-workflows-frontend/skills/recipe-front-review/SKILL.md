@@ -155,3 +155,15 @@ Remaining issues:
 - Committed secrets (blocked → human intervention)
 
 **Scope**: Design Doc compliance validation, security review, and auto-fixes.
+
+## Scope Boundary for Subagents
+
+Append the following block to every subagent prompt invoked from this recipe:
+
+```
+Scope boundary for subagents:
+Operate within the review scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
+```
+

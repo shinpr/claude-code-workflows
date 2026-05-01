@@ -71,3 +71,5 @@ Execute the process below within design scope. Follow subagents-orchestration-gu
 Design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
+
+

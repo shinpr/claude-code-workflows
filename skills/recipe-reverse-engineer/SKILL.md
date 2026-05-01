@@ -407,3 +407,5 @@ Output summary including:
 | Generation fails | Log failure, continue with other units, report in summary |
 | consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
 | Review rejects after 2 revisions | Stop loop, flag for human intervention |
+
+

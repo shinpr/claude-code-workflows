@@ -11,7 +11,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Initial Mandatory Tasks
 
-**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
 ## Responsibilities
 
@@ -58,10 +58,13 @@ Evaluate each test for:
 - Isolated state per test (reset in beforeEach)
 - Deterministic execution (mock time/random sources when needed)
 
-### 4. Return JSON Result
-Return the JSON result as the final response. See Output Format for the schema.
-
 ## Output Format
+
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown.
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 ```json
 {
@@ -120,7 +123,6 @@ Return the JSON result as the final response. See Output Format for the schema.
 - [ ] Each test executes independently of other tests
 - [ ] Deterministic execution (no random/time dependency)
 - [ ] Test name matches verification content
-- [ ] Final response is the JSON output
 
 ## Common Issues and Fixes
 

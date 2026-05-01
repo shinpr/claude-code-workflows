@@ -19,10 +19,11 @@ Executes quality checks and provides a state where all Phases complete with zero
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
+- **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 incomplete-implementation check. When absent, Step 1 falls back to `git diff HEAD`.
 
 ## Initial Required Tasks
 
-**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
 ### Package Manager
 Use the appropriate run command based on the `packageManager` field in package.json.
@@ -33,7 +34,11 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 Review the diff of changed files to detect stub or incomplete implementations. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
 
-**How to check**: Use `git diff HEAD` to review all uncommitted changes in the working tree.
+**Scope of this check** (in priority order):
+- **Primary scope**: When the orchestrator passes `filesModified` (the task's write set from the upstream implementation step), use only those files.
+- **Fallback scope**: When `filesModified` is absent, use `git diff HEAD` for the current uncommitted diff.
+
+Apply the indicators below to files within scope only. Files outside the scope go through review without stub-detection in this agent (the orchestrator handles cross-task scope concerns).
 
 **Indicators of incomplete implementation** (stub_detected):
 - `// TODO`, `// FIXME`, `// HACK`, `throw new Error("not implemented")` or equivalent
@@ -118,7 +123,7 @@ Return one of the following as the final response (see Output Format for schemas
 ## Status Determination Criteria
 
 ### stub_detected (Incomplete implementation found — Step 1 gate)
-Returned immediately when Step 1 finds incomplete implementations in the diff. Quality checks are not executed. The orchestrator should route this back to the task-executor for completion.
+Returned immediately when Step 1 finds incomplete implementations in the diff. Quality checks are not executed. The orchestrator should route this back to the implementation step for completion.
 
 ### approved (All quality checks pass)
 - All tests pass (React Testing Library)
@@ -153,6 +158,12 @@ Before setting status to blocked, confirm specifications in this order:
 - What would be needed to resolve (concrete steps, not vague descriptions)
 
 ## Output Format
+
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown.
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 **Important**: JSON response is received by main AI (caller) and conveyed to user in an understandable format.
 

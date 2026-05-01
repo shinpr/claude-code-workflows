@@ -153,6 +153,10 @@ Every subagent prompt must include:
 
 Construct the prompt from the agent's Input Parameters section and the deliverables available at that point in the flow.
 
+Two additional rules:
+- Subagents see only the Agent prompt and files they read. Include required paths, prior JSON, parameters, and scope constraints explicitly.
+- Replace every `[placeholder]` in examples below with concrete values before invoking the Agent tool.
+
 ### Call Example (requirement-analyzer)
 - subagent_type: "requirement-analyzer"
 - description: "Requirement analysis"
@@ -181,7 +185,6 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
 - **acceptance-test-generator**: status, generatedFiles (integration: path|null, e2e: path|null), budgetUsage, e2eAbsenceReason (null when E2E emitted, otherwise: no_multi_step_journey|below_threshold_user_confirmed)
-
 
 ## Handling Requirement Changes
 
@@ -214,15 +217,21 @@ Criteria for timing when to call each agent:
 - **prd-creator**: Request updates according to requirement changes → Execute document-reviewer for consistency check
 - **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update
 
-## Basic Flow for Work Planning
+## Basic Flow: Planning and Implementation
 
-Always start with requirement-analyzer, then select the minimum document flow required by scale and affected layers.
+Always start with requirement-analyzer, then select the minimum planning flow required by scale and affected layers.
 
-| Scale | Required flow |
+### Planning flow (per scale)
+
+| Scale | Planning flow (ends at task-decomposer for Medium/Large; ends at work-planner for Small) |
 |-------|---------------|
 | Large | requirement-analyzer → PRD → PRD review → optional UI Spec → optional ADR → codebase-analyzer → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
 | Medium | requirement-analyzer → codebase-analyzer → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
-| Small | requirement-analyzer → work-planner → direct implementation |
+| Small | requirement-analyzer → work-planner |
+
+After the planning flow completes and the user grants batch approval, execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
+
+Each agent name in the chain is invoked via the Agent tool (per "Orchestrator's Permitted Tools" above).
 
 Rules:
 - Large scale requires PRD before Design Doc creation

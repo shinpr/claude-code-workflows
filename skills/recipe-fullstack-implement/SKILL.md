@@ -71,7 +71,7 @@ Invoke **document-reviewer** for UI Spec review, then **[STOP]** for user approv
 ### 5. Register All Flow Steps Using TaskCreate (MANDATORY)
 
 **After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
-- First task: "Confirm skill constraints"
+- First task: "Map preloaded skills to applicable concrete rules"
 - Register each step as individual task
 - Set currently executing step to `in_progress` using TaskUpdate
 - **Complete task registration before invoking subagents**
@@ -101,15 +101,16 @@ When user responds to questions:
 - Run quality-fixer (layer-appropriate) before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
-## CRITICAL Sub-agent Invocation Constraints
+## Scope Boundary for Subagents
 
-**MANDATORY suffix for ALL sub-agent prompts**:
-```
-[SYSTEM CONSTRAINT]
-This agent operates within fullstack-implement skill scope. Use orchestrator-provided rules only.
-```
+Append the following block to every subagent prompt invoked from this recipe:
 
-Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
+```
+Scope boundary for subagents:
+Operate within the task scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
+```
 
 ## Mandatory Orchestrator Responsibilities
 

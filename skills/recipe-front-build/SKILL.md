@@ -78,7 +78,7 @@ Invoke task-decomposer using Agent tool:
 **MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
 
 For EACH task, YOU MUST:
-1. **Register tasks using TaskCreate**: Register work steps. Always include: first "Confirm skill constraints", final "Verify skill fidelity"
+1. **Register tasks using TaskCreate**: Register work steps. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON"
 2. **Agent tool** (subagent_type: "dev-workflows-frontend:task-executor-frontend") → Pass task file path in prompt, receive structured response
 3. **CHECK task-executor-frontend response**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
@@ -95,15 +95,16 @@ For EACH task, YOU MUST:
 
 **CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after quality-fixer-frontend returns `approved`.
 
-## Sub-agent Invocation Constraints
+## Scope Boundary for Subagents
 
-**MANDATORY suffix for ALL sub-agent prompts**:
-```
-[SYSTEM CONSTRAINT]
-This agent operates within build skill scope. Use orchestrator-provided rules only.
-```
+Append the following block to every subagent prompt invoked from this recipe:
 
-Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
+```
+Scope boundary for subagents:
+Operate within the task scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
+```
 
 Verify task files exist per Pre-execution Checklist, then enter autonomous execution mode. When requirement changes are detected during execution, escalate to the user with the change summary before continuing.
 

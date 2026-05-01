@@ -238,7 +238,7 @@ The appropriate approach depends on project environment and CI/CD capabilities.
 - AI-generated data access code has heightened schema hallucination risk
 - Generated queries may use correct syntax but reference nonexistent schema elements
 - Mock-based tests pass regardless of schema accuracy
-- Mitigation: Design Docs should include explicit schema references; code-verifier reverse coverage verifies data operations against documented schemas
+- Mitigation: Design Docs should include explicit schema references so that documented schemas can be cross-checked against data access code during review
 
 ## Test Quality Practices
 

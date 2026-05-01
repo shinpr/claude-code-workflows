@@ -96,7 +96,7 @@ description: Documentation creation criteria including PRD, ADR, Design Doc, and
 - Visual acceptance criteria (golden states, layout constraints)
 - Accessibility requirements (keyboard, screen reader, contrast)
 
-**Scope**: Screen structure, transitions, component decomposition, interaction design, and visual acceptance criteria only. Technical implementation and API contracts belong in Design Doc, test implementation in acceptance-test-generator skeletons, schedule in Work Plan.
+**Scope**: Screen structure, transitions, component decomposition, interaction design, and visual acceptance criteria only. Technical implementation and API contracts belong in Design Doc, test implementation in test skeleton generation output, schedule in Work Plan.
 
 **Required Structural Elements**:
 - At least one component with state x display matrix and interaction table
@@ -159,7 +159,7 @@ Interface Change Matrix:
 **Includes**:
 - Task breakdown and dependencies (maximum 2 levels)
 - Schedule and duration estimates
-- **Include test skeleton file paths from acceptance-test-generator** (integration and E2E)
+- **Include test skeleton file paths produced for this work plan** (integration and E2E)
 - **Verification Strategy summary** (extracted from Design Doc)
 - **Final Quality Assurance Phase (required)**
 - Progress records (checkbox format)
