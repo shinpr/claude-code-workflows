@@ -39,7 +39,7 @@ After receiving rule-advisor's JSON response, proceed with:
 
 **Step 3: Create Task List with TaskCreate**
 
-Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity".
+Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON".
 
 Break down the task based on rule-advisor's guidance:
 - Reflect `taskAnalysis.essence` in task descriptions
@@ -56,3 +56,13 @@ Proceed with task execution following:
 - Task structure (managed via TaskCreate/TaskUpdate)
 - Quality standards defined in the selectedRules output from rule-advisor
 - Monitor warningPatterns flags throughout execution and adjust approach when triggered
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the task recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

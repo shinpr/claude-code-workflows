@@ -59,7 +59,6 @@ Invoke work-planner using Agent tool:
 - Present work plan to user for review. If user requests changes, re-invoke work-planner with revised parameters
 - Highlight steps with unclear scope or external dependencies and ask user to confirm
 
-
 ## Response at Completion
 **Recommended**: End with the following standard response after plan content approval
 ```
@@ -69,3 +68,13 @@ Planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the plan recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

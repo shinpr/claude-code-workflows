@@ -19,6 +19,7 @@ skills:
       - "Function Design"
       - "Error Handling"
       - "Dependency Management"
+      - "Reference Representativeness"
       - "Performance Considerations"
       - "Code Organization"
       - "Commenting Principles"
@@ -55,7 +56,7 @@ skills:
       - "Test Organization"
       - "Performance Considerations"
       - "Continuous Integration"
-      - "Common Anti-Patterns to Avoid"
+      - "Test Design Guardrails"
       - "Regression Testing"
       - "Testing Best Practices by Language Paradigm"
       - "Documentation and Communication"
@@ -76,6 +77,7 @@ skills:
       - "Rule of Three - Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
       - "Debugging Techniques"
+      - "Quality Assurance Mechanism Awareness"
       - "Quality Check Workflow"
       - "Situations Requiring Technical Decisions"
       - "Implementation Completeness Assurance"
@@ -115,7 +117,7 @@ skills:
       - "Meta-cognitive Strategy Selection Process"
       - "Verification Level Definitions"
       - "Integration Point Definitions"
-      - "Anti-patterns"
+      - "Quality Checks"
       - "Guidelines for Meta-cognitive Execution"
 
   integration-e2e-testing:
@@ -131,6 +133,7 @@ skills:
       - "Test Type Definition and Limits"
       - "Behavior-First Principle"
       - "ROI Calculation"
+      - "Multi-Step User Journey Definition"
       - "Test Skeleton Specification"
       - "EARS Format Mapping"
       - "Test File Naming Convention"
@@ -147,7 +150,6 @@ skills:
       - "Conductor Pattern"
     sections:
       - "Role: The Orchestrator"
-      - "Decision Flow When Receiving Tasks"
       - "Available Subagents"
       - "Orchestration Principles"
       - "Constraints Between Subagents"
@@ -156,12 +158,10 @@ skills:
       - "How to Call Subagents"
       - "Structured Response Specification"
       - "Handling Requirement Changes"
-      - "Basic Flow for Work Planning"
+      - "Basic Flow: Planning and Implementation"
       - "Autonomous Execution Mode"
       - "Main Orchestrator Roles"
       - "Important Constraints"
-      - "Required Dialogue Points with Humans"
-      - "Action Checklist"
       - "References"
 
   # Frontend-Specific Skills

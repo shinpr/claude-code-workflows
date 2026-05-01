@@ -49,10 +49,13 @@ From each skill:
 - Prioritize concrete procedures over abstract principles
 - Include checklists and actionable items
 
-### 4. Return JSON Result
-Return the JSON result as the final response. See Output Format for the schema.
-
 ## Output Format
+
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown.
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 Return structured JSON:
 
@@ -155,7 +158,6 @@ Return structured JSON:
 
 - [ ] Task analysis completed with type, scale, and tags
 - [ ] Relevant skills loaded and sections extracted
-- [ ] Final response is the JSON output
 
 ## Important Notes
 

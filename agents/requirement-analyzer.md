@@ -35,9 +35,6 @@ Identify constraints, risks, and dependencies. Use WebSearch to verify current t
 ### 6. Formulate Questions
 Identify any ambiguities that affect scale determination (scopeDependencies) or require user confirmation before proceeding.
 
-### 7. Return JSON Result
-Return the JSON result as the final response. See Output Format for the schema.
-
 ## Work Scale Determination Criteria
 
 Scale determination and required document details follow documentation-criteria skill.
@@ -85,7 +82,11 @@ Each analysis is stateless and deterministic: same input produces same output vi
 
 ## Output Format
 
-**JSON format is mandatory.**
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown.
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 ```json
 {
@@ -132,4 +133,3 @@ Each analysis is stateless and deterministic: same input produces same output vi
 - [ ] Have I correctly determined ADR necessity?
 - [ ] Have I identified all technical risks and dependencies?
 - [ ] Have I listed scopeDependencies for uncertain scale?
-- [ ] Final response is the JSON output

@@ -230,3 +230,13 @@ Rationale: [Selection rationale]
 - [ ] Executed solver
 - [ ] Achieved coverageAssessment=sufficient (or obtained user approval after 2 additional iterations)
 - [ ] Presented final report to user
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the diagnose recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

@@ -17,6 +17,9 @@ Metadata:
 Files to read before starting implementation (file path, with optional search hint):
 - [e.g., src/orders/checkout (processOrder function) — determined by task-decomposer based on task nature]
 
+## Investigation Notes
+(task-executor appends observations here before implementation.)
+
 ## Implementation Steps (TDD: Red-Green-Refactor)
 ### 1. Red Phase
 - [ ] Read all Investigation Targets and record key observations

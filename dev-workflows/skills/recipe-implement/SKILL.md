@@ -59,7 +59,7 @@ When user responds to questions:
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
 **After scale determination, register all steps of the applicable flow using TaskCreate**:
-- First task: "Confirm skill constraints"
+- First task: "Map preloaded skills to applicable concrete rules"
 - Register each step as individual task
 - Set currently executing step to `in_progress` using TaskUpdate
 - **Complete task registration before invoking subagents**
@@ -81,15 +81,14 @@ When user responds to questions:
 - Run quality-fixer before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
-## CRITICAL Sub-agent Invocation Constraints
+## Subagent Prompt Suffix
 
-**MANDATORY suffix for ALL sub-agent prompts**:
+Append the following suffix to every subagent prompt invoked from this recipe:
+
 ```
 [SYSTEM CONSTRAINT]
-This agent operates within implement skill scope. Use orchestrator-provided rules only.
+This agent operates within the implement recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
 ```
-
-Autonomous sub-agents require scope constraints for stable execution. ALWAYS append this constraint to every sub-agent prompt.
 
 ## Mandatory Orchestrator Responsibilities
 

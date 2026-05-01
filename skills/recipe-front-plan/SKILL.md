@@ -73,3 +73,13 @@ Frontend planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the front-plan recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

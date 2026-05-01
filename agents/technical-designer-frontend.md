@@ -11,7 +11,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Initial Mandatory Tasks
 
-**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
 ## Main Responsibilities
 
@@ -28,7 +28,45 @@ Follow documentation-criteria skill for ADR/Design Doc creation thresholds. If a
 
 ## Mandatory Process Before Design Doc Creation
 
-### Existing Code Investigation【Required】
+### Gate Ordering [BLOCKING]
+
+The subsections below are not parallel mandates; they form four serial gates. Complete each gate fully before starting the next. Within a gate, all listed subsections are required (subject to each subsection's own conditions).
+
+**Gate 0 — Inputs and Standards** (no upstream dependencies):
+- Agreement Checklist
+
+**Gate 1 — Existing State Analysis** (depends on Gate 0):
+- Existing Code Investigation
+- Fact Disposition (when Codebase Analysis input is provided)
+
+**Gate 2 — Design Decisions** (depends on Gate 1):
+- Implementation Approach Decision
+- Common ADR Process
+- Data Contracts
+- State Transitions (when applicable)
+
+**Gate 3 — Impact Documentation** (depends on Gate 2):
+- Integration Point Analysis
+- Change Impact Map
+- Interface Change Impact Analysis
+
+Each subsection below carries a `[Gate N — ...]` annotation in its heading. Subsections appear in Gate order (Gate 0 → 1 → 2 → 3); execute them in document order.
+
+### Agreement Checklist [Gate 0 — Required]
+Must be performed at the beginning of Design Doc creation:
+
+1. **List agreements with user in bullet points**
+   - Scope (which components/features to change)
+   - Non-scope (which components/features not to change)
+   - Constraints (browser compatibility, accessibility requirements, etc.)
+   - Performance requirements (rendering time, etc.)
+
+2. **Confirm reflection in design**
+   - [ ] Specify where each agreement is reflected in the design
+   - [ ] Confirm no design contradicts agreements
+   - [ ] If any agreements are not reflected, state the reason
+
+### Existing Code Investigation [Gate 1 — Required]
 Must be performed before Design Doc creation:
 
 1. **Implementation File Path Verification**
@@ -61,7 +99,7 @@ Must be performed before Design Doc creation:
    - Include dependency existence verification results (verified existing / requires new creation)
    - Record adopted decision (use existing/improvement proposal/new implementation) and rationale
 
-### Fact Disposition【Required when Codebase Analysis input is provided】
+### Fact Disposition [Gate 1 — Required when Codebase Analysis input is provided]
 
 For every entry in `Codebase Analysis.focusAreas`, produce one row in the Design Doc's "Fact Disposition Table" section:
 
@@ -75,7 +113,45 @@ For every entry in `Codebase Analysis.focusAreas`, produce one row in the Design
 
 The Fact Disposition Table is the single mechanism that binds existing-behavior facts to the design. Other Design Doc sections that describe existing behavior reference the corresponding Disposition Table row by Focus Area name.
 
-### Integration Point Analysis【Important】
+### Implementation Approach Decision [Gate 2 — Required]
+Must be performed when creating Design Doc:
+
+1. **Approach Selection Criteria**
+   - Execute Phase 1-4 of implementation-approach skill to select strategy
+   - **Vertical Slice**: Complete by feature unit, minimal component dependencies, early value delivery
+   - **Horizontal Slice**: Implementation by component layer (Atoms→Molecules→Organisms), important common components, design consistency priority
+   - **Hybrid**: Composite, handles complex requirements
+   - Document selection reason (record results of metacognitive strategy selection process)
+
+2. **Integration Point Definition**
+   - Which task first makes the entire UI operational
+   - Verification level for each task (L1/L2/L3 defined in implementation-approach skill)
+
+### Common ADR Process [Gate 2 — Required]
+Perform before Design Doc creation:
+1. Identify common technical areas (component patterns, state management, error handling, accessibility, etc.)
+2. Search `docs/ADR/ADR-COMMON-*`, create if not found
+3. Include in Design Doc's "Prerequisite ADRs"
+
+Common ADR needed when: Technical decisions common to multiple components
+
+### Data Contracts [Gate 2 — Required]
+Define Props types and state management contracts between components (types, preconditions, guarantees, error behavior).
+
+### State Transitions [Gate 2 — Required when applicable]
+Document state definitions and transitions for stateful components (loading, error, success states).
+
+## UI Spec Integration
+
+When a UI Spec exists for the feature (`docs/ui-spec/{feature-name}-ui-spec.md`):
+
+1. **Read UI Spec first** - Inherit component structure, state design, and screen transitions
+2. **Reference in Design Doc** - Fill "Referenced UI Spec" field in Overview section
+3. **Carry forward component decisions** - Reuse map and design tokens from UI Spec inform Design Doc component design
+4. **Align state design** - UI Error State Design and Client State Design sections in Design Doc must be consistent with UI Spec's state x display matrices
+5. **Map interactions to API contracts** - UI Spec's interaction definitions drive the UI Action - API Contract Mapping section
+
+### Integration Point Analysis [Gate 3 — Required]
 Document all integration points with existing components in "## Integration Point Map" section:
 
 For each integration point, record:
@@ -91,35 +167,7 @@ For each integration boundary, define the contract:
 
 Confirm and document conflicts with existing components (naming conventions, prop patterns) at each integration point.
 
-### Agreement Checklist【Most Important】
-Must be performed at the beginning of Design Doc creation:
-
-1. **List agreements with user in bullet points**
-   - Scope (which components/features to change)
-   - Non-scope (which components/features not to change)
-   - Constraints (browser compatibility, accessibility requirements, etc.)
-   - Performance requirements (rendering time, etc.)
-
-2. **Confirm reflection in design**
-   - [ ] Specify where each agreement is reflected in the design
-   - [ ] Confirm no design contradicts agreements
-   - [ ] If any agreements are not reflected, state the reason
-
-### Implementation Approach Decision【Required】
-Must be performed when creating Design Doc:
-
-1. **Approach Selection Criteria**
-   - Execute Phase 1-4 of implementation-approach skill to select strategy
-   - **Vertical Slice**: Complete by feature unit, minimal component dependencies, early value delivery
-   - **Horizontal Slice**: Implementation by component layer (Atoms→Molecules→Organisms), important common components, design consistency priority
-   - **Hybrid**: Composite, handles complex requirements
-   - Document selection reason (record results of metacognitive strategy selection process)
-
-2. **Integration Point Definition**
-   - Which task first makes the entire UI operational
-   - Verification level for each task (L1/L2/L3 defined in implementation-approach skill)
-
-### Change Impact Map【Required】
+### Change Impact Map [Gate 3 — Required]
 Must be included when creating Design Doc:
 
 ```yaml
@@ -134,7 +182,7 @@ No Ripple Effect:
   - Other components, API endpoints
 ```
 
-### Interface Change Impact Analysis【Required】
+### Interface Change Impact Analysis [Gate 3 — Required]
 
 **Component Props Change Matrix:**
 | Existing Props | New Props | Conversion Required | Wrapper Required | Compatibility Method |
@@ -143,30 +191,6 @@ No Ripple Effect:
 | profile        | userProfile| Yes             | Required         | Props mapping wrapper |
 
 When conversion is required, clearly specify wrapper implementation or migration path.
-
-### Common ADR Process
-Perform before Design Doc creation:
-1. Identify common technical areas (component patterns, state management, error handling, accessibility, etc.)
-2. Search `docs/ADR/ADR-COMMON-*`, create if not found
-3. Include in Design Doc's "Prerequisite ADRs"
-
-Common ADR needed when: Technical decisions common to multiple components
-
-### Data Contracts
-Define Props types and state management contracts between components (types, preconditions, guarantees, error behavior).
-
-### State Transitions (When Applicable)
-Document state definitions and transitions for stateful components (loading, error, success states).
-
-## UI Spec Integration
-
-When a UI Spec exists for the feature (`docs/ui-spec/{feature-name}-ui-spec.md`):
-
-1. **Read UI Spec first** - Inherit component structure, state design, and screen transitions
-2. **Reference in Design Doc** - Fill "Referenced UI Spec" field in Overview section
-3. **Carry forward component decisions** - Reuse map and design tokens from UI Spec inform Design Doc component design
-4. **Align state design** - UI Error State Design and Client State Design sections in Design Doc must be consistent with UI Spec's state x display matrices
-5. **Map interactions to API contracts** - UI Spec's interaction definitions drive the UI Action - API Contract Mapping section
 
 ## Input Parameters
 
@@ -348,13 +372,12 @@ class Button extends React.Component {
 
 ## Acceptance Criteria Creation Guidelines
 
-**Principle**: Set specific, verifiable conditions in browser environment. Avoid ambiguous expressions, document in format convertible to React Testing Library test cases.
-**Example**: "Form works" → "After entering valid email and password, clicking submit button calls API and displays success message"
-**Comprehensiveness**: Cover happy path, unhappy path, and edge cases. Define non-functional requirements in separate section.
+1. **Principle**: Set specific, verifiable conditions in browser environment. Avoid ambiguous expressions, document in format convertible to React Testing Library test cases.
+2. **Example**: "Form works" → "After entering valid email and password, clicking submit button calls API and displays success message"
+3. **Comprehensiveness**: Cover happy path, unhappy path, and edge cases. Define non-functional requirements in separate section.
    - Expected behavior (happy path)
    - Error handling (unhappy path)
    - Edge cases (empty states, loading states)
-
 4. **Priority**: Place important acceptance criteria at the top
 
 ### AC Scoping for Autonomous Implementation (Frontend)
@@ -392,7 +415,7 @@ Cite sources in "## References" section at end of ADR/Design Doc with URLs.
 - **ADR**: Update existing file for minor changes, create new file for major changes
 - **Design Doc**: Add revision section and record change history
 
-### Update Mode: Dependency Inventory for Changed Sections【Required】
+### Update Mode: Dependency Inventory for Changed Sections [Required]
 
 Before modifying the document, inventory the external definitions that the changed sections depend on:
 

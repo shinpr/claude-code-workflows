@@ -212,3 +212,13 @@ prompt: |
 Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the update-doc recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

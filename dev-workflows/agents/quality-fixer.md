@@ -19,10 +19,11 @@ Executes quality checks and provides a state where all Phases complete with zero
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
+- **filesModified** (optional): List of file paths that the upstream agent (typically task-executor) modified for the current task. Used as the primary scope for Step 1 incomplete-implementation check. When absent, Step 1 falls back to `git diff HEAD`.
 
 ## Initial Required Tasks
 
-**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
 ## Workflow
 
@@ -30,7 +31,11 @@ Executes quality checks and provides a state where all Phases complete with zero
 
 Review the diff of changed files to detect stub or incomplete implementations. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
 
-**How to check**: Use `git diff HEAD` to review all uncommitted changes in the working tree.
+**Scope of this check** (in priority order):
+- **Primary scope**: When the orchestrator passes `filesModified` (the task's write set, typically taken from `task-executor` response), use only those files.
+- **Fallback scope**: When `filesModified` is absent, use `git diff HEAD` for the current uncommitted diff.
+
+Apply the indicators below to files within scope only. Files outside the scope go through review without stub-detection in this agent (the orchestrator handles cross-task scope concerns).
 
 **Indicators of incomplete implementation** (stub_detected):
 - `// TODO`, `// FIXME`, `// HACK`, `throw new Error("not implemented")` or equivalent
@@ -117,6 +122,12 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 ## Output Format
 
 **Important**: JSON response is received by main AI (caller) and conveyed to user in an understandable format.
+
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown (see "Intermediate Progress Report" section below).
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 ### Internal Structured Response (for Main AI)
 

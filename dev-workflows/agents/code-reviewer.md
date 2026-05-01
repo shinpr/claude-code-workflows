@@ -11,7 +11,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Initial Required Tasks
 
-**Task Registration**: Register work steps using TaskCreate. Always include: first "Confirm skill constraints", final "Verify skill fidelity". Update status using TaskUpdate upon completion.
+**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
 ## Key Responsibilities
 
@@ -139,60 +139,102 @@ Verify against the Design Doc architecture:
 
 ### 6. Return JSON Result
 
-Return the JSON result as the final response. See Output Format for the schema.
-
 ## Output Format
+
+### Output Protocol
+
+- During execution, intermediate progress messages MAY be emitted as plain text or markdown.
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
+- Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
+
+### Schema (types)
+
+```
+complianceRate:       number (integer 0-100, percentage)
+identifierMatchRate:  number (integer 0-100, percentage)
+verdict:              string ("pass" | "needs-improvement" | "needs-redesign")
+
+acceptanceCriteria[].item:        string
+acceptanceCriteria[].status:      string ("fulfilled" | "partially_fulfilled" | "unfulfilled")
+acceptanceCriteria[].confidence:  string ("high" | "medium" | "low")
+acceptanceCriteria[].location:    string (file:line; null if unimplemented)
+acceptanceCriteria[].evidence:    string[] (each "source: file:line")
+acceptanceCriteria[].gap:         string (null when fully fulfilled)
+acceptanceCriteria[].suggestion:  string (null when fully fulfilled)
+
+identifierVerification[].identifier:    string
+identifierVerification[].designDocValue: string
+identifierVerification[].codeValue:     string (or "not found")
+identifierVerification[].location:      string (file:line; null if not found)
+identifierVerification[].match:         boolean
+
+qualityFindings[].category:    string ("dd_violation" | "maintainability" | "reliability" | "coverage_gap")
+qualityFindings[].location:    string (file:line or file:function)
+qualityFindings[].description: string
+qualityFindings[].rationale:   string (category-specific)
+qualityFindings[].suggestion:  string
+
+summary.acsTotal:       number (integer >= 0)
+summary.acsFulfilled:   number (integer >= 0)
+summary.acsPartial:     number (integer >= 0)
+summary.acsUnfulfilled: number (integer >= 0)
+summary.identifiersTotal:   number (integer >= 0)
+summary.identifiersMatched: number (integer >= 0)
+summary.lowConfidenceItems: number (integer >= 0)
+summary.findingsByCategory.dd_violation:    number (integer >= 0)
+summary.findingsByCategory.maintainability: number (integer >= 0)
+summary.findingsByCategory.reliability:     number (integer >= 0)
+summary.findingsByCategory.coverage_gap:    number (integer >= 0)
+```
+
+### Example (concrete values, illustrative only)
 
 ```json
 {
-  "complianceRate": "[X]%",
-  "identifierMatchRate": "[X]%",
-  "verdict": "[pass/needs-improvement/needs-redesign]",
-
+  "complianceRate": 88,
+  "identifierMatchRate": 95,
+  "verdict": "needs-improvement",
   "acceptanceCriteria": [
     {
-      "item": "[acceptance criteria name]",
-      "status": "fulfilled|partially_fulfilled|unfulfilled",
-      "confidence": "high|medium|low",
-      "location": "[file:line, if implemented]",
-      "evidence": ["[source1: file:line]", "[source2: test file:line]"],
-      "gap": "[what is missing or deviating, if not fully fulfilled]",
-      "suggestion": "[specific fix, if not fully fulfilled]"
+      "item": "User can log in with valid credentials",
+      "status": "fulfilled",
+      "confidence": "high",
+      "location": "src/auth/login.ts:42",
+      "evidence": ["impl: src/auth/login.ts:42", "test: src/auth/login.test.ts:18"],
+      "gap": null,
+      "suggestion": null
     }
   ],
-
   "identifierVerification": [
     {
-      "identifier": "[identifier name]",
-      "designDocValue": "[value specified in Design Doc]",
-      "codeValue": "[value found in code, or 'not found']",
-      "location": "[file:line]",
-      "match": true
+      "identifier": "AUTH_TOKEN_TTL",
+      "designDocValue": "3600",
+      "codeValue": "1800",
+      "location": "src/auth/config.ts:8",
+      "match": false
     }
   ],
-
   "qualityFindings": [
     {
-      "category": "dd_violation|maintainability|reliability|coverage_gap",
-      "location": "[file:line or file:function]",
-      "description": "[specific issue found]",
-      "rationale": "[category-specific, see Finding Classification]",
-      "suggestion": "[specific improvement]"
+      "category": "reliability",
+      "location": "src/auth/login.ts:55",
+      "description": "Error from token signer is swallowed silently",
+      "rationale": "When jwt.sign throws, the catch block returns null without logging; downstream sees auth failure indistinguishable from invalid credentials",
+      "suggestion": "Re-throw with context or log error then propagate to caller"
     }
   ],
-
   "summary": {
-    "acsTotal": 0,
-    "acsFulfilled": 0,
-    "acsPartial": 0,
-    "acsUnfulfilled": 0,
-    "identifiersTotal": 0,
-    "identifiersMatched": 0,
-    "lowConfidenceItems": 0,
+    "acsTotal": 12,
+    "acsFulfilled": 10,
+    "acsPartial": 1,
+    "acsUnfulfilled": 1,
+    "identifiersTotal": 20,
+    "identifiersMatched": 19,
+    "lowConfidenceItems": 2,
     "findingsByCategory": {
-      "dd_violation": 0,
+      "dd_violation": 1,
       "maintainability": 0,
-      "reliability": 0,
+      "reliability": 1,
       "coverage_gap": 0
     }
   }
@@ -233,9 +275,10 @@ Identifier mismatches automatically lower the verdict by one level (e.g., pass â
 - [ ] Quality findings classified with category and rationale
 - [ ] Compliance rate and identifier match rate calculated
 - [ ] Verdict determined
-- [ ] Final response is the JSON output
 
-## Output Self-Check
+## Self-Validation [BLOCKING â€” before output]
+
+Run each item below before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing the JSON output.
 
 - [ ] Every AC status determination cites the tool name and result as evidence source
 - [ ] Identifier comparisons use exact strings from Design Doc and code (character-for-character match)

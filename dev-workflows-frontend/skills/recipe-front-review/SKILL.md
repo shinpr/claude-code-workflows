@@ -155,3 +155,13 @@ Remaining issues:
 - Committed secrets (blocked → human intervention)
 
 **Scope**: Design Doc compliance validation, security review, and auto-fixes.
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the front-review recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+

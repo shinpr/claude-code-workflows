@@ -159,3 +159,13 @@ Check quality-fixer response:
 
 On `approved` from quality-fixer:
 - Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
+
+## Subagent Prompt Suffix
+
+Append the following suffix to every subagent prompt invoked from this recipe:
+
+```
+[SYSTEM CONSTRAINT]
+This agent operates within the add-integration-tests recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+```
+
