@@ -19,7 +19,7 @@ Executes quality checks and provides a state where all Phases complete with zero
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
-- **filesModified** (optional): List of file paths that the upstream agent (typically task-executor) modified for the current task. Used as the primary scope for Step 1 incomplete-implementation check. When absent, Step 1 falls back to `git diff HEAD`.
+- **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 incomplete-implementation check. When absent, Step 1 falls back to `git diff HEAD`.
 
 ## Initial Required Tasks
 
@@ -32,7 +32,7 @@ Executes quality checks and provides a state where all Phases complete with zero
 Review the diff of changed files to detect stub or incomplete implementations. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
 
 **Scope of this check** (in priority order):
-- **Primary scope**: When the orchestrator passes `filesModified` (the task's write set, typically taken from `task-executor` response), use only those files.
+- **Primary scope**: When the orchestrator passes `filesModified` (the task's write set from the upstream implementation step), use only those files.
 - **Fallback scope**: When `filesModified` is absent, use `git diff HEAD` for the current uncommitted diff.
 
 Apply the indicators below to files within scope only. Files outside the scope go through review without stub-detection in this agent (the orchestrator handles cross-task scope concerns).
@@ -93,7 +93,7 @@ Return one of the following as the final response (see Output Format for schemas
 ## Status Determination Criteria
 
 ### stub_detected (Incomplete implementation found — Step 1 gate)
-Returned immediately when Step 1 finds incomplete implementations in the diff. Quality checks are not executed. The orchestrator should route this back to the task-executor for completion.
+Returned immediately when Step 1 finds incomplete implementations in the diff. Quality checks are not executed. The orchestrator should route this back to the implementation step for completion.
 
 ### approved (All quality checks pass)
 - All tests pass

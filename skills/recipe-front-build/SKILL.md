@@ -95,13 +95,15 @@ For EACH task, YOU MUST:
 
 **CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after quality-fixer-frontend returns `approved`.
 
-## Subagent Prompt Suffix
+## Scope Boundary for Subagents
 
-Append the following suffix to every subagent prompt invoked from this recipe:
+Append the following block to every subagent prompt invoked from this recipe:
 
 ```
-[SYSTEM CONSTRAINT]
-This agent operates within the front-build recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+Scope boundary for subagents:
+Operate within the task scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
 ```
 
 Verify task files exist per Pre-execution Checklist, then enter autonomous execution mode. When requirement changes are detected during execution, escalate to the user with the change summary before continuing.

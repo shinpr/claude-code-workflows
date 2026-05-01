@@ -81,13 +81,15 @@ When user responds to questions:
 - Run quality-fixer before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
-## Subagent Prompt Suffix
+## Scope Boundary for Subagents
 
-Append the following suffix to every subagent prompt invoked from this recipe:
+Append the following block to every subagent prompt invoked from this recipe:
 
 ```
-[SYSTEM CONSTRAINT]
-This agent operates within the implement recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+Scope boundary for subagents:
+Operate within the task scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
 ```
 
 ## Mandatory Orchestrator Responsibilities

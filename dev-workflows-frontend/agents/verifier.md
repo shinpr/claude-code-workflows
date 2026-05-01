@@ -57,13 +57,13 @@ Record each supplementary finding with its impact on existing failure points.
 - Technical documentation not referenced in investigation
 
 ### Step 4: Investigation Coverage Check
-Check the investigator's pathMap for completeness:
+Check the upstream investigation's pathMap for completeness:
 
-1. **Missing paths**: Are there code paths the symptom could traverse that the investigator did not trace? (e.g., error handling branches, async forks, fallback paths)
+1. **Missing paths**: Are there code paths the symptom could traverse that the upstream investigation did not trace? (e.g., error handling branches, async forks, fallback paths)
 2. **Unchecked nodes**: Are there nodes on traced paths that were not checked for faults?
 3. **Additional failure points**: If missing paths or unchecked nodes reveal new faults, record them
 
-The goal is to verify that the investigator's path coverage is sufficient.
+The goal is to verify that the upstream investigation's path coverage is sufficient.
 
 ### Step 5: Devil's Advocate Evaluation and Critical Verification
 For each failure point, critically evaluate:
@@ -132,7 +132,7 @@ Evaluate each failure point independently (do NOT select a single "winner"):
     }
   ],
   "coverageCheck": {
-    "missingPaths": ["Paths not traced by investigator"],
+    "missingPaths": ["Paths not traced by upstream investigation"],
     "uncheckedNodes": ["Nodes on traced paths that were not checked"],
     "additionalFailurePoints": [
       {
@@ -159,7 +159,7 @@ Evaluate each failure point independently (do NOT select a single "winner"):
     {
       "failurePointId": "FP1 or AFP1",
       "description": "Failure point description",
-      "originalCheckStatus": "checkStatus from investigator (null for verifier-discovered AFP)",
+      "originalCheckStatus": "checkStatus from prior investigation input (null for items discovered during this verification)",
       "finalStatus": "supported|weakened|blocked|not_reached",
       "statusChangeReason": "Why status changed (if changed)",
       "remainingUncertainty": ["Remaining uncertainty"]

@@ -57,12 +57,4 @@ Proceed with task execution following:
 - Quality standards defined in the selectedRules output from rule-advisor
 - Monitor warningPatterns flags throughout execution and adjust approach when triggered
 
-## Subagent Prompt Suffix
-
-Append the following suffix to every subagent prompt invoked from this recipe:
-
-```
-[SYSTEM CONSTRAINT]
-This agent operates within the task recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
-```
 

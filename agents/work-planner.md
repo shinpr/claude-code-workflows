@@ -46,8 +46,8 @@ IF no E2E test skeleton files were provided
   AND Design Doc or UI Spec contains user-facing multi-step user journey
 THEN add to work plan header:
   ⚠ E2E Gap: This feature contains user-facing multi-step journey(s) but no E2E
-  test skeletons were provided. Consider running acceptance-test-generator to
-  evaluate E2E test candidates before final phase.
+  test skeletons were provided. Consider running the test skeleton generation
+  step to evaluate E2E test candidates before final phase.
   Detected journeys: [list journey descriptions and AC references]
 ```
 

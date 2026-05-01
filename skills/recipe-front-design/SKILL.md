@@ -78,7 +78,7 @@ Then create the UI Specification:
   - `description: "UI Spec creation"`
   - If PRD exists and prototype provided: `prompt: "Create UI Spec from PRD at [path]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/"`
   - If PRD exists and no prototype: `prompt: "Create UI Spec from PRD at [path]. No prototype code available."`
-  - If no PRD (medium scale): `prompt: "Create UI Spec based on the following requirements: [pass requirement-analyzer output]. No PRD available."` (add prototype path if provided)
+  - If no PRD (medium scale): `prompt: "Create UI Spec based on the following requirements: [requirements analysis output from Step 1]. No PRD available."` (add prototype path if provided)
 - Invoke **document-reviewer** to verify UI Spec
   - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "UI Spec review"`, `prompt: "doc_type: UISpec target: [ui-spec path] Review for consistency and completeness"`
 - **[STOP]**: Present UI Spec for user approval
@@ -91,11 +91,11 @@ First, analyze the existing codebase:
 Create appropriate design documents according to scale determination. technical-designer-frontend presents at least two architecture alternatives (technology selection, data flow design) with trade-offs for each:
 - Invoke **technical-designer-frontend** using Agent tool
   - For ADR: `subagent_type: "dev-workflows-frontend:technical-designer-frontend"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Present at least two alternatives with trade-offs."`
-  - For Design Doc: `subagent_type: "dev-workflows-frontend:technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on requirements. Codebase analysis: [JSON from codebase-analyzer]. UI Spec is at [ui-spec path]. Inherit component structure and state design from UI Spec. Present at least two architecture alternatives with trade-offs."`
+  - For Design Doc: `subagent_type: "dev-workflows-frontend:technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on requirements. Codebase analysis: [codebase analysis output from this step]. UI Spec is at [ui-spec path]. Inherit component structure and state design from UI Spec. Present at least two architecture alternatives with trade-offs."`
 - **(Design Doc only)** Invoke **code-verifier** to verify Design Doc against existing code. Skip for ADR.
   - `subagent_type: "dev-workflows-frontend:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
 - Invoke **document-reviewer** to verify consistency (pass code-verifier results for Design Doc; omit for ADR)
-  - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "Document review"`, `prompt: "Review [document path] for consistency and completeness. code_verification: [JSON from code-verifier] (Design Doc only)"`
+  - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "Document review"`, `prompt: "Review [document path] for consistency and completeness. code_verification: [code verification output from this step] (Design Doc only)"`
 
 ### Step 4: Design Consistency Verification
 - Invoke **design-sync** using Agent tool
@@ -119,12 +119,4 @@ Frontend design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
 
-## Subagent Prompt Suffix
-
-Append the following suffix to every subagent prompt invoked from this recipe:
-
-```
-[SYSTEM CONSTRAINT]
-This agent operates within the front-design recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
-```
 

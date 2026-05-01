@@ -408,12 +408,4 @@ Output summary including:
 | consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
 | Review rejects after 2 revisions | Stop loop, flag for human intervention |
 
-## Subagent Prompt Suffix
-
-Append the following suffix to every subagent prompt invoked from this recipe:
-
-```
-[SYSTEM CONSTRAINT]
-This agent operates within the reverse-engineer recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
-```
 

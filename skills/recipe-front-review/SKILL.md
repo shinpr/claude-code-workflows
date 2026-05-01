@@ -156,12 +156,14 @@ Remaining issues:
 
 **Scope**: Design Doc compliance validation, security review, and auto-fixes.
 
-## Subagent Prompt Suffix
+## Scope Boundary for Subagents
 
-Append the following suffix to every subagent prompt invoked from this recipe:
+Append the following block to every subagent prompt invoked from this recipe:
 
 ```
-[SYSTEM CONSTRAINT]
-This agent operates within the front-review recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
+Scope boundary for subagents:
+Operate within the review scope and referenced files in the prompt.
+Use loaded skills to execute that scope.
+Escalate when the required fix or investigation falls outside that scope.
 ```
 

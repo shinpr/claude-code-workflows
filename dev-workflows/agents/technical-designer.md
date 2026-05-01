@@ -77,7 +77,7 @@ Must be performed before any investigation:
    - Classify each: **Explicit** (documented) or **Implicit** (observed pattern only)
 
 2. **Identify Quality Assurance Mechanisms**
-   - When codebase-analyzer output is available: use its `qualityAssurance` section as the primary source
+   - When codebase analysis output is provided: use its `qualityAssurance` section as the primary source
    - When not available: scan CI pipelines, linter configs, pre-commit hooks, and project configuration for tools and checks that cover the change area
    - Identify domain-specific constraints (naming conventions, length limits, format requirements) from configuration or CI
    - For each mechanism, decide: **adopted** (will be enforced during implementation) or **noted** (observed but not adopted — state reason, e.g., not relevant to this change area, superseded by another check)
@@ -258,7 +258,7 @@ When conversion is required, clearly specify adapter implementation or migration
 
 - **Prior-Layer Verification** (optional, fullstack flow only): When this Design Doc references contracts from a prior-layer Design Doc that has been through a verification step, the verification result JSON is provided. Use it as follows:
   - `discrepancies[]` → treat as known issues to resolve in this Design Doc, or escalate if out of scope for this layer
-  - Do not infer verified claims beyond what the verifier output states explicitly; use the prior-layer Design Doc itself as reference context, not as proof of verification coverage
+  - Do not infer verified claims beyond what the prior-layer verification output states explicitly; use the prior-layer Design Doc itself as reference context, not as proof of verification coverage
 - **PRD**: PRD document (if exists)
 - **Documents to Create**: ADR, Design Doc, or both
 - **Existing Architecture Information**: 
@@ -418,7 +418,7 @@ Before modifying the document, inventory the external definitions that the chang
 
 1. **Extract literal identifiers from update scope**: Collect all concrete identifiers (paths, endpoints, type names, config keys, component names) in the sections being updated
 2. **Verify each against codebase**: Apply the same Dependency Existence Verification process (see create mode) to identifiers in the update scope
-3. **Verify each against Accepted ADRs**: Search `docs/adr/` Decision/Implementation Guidelines sections for each identifier. Flag if the same identifier has a different value or definition. (Design Doc cross-checks are handled by design-sync in the subsequent pipeline step)
+3. **Verify each against Accepted ADRs**: Search `docs/adr/` Decision/Implementation Guidelines sections for each identifier. Flag if the same identifier has a different value or definition. (Cross-document checks are handled in a subsequent pipeline step.)
 
 **Output format** (per identifier):
 ```yaml

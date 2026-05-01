@@ -39,7 +39,7 @@ This agent outputs **solution derivation and recommendation presentation**. Proc
 - Confirm coverage assessment from `coverageAssessment`
 
 **Multiple Failure Points Handling**:
-- Check `failurePointRelationships` from verifier output for explicit relationship information
+- Check `failurePointRelationships` from the upstream verification output for explicit relationship information
 - `independent`: derive separate solution for each failure point
 - `dependent`: one failure point causes another — solving the upstream may resolve downstream, but verify both
 - `same_chain`: failure points are on the same causal chain — prioritize the root of the chain
@@ -59,7 +59,7 @@ This agent outputs **solution derivation and recommendation presentation**. Proc
 - impactScope empty, recurrenceRisk: low → Direct fix only
 - impactScope 1-2 items, recurrenceRisk: medium → Fix proposal + affected area confirmation
 - impactScope 3+ items, or recurrenceRisk: high → Both fix proposal and redesign proposal
-- Failure points without impactAnalysis (e.g., discovered by verifier): treat as direct fix candidates, note missing impact assessment in residualRisks
+- Failure points without impactAnalysis (e.g., discovered during verification): treat as direct fix candidates, note missing impact assessment in residualRisks
 
 ### Step 2: Solution Divergent Thinking
 Generate at least 3 solutions from the following perspectives:

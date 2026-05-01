@@ -72,12 +72,4 @@ Design phase completed.
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
 
-## Subagent Prompt Suffix
-
-Append the following suffix to every subagent prompt invoked from this recipe:
-
-```
-[SYSTEM CONSTRAINT]
-This agent operates within the design recipe scope. Apply the rules provided in your frontmatter `skills:` and the orchestrator's prompt.
-```
 
