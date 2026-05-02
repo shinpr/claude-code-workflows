@@ -1,6 +1,6 @@
 ---
 name: recipe-prepare-implementation
-description: Verifies the work plan is implementable end-to-end and resolves verification-lane / fixture / E2E-environment gaps before the build phase begins. Use when "implement-ready/verification readiness/lane setup/E2E environment missing" is mentioned, or before invoking recipe-build/-front-build/-fullstack-build when readiness has not been preflight-checked.
+description: Verifies the work plan is implementable end-to-end and resolves verification-lane / fixture / E2E-environment gaps before the build phase begins. Use when "implement-ready/verification readiness/lane setup/E2E environment missing" is mentioned, or before any build phase begins on a work plan whose readiness has not been preflight-checked.
 disable-model-invocation: true
 ---
 
@@ -50,7 +50,7 @@ R4 and R5 are evaluated only when their triggering signals appear in the work pl
 
 **State check**:
 - Work plan exists → Proceed to Step 1
-- No work plan → Stop and report: "recipe-prepare-implementation requires an approved work plan. Run recipe-plan / recipe-front-plan / recipe-fullstack-* first."
+- No work plan → Stop and report: "An approved work plan is required. Complete the upstream planning phase first, then re-invoke this recipe."
 
 ## Execution Flow
 
