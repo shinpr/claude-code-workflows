@@ -19,9 +19,15 @@
 
 ### Coverage Requirements (ADR-0002 Compliant)
 **Component-specific targets**:
+
+When the project adopts Atomic Design (atoms / molecules / organisms layering):
 - Atoms (Button, Text, etc.): 70% or higher
 - Molecules (FormField, etc.): 65% or higher
 - Organisms (Header, Footer, etc.): 60% or higher
+
+When the project uses a different component architecture (Feature-based, Container-Presenter, etc.): apply 60% as the baseline and raise the target for foundational/leaf components (those reused across many features) to 70%.
+
+Component-architecture-independent targets:
 - Custom Hooks: 65% or higher
 - Utils: 70% or higher
 

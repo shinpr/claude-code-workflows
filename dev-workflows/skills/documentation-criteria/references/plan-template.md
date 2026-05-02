@@ -5,6 +5,7 @@ Type: feature|fix|refactor
 Estimated Duration: X days
 Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
+Implementation Readiness: pending
 
 ## Related Documents
 - Design Doc(s):
@@ -45,6 +46,26 @@ Maps each Design Doc technical requirement to the covering task(s). One row per 
 **Category values**: `impl-target` (implementation target), `connection-switching` (connection/switching/registration), `contract-change` (contract change and propagation), `verification` (verification requirement), `prerequisite` (prerequisite work)
 
 **Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
+
+## UI Spec Component → Task Mapping
+
+Include this section when a UI Spec is among the inputs. Maps each component documented in the UI Spec to the task(s) that implement it. task-decomposer reads this table to populate each task's Investigation Targets with the corresponding UI Spec section. Omit the section when no UI Spec exists.
+
+| UI Spec Component (section heading) | States to Cover | Covered By Task(s) | Gap Status | Notes |
+|---|---|---|---|---|
+| [Use the UI Spec heading exactly as written, e.g., "§ Component: AlertCard"] | [default / loading / empty / error / partial — list the states the implementation must produce] | [Phase X Task Y] | covered | |
+
+**Reference key rule**: The component identifier in column 1 is the UI Spec section heading (verbatim). ui-spec-designer enforces unique component headings so this reference resolves to exactly one section.
+
+**Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
+
+## Connection Map
+
+Include this section when the implementation crosses more than one package, service, or process boundary. Document each boundary so task-decomposer can propagate boundary context to the implementation tasks on each side. Omit the section when the implementation stays within a single package.
+
+| Boundary | Owner (left side) | Owner (right side) | Expected Signal | Covered By Task(s) |
+|---|---|---|---|---|
+| [e.g., "web client → API gateway"] | [module/package on the request side] | [module/package on the response side] | [Observable evidence the boundary works — e.g., "HTTP 200 with response matching ContractA", "row inserted in tableB", "message published to topicC"] | [Phase X Task Y on each side] |
 
 ## Objective
 [Why this change is necessary, what problem it solves]

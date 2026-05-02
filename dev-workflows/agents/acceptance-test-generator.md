@@ -37,7 +37,8 @@ Test type definitions, budgets, and ROI calculations are specified in **integrat
 
 Key points:
 - **Integration Tests**: MAX 3 per feature, created alongside implementation
-- **E2E Tests**: MAX 1-2 per feature, executed in final phase only
+- **fixture-e2e**: MAX 3 per feature, created alongside the UI feature phase, ROI ≥ 20 beyond reserved slot
+- **service-integration-e2e**: MAX 1-2 per feature, executed only in the final phase, ROI > 50 beyond reserved slot
 
 ## 4-Phase Generation Process
 
@@ -103,9 +104,9 @@ For each valid AC from Phase 1:
 
 **Output**: Candidate pool with ROI metadata
 
-### Phase 3: ROI-Based Selection (Two-Pass #2)
+### Phase 3: ROI-Based Selection and Lane Assignment (Two-Pass #2)
 
-ROI calculation formula and cost table are defined in **integration-e2e-testing skill**.
+ROI calculation formula and cost table are defined in **integration-e2e-testing skill**. Lane definitions and selection rules are also in that skill.
 
 **Selection Algorithm**:
 
@@ -118,34 +119,50 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 3. **Push-Down Analysis**:
    ```
    Can this be unit-tested? → Remove from integration/E2E pool
-   Already integration-tested? → Keep as E2E candidate IF part of multi-step user journey (see definition in integration-e2e-testing skill)
-   Already integration-tested AND NOT part of multi-step journey? → Remove from E2E pool
+   Already integration-tested AND verifiable in-process? → Remove from E2E pool
    ```
-4. **Sort by ROI** (descending order)
+4. **Lane assignment** (E2E candidates only):
+   - Default to `fixture-e2e` for any UI journey verifiable with mocked backend / fixture-driven state
+   - Promote to `service-integration-e2e` only when the verification depends on real cross-service behavior. A candidate qualifies for `service-integration-e2e` when ANY of the following must be asserted:
+     - Data persists across a real DB write (e.g., row inserted/updated in the actual database under test)
+     - A downstream service receives a real event/message (e.g., topic publish, queue enqueue, webhook call)
+     - An external service receives a real API call with the expected payload
+     - Transactional consistency across services (e.g., two-phase commit, saga compensation)
+5. **Sort by ROI** within each lane (descending) — this is the single ranking step; Phase 4 budget enforcement consumes this ranked list directly without re-sorting.
 
-**Output**: Ranked, deduplicated candidate list
+**Output**: Ranked, deduplicated candidate list with lane assigned per E2E candidate.
 
 ### Phase 4: Budget Enforcement
 
 **Hard Limits per Feature**:
 - **Integration Tests**: MAX 3 tests
-- **E2E Tests**: MAX 1-2 tests total, composed of:
-  - 1 reserved slot (emitted regardless of ROI) when feature contains a **user-facing** multi-step user journey (see definition and classification in integration-e2e-testing skill)
+- **fixture-e2e**: MAX 3 tests, no ROI gate. When the feature contains a **user-facing** multi-step user journey, the highest-ROI journey candidate is reserved (emitted regardless of ranking)
+- **service-integration-e2e**: MAX 1-2 tests, composed of:
+  - 1 reserved slot (emitted regardless of ROI) when the journey's correctness depends on real cross-service behavior that fixture-e2e cannot verify
   - Up to 1 additional slot requiring ROI > 50
 
 **Selection Algorithm**:
 
 ```
-1. Reserve must-keep E2E slot:
-   IF feature contains user-facing multi-step user journey (see definition in integration-e2e-testing skill)
-   THEN reserve 1 E2E slot for the highest-ROI journey candidate
-   (This reserved candidate is emitted regardless of ROI threshold)
+1. Reserve fixture-e2e slot:
+   IF feature contains user-facing multi-step user journey
+   THEN reserve 1 fixture-e2e slot for the highest-ROI journey candidate
 
-2. Sort remaining candidates by ROI (descending)
+2. Reserve service-integration-e2e slot (only if needed):
+   IF the reserved journey's verification requires ANY of:
+     - data persists across a real DB write
+     - downstream service receives a real event/message
+     - external service receives a real API call with expected payload
+     - transactional consistency across services
+   THEN reserve 1 service-integration-e2e slot for that journey
 
-3. Select top N within budget:
+3. Walk the candidate list (already sorted by ROI within each lane in Phase 3 step 5)
+   and select within budget:
    - Integration: Pick top 3 highest-ROI
-   - E2E (additional beyond reserved): Pick up to 1 more IF ROI score > 50
+   - fixture-e2e (additional beyond reserved): Pick up to remaining budget IF ROI ≥ 20
+   - service-integration-e2e (additional beyond reserved): Pick up to 1 more IF ROI > 50
+
+   Leave budget intentionally unfilled when no remaining candidate clears the lane's threshold.
 ```
 
 **Output**: Final test set
@@ -180,39 +197,77 @@ The examples below use `//` comment syntax. Adapt to the project's language (e.g
   [Test: 'AC1: Failed payment displays error without creating order']
 ```
 
-### E2E Test File
+### fixture-e2e Test File
 
 ```
-// [Feature Name] E2E Test - Design Doc: [filename]
-// Generated: [date] | Budget Used: 1/2 E2E
-// Test Type: End-to-End Test
-// Implementation Timing: After all feature implementations complete
+// [Feature Name] fixture-e2e Test - Design Doc: [filename]
+// Generated: [date] | Budget Used: 1/3 fixture-e2e
+// Test Type: Browser-level UI verification with mocked backend / fixture-driven state
+// Implementation Timing: Alongside the UI feature implementation
 
 [Import statement using detected test framework]
 
 [Test suite using detected framework syntax]
-  // User Journey: Complete purchase flow (browse → add to cart → checkout → payment → confirmation)
-  // ROI: 119 (BV:10 × Freq:10 + Legal:10 + Defect:9) | reserved slot: multi-step journey
-  // Verification: End-to-end user experience from product selection to order confirmation
-  // @category: e2e
+  // User Journey: Click Dismiss → card disappears → undo banner appears → Undo restores card
+  // ROI: 60 (BV:6 × Freq:7 + Legal:0 + Defect:8) | reserved slot: user-facing multi-step journey
+  // Verification: UI state transitions are observable in the browser
+  // @category: fixture-e2e
+  // @lane: fixture-e2e
+  // @dependency: full-ui (mocked backend)
+  // @complexity: medium
+  [Test: 'User Journey: Dismiss-then-Undo restores the card to its original state']
+```
+
+### service-integration-e2e Test File
+
+```
+// [Feature Name] service-integration-e2e Test - Design Doc: [filename]
+// Generated: [date] | Budget Used: 1/2 service-integration-e2e
+// Test Type: End-to-end against running local stack
+// Implementation Timing: Executed only in the final phase
+
+[Import statement using detected test framework]
+
+[Test suite using detected framework syntax]
+  // User Journey: Complete purchase flow (browse → checkout → payment → confirmation persisted in DB)
+  // ROI: 119 (BV:10 × Freq:10 + Legal:10 + Defect:9) | reserved slot: cross-service correctness
+  // Verification: Order persists in DB and confirmation event reaches downstream consumer
+  // @category: service-integration-e2e
+  // @lane: service-integration-e2e
   // @dependency: full-system
   // @complexity: high
-  [Test: 'User Journey: Complete product purchase from browse to confirmation email']
+  [Test: 'User Journey: Complete purchase persists order and emits confirmation event']
 ```
 
 ### Generation Report
 
-**When E2E tests are emitted:**
+**When both E2E lanes are emitted:**
 ```json
 {
   "status": "completed",
   "feature": "payment",
   "generatedFiles": {
     "integration": "tests/payment.int.test.[ext]",
-    "e2e": "tests/payment.e2e.test.[ext]"
+    "fixtureE2e": "tests/payment.fixture.e2e.test.[ext]",
+    "serviceE2e": "tests/payment.service.e2e.test.[ext]"
   },
-  "budgetUsage": { "integration": "2/3", "e2e": "1/2" },
-  "e2eAbsenceReason": null
+  "budgetUsage": { "integration": "2/3", "fixtureE2e": "1/3", "serviceE2e": "1/2" },
+  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": null }
+}
+```
+
+**When only fixture-e2e is emitted:**
+```json
+{
+  "status": "completed",
+  "feature": "payment",
+  "generatedFiles": {
+    "integration": "tests/payment.int.test.[ext]",
+    "fixtureE2e": "tests/payment.fixture.e2e.test.[ext]",
+    "serviceE2e": null
+  },
+  "budgetUsage": { "integration": "2/3", "fixtureE2e": "2/3", "serviceE2e": "0/2" },
+  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": "no_real_service_dependency" }
 }
 ```
 
@@ -220,41 +275,31 @@ The examples below use `//` comment syntax. Adapt to the project's language (e.g
 ```json
 {
   "status": "completed",
-  "feature": "payment",
-  "generatedFiles": {
-    "integration": "tests/payment.int.test.[ext]",
-    "e2e": null
-  },
-  "budgetUsage": { "integration": "2/3", "e2e": "0/2" },
-  "e2eAbsenceReason": "no_multi_step_journey"
-}
-```
-
-**When no integration tests are emitted:**
-```json
-{
-  "status": "completed",
   "feature": "config-update",
   "generatedFiles": {
-    "integration": null,
-    "e2e": null
+    "integration": "tests/config.int.test.[ext]",
+    "fixtureE2e": null,
+    "serviceE2e": null
   },
-  "budgetUsage": { "integration": "0/3", "e2e": "0/2" },
-  "e2eAbsenceReason": "no_multi_step_journey"
+  "budgetUsage": { "integration": "1/3", "fixtureE2e": "0/3", "serviceE2e": "0/2" },
+  "e2eAbsenceReason": { "fixtureE2e": "no_multi_step_journey", "serviceE2e": "no_multi_step_journey" }
 }
 ```
 
-**Contract**: Both `generatedFiles.integration` and `generatedFiles.e2e` are always present as keys. Value is a file path string when generated, `null` when not generated. `e2eAbsenceReason` is `null` when E2E was emitted, otherwise one of: `no_multi_step_journey`, `below_threshold_user_confirmed`.
+**Contract**:
+- `generatedFiles.integration`, `generatedFiles.fixtureE2e`, `generatedFiles.serviceE2e` are always present as keys. Value is a file path string when generated, `null` when not.
+- `e2eAbsenceReason` is an object with `fixtureE2e` and `serviceE2e` keys. Each value is `null` when that lane emitted, otherwise one of: `no_multi_step_journey`, `below_threshold_user_confirmed`, `no_real_service_dependency` (service-integration-e2e only — meaning the journey is verifiable in fixture-e2e).
 
 ## Test Meta Information Assignment
 
 Each test case MUST have the following standard annotations for test implementation planning:
 
-- **@category**: core-functionality | integration | edge-case | ux
-- **@dependency**: none | [component names] | full-system
+- **@category**: core-functionality | integration | edge-case | ux | fixture-e2e | service-integration-e2e
+- **@lane**: integration | fixture-e2e | service-integration-e2e
+- **@dependency**: none | [component names] | full-ui (mocked backend) | full-system
 - **@complexity**: low | medium | high
 
-These annotations are used when planning and prioritizing test implementation.
+These annotations are used when planning and prioritizing test implementation. The `@lane` annotation is the source of truth for budget accounting and CI gating.
 
 ## Constraints and Quality Standards
 

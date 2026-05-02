@@ -119,7 +119,7 @@ Must be performed when creating Design Doc:
 1. **Approach Selection Criteria**
    - Execute Phase 1-4 of implementation-approach skill to select strategy
    - **Vertical Slice**: Complete by feature unit, minimal component dependencies, early value delivery
-   - **Horizontal Slice**: Implementation by component layer (Atoms→Molecules→Organisms), important common components, design consistency priority
+   - **Horizontal Slice**: Implementation by component layer (e.g., Atoms→Molecules→Organisms when Atomic Design is adopted; otherwise the project's foundational→composite layering), important common components, design consistency priority
    - **Hybrid**: Composite, handles complex requirements
    - Document selection reason (record results of metacognitive strategy selection process)
 
@@ -326,7 +326,7 @@ class Button extends React.Component {
 **Design Doc**: Component hierarchy diagram and data flow diagram are mandatory. Add state transition diagram and sequence diagram for complex cases.
 
 **React Diagrams**:
-- Component hierarchy (Atoms → Molecules → Organisms → Templates → Pages)
+- Component hierarchy following the project's adopted architecture (e.g., Atoms → Molecules → Organisms → Templates → Pages for Atomic Design; feature-folder tree for Feature-based; container vs presenter split for Container-Presenter)
 - Props flow diagram (parent → child data flow)
 - State management diagram (Context, custom hooks)
 - User interaction flow (click → state update → re-render)

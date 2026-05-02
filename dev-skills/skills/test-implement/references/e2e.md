@@ -1,5 +1,16 @@
 # E2E Test Implementation with Playwright
 
+## Lane Selection
+
+E2E tests in this workflow split into two lanes (defined in integration-e2e-testing skill):
+
+| Lane | Backend setup | Use these patterns |
+|------|---------------|-------------------|
+| **fixture-e2e** | Mocked via `page.route()` or fixture loaders; no live services | Page Object Pattern, Locator Strategy, Assertions, the **Fixture-Based Backend** section below |
+| **service-integration-e2e** | Live local stack with real services | All patterns above PLUS the **E2E Environment Prerequisites** section (seed data, auth fixture against real auth flow) |
+
+The skeleton's `@lane:` annotation declares which lane the test belongs to. Choose implementation patterns to match.
+
 ## Test Framework
 - **Playwright Test**: `@playwright/test`
 - Test imports: `import { test, expect } from '@playwright/test'`
@@ -10,18 +21,23 @@
 ```
 tests/
 └── e2e/
-    ├── pages/              # Page objects
+    ├── pages/                   # Page objects (shared across lanes)
     │   ├── login.page.ts
     │   └── dashboard.page.ts
-    ├── fixtures/           # Test fixtures
+    ├── fixtures/                # Test fixtures (auth, seed)
     │   └── auth.fixture.ts
-    └── *.e2e.test.ts       # Test files
+    ├── data/                    # Static fixture data for fixture-e2e
+    │   └── *.fixture.json
+    ├── *.fixture.e2e.test.ts    # fixture-e2e test files
+    └── *.service.e2e.test.ts    # service-integration-e2e test files
 ```
 
 ### Naming Conventions
-- Test files: `{FeatureName}.e2e.test.ts`
+- fixture-e2e files: `{FeatureName}.fixture.e2e.test.ts`
+- service-integration-e2e files: `{FeatureName}.service.e2e.test.ts`
 - Page objects: `{PageName}.page.ts`
 - Fixtures: `{Purpose}.fixture.ts`
+- Static fixture data: `{scenario}.fixture.json`
 
 ## Page Object Pattern
 
@@ -102,9 +118,46 @@ export const test = base.extend<{ authenticatedPage: Page }>({
 })
 ```
 
-## E2E Environment Prerequisites
+## Fixture-Based Backend (fixture-e2e)
 
-E2E tests require a running application with real data state. Unlike unit/integration tests, environment setup is part of E2E test implementation scope.
+fixture-e2e tests run a real browser against deterministic fixtures — no live backend, no DB, no external services. Use one of these patterns to fake the network:
+
+### Pattern A: page.route() interception
+
+```typescript
+test('Dismiss-then-Undo restores card', async ({ page }) => {
+  // Arrange: intercept all backend calls with deterministic responses
+  await page.route('**/api/cards', async (route) => {
+    await route.fulfill({ json: cardsFixture })
+  })
+  await page.route('**/api/cards/*/dismiss', async (route) => {
+    await route.fulfill({ status: 204 })
+  })
+
+  await page.goto('/cards')
+  await page.getByRole('button', { name: 'Dismiss' }).first().click()
+  await page.getByRole('button', { name: 'Undo' }).click()
+
+  await expect(page.getByText(cardsFixture[0].title)).toBeVisible()
+})
+```
+
+### Pattern B: Fixture loader injection
+
+```typescript
+// data/cards-with-dismiss.fixture.json — committed alongside the test
+// Loaded via a route helper or app-level test mode
+```
+
+**Principles for fixture-e2e**:
+- Backend is faked, not running. No `npm run start:backend` required to execute these tests
+- Fixtures are versioned in the repo (`tests/e2e/data/`) so tests are deterministic across machines
+- Auth, when needed, is faked too (set a test cookie via `page.context().addCookies()` or use a fixture-mode bypass)
+- These tests run in CI without provisioning external infrastructure
+
+## E2E Environment Prerequisites (service-integration-e2e)
+
+service-integration-e2e tests require a running application with real data state. Unlike fixture-e2e, environment setup is part of test implementation scope.
 
 ### Seed Data Strategy
 
@@ -163,16 +216,16 @@ export const test = base.extend<{ playerPage: Page }>({
 - Store test credentials in environment variables only (`E2E_*` prefixed)
 - If the auth flow requires specific user records, seed them in the fixture
 
-### Environment Checklist
+### Environment Checklist (service-integration-e2e only)
 
-Before E2E tests can pass, verify:
+Before service-integration-e2e tests can pass, verify:
 - [ ] Application is running and accessible at `baseURL`
 - [ ] Database has required seed data (test users, subscriptions, content)
 - [ ] Authentication flow works with test credentials
 - [ ] Environment variables are set (`E2E_*` prefixed)
-- [ ] External services are either available or mocked via `page.route()`
+- [ ] External services are either available or stubbed
 
-When the work plan includes dedicated environment setup tasks (Phase 0), follow those tasks. When no setup tasks exist in the plan, address missing prerequisites as part of the E2E test implementation task itself.
+When the work plan includes dedicated environment setup tasks (Phase 0 — see work-planner E2E Environment Prerequisites extraction), follow those tasks. When no setup tasks exist in the plan, address missing prerequisites as part of the test implementation task itself, OR consider whether the verification could move to fixture-e2e instead.
 
 ## Locator Strategy
 
@@ -235,18 +288,36 @@ test.describe('responsive navigation', () => {
 
 ## Skeleton Comment Format
 
-E2E test skeletons follow the same annotation format as integration tests (adapt comment syntax to the project's language):
+E2E test skeletons follow the same annotation format as integration tests (adapt comment syntax to the project's language). The `@lane` annotation routes the test to the correct implementation patterns.
 
+### fixture-e2e example
 ```typescript
 // AC: [Original acceptance criteria text]
-// Behavior: [User action] → [System response] → [Observable result]
-// @category: e2e
+// Behavior: [User action] → [System response] → [Observable result in browser]
+// @category: fixture-e2e
+// @lane: fixture-e2e
+// @dependency: full-ui (mocked backend)
+// @complexity: medium
+// ROI: [score]
+test('AC1: [Description]', async ({ page }) => {
+  // Arrange: load fixture data, intercept network
+  // Act: user interaction
+  // Assert: observable browser state
+})
+```
+
+### service-integration-e2e example
+```typescript
+// AC: [Original acceptance criteria text]
+// Behavior: [User action] → [System response across services] → [Observable cross-service result]
+// @category: service-integration-e2e
+// @lane: service-integration-e2e
 // @dependency: full-system
 // @complexity: high
 // ROI: [score]
-test('AC1: [Description]', async ({ page }) => {
-  // Arrange: [Setup description]
-  // Act: [Action description]
-  // Assert: [Verification description]
+test('AC1: [Description]', async ({ page, request }) => {
+  // Arrange: seed real data, real auth
+  // Act: user interaction
+  // Assert: observable result + cross-service evidence (DB row, downstream event)
 })
 ```

@@ -38,20 +38,21 @@ Follow the planning process below:
    - Check for existence of design documents, notify user if none exist
    - Present options if multiple exist (can be specified with $ARGUMENTS)
 
-### Step 2: E2E Test Skeleton Generation Confirmation
-   - Confirm with user whether to generate E2E test skeleton first
-   - If user wants generation: Generate test skeleton with acceptance-test-generator
+### Step 2: Test Skeleton Generation Confirmation
+   - Confirm with user whether to generate test skeletons (integration + E2E lanes) first
+   - If user wants generation: invoke acceptance-test-generator
    - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
 
 ### Step 3: Work Plan Creation
 Invoke work-planner using Agent tool:
 - `subagent_type`: "dev-workflows:work-planner"
 - `description`: "Work plan creation"
-- If test skeletons were generated in Step 2:
-  - When `generatedFiles.e2e` is not null:
-    `prompt`: "Create work plan from Design Doc at [path]. Integration test file: [integration test path]. E2E test file: [E2E test path]. Integration tests are created simultaneously with each phase implementation, E2E tests are executed only in final phase."
-  - When `generatedFiles.e2e` is null:
-    `prompt`: "Create work plan from Design Doc at [path]. Integration test file: [integration test path]. No E2E test skeletons were generated (reason: [e2eAbsenceReason]). Integration tests are created simultaneously with each phase implementation."
+- If test skeletons were generated in Step 2, build the prompt by listing every lane's status:
+  - Always include: "Integration test file: [path or 'not generated']"
+  - For each E2E lane (`fixtureE2e`, `serviceE2e`):
+    - When `generatedFiles.<lane>` is not null: "[lane] test file: [path]"
+    - When `generatedFiles.<lane>` is null: "No [lane] skeleton generated (reason: [e2eAbsenceReason.<lane>])"
+  - Append placement guidance: "Integration tests are created simultaneously with each phase implementation. fixture-e2e tests are created alongside the UI feature phase. service-integration-e2e tests are executed only in the final phase."
 - If test skeletons were not generated:
   `prompt`: "Create work plan from Design Doc at [path]."
 

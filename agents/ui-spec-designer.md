@@ -103,6 +103,8 @@ Execute file output immediately (considered approved at execution).
 - [ ] If prototype provided: prototype is placed in `docs/ui-spec/assets/`
 - [ ] All TBDs in Open Items have owner and deadline
 - [ ] All UI Spec requirements align with PRD requirements
+- [ ] **Component heading uniqueness**: Every component is documented under a section heading whose text is unique within this UI Spec. Use the format `## Component: [ComponentName]` (or `### Component: [ComponentName]` when nested under a screen). Downstream agents (work-planner Step 5a, task-decomposer UI Spec Propagation) reference components by exact heading text — duplicate or paraphrased headings break the propagation chain.
+  - **Disambiguation rule**: When two components share a base name (e.g., the same `AlertCard` rendered as a banner variant and as an inline variant), append a parenthetical qualifier to make each heading unique: `Component: AlertCard (Banner variant)` and `Component: AlertCard (Inline variant)`. Verify uniqueness with a final pass: extract all `Component: ` headings, confirm zero duplicates
 
 ## Important Design Principles
 
