@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -10,7 +10,8 @@
   "scripts": {
     "prepare": "lefthook install",
     "sync": "node scripts/sync-plugins.mjs",
-    "sync:check": "node scripts/sync-plugins.mjs --check"
+    "sync:check": "node scripts/sync-plugins.mjs --check",
+    "check:skills-index": "node scripts/check-skills-index.mjs"
   },
   "devDependencies": {
     "lefthook": "^2.1.6"

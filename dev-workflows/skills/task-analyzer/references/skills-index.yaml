@@ -25,7 +25,7 @@ skills:
       - "Commenting Principles"
       - "Refactoring Approach"
       - "Testing Considerations"
-      - "Security Principles (Secure Defaults, Input and Output Boundaries, Access Control, Knowledge Cutoff Supplement)"
+      - "Security Principles"
       - "Documentation"
       - "Version Control Practices"
       - "Language-Specific Adaptations"
@@ -122,8 +122,8 @@ skills:
 
   integration-e2e-testing:
     skill: "integration-e2e-testing"
-    tags: [testing, integration-testing, e2e-testing, test-design, behavior-first, roi, test-skeleton, ears-format]
-    typical-use: "Integration and E2E test design principles, ROI-based test selection, behavior-first approach, test skeleton specification"
+    tags: [testing, integration-testing, e2e-testing, fixture-e2e, service-integration-e2e, lane-selection, test-design, behavior-first, roi, test-skeleton, ears-format]
+    typical-use: "Integration and E2E test design principles, two-lane E2E split (fixture-e2e and service-integration-e2e) with lane-specific ROI thresholds, behavior-first approach, test skeleton specification"
     size: medium
     key-references:
       - "Test Pyramid - Mike Cohn"
@@ -186,8 +186,8 @@ skills:
 
   test-implement:
     skill: "test-implement"
-    tags: [testing, frontend, react, react-testing-library, msw, playwright, e2e, coverage, tdd]
-    typical-use: "Test implementation patterns. references/frontend.md for RTL+Vitest+MSW, references/e2e.md for Playwright E2E"
+    tags: [testing, frontend, react, react-testing-library, msw, playwright, e2e, fixture-e2e, service-integration-e2e, coverage, tdd]
+    typical-use: "Test implementation patterns. references/frontend.md for RTL+Vitest+MSW, references/e2e.md for Playwright with both fixture-e2e (mocked backend) and service-integration-e2e (live local stack) patterns"
     size: large
     key-references:
       - "references/frontend.md"
