@@ -62,7 +62,7 @@ function isUser(value: unknown): value is User {
 **Component Design Criteria**
 - **Function components only**: Official React recommendation, optimizable by modern tooling (Exception: Error Boundary requires class component)
 - **Custom Hooks**: Standard pattern for logic reuse and dependency injection
-- **Component Hierarchy**: Atoms → Molecules → Organisms → Templates → Pages
+- **Component Hierarchy**: Use the project's adopted component architecture. When the project uses Atomic Design: Atoms → Molecules → Organisms → Templates → Pages. When the project uses Feature-based, Container-Presenter, or another structure: follow that structure consistently and document the chosen layering in the project README or design doc
 - **Co-location**: Place tests, styles, and related files alongside components
 
 **State Management Patterns**

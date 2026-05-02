@@ -59,6 +59,8 @@ Map PRD acceptance criteria to prototype references. Skip this section if no pro
 
 ### Component: [ComponentName]
 
+> Component heading uniqueness: every `Component: [ComponentName]` heading must be unique within this UI Spec. work-planner and task-decomposer reference components by exact heading text — duplicate names or paraphrased headings break the propagation to implementation tasks.
+
 #### State x Display Matrix
 
 | State | Default | Loading | Empty | Error | Partial |

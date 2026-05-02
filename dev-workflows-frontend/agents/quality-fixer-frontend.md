@@ -103,9 +103,11 @@ Return one of the following as the final response (see Output Format for schemas
 
 ### Testing Quality (React Testing Library)
 - **Test Coverage**: Minimum 60% coverage for frontend code
-  - Atoms: 70% target
-  - Molecules: 65% target
-  - Organisms: 60% target
+  - When the project adopts Atomic Design (atoms / molecules / organisms layering):
+    - Atoms: 70% target
+    - Molecules: 65% target
+    - Organisms: 60% target
+  - When the project uses a different component architecture (Feature-based, Container-Presenter, etc.): apply 60% as the baseline and raise the target for foundational/leaf components (those reused across many features) to 70%
 - **User-Observable Behavior**: Test what users see and interact with
 - **MSW for API Mocking**: Use Mock Service Worker for API mocking
 - **Test Behavior Over Internals**: Test observable behavior and outputs, not internal state

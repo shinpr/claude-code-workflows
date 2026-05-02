@@ -1,6 +1,6 @@
 {
   "name": "claude-code-workflows",
-  "version": "0.16.17",
+  "version": "0.17.0",
   "private": true,
   "type": "module",
   "engines": {

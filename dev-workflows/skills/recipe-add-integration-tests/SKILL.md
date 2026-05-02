@@ -160,6 +160,14 @@ Check quality-fixer response:
 On `approved` from quality-fixer:
 - Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
 
+### Step 9: Final Cleanup
+
+After all task files have been processed and committed, delete the task files this recipe created. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
+
+- Delete every file matching `docs/plans/tasks/integration-tests-backend-task-*.md` and `docs/plans/tasks/integration-tests-frontend-task-*.md` created during this run
+
+If task files cannot be deleted (filesystem error), report the failure but do not block completion.
+
 ## Scope Boundary for Subagents
 
 Append the following block to every subagent prompt invoked from this recipe:

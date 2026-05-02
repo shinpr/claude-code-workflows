@@ -111,7 +111,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 | Design | After design-sync completes consistency verification | Approve Design Doc |
 | Work Plan | After work-planner creates plan | Batch approval for implementation phase |
 
-**After batch approval**: Autonomous execution proceeds without stops until completion or escalation
+**After batch approval**: Autonomous execution proceeds without stops until completion or escalation.
 
 ## Scale Determination and Document Requirements
 | Scale | File Count | PRD | ADR | Design Doc | Work Plan |
@@ -184,7 +184,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **design-sync**: sync_status (synced/conflicts_found)
 - **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
-- **acceptance-test-generator**: status, generatedFiles (integration: path|null, e2e: path|null), budgetUsage, e2eAbsenceReason (null when E2E emitted, otherwise: no_multi_step_journey|below_threshold_user_confirmed)
+- **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
 ## Handling Requirement Changes
 
@@ -229,7 +229,9 @@ Always start with requirement-analyzer, then select the minimum planning flow re
 | Medium | requirement-analyzer → codebase-analyzer → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
 | Small | requirement-analyzer → work-planner |
 
-After the planning flow completes and the user grants batch approval, execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
+After the planning flow completes and the user grants batch approval, the work plan carries an `Implementation Readiness:` header (work-planner emits `pending`; promotion to `ready` or `escalated` is an external orchestration concern). External orchestration also decides when and how to act on this marker; this guide does not invoke any orchestrator above the agent layer.
+
+Then execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
 
 Each agent name in the chain is invoked via the Agent tool (per "Orchestrator's Permitted Tools" above).
 
@@ -397,21 +399,13 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
 
    #### HC-06: acceptance-test-generator → work-planner
 
-   **Pass to acceptance-test-generator**:
-   - Design Doc: [path]
-   - UI Spec: [path] (if exists)
+   **Pass to acceptance-test-generator**: Design Doc path; UI Spec path (if exists).
 
-   **Orchestrator verification items**:
-   - Verify `generatedFiles.integration` is a valid path (when not null) and the file exists
-   - Verify `generatedFiles.e2e` is a valid path (when not null) and the file exists
-   - When `generatedFiles.e2e` is null, verify `e2eAbsenceReason` is present — this is intentional absence, not an error
+   **Orchestrator verification**: Every non-null `generatedFiles.<lane>` path exists on disk. For each null lane, `e2eAbsenceReason.<lane>` is present (intentional absence, not an error).
 
-   **Pass to work-planner**:
-   - Integration test file: [path] (create and execute simultaneously with each phase implementation)
-   - E2E test file: [path] or null (execute only in final phase, when provided)
-   - E2E absence reason: [reason] (when E2E is null — pass this so work-planner can skip E2E Gap Check for intentional absence)
+   **Pass to work-planner**: integration / fixture-e2e / service-integration-e2e file paths (or null per lane), per-lane absence reasons, plus timing guidance — integration tests are created alongside each phase implementation, fixture-e2e tests are created alongside the UI feature phase, service-integration-e2e tests are executed only in the final phase.
 
-   **On error**: Escalate to user if integration file generation failed unexpectedly (status != completed). E2E being null with a valid absence reason is not an error.
+   **On error**: Escalate to user when status != completed and integration file generation failed unexpectedly. A null E2E lane with a valid absence reason is not an error.
 
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 

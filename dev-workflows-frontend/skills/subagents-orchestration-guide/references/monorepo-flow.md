@@ -27,7 +27,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 | 11 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
 | 12 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
 | 13 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 14 | acceptance-test-generator | Integration/E2E test skeleton from cross-layer contracts | Test skeletons |
+| 14 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
 | 15 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
 ### Medium Scale Fullstack (3-5 Files) - 13 Steps
@@ -45,7 +45,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 | 9 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
 | 10 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
 | 11 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 12 | acceptance-test-generator | Integration/E2E test skeleton from cross-layer contracts | Test skeletons |
+| 12 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
 | 13 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
 ### Parallelization in Multi-Agent Steps

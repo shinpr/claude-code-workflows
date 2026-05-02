@@ -104,8 +104,12 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    |---|---|
    | Existing code modification | The existing implementation files being modified, their tests, related Design Doc sections |
    | New component/feature | Adjacent implementations in the same layer/domain, Design Doc interface contracts |
+   | Frontend component implementation | UI Spec component section (use the section heading the work plan's UI Spec Component → Task Mapping cites), Design Doc interface contracts, adjacent components in the same layer |
+   | Frontend integration / fixture-e2e test | UI Spec component section including the State x Display Matrix and Interaction Definition tables, the implemented component code, fixture data files |
    | Test implementation | Test skeleton comments/annotations, the target code being tested, actual API/auth flows |
-   | E2E environment setup | Current environment config (startup scripts, docker-compose or equivalent), seed scripts, existing fixture patterns, application auth flow |
+   | fixture-e2e environment setup | Existing fixture data files, the API mock layer the project uses (e.g., MSW for JS/TS, WireMock for JVM, responses for Python), browser harness configuration (Playwright by default) |
+   | service-integration-e2e environment setup | Local startup scripts (docker-compose or equivalent), seed scripts, application auth flow, external service stubs |
+   | Cross-package boundary implementation | Both sides of the boundary as listed in the work plan's Connection Map (owner modules and expected signal), the contract definition between them |
    | Bug fix / refactor | The affected code paths, related test coverage, error reproduction context |
    | Behavior replacement / rewrite | The existing implementation being replaced, its observable outputs, Design Doc Verification Strategy section |
 
@@ -115,6 +119,8 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Be specific with file paths: `src/orders/checkout`, `docs/design/payment.md` — not "the order module" or "related code"
    - When the target is a section within a file, write the file path and add a search hint: `docs/design/payment.md (§ Payment Flow)` or `src/orders/checkout (processOrder function)`
    - When test skeletons exist for the task, always include them as Investigation Targets
+   - When the work plan contains a UI Spec Component → Task Mapping table, propagate the matching component section to every task in that row (see UI Spec Propagation below)
+   - When the work plan contains a Connection Map, propagate the boundary rows touching this task's target files (see Connection Map Propagation below)
 
 7. **Implementation Pattern Consistency**
    When including implementation samples, MUST ensure strict compliance with the Design Doc implementation approach that forms the basis of the work plan
@@ -143,6 +149,29 @@ When the work plan header includes a Quality Assurance Mechanisms table, propaga
 2. **Include matching mechanisms**: List all mechanisms whose coverage overlaps with the task's target files in the task's "Quality Assurance Mechanisms" section
 3. **Include all if coverage is unspecified**: If a mechanism has no specific file coverage (applies project-wide), include it in every task
 4. **Omit when no match**: If no mechanisms match a task's target files, omit the "Quality Assurance Mechanisms" section from that task
+
+## UI Spec Propagation
+
+When the work plan contains a UI Spec Component → Task Mapping table, propagate component references to each implementation task as follows:
+
+1. **Lookup by task ID**: For each row in the mapping table, locate the task(s) listed in the "Covered By Task(s)" column
+2. **Append a single line to Investigation Targets**: Add one line per matched component in the task's Investigation Targets section. The line format is `[ui-spec path] (§ [component heading]<state hint>)`, where `<state hint>` is appended only when the row lists specific states.
+
+   - When no states are listed: `docs/ui-spec/foo-ui-spec.md (§ Component: AlertCard)`
+   - When states are listed: `docs/ui-spec/foo-ui-spec.md (§ Component: AlertCard — verify default + loading + error states)`
+
+   This is the entire entry — do not also add a separate parenthetical line. The state hint is part of the same line.
+3. **One row → one or more tasks**: A component can be split across multiple tasks; propagate the same line to each
+4. **Skip when not provided**: If the work plan has no UI Spec Component → Task Mapping table, skip this propagation step
+
+## Connection Map Propagation
+
+When the work plan contains a Connection Map table, propagate boundary context to each implementation task as follows:
+
+1. **Lookup by task ID**: For each row in the Connection Map, locate the task(s) listed in the "Covered By Task(s)" column
+2. **Append to Investigation Targets**: Add the boundary's owner module file paths on both sides to each matched task's Investigation Targets
+3. **Add a "Boundary Context" note in the task body**: Record the boundary identifier and expected signal verbatim from the Connection Map row, so the executor knows what observable evidence the implementation must produce
+4. **Skip when not provided**: If the work plan has no Connection Map, skip this propagation step
 
 ## Task File Template
 
@@ -243,6 +272,8 @@ Please execute decomposed tasks according to the order.
 - [ ] Appropriate granularity (1-5 files/task)
 - [ ] Investigation Targets specified for every task (specific file paths, not vague categories)
 - [ ] Quality Assurance Mechanisms from work plan header propagated to relevant tasks
+- [ ] UI Spec Component → Task Mapping rows propagated to matching tasks (when work plan has the table)
+- [ ] Connection Map boundary rows propagated to matching tasks (when work plan has the table)
 - [ ] Clear completion criteria setting
 - [ ] Overall design document creation
 - [ ] Implementation efficiency and rework prevention (pre-identification of common processing, clarification of impact scope)

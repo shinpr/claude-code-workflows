@@ -55,7 +55,7 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
 □ Interface definition change needed? (Props type/structure/name changes)
-□ Component hierarchy violation needed? (e.g., Atom→Organism direct dependency)
+□ Component hierarchy violation needed? (e.g., skipping a layer in the project's adopted architecture — Atom→Organism in Atomic Design, leaf→container in Container-Presenter, etc.)
 □ Data flow direction reversal needed? (e.g., child component updating parent state without callback)
 □ New external library/API addition needed?
 □ Need to ignore type definitions in Design Doc?

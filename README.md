@@ -207,6 +207,7 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 | `/recipe-task` | Execute single task with precision | Bug fixes, small changes |
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate work plan from design | Planning phase |
+| `/recipe-prepare-implementation` | Verify implementation readiness and resolve gaps | Pre-build check that the work plan is implementable |
 | `/recipe-build` | Execute from existing task plan | Resume implementation |
 | `/recipe-fullstack-build` | Execute fullstack task plan | Resume cross-layer implementation (requires both plugins) |
 | `/recipe-review` | Verify code against design docs | Post-implementation check |
@@ -497,6 +498,16 @@ A: Yes! **[codex-workflows](https://github.com/shinpr/codex-workflows)** provide
 **Q: What's the difference between dev-skills and dev-workflows?**
 
 A: `dev-skills` provides only coding best practices as skills (`coding-principles`, `testing-principles`, etc.) — no workflow recipes or agents. `dev-workflows` includes the same skills plus recipes like `/recipe-implement` and specialized agents for full orchestrated development. Use `dev-skills` if you already have your own orchestration and just want the knowledge guides. They should not be installed together. See [Skills Only](#skills-only-for-users-with-existing-workflows) for details and switching instructions.
+
+**Q: Should I commit the work plan and task files in `docs/plans/`?**
+
+A: No. Recipes treat `docs/plans/` as ephemeral working state — work plans, task files, prep tasks, review-fix tasks, and intermediate analysis files all live there during a recipe run and are cleaned up at the end. Add the following line to your project's `.gitignore` so working state stays out of git:
+
+```
+docs/plans/
+```
+
+PRDs, ADRs, UI Specs, and Design Docs live in their own directories (`docs/prd/`, `docs/adr/`, `docs/ui-spec/`, `docs/design/`) and are intended to be committed.
 
 ---
 
