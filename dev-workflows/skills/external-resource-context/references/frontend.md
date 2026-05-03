@@ -13,7 +13,7 @@ The canonical source of the visual specification.
 - Existing implementation only (no separate design source)
 - Not applicable
 
-**Follow-up (when not N/A)**: How is the source accessed? Examples — MCP name, URL, file path, manual screenshot. Record the literal access mechanism.
+**Follow-up (when not N/A)**: How is the source accessed? Examples — URL, file path, MCP name, manual screenshot. Record the literal access mechanism.
 
 ## Axis 2: Design System
 
@@ -27,7 +27,7 @@ Reusable component library and design tokens.
 - No design system (ad-hoc components)
 - Not applicable
 
-**Follow-up (when not N/A)**: How is the component catalog accessed? Examples — MCP name, Storybook URL, package name, internal documentation path.
+**Follow-up (when not N/A)**: How is the component catalog accessed? Examples — Storybook URL, package name, internal documentation path, MCP name.
 
 ## Axis 3: Guidelines
 
@@ -47,13 +47,13 @@ Usage guidance, accessibility rules, anti-patterns, naming conventions for UI wo
 How rendered output is confirmed during implementation.
 
 **AskUserQuestion choices**:
-- Browser automation MCP (e.g., a hosted browser-control MCP)
-- Local end-to-end test runner with screenshot capability
+- End-to-end test runner with screenshot capability
 - Storybook or equivalent isolated component preview
+- Browser automation tool (dedicated CLI or MCP server)
 - Manual browser inspection only
 - Not applicable
 
-**Follow-up (when not N/A)**: What is the entry command or URL? Examples — MCP name, dev-server command, Storybook port.
+**Follow-up (when not N/A)**: What is the entry command or URL? Examples — CLI invocation, dev-server URL, Storybook port, MCP name.
 
 ## Self-Declaration
 

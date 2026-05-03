@@ -1,19 +1,23 @@
 ---
 name: recipe-front-adjust
-description: Adjust an already-implemented UI in-session with MCP-driven verification against the design source
+description: Adjust an already-implemented UI in-session with verification against the design source
 disable-model-invocation: true
 ---
 
-**Context**: UI adjustment on already-implemented features. The verification loop (edit → MCP-driven check → refine) runs in the parent session.
+**Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
 
 ## Execution Pattern
 
-**Core Identity**: "I am a guided executor. I run the adjustment and the MCP-driven verification loop myself; subagents handle one-shot tasks."
+**Core Identity**: "I am a guided executor. I run the adjustment and the verification loop myself; subagents handle one-shot tasks."
 
 **Execution Protocol**:
 1. **Delegate to subagents** (one-shot calls): ui-analyzer, work-planner, quality-fixer-frontend.
-2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set confirmation, scale judgment, adjustment edits, MCP-driven verification, iteration until acceptance.
+2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set confirmation, scale judgment, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
+
+## Initial Mandatory Tasks
+
+**Task Registration**: Before Step 1, register the recipe's execution flow using TaskCreate so progress is trackable. Register Steps 1-7 below as individual tasks plus a final task "Verify completion against Completion Criteria". Update status using TaskUpdate as each step starts and completes.
 
 ## Workflow Overview
 
@@ -30,7 +34,7 @@ Adjustment request → external resource hearing (parent session, AskUserQuestio
             ↓                                          ↓
    (1-2 files: inline)                  (3-5 files: work-planner subagent → [Stop])
             ↓                                          ↓
-            └─→ adjustment + MCP verification (parent session) ←──┘
+            └─→ adjustment + verification (parent session) ←──┘
                                   ↓
                      quality-fixer-frontend (subagent: typecheck/lint/test)
                                   ↓
@@ -44,7 +48,7 @@ Adjustment request → external resource hearing (parent session, AskUserQuestio
 - UI fact gathering via ui-analyzer
 - Scale judgment via documentation-criteria's Creation Decision Matrix
 - Optional work plan creation via work-planner
-- Adjustment edits and MCP-driven verification (run in this session)
+- Adjustment edits and verification against the design source (run in this session)
 - Quality verification via quality-fixer-frontend
 - Commit per adjustment unit
 
@@ -82,7 +86,7 @@ Branch on the scale outcome.
 #### Branch A — 1-2 files
 No work plan. Build a minimal adjustment context for the parent session:
 - Adjustment request (verbatim)
-- ui-analyzer focusAreas[] with `ui:` prefix preserved
+- ui-analyzer focusAreas[] (raw fact_id; the `ui:` prefix is only applied when merging with codebase-analysis facts in a Fact Disposition Table, which Branch A does not do)
 - Affected files list
 - External resources fetched_summary and access methods that the verification loop will use
 
@@ -99,19 +103,19 @@ After work-planner returns:
 - Present the work plan to the user.
 - **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with revised guidance.
 
-### Step 5: Adjustment + MCP Verification (parent session)
+### Step 5: Adjustment + Verification (parent session)
 
 For each adjustment unit (per file in Branch A; per work plan phase in Branch B):
 1. **Plan the edit** based on ui-analyzer focusAreas and the relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
-3. **Verify against external sources** using the access methods from `docs/project-context/external-resources.md`:
-   - Design origin via the configured design-tool MCP (compare current rendering vs design source)
-   - Visual verification via the configured browser MCP (capture screenshot, check layout)
-   - Design system catalog via the configured design-system MCP (confirm component variants and tokens)
-4. **Refine and re-verify** until the adjustment matches the design source.
+3. **Verify against external sources** using whichever access method `docs/project-context/external-resources.md` declares for each axis:
+   - Design origin: compare current rendering against the design source via the declared access method (e.g., design-tool MCP, WebFetch from a public URL, file read from a specification path)
+   - Visual rendering: capture screenshot or run a smoke check via the declared visual verification method (e.g., browser MCP, E2E test runner CLI invoked via Bash, dev-server URL inspection, Storybook URL)
+   - Design system tokens / variants: confirm against the declared design system source (e.g., design-system MCP, package import, Storybook URL, internal documentation path)
+4. **Refine and re-verify** until the adjustment matches the design source, or matches the user-confirmed adjustment target when no separate design source exists.
 5. When the adjustment unit converges, proceed to Step 6 for that unit.
 
-When MCP access is unavailable for the verification step, fall back to manual verification (ask the user to confirm the result, or use file-based comparison if a specification file is available).
+When the project-tier file declares no automated verification mechanism for an axis, ask the user to confirm the result manually, or use file-based comparison when a specification file is available.
 
 ### Step 6: Quality Verification (per adjustment unit)
 
@@ -140,7 +144,7 @@ Then loop back to Step 5 for the next unit (Branch B work plan phase, or next fi
 - [ ] Write set confirmed by the user before scale judgment
 - [ ] Scale judgment applied to the confirmed write set; 6+ files or ADR conditions escalated to the design phase
 - [ ] Branch A: adjustment context presented and confirmed; Branch B: work plan approved
-- [ ] All adjustment units edited and verified via MCP (or manual fallback when MCP absent)
+- [ ] All adjustment units edited and verified using the project's declared verification mechanism (manual confirmation when no automated mechanism is declared)
 - [ ] Each adjustment unit passed quality-fixer-frontend with explicit `filesModified` scoping
 - [ ] Each adjustment unit committed
 

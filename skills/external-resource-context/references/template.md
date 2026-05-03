@@ -19,13 +19,13 @@ This file records the external resources available to this project and how to ac
 - Status: <present / not applicable>
 - Source type: <design tool / specification file / public documentation URL / existing implementation only>
 - Location: <URL / repository path>
-- Access method: <MCP name / WebFetch / file read / manual screenshot>
+- Access method: <WebFetch / file read / MCP name / manual screenshot>
 
 ### Design System
 - Status: <present / not applicable>
 - Source type: <component library with MCP / component library with documentation URL / Storybook / internal package / no design system>
 - Location: <URL / package name / repository path>
-- Access method: <MCP name / WebFetch / package import>
+- Access method: <package import / WebFetch / MCP name>
 
 ### Guidelines
 - Status: <present / not applicable>
@@ -35,16 +35,16 @@ This file records the external resources available to this project and how to ac
 
 ### Visual Verification Environment
 - Status: <present / not applicable>
-- Tool type: <browser automation MCP / E2E test runner / Storybook / manual>
-- Entry: <MCP name / command / URL>
+- Tool type: <E2E test runner / Storybook / browser automation MCP / manual>
+- Entry: <CLI command / URL / MCP name>
 
 ## Backend
 
 ### Database Schema Source
 - Status: <present / not applicable>
-- Source type: <migration files / schema file / database MCP / external registry>
+- Source type: <migration files / schema file / external registry / database MCP>
 - Location: <path or URL>
-- Access method: <file read / MCP name>
+- Access method: <file read / introspection command / MCP name>
 
 ### Migration History
 - Status: <present / not applicable>
@@ -55,7 +55,7 @@ This file records the external resources available to this project and how to ac
 ### Secret Store
 - Status: <present / not applicable>
 - Service: <service name>
-- Access method: <CLI command / MCP name / SDK call>
+- Access method: <CLI command / SDK call / MCP name>
 
 ### Background Job Infrastructure
 - Status: <present / not applicable>
