@@ -323,5 +323,5 @@ Produce `candidateWriteSet[]` listing the files most likely to require modificat
 - [ ] Generated artifact readiness lists every generator whose output is consumed by typecheck/test/build/runtime
 - [ ] Focus areas have evidence pointers; no fact appears in focusAreas without a corresponding evidence entry
 - [ ] `candidateWriteSet` is populated with at least the high-confidence entries; speculative entries use `confidence: "low"`
-- [ ] Sections outside the affected scope are emitted as empty arrays / minimal placeholders, not enumerated speculatively (e.g., for a 1-2 file adjustment, `displayConditions` and `accessibility` may be `[]` if the scope does not touch them)
+- [ ] Sections outside the affected scope are emitted as empty arrays / minimal placeholders (e.g., for a 1-2 file adjustment, `displayConditions` and `accessibility` may be `[]` if the scope does not touch them)
 - [ ] Final message is a single JSON object matching the schema; no trailing commentary

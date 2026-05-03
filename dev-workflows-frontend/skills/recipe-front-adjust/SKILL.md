@@ -70,8 +70,9 @@ Run the hearing protocol per the external-resource-context skill (frontend domai
 ### Step 3: Scale Judgment
 
 1. Read `candidateWriteSet[]` from ui-analyzer output.
-2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, accept the user's edited list.
+2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, send a follow-up plain message asking the user to paste the edited file list, then proceed with that list.
 3. Apply the Creation Decision Matrix from the documentation-criteria skill to the **confirmed write set count**:
+   - **0 files**: The adjustment request did not map to any existing file. Escalate to the user with the message "No write target identified from the adjustment request. Please clarify which component(s) should change, or run the full frontend design phase if this is a new feature." Stop this recipe.
    - **1-2 files**: Direct adjustment, no work plan.
    - **3-5 files**: Work plan required.
    - **6+ files** OR any ADR Creation Condition triggered (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.): Adjustment scope exceeded. Escalate the user to the full frontend design phase. Stop this recipe.
@@ -118,15 +119,15 @@ When the user has not configured an MCP that the verification step would normall
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
-  - Build the prompt by branch:
-    - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]` so quality-fixer scopes to those files.
-    - **Branch B (3-5 files)**: pass `task_file: <work plan path or per-phase task path when one was generated>` AND `filesModified: [list of files edited in this adjustment unit]`. Both fields together give quality-fixer the work-plan context plus the precise write set.
+  - Build the prompt by branch. Scope is always `filesModified`; `task_file` (when passed) is a supplementary hint that quality-fixer-frontend may use to read the document's "Quality Assurance Mechanisms" section.
+    - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]`.
+    - **Branch B (3-5 files)**: pass `task_file: <work plan path>` (supplementary hint) AND `filesModified: [list of files edited in this adjustment unit]` (primary scope).
   - Example (Branch A): `prompt: "filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
   - Example (Branch B): `prompt: "task_file: docs/plans/[plan-name].md. filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
-- Parse the response per subagents-orchestration-guide:
+- Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
-  - `stub_detected` → return to Step 5 to complete the implementation, then re-run quality-fixer-frontend
-  - `blocked` → escalate to user with the blocking issue and stop
+  - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
+  - `blocked` → read `reason`. When `"Cannot determine due to unclear specification"`, surface `blockingIssues[]` to the user and stop. When `"Execution prerequisites not met"`, surface `missingPrerequisites[]` with `resolutionSteps` to the user and stop
 
 ### Step 7: Commit (per adjustment unit)
 Commit the adjustment unit on quality approval. Include the affected files and any regenerated artifacts (CSS module typings, message catalog typings, etc.) flagged by ui-analyzer's `generatedArtifacts` section.
