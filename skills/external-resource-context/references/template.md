@@ -113,23 +113,3 @@ Free-form list captured during the self-declaration phase. Each entry: name, pur
 ```
 
 Sections corresponding to domains the user marked "Not applicable" for every axis can be omitted entirely. Sections with at least one present axis must include all axes within that domain (mark unused axes as "not applicable" inline).
-
-## Feature-Tier Template
-
-This is the section appended to a UI Spec or Design Doc. It references project-tier entries by label and lists only feature-specific identifiers. It never duplicates URLs, MCP names, or access commands.
-
-```markdown
-## External Resources Used
-
-This feature depends on the following resources from `docs/project-context/external-resources.md`. Refer to that file for environment access details.
-
-| Resource (project-tier label) | Feature-specific identifier | Notes |
-|-------------------------------|-----------------------------|-------|
-| Design Origin | <node id / file id / specific path within the design source> | <e.g., screen name, frame id> |
-| Design System | <specific components used> | <variants, customizations> |
-| API Schema Source | <specific endpoints or methods> | <e.g., POST /resource, RPC name> |
-
-Resources not used by this feature are omitted from this table. If a resource is used but no feature-specific identifier applies, write the project-tier label with "all" or "default scope" in the identifier column.
-```
-
-The feature-tier section's heading text is fixed as "External Resources Used"; the heading level follows the parent document's structure (h2 in UI Spec, h3 in Design Doc under Background and Context). The exact placement is defined by each document template (see `ui-spec-template.md` and `design-template.md`).
