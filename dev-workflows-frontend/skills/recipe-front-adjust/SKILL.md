@@ -4,19 +4,16 @@ description: Coordinate a frontend UI adjustment by hearing external resources, 
 disable-model-invocation: true
 ---
 
-**Context**: Dedicated to UI adjustment workflows on already-implemented features. Unlike recipe-front-design (document creation, fully delegated) and recipe-front-build (specified implementation, fully delegated), adjustment work depends on an iterative MCP-driven verification loop (compare with design source → adjust → re-verify) that needs to run alongside file edits. The standard implementation delegate (`task-executor-frontend`) uses a `tools` allowlist that excludes MCP, so the verification loop cannot run inside it. This recipe therefore performs the adjustment and verification in the parent session and delegates only the steps that fit a single subagent call (UI fact gathering, work plan creation, quality checks).
+**Context**: UI adjustment on already-implemented features. The verification loop (edit → MCP-driven check → refine) runs in the parent session.
 
 ## Execution Pattern
 
-**Core Identity**: "I am a guided executor. Subagents handle UI fact gathering, work plan creation, and quality checks; I run the adjustment and the MCP-driven verification loop myself."
+**Core Identity**: "I am a guided executor. I run the adjustment and the MCP-driven verification loop myself; subagents handle one-shot tasks."
 
 **Execution Protocol**:
-1. **Delegate to subagents**: UI fact gathering (ui-analyzer — uses `disallowedTools` to inherit MCP access for fetching external sources in its own context), work plan creation (work-planner), quality checks (quality-fixer-frontend).
-2. **Run in the parent session**: external-resource hearing via AskUserQuestion, scale judgment, the actual adjustment edits, MCP-driven verification (compare CSS against design source, check visual rendering via a browser MCP, etc.), and the iteration loop until acceptance.
-3. **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding.
-4. **Scope**: see Scope Boundaries below.
-
-**Why this differs from other recipes**: The adjust verification loop is multi-step (edit → verify against MCP → refine → re-verify). A single subagent call cannot host this loop because returning intermediate results to the orchestrator and re-invoking the subagent for each iteration would amplify context cost. The parent session keeps the loop tight. Delegated subagents (ui-analyzer, work-planner, quality-fixer-frontend) each complete in one call and do not need the loop.
+1. **Delegate to subagents** (one-shot calls): ui-analyzer, work-planner, quality-fixer-frontend.
+2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set confirmation, scale judgment, adjustment edits, MCP-driven verification, iteration until acceptance.
+3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
 ## Workflow Overview
 
@@ -61,21 +58,18 @@ Adjustment request: $ARGUMENTS
 ## Execution Flow
 
 ### Step 1: External Resource Hearing
-Run the hearing protocol per the external-resource-context skill (frontend domain). The parent session owns this step because it requires AskUserQuestion. The skill defines file-existence branching, two-phase hearing (structured axes + self-declaration), and persistence to `docs/project-context/external-resources.md`.
+Run the hearing protocol per the external-resource-context skill (frontend domain).
 
 ### Step 2: UI Fact Gathering
-Ground the adjustment in observable facts before scoping the work. ui-analyzer reads the project-tier external-resources file and fetches external UI sources (design origin, design system catalog, guidelines) via the inherited MCP/URL access methods, then analyzes the existing UI codebase. Heavy fetches stay inside the subagent's own context.
 
 - Invoke **ui-analyzer** using Agent tool
   - `subagent_type: "dev-workflows-frontend:ui-analyzer"`
   - `description: "UI fact gathering for adjustment"`
   - `prompt: "requirement_analysis: { affectedFiles: [files inferred from the adjustment request], scale: 'small', purpose: 'UI adjustment', technicalConsiderations: [] }. requirements: [adjustment request]. target_components: [components named in the request]. ui_spec_path: [path if an existing UI Spec covers the affected components, else absent]. Read docs/project-context/external-resources.md, fetch external UI sources via the declared access methods, and analyze the existing UI codebase. Populate candidateWriteSet[] with the files most likely to require modification."`
-- Read the JSON output. `componentStructure[]`, `externalResources.*`, `focusAreas[]`, and `candidateWriteSet[]` drive the scale judgment in Step 3 and the adjustment loop in Step 5.
 
 ### Step 3: Scale Judgment
-Scale judgment is based on the **write set** (files that will actually be modified), not on the broader set the analyzer read. The analyzer's `candidateWriteSet[]` is a candidate list, not a commitment — confirm it with the user before branching.
 
-1. Read `candidateWriteSet[]` from ui-analyzer output. Distinguish high-confidence entries (likely-to-modify) from medium/low-confidence entries (speculative).
+1. Read `candidateWriteSet[]` from ui-analyzer output.
 2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, accept the user's edited list.
 3. Apply the Creation Decision Matrix from the documentation-criteria skill to the **confirmed write set count**:
    - **1-2 files**: Direct adjustment, no work plan.
@@ -106,7 +100,6 @@ After work-planner returns:
 - **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with revised guidance.
 
 ### Step 5: Adjustment + MCP Verification (parent session)
-This is the loop the parent session runs directly. Subagents are not used here because their `tools` allowlist excludes MCP and would break the verification step.
 
 For each adjustment unit (per file in Branch A; per work plan phase in Branch B):
 1. **Plan the edit** based on ui-analyzer focusAreas and the relevant external resource (e.g., design origin's fetched_summary).
@@ -121,9 +114,6 @@ For each adjustment unit (per file in Branch A; per work plan phase in Branch B)
 When the user has not configured an MCP that the verification step would normally use, fall back to manual verification (ask the user to confirm the result, or use file-based comparison if a specification file is available).
 
 ### Step 6: Quality Verification (per adjustment unit)
-Delegate quality checks. quality-fixer-frontend runs typecheck / lint / test / format and fixes issues — these do not require MCP access.
-
-`quality-fixer-frontend` expects `task_file` to be an actual file path and uses `filesModified` as the primary scope for incomplete-implementation checks. After per-unit commits, `git diff HEAD` becomes empty for the just-committed unit, so passing `filesModified` explicitly is required for correct scoping.
 
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`

@@ -13,18 +13,12 @@ You are an AI assistant specializing in UI fact gathering for frontend design an
 
 ## Boundary with codebase-analyzer
 
-This agent and codebase-analyzer have complementary scopes. They are designed to run in parallel before frontend design.
-
 | Agent | Owns |
 |-------|------|
 | codebase-analyzer | Data layer, contracts, type definitions, business rules, validation, schema/migrations, quality assurance mechanisms, dependency graph |
 | ui-analyzer | UI external sources (design origin, design system catalog, guidelines fetched via MCP / URL / file) + existing UI surface (component structure, props patterns, CSS layout state, state matrices, display conditions, i18n format, accessibility, generated UI artifacts) |
 
-When a fact could fit either agent (e.g., a component's prop type), codebase-analyzer records the type definition and ui-analyzer records the call-site usage pattern. They are complementary, not overlapping.
-
-## Tool Scope
-
-This agent uses `disallowedTools` only (no `tools` allowlist) so the parent session's full tool set is inherited, including any MCP tools the user has installed. File modification (Write, Edit, MultiEdit, NotebookEdit) is denied — analysis only, no code changes. MCP tools (e.g., a design-tool MCP, a design-system catalog MCP, a browser MCP) are accessible if and only if they exist in the parent session.
+When a fact could fit either agent (e.g., a component's prop type), codebase-analyzer records the type definition and ui-analyzer records the call-site usage pattern.
 
 ## Input Parameters
 
@@ -159,14 +153,10 @@ For each generator (CSS module typings, message catalog typings, route typings, 
 
 ### Step 12: Candidate Write Set
 
-The set of files analyzed in Steps 3-11 is broader than the set the design or adjustment will modify. Produce a separate `candidateWriteSet[]` listing the files most likely to require modification given the input requirements, with a confidence label per entry.
-
-For each file:
+Produce `candidateWriteSet[]` listing the files most likely to require modification given the input requirements. For each file:
 - Path
 - Reason it is likely modified (link to a `focusAreas[]` entry or a specific fact in `componentStructure` / `cssLayout` / `i18n`)
 - Confidence: `high` (directly named in the requirement or clearly the only locus for the change) / `medium` (one of a small set of candidates) / `low` (speculative, may not need change)
-
-This list is a candidate, not a commitment — the calling recipe should treat it as input to a user-confirmed write set, not as the final scope.
 
 ## Output Format
 
