@@ -48,10 +48,9 @@ Adjustment request → external resource hearing (parent session, AskUserQuestio
 - Quality verification via quality-fixer-frontend
 - Commit per adjustment unit
 
-**Responsibility Boundary**: This skill completes when the adjustment is committed and quality has passed. Adjustment work is end-to-end within this recipe; it does not hand off to other implementation recipes.
+**Responsibility Boundary**: This skill completes when the adjustment is committed and quality has passed. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
 
-**Out of scope**:
-- Creating PRD, UI Spec, or Design Doc — adjustment work uses existing documents. When the requested change exceeds adjustment scope (new feature, new architecture, multi-screen redesign, or any ADR Creation Condition from documentation-criteria), escalate the user to the full frontend design phase.
+**Escalation Boundary**: Escalate to the full frontend design phase when the request requires PRD, UI Spec, Design Doc, new architecture, multi-screen redesign, or any ADR Creation Condition from documentation-criteria.
 
 Adjustment request: $ARGUMENTS
 
