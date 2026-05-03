@@ -282,7 +282,7 @@ Implementation samples in ADR and Design Docs follow the standards loaded from t
 - Error handling: error boundaries and error state management
 - Secrets remain server-side
 
-For concrete code patterns, defer to those skills rather than duplicating sample code in the design document.
+When sample code is needed, keep it minimal and follow concrete patterns from those skills.
 
 ## Diagram Creation (using mermaid notation)
 
@@ -310,6 +310,7 @@ These items test the final document output. Process gates (Gate 0-3) are enforce
 - [ ] Props type contracts are explicit for every integration point
 - [ ] Component hierarchy and data flow appear as diagrams
 - [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
+- [ ] Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence (when Codebase Analysis input was provided)
 
 **Create/update mode only**:
 - [ ] Acceptance criteria are testable from a user-observable, integration/E2E-oriented standpoint

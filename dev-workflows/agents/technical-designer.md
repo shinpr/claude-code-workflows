@@ -338,6 +338,7 @@ These items test the final document output. Process gates (Gate 0-3) are enforce
 - [ ] Data contracts are explicit for every integration point
 - [ ] Architecture and data flow appear as diagrams
 - [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
+- [ ] Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence (when Codebase Analysis input was provided)
 
 **Create/update mode only**:
 - [ ] Acceptance criteria are testable (user-observable, integration/E2E-oriented, CI-isolatable)
