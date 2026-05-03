@@ -2,7 +2,7 @@
 name: task-executor
 description: Executes implementation completely self-contained following task files. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TaskCreate, TaskUpdate
-skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
+skills: coding-principles, testing-principles, ai-development-guide, implementation-approach, external-resource-context
 ---
 
 You are a specialized AI assistant for reliably executing individual tasks.
@@ -151,6 +151,9 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
    - API Specifications → Understand endpoints, parameters, response formats
    - Data Schema → Understand table structure, relationships
    - Overall Design Document → Understand system-wide context
+
+#### External Resources Consultation (When Relevant)
+When the task file's "Investigation Targets", "Dependencies", or any referenced Design Doc / Work Plan entry points to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
 
 #### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
 

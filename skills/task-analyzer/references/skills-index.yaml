@@ -214,3 +214,26 @@ skills:
       - "Situations Requiring Technical Decisions"
       - "Implementation Completeness Assurance"
       - "Impact Analysis"
+
+  # Cross-Cutting Skills
+  external-resource-context:
+    skill: "external-resource-context"
+    tags: [cross-cutting, hearing-protocol, design-source, design-system, api-schema, iac-source, secrets, environment, two-tier-storage]
+    typical-use: "Captures access methods for resources outside the repository (design origin, design system, API schema, IaC source, secrets, etc.) and persists them in a deterministic location for downstream agents"
+    size: medium
+    key-references:
+      - "references/frontend.md"
+      - "references/backend.md"
+      - "references/api.md"
+      - "references/infra.md"
+      - "references/template.md"
+    sections:
+      - "Purpose"
+      - "Scope Boundaries"
+      - "Storage Locations (Two-Tier)"
+      - "Hearing Protocol"
+      - "Storage Protocol"
+      - "Reference Protocol (For Downstream Consumers)"
+      - "Output Format"
+      - "Quality Checklist"
+      - "References"

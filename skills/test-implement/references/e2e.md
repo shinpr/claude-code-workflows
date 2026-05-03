@@ -2,7 +2,7 @@
 
 ## Lane Selection
 
-E2E tests in this workflow split into two lanes (defined in integration-e2e-testing skill):
+E2E tests in this workflow split into two lanes:
 
 | Lane | Backend setup | Use these patterns |
 |------|---------------|-------------------|
@@ -225,7 +225,7 @@ Before service-integration-e2e tests can pass, verify:
 - [ ] Environment variables are set (`E2E_*` prefixed)
 - [ ] External services are either available or stubbed
 
-When the work plan includes dedicated environment setup tasks (Phase 0 — see work-planner E2E Environment Prerequisites extraction), follow those tasks. When no setup tasks exist in the plan, address missing prerequisites as part of the test implementation task itself, OR consider whether the verification could move to fixture-e2e instead.
+When the work plan includes dedicated environment setup tasks (Phase 0; see the work plan's E2E Environment Prerequisites section), follow those tasks. When no setup tasks exist in the plan, address missing prerequisites as part of the test implementation task itself, OR consider whether the verification could move to fixture-e2e instead.
 
 ## Locator Strategy
 

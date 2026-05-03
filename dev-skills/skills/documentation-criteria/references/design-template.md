@@ -33,6 +33,14 @@ unknowns:
 - [ADR File Name]: [Related decision items]
 - Reference common technical ADRs when applicable
 
+### External Resources Used
+
+Lists each external resource this feature depends on with its feature-specific identifier. Resources not used by this feature are omitted from the table.
+
+| Resource (project-tier label) | Feature-specific identifier | Notes |
+|-------------------------------|-----------------------------|-------|
+| [Resource label] | [e.g., specific endpoint path, schema source path, IaC module] | [feature-specific scope] |
+
 ### Agreement Checklist
 
 #### Scope
@@ -327,7 +335,7 @@ Mark as N/A with brief rationale when the feature has no data layer dependencies
 
 ## Verification Strategy
 
-Verification Strategy defines what correctness means and how to prove it at design time. L1/L2/L3 (from implementation-approach skill) define completion verification granularity at task execution time.
+Verification Strategy defines what correctness means and how to prove it at design time. L1/L2/L3 levels (L1: functional operation works as end-user feature; L2: tests added and passing; L3: build succeeds without errors) define completion verification granularity at task execution time.
 
 ### Correctness Proof Method
 

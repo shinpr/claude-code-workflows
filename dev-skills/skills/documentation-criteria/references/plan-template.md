@@ -49,19 +49,19 @@ Maps each Design Doc technical requirement to the covering task(s). One row per 
 
 ## UI Spec Component → Task Mapping
 
-Include this section when a UI Spec is among the inputs. Maps each component documented in the UI Spec to the task(s) that implement it. task-decomposer reads this table to populate each task's Investigation Targets with the corresponding UI Spec section. Omit the section when no UI Spec exists.
+Include this section when a UI Spec is among the inputs. Maps each component documented in the UI Spec to the task(s) that implement it. Omit the section when no UI Spec exists.
 
 | UI Spec Component (section heading) | States to Cover | Covered By Task(s) | Gap Status | Notes |
 |---|---|---|---|---|
 | [Use the UI Spec heading exactly as written, e.g., "§ Component: AlertCard"] | [default / loading / empty / error / partial — list the states the implementation must produce] | [Phase X Task Y] | covered | |
 
-**Reference key rule**: The component identifier in column 1 is the UI Spec section heading (verbatim). ui-spec-designer enforces unique component headings so this reference resolves to exactly one section.
+**Reference key rule**: The component identifier in column 1 is the UI Spec section heading (verbatim). UI Spec headings are unique by construction so this reference resolves to exactly one section.
 
 **Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
 
 ## Connection Map
 
-Include this section when the implementation crosses more than one package, service, or process boundary. Document each boundary so task-decomposer can propagate boundary context to the implementation tasks on each side. Omit the section when the implementation stays within a single package.
+Include this section when the implementation crosses more than one package, service, or process boundary. Document each boundary. Omit the section when the implementation stays within a single package.
 
 | Boundary | Owner (left side) | Owner (right side) | Expected Signal | Covered By Task(s) |
 |---|---|---|---|---|
@@ -87,9 +87,7 @@ Include this section when the implementation crosses more than one package, serv
 
 ## Implementation Phases
 
-Select ONE phase structure based on implementation approach from Design Doc.
-See documentation-criteria skill for detailed Phase Division Criteria.
-All quality checks follow Quality Check Workflow from ai-development-guide skill.
+Select ONE phase structure based on implementation approach from Design Doc. Phase Division Criteria are defined alongside this template. Per-phase quality checks run lint, typecheck, tests, build, and any adopted QA mechanisms from the Design Doc.
 
 ### Option A: Vertical Slice Phase Structure
 

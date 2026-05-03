@@ -22,6 +22,16 @@ Prototype code is an **attachment** to this UI Spec. The canonical specification
 - **Compliance premise**: [e.g., design system compliance, component library usage]
 - **Relationship to canonical spec**: Differences between prototype and this spec are resolved in favor of this document. Prototype serves as visual/behavioral reference only.
 
+## External Resources Used
+
+Lists each external resource this feature depends on with its feature-specific identifier. Resources not used by this feature are omitted from the table.
+
+| Resource (project-tier label) | Feature-specific identifier | Notes |
+|-------------------------------|-----------------------------|-------|
+| Design Origin | [feature-specific identifier] | [scope notes] |
+| Design System | [components used in this feature] | [variants, customizations] |
+| Visual Verification Environment | [story names / test paths / page routes] | [how this feature is rendered for review] |
+
 ## AC Traceability (Prototype)
 
 Map PRD acceptance criteria to prototype references. Skip this section if no prototype is provided.
@@ -59,7 +69,7 @@ Map PRD acceptance criteria to prototype references. Skip this section if no pro
 
 ### Component: [ComponentName]
 
-> Component heading uniqueness: every `Component: [ComponentName]` heading must be unique within this UI Spec. work-planner and task-decomposer reference components by exact heading text — duplicate names or paraphrased headings break the propagation to implementation tasks.
+> Component heading uniqueness: every `Component: [ComponentName]` heading must be unique within this UI Spec. Duplicate or paraphrased headings break downstream propagation to implementation tasks.
 
 #### State x Display Matrix
 

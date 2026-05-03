@@ -10,47 +10,49 @@ This reference defines the orchestration flow for projects spanning multiple lay
 
 ## Design Phase
 
-### Large Scale Fullstack (6+ Files) - 15 Steps
+### Large Scale Fullstack (6+ Files) - 16 Steps
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
 | 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
 | 2 | prd-creator | PRD covering entire feature (all layers) | Single PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
-| 4 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
-| 5 | ui-spec-designer | UI Spec from PRD + optional prototype | UI Spec |
-| 6 | document-reviewer | UI Spec review **[Stop]** | Approval |
-| 7 | codebase-analyzer ×2 | Codebase analysis per layer (pass req-analyzer output + PRD path, filtered to layer) | Codebase guidance per layer |
-| 8 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
-| 9 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 10 as `prior_layer_verification`) | Backend verification |
-| 10 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + backend Design Doc + `prior_layer_verification` from step 9 + UI Spec) | Frontend Design Doc |
-| 11 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 12 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
-| 13 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 14 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
-| 15 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
+| 4 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend domain primary; backend / api / infra domains as applicable for the layer scope). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
+| 5 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
+| 6 | codebase-analyzer ×2 + ui-analyzer | Codebase analysis per layer + UI fact gathering (parallel; ui-analyzer reads external-resources.md and fetches external UI sources via inherited MCP/URL access) | Codebase guidance per layer + UI fact JSON |
+| 7 | ui-spec-designer | UI Spec from PRD + optional prototype + ui-analyzer output | UI Spec |
+| 8 | document-reviewer | UI Spec review **[Stop]** | Approval |
+| 9 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
+| 10 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 11 as `prior_layer_verification`) | Backend verification |
+| 11 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 10 + UI Spec) | Frontend Design Doc |
+| 12 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
+| 13 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
+| 14 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
+| 15 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
+| 16 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
-### Medium Scale Fullstack (3-5 Files) - 13 Steps
+### Medium Scale Fullstack (3-5 Files) - 14 Steps
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
 | 1 | requirement-analyzer | Requirement analysis + scale determination **[Stop]** | Requirements + scale |
-| 2 | codebase-analyzer ×2 | Codebase analysis per layer (pass req-analyzer output, filtered to layer) | Codebase guidance per layer |
-| 3 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
-| 4 | ui-spec-designer | UI Spec from requirements + optional prototype | UI Spec |
-| 5 | document-reviewer | UI Spec review **[Stop]** | Approval |
-| 6 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
-| 7 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 8 as `prior_layer_verification`) | Backend verification |
-| 8 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + backend Design Doc + `prior_layer_verification` from step 7 + UI Spec) | Frontend Design Doc |
-| 9 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 10 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
-| 11 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 12 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
-| 13 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
+| 2 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend / backend / api / infra domains as applicable). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
+| 3 | codebase-analyzer ×2 + ui-analyzer | Codebase analysis per layer + UI fact gathering (parallel; ui-analyzer reads external-resources.md and fetches external UI sources via inherited MCP/URL access) | Codebase guidance per layer + UI fact JSON |
+| 4 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
+| 5 | ui-spec-designer | UI Spec from requirements + optional prototype + ui-analyzer output | UI Spec |
+| 6 | document-reviewer | UI Spec review **[Stop]** | Approval |
+| 7 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
+| 8 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 9 as `prior_layer_verification`) | Backend verification |
+| 9 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 8 + UI Spec) | Frontend Design Doc |
+| 10 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
+| 11 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
+| 12 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
+| 13 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
+| 14 | work-planner | Work plan from all Design Docs **[Stop: Batch approval]** | Work plan |
 
 ### Parallelization in Multi-Agent Steps
 
-Steps marked with ×2 (codebase-analyzer ×2, document-reviewer ×2) invoke the agent once per layer. These invocations are independent and can run in parallel when the orchestrator supports concurrent Agent tool calls. The two code-verifier invocations run sequentially: backend verification completes before frontend authoring begins so the frontend designer references verified backend contracts.
+Steps marked with ×2 (codebase-analyzer ×2, document-reviewer ×2) invoke the agent once per layer. The combined codebase-analyzer ×2 + ui-analyzer step invokes three subagents in parallel — the two codebase-analyzer calls (one per layer) and the single ui-analyzer call — when the orchestrator supports concurrent Agent tool calls. The two code-verifier invocations run sequentially: backend verification completes before frontend authoring begins so the frontend designer references verified backend contracts.
 
 ### Layer Context in Design Doc Creation
 
@@ -72,10 +74,12 @@ Focus on: API contracts, data layer, business logic, service architecture.
 ```text
 Create a frontend Design Doc from [PRD path or requirement_analysis].
 Codebase analysis: [JSON from codebase-analyzer for frontend layer]
+UI analysis: [JSON from ui-analyzer]
 Backend Design Doc: [path]
 prior_layer_verification: [JSON from code-verifier on backend Design Doc]
 Reference UI Spec at [path] for component structure and state design.
 Use `prior_layer_verification.discrepancies[]` as known issues to address or escalate. Do not infer verified claims beyond what the verifier output states explicitly.
+Apply `code:` prefix to fact_ids from codebase-analyzer and `ui:` prefix to fact_ids from ui-analyzer when filling the Fact Disposition Table.
 Focus on: component hierarchy, state management, UI interactions, data fetching.
 ```
 
