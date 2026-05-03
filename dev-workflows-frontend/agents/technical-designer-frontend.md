@@ -211,7 +211,7 @@ When conversion is required, clearly specify wrapper implementation or migration
   - `dataModel` → populate data-related sections (schema references, data contracts)
   - `constraints` → incorporate into design constraints and assumptions
   - Conduct additional investigation only for areas not covered by the analysis or flagged in `limitations`
-- **UI Analysis** (optional, from ui-analyzer; runs in parallel with Codebase Analysis):
+- **UI Analysis** (optional, from UI analysis phase; runs in parallel with Codebase Analysis):
   - When provided, use as the primary source for the visual, layout, and interaction portions of the "Existing Codebase Analysis" section
   - `externalResources` → ground design source / design system / guideline references in the External Resources Used subsection
   - `focusAreas` → contribute rows to the Fact Disposition Table with fact_id values prefixed `ui:` to disambiguate from `code:` facts. Each row inherits evidence, factsToAddress, and risk fields from the analyzer output
