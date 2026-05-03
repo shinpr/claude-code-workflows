@@ -22,6 +22,18 @@ Prototype code is an **attachment** to this UI Spec. The canonical specification
 - **Compliance premise**: [e.g., design system compliance, component library usage]
 - **Relationship to canonical spec**: Differences between prototype and this spec are resolved in favor of this document. Prototype serves as visual/behavioral reference only.
 
+## External Resources Used
+
+This feature depends on resources outside the repository. Environment access details (URLs, MCP names, file paths) are recorded once in `docs/project-context/external-resources.md`. This section lists only the resources used by this feature and any feature-specific identifiers (e.g., a particular node within the design source, specific components from the design system).
+
+| Resource (project-tier label) | Feature-specific identifier | Notes |
+|-------------------------------|-----------------------------|-------|
+| Design Origin | [e.g., node id / frame id, or "all screens listed below"] | [e.g., entry point, screen mapping] |
+| Design System | [components used in this feature] | [variants, customizations] |
+| Visual Verification Environment | [story names / test paths / page routes] | [how this feature is rendered for review] |
+
+Resources not used by this feature are omitted from this table. If `docs/project-context/external-resources.md` does not yet exist, run the `external-resource-context` skill before completing this UI Spec.
+
 ## AC Traceability (Prototype)
 
 Map PRD acceptance criteria to prototype references. Skip this section if no prototype is provided.
