@@ -71,11 +71,7 @@ Must be performed at the beginning of Design Doc creation:
    - [ ] If any agreements are not reflected, state the reason
 
 ### External Resources Integration [Gate 0 — Required]
-Per the external-resource-context skill, the Design Doc carries an "External Resources Used" subsection under Background and Context.
-
-1. **Read project-tier file** - Consult `docs/project-context/external-resources.md` (when present) for environment-stable access details. Do not duplicate URLs or MCP names into the Design Doc.
-2. **List feature-specific subset** - Identify which resources are used by this feature and record their feature-specific identifiers (specific endpoint paths, IaC modules, schema source paths, etc.) in the External Resources Used table.
-3. **Escalate when missing** - When the project-tier file is absent and the design references external resources, escalate so the orchestrating recipe can run the hearing protocol before the Design Doc completes.
+Fill the Design Doc's "External Resources Used" subsection (under Background and Context) per the external-resource-context skill (feature-tier protocol).
 
 ### Standards Identification [Gate 0 — Required]
 Must be performed before any investigation:

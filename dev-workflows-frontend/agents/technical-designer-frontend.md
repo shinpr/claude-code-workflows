@@ -68,11 +68,7 @@ Must be performed at the beginning of Design Doc creation:
    - [ ] If any agreements are not reflected, state the reason
 
 ### External Resources Integration [Gate 0 — Required]
-Per the external-resource-context skill, the Design Doc carries an "External Resources Used" subsection under Background and Context.
-
-1. **Read project-tier file** - Consult `docs/project-context/external-resources.md` (when present) for environment-stable access details. Do not duplicate URLs or MCP names into the Design Doc.
-2. **Carry forward feature subset** - When a UI Spec exists, inherit its External Resources Used table; expand it with Design-Doc-specific resources (API schema source, IaC source, etc.) that the UI Spec did not cover.
-3. **Escalate when missing** - When the project-tier file is absent and the design references external resources, escalate so the orchestrating recipe can run the hearing protocol before the Design Doc completes.
+Fill the Design Doc's "External Resources Used" subsection (under Background and Context) per the external-resource-context skill (feature-tier protocol). When a UI Spec exists, inherit its External Resources Used table and expand it with Design-Doc-specific resources (API schema source, IaC source, etc.).
 
 ### Existing Code Investigation [Gate 1 — Required]
 Must be performed before Design Doc creation:

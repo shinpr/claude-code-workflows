@@ -44,7 +44,15 @@ When continuing existing flow, verify:
 - Current phase position (Requirements/Design/Planning/Implementation/QA)
 - Identify next step in monorepo-flow.md
 
-### 3. UI Specification Phase (Frontend Layer)
+### 3. External Resource Hearing
+
+Run the hearing protocol per the external-resource-context skill before fact gathering and document creation. The orchestrator owns this step (it requires AskUserQuestion). Cover the domains relevant to this fullstack scope: frontend (always for fullstack-implement), backend / api / infra as applicable. The skill defines file-existence branching, two-phase hearing, and persistence to `docs/project-context/external-resources.md`.
+
+### 4. Fact Gathering Phase (Parallel)
+
+Per monorepo-flow.md, invoke codebase-analyzer ×2 (one per layer) and ui-analyzer in parallel. ui-analyzer reads the project-tier external-resources file and fetches external UI sources via the inherited MCP/URL access methods. All three outputs feed downstream phases.
+
+### 5. UI Specification Phase (Frontend Layer)
 
 Before creating the frontend Design Doc, create a UI Specification:
 
@@ -54,16 +62,16 @@ Before creating the frontend Design Doc, create a UI Specification:
 
 Then invoke **ui-spec-designer**:
 - `subagent_type: "dev-workflows-frontend:ui-spec-designer"`
-- If prototype provided: `prompt: "Create UI Spec from PRD at [path]. Prototype code is at [user-provided path]."`
-- If no prototype: `prompt: "Create UI Spec from PRD at [path]. No prototype code available."`
+- Pass: PRD path (or requirement-analyzer output), `ui_analysis` JSON from Step 4, prototype path when provided
+- Example: `prompt: "Create UI Spec from PRD at [path]. ui_analysis: [JSON from ui-analyzer]. Prototype code is at [user-provided path]."`
 
 Invoke **document-reviewer** for UI Spec review, then **[STOP]** for user approval.
 
-### 4. Design Phase and Work Planning
+### 6. Design Phase and Work Planning
 
 **Follow monorepo-flow.md** for the complete design-through-planning flow. Key points:
 - Create separate Design Docs per layer (see monorepo-flow.md "Layer Context in Design Doc Creation")
-- **Frontend Design Doc must reference the approved UI Spec** (pass UI Spec path to technical-designer-frontend)
+- **Frontend Design Doc must reference the approved UI Spec** (pass UI Spec path to technical-designer-frontend) and reuse the ui-analyzer output from Step 4
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows:work-planner") with vertical slicing instruction

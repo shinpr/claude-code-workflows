@@ -155,14 +155,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
    - Overall Design Document → Understand system-wide context
 
 #### External Resources Consultation (When Relevant)
-Per the external-resource-context skill, the UI Spec or Design Doc carries an "External Resources Used" section listing feature-specific identifiers. Environment-stable access details (URLs, MCP names, file paths) live in `docs/project-context/external-resources.md`.
-
-When the task references a resource (e.g., consulting a design source, calling a design system MCP, hitting a mock endpoint, using the visual verification environment), follow this order:
-1. Read the consuming document's "External Resources Used" section to find the feature-specific identifier
-2. Read `docs/project-context/external-resources.md` for the access mechanism
-3. Use the declared access mechanism (MCP name, command, URL) to reach the resource
-
-When a needed resource is missing from both files, escalate with `reason: "external_resource_unspecified"` rather than guessing the access path.
+When the task references an external resource, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
 
 #### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
 

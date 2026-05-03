@@ -35,13 +35,11 @@ unknowns:
 
 ### External Resources Used
 
-This feature depends on resources outside the repository (design source, design system, API schema, IaC source, secret store, etc.). Environment access details (URLs, MCP names, file paths) are recorded once in `docs/project-context/external-resources.md`. This subsection lists only the resources used by this feature and any feature-specific identifiers.
+Filled per the external-resource-context skill (feature-tier protocol).
 
 | Resource (project-tier label) | Feature-specific identifier | Notes |
 |-------------------------------|-----------------------------|-------|
 | [Resource label] | [e.g., specific endpoint path, schema source path, IaC module] | [feature-specific scope] |
-
-Resources not used by this feature are omitted. If `docs/project-context/external-resources.md` does not yet exist, run the `external-resource-context` skill before continuing this Design Doc.
 
 ### Agreement Checklist
 

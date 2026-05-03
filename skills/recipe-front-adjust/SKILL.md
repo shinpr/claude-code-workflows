@@ -1,164 +1,157 @@
 ---
 name: recipe-front-adjust
-description: Coordinate a frontend UI adjustment from external resource hearing through scale-driven plan decision, UI fact collection, and handoff to the implementation phase. Use when "UI adjustment / visual tweak / existing component update / front adjust" is mentioned, or when the user wants to refine an already-implemented UI without redoing the full design phase.
+description: Coordinate a frontend UI adjustment by hearing external resources, gathering UI facts, scaling the work, optionally creating a work plan, executing the adjustment in this session with MCP-driven verification, and delegating quality checks. Use when "UI adjustment / visual tweak / existing component update / front adjust" is mentioned, or when the user wants to refine an already-implemented UI.
 disable-model-invocation: true
 ---
 
-**Context**: Dedicated to UI adjustment workflows on already-implemented features. Lighter than the full design phase but heavier than direct implementation, this recipe captures the small-but-essential preparation that adjustment work needs: external resource access, fact-grounded baseline, and a right-sized work plan.
+**Context**: Dedicated to UI adjustment workflows on already-implemented features. Unlike recipe-front-design (document creation, fully delegated) and recipe-front-build (specified implementation, fully delegated), adjustment work depends on iterative MCP-driven verification (compare with design source, verify visual rendering, refine, re-verify). MCP access is held by the parent session — not by subagents whose `tools` allowlist excludes MCP. This recipe therefore runs the adjustment itself in the parent session and delegates only the steps that do not require MCP.
 
-## Orchestrator Definition
+## Execution Pattern
 
-**Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
+**Core Identity**: "I am a guided executor. Subagents handle UI fact gathering, work plan creation, and quality checks; I run the adjustment and the MCP-driven verification loop myself."
 
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results.
-2. **Follow the steps defined below in order**. Each step has an explicit completion gate.
-3. **Hand off to the implementation phase** when adjustment preparation is complete. This recipe does not run task execution or quality fixing itself.
+1. **Delegate** to subagents for: external-resource hearing storage (none — orchestrator runs hearing directly via AskUserQuestion), UI fact gathering (ui-analyzer), work plan creation (work-planner), quality checks (quality-fixer-frontend).
+2. **Run myself** in the parent session: AskUserQuestion hearing, scale judgment, the actual adjustment edits, MCP-driven verification (e.g., compare CSS against design source, check visual rendering via browser MCP), and the iteration loop until acceptance.
+3. **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding.
 4. **Scope**: see Scope Boundaries below.
 
-**CRITICAL**: This recipe ends at the implementation handoff. Do not invoke task-executor or quality-fixer from this recipe — those belong to the implementation recipe family. Doing so bypasses the readiness gates owned by that family.
+**Why this differs from other recipes**: Adjustment requires MCP loops that subagents cannot perform (their `tools` allowlist excludes MCP). Delegating implementation to task-executor-frontend would break the verification loop. The recipe runs the loop in the parent session, where the user's full MCP set is available.
 
 ## Workflow Overview
 
 ```
-Adjustment request → external resource hearing (frontend domain)
+Adjustment request → external resource hearing (parent session, AskUserQuestion)
                                   ↓
-                     ui-codebase-analyzer (UI fact collection)
+                     ui-analyzer (subagent: fetch external sources + analyze code)
                                   ↓
-                     scale judgment (documentation-criteria)
+                     scale judgment (parent session, documentation-criteria matrix)
                                   ↓
             ┌────────────────────┴────────────────────┐
             ↓                                          ↓
-   (1-2 files: inline)                  (3+ files: work-planner → [Stop: plan approval])
+   (1-2 files: inline)                  (3-5 files: work-planner subagent → [Stop])
             ↓                                          ↓
-            └───────────────→ implementation handoff ──┘
+            └─→ adjustment + MCP verification (parent session) ←──┘
+                                  ↓
+                     quality-fixer-frontend (subagent: typecheck/lint/test)
+                                  ↓
+                     commit
 ```
 
 ## Scope Boundaries
 
 **Included in this skill**:
-- External resource hearing per the external-resource-context skill (frontend domain)
-- UI fact collection via ui-codebase-analyzer
+- External resource hearing per the external-resource-context skill
+- UI fact gathering via ui-analyzer
 - Scale judgment via documentation-criteria's Creation Decision Matrix
-- Work plan creation via work-planner when scale warrants it
-- Implementation handoff (user-facing announcement)
+- Optional work plan creation via work-planner
+- Adjustment edits and MCP-driven verification (run in this session)
+- Quality verification via quality-fixer-frontend
+- Commit per adjustment unit
 
-**Responsibility Boundary**: This skill completes when (a) the user is informed which implementation path to run, and (b) any required work plan has been approved. Task decomposition, implementation, and quality verification are out of scope and belong to the implementation phase.
+**Responsibility Boundary**: This skill completes when the adjustment is committed and quality has passed. Adjustment work is end-to-end within this recipe; it does not hand off to other implementation recipes.
 
 **Out of scope**:
-- Creating PRD, UI Spec, or Design Doc — adjustment work uses existing documents. When the requested change exceeds adjustment scope (new feature, new architecture, multi-screen redesign), escalate the user to the full frontend design phase.
-- Running task-executor / quality-fixer / code-verifier / security-reviewer.
+- Creating PRD, UI Spec, or Design Doc — adjustment work uses existing documents. When the requested change exceeds adjustment scope (new feature, new architecture, multi-screen redesign, or any ADR Creation Condition from documentation-criteria), escalate the user to the full frontend design phase.
 
 Adjustment request: $ARGUMENTS
 
 ## Execution Flow
 
 ### Step 1: External Resource Hearing
-Per the external-resource-context skill, capture access methods for the frontend resources this adjustment will touch (design origin, design system, guidelines, visual verification environment).
+Run the hearing protocol per the external-resource-context skill (frontend domain). The parent session owns this step because it requires AskUserQuestion. The skill defines file-existence branching, two-phase hearing (structured axes + self-declaration), and persistence to `docs/project-context/external-resources.md`.
 
-1. **File-existence check**: Run `! ls docs/project-context/external-resources.md 2>/dev/null` to detect the project-tier file.
-2. **Branch on existence**:
-   - **Absent** → run the full hearing for the frontend domain (axes from `references/frontend.md` of the external-resource-context skill).
-   - **Present** → AskUserQuestion: "`docs/project-context/external-resources.md` exists. Update it for this adjustment? (no / yes-full / yes-diff-only)". On `no` skip to Step 2. On `yes-full` run the full hearing. On `yes-diff-only` AskUserQuestion which axes changed and run hearing only on those.
-3. **Two-phase hearing** when running hearing:
-   - For each frontend axis (Design Origin, Design System, Guidelines, Visual Verification Environment), use AskUserQuestion with the choices listed in the skill's `references/frontend.md`. Always include "対象外 / not applicable" as a choice. For each non-N/A axis, follow up with an access-method question.
-   - After the structured axes, AskUserQuestion once: "Are there any other frontend external resources for this adjustment that the structured questions did not cover? If yes, describe them in your next message." Append the free-form answer under "Additional resources" in the project-tier file.
-4. **Persist**: Write or update `docs/project-context/external-resources.md` per the template in the skill's `references/template.md`.
+### Step 2: UI Fact Gathering
+Ground the adjustment in observable facts before scoping the work. ui-analyzer reads the project-tier external-resources file and fetches external UI sources (design origin, design system catalog, guidelines) via the inherited MCP/URL access methods, then analyzes the existing UI codebase. Heavy fetches stay inside the subagent's own context.
 
-**Completion gate**: `docs/project-context/external-resources.md` reflects the resources this adjustment depends on, or the user explicitly opted out of updating.
-
-### Step 2: UI Fact Collection
-Ground the adjustment in observable facts about the existing UI before deciding scope.
-
-- Invoke **ui-codebase-analyzer** using Agent tool
-  - `subagent_type: "dev-workflows-frontend:ui-codebase-analyzer"`
-  - `description: "UI fact collection for adjustment"`
-  - `prompt: "requirement_analysis: { affectedFiles: [files inferred from the adjustment request], scale: 'unknown', purpose: 'UI adjustment', technicalConsiderations: [] }. requirements: [adjustment request]. target_components: [components named in the request]. ui_spec_path: [path if an existing UI Spec covers the affected components, else absent]. Extract UI facts: visual structure, props patterns, CSS layout state, state x display matrix, display conditions, i18n format, accessibility, generated artifact readiness."`
-- Read the JSON output. The `analysisScope.filesAnalyzed` list, `componentStructure[]`, and `focusAreas[]` drive the scale judgment in Step 3.
-
-**Completion gate**: ui-codebase-analyzer returned a JSON output with at least one `componentStructure` entry or `focusAreas` entry (or escalated `limitations`).
+- Invoke **ui-analyzer** using Agent tool
+  - `subagent_type: "dev-workflows-frontend:ui-analyzer"`
+  - `description: "UI fact gathering for adjustment"`
+  - `prompt: "requirement_analysis: { affectedFiles: [files inferred from the adjustment request], scale: 'unknown', purpose: 'UI adjustment', technicalConsiderations: [] }. requirements: [adjustment request]. target_components: [components named in the request]. ui_spec_path: [path if an existing UI Spec covers the affected components, else absent]. Read docs/project-context/external-resources.md, fetch external UI sources via the declared access methods, and analyze the existing UI codebase."`
+- Read the JSON output. `analysisScope.filesAnalyzed`, `componentStructure[]`, `externalResources.*`, and `focusAreas[]` drive the scale judgment in Step 3 and the adjustment loop in Step 5.
 
 ### Step 3: Scale Judgment
-Determine the document and plan footprint using the Creation Decision Matrix in the documentation-criteria skill (see its `Creation Decision Matrix` section).
+Determine the work footprint using the Creation Decision Matrix in the documentation-criteria skill.
 
-1. Count distinct files that the adjustment will modify, using the ui-codebase-analyzer output as the evidence base.
-2. Apply the matrix to the file count:
-   - **1-2 files**: Direct implementation. No work plan, no Design Doc.
-   - **3-5 files**: Work plan recommended; Design Doc optional and typically not needed for adjustment work.
-   - **6+ files**: Adjustment scope exceeded. Escalate to the user — this should run through the full frontend design phase, not adjustment.
-3. Also escalate (regardless of file count) when any ADR Creation Condition from documentation-criteria applies (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.). These signal that adjustment is the wrong recipe.
-
-**Escalation message format** (when scope exceeded): "This change touches [N] files / matches ADR condition [X]. Adjustment scope is 1-5 files without architecture changes. Recommend running the full frontend design phase first to produce UI Spec / Design Doc, then planning, then implementation."
-
-**Completion gate**: scope is confirmed within adjustment range, or escalation has been delivered.
+1. Count distinct files that the adjustment will modify, using the ui-analyzer output as the evidence base.
+2. Apply the matrix:
+   - **1-2 files**: Direct adjustment, no work plan.
+   - **3-5 files**: Work plan required.
+   - **6+ files** OR any ADR Creation Condition triggered (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.): Adjustment scope exceeded. Escalate the user to the full frontend design phase. Stop this recipe.
 
 ### Step 4: Plan Creation (Conditional)
-Branch on the scale outcome from Step 3.
+Branch on the scale outcome.
 
 #### Branch A — 1-2 files
-No work plan needed. Build a minimal handoff packet for the implementation phase containing:
+No work plan. Build a minimal adjustment context for the parent session:
 - Adjustment request (verbatim)
-- ui-codebase-analyzer focusAreas[] with `ui:` prefix preserved
+- ui-analyzer focusAreas[] with `ui:` prefix preserved
 - Affected files list
-- External Resources Used: feature-tier subset relevant to this adjustment, referencing project-tier entries
+- External resources fetched_summary and access methods that the verification loop will use
 
-The packet is the prompt input the user will pass to the implementation recipe in Step 5. Present the packet to the user for inspection before handoff.
+Present the adjustment context to the user for review.
+- **[STOP]**: User confirms the adjustment context covers the work.
 
 #### Branch B — 3-5 files
 Create a right-sized work plan. Invoke **work-planner** using Agent tool:
 - `subagent_type: "dev-workflows-frontend:work-planner"`
 - `description: "Adjustment work plan"`
-- `prompt: "Create a work plan for this UI adjustment. Adjustment request: [verbatim]. UI codebase analysis: [ui-codebase-analyzer JSON]. External resources: [project-tier file path]. Scale: 3-5 files (no Design Doc, no ADR). Each phase should be implementable as 1-3 commits. Include a quality checklist matched to the affected components: visual verification, accessibility, i18n parity, generated artifact regeneration when relevant. Output path: docs/plans/[YYYYMMDD]-adjust-[short-description].md"`
+- `prompt: "Create a work plan for this UI adjustment. Adjustment request: [verbatim]. ui_analysis: [ui-analyzer JSON]. External resources: docs/project-context/external-resources.md. Scale: 3-5 files (no Design Doc, no ADR). Each phase should be implementable as 1-3 commits. Include a quality checklist matched to the affected components: visual verification, accessibility, i18n parity, generated artifact regeneration when relevant. Output path: docs/plans/[YYYYMMDD]-adjust-[short-description].md."`
 
 After work-planner returns:
 - Present the work plan to the user.
-- **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with the revised guidance.
+- **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with revised guidance.
 
-**Completion gate**: Branch A handoff packet is presented to the user, OR Branch B work plan is approved.
+### Step 5: Adjustment + MCP Verification (parent session)
+This is the loop the parent session runs directly. Subagents are not used here because their `tools` allowlist excludes MCP and would break the verification step.
 
-### Step 5: Implementation Handoff
-Inform the user how to proceed. The exact recipe to run is announced in the user-facing message; this recipe does not invoke the implementation phase itself.
+For each adjustment unit (per file in Branch A; per work plan phase in Branch B):
+1. **Plan the edit** based on ui-analyzer focusAreas and the relevant external resource (e.g., design origin's fetched_summary).
+2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
+3. **Verify against external sources** using the access methods from `docs/project-context/external-resources.md`:
+   - Design origin via the configured design-tool MCP (compare current rendering vs design source)
+   - Visual verification via the configured browser MCP (capture screenshot, check layout)
+   - Design system catalog via the configured design-system MCP (confirm component variants and tokens)
+4. **Refine and re-verify** until the adjustment matches the design source.
+5. When the adjustment unit converges, proceed to Step 6 for that unit.
 
-#### Branch A handoff message
-```
-Adjustment preparation complete (1-2 files, direct implementation).
+When the user has not configured an MCP that the verification step would normally use, fall back to manual verification (ask the user to confirm the result, or use file-based comparison if a specification file is available).
 
-Handoff packet:
-- Adjustment request: <verbatim>
-- Affected files: <list>
-- UI focus areas: <ui-codebase-analyzer focusAreas summarized>
-- External resources used: <feature-tier subset>
+### Step 6: Quality Verification (per adjustment unit)
+Delegate quality checks. quality-fixer-frontend runs typecheck / lint / test / format and fixes issues — these do not require MCP access.
 
-To execute: run /recipe-front-build with this packet as the request input.
-```
+- Invoke **quality-fixer-frontend** using Agent tool
+  - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
+  - `description: "Quality verification for adjustment unit"`
+  - `prompt: "task_file: [path to the work plan phase or, for Branch A, a synthesized scope description]. Run quality checks across the adjustment unit's affected files."`
+- Parse the response per subagents-orchestration-guide:
+  - `approved` → proceed to Step 7
+  - `stub_detected` → return to Step 5 to complete the implementation, then re-run quality-fixer-frontend
+  - `blocked` → escalate to user with the blocking issue and stop
 
-#### Branch B handoff message
-```
-Adjustment preparation complete (3-5 files, work plan approved).
+### Step 7: Commit (per adjustment unit)
+Commit the adjustment unit on quality approval. Include the affected files and any regenerated artifacts (CSS module typings, message catalog typings, etc.) flagged by ui-analyzer's `generatedArtifacts` section.
 
-- Work plan: docs/plans/[plan-name].md
-- External resources file: docs/project-context/external-resources.md
-
-To execute: run /recipe-front-build (it will pick up the work plan automatically).
-```
+Then loop back to Step 5 for the next unit (Branch B work plan phase, or next file in Branch A) until all units are committed.
 
 ## Completion Criteria
 
-- [ ] External resource hearing executed (project-tier file exists or update was explicitly skipped)
-- [ ] ui-codebase-analyzer returned a JSON output, and its `focusAreas` were considered in the scale judgment
-- [ ] Scale judgment per documentation-criteria's Creation Decision Matrix is recorded
-- [ ] When 6+ files or ADR conditions detected → escalation delivered (recipe stops here)
-- [ ] When 1-2 files → handoff packet presented to the user
-- [ ] When 3-5 files → work plan created and approved
-- [ ] Implementation handoff message delivered
+- [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
+- [ ] ui-analyzer returned a JSON output, including externalResources fetch_status per axis
+- [ ] Scale judgment applied; 6+ files or ADR conditions escalated to the design phase
+- [ ] Branch A: adjustment context presented and confirmed; Branch B: work plan approved
+- [ ] All adjustment units edited and verified via MCP (or manual fallback when MCP absent)
+- [ ] Each adjustment unit passed quality-fixer-frontend
+- [ ] Each adjustment unit committed
 
 ## Output Example
 
 ```
-Frontend adjustment preparation completed.
+Frontend adjustment completed.
 - External resources: docs/project-context/external-resources.md (updated|unchanged)
-- UI fact collection: ui-codebase-analyzer focused on [N] components, [M] focus areas
+- UI fact gathering: ui-analyzer focused on [N] components, [M] focus areas, external sources [fetched|partial|not_recorded]
 - Scale: <1-2 files | 3-5 files>
 - Work plan: <path | not required>
-- Next step: <handoff message>
+- Adjustment units committed: [count]
+- Quality status: all passed
 ```

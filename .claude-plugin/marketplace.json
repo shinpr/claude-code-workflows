@@ -122,7 +122,7 @@
         "./agents/task-decomposer.md",
         "./agents/task-executor-frontend.md",
         "./agents/technical-designer-frontend.md",
-        "./agents/ui-codebase-analyzer.md",
+        "./agents/ui-analyzer.md",
         "./agents/ui-spec-designer.md",
         "./agents/verifier.md",
         "./agents/work-planner.md"
