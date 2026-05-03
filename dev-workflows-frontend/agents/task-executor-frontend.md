@@ -155,7 +155,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
    - Overall Design Document → Understand system-wide context
 
 #### External Resources Consultation (When Relevant)
-When the task references an external resource, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
+When the task file's "Investigation Targets", "Dependencies", or any referenced Design Doc / UI Spec / Work Plan entry points to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
 
 #### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
 

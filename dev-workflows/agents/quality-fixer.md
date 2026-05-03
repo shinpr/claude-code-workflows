@@ -69,6 +69,9 @@ Apply the indicators below to files within scope only. Files outside the scope g
 - Add verified mechanisms to the quality check command list
 - If a listed mechanism cannot be found or executed, note it in the output and continue to the next mechanism
 
+**External Resources Consultation (When Relevant)**:
+When a quality check depends on an external resource (e.g., a schema validator pointed at an external API spec, a test that consumes a recorded fixture from an upstream service, a generated artifact whose source lives outside the repository), consult it per the external-resource-context skill (Reference Protocol). Escalate via `blocked` with `reason: "Execution prerequisites not met"` and `missingPrerequisites` populated when the resource is referenced but unreachable.
+
 ### Step 3: Execute Quality Checks
 Follow ai-development-guide skill "Quality Check Workflow" section:
 - Basic checks (lint, format, build)

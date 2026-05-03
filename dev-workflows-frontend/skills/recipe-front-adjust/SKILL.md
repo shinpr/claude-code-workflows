@@ -4,28 +4,30 @@ description: Coordinate a frontend UI adjustment by hearing external resources, 
 disable-model-invocation: true
 ---
 
-**Context**: Dedicated to UI adjustment workflows on already-implemented features. Unlike recipe-front-design (document creation, fully delegated) and recipe-front-build (specified implementation, fully delegated), adjustment work depends on iterative MCP-driven verification (compare with design source, verify visual rendering, refine, re-verify). MCP access is held by the parent session — not by subagents whose `tools` allowlist excludes MCP. This recipe therefore runs the adjustment itself in the parent session and delegates only the steps that do not require MCP.
+**Context**: Dedicated to UI adjustment workflows on already-implemented features. Unlike recipe-front-design (document creation, fully delegated) and recipe-front-build (specified implementation, fully delegated), adjustment work depends on an iterative MCP-driven verification loop (compare with design source → adjust → re-verify) that needs to run alongside file edits. The standard implementation delegate (`task-executor-frontend`) uses a `tools` allowlist that excludes MCP, so the verification loop cannot run inside it. This recipe therefore performs the adjustment and verification in the parent session and delegates only the steps that fit a single subagent call (UI fact gathering, work plan creation, quality checks).
 
 ## Execution Pattern
 
 **Core Identity**: "I am a guided executor. Subagents handle UI fact gathering, work plan creation, and quality checks; I run the adjustment and the MCP-driven verification loop myself."
 
 **Execution Protocol**:
-1. **Delegate** to subagents for: external-resource hearing storage (none — orchestrator runs hearing directly via AskUserQuestion), UI fact gathering (ui-analyzer), work plan creation (work-planner), quality checks (quality-fixer-frontend).
-2. **Run myself** in the parent session: AskUserQuestion hearing, scale judgment, the actual adjustment edits, MCP-driven verification (e.g., compare CSS against design source, check visual rendering via browser MCP), and the iteration loop until acceptance.
+1. **Delegate to subagents**: UI fact gathering (ui-analyzer — uses `disallowedTools` to inherit MCP access for fetching external sources in its own context), work plan creation (work-planner), quality checks (quality-fixer-frontend).
+2. **Run in the parent session**: external-resource hearing via AskUserQuestion, scale judgment, the actual adjustment edits, MCP-driven verification (compare CSS against design source, check visual rendering via a browser MCP, etc.), and the iteration loop until acceptance.
 3. **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding.
 4. **Scope**: see Scope Boundaries below.
 
-**Why this differs from other recipes**: Adjustment requires MCP loops that subagents cannot perform (their `tools` allowlist excludes MCP). Delegating implementation to task-executor-frontend would break the verification loop. The recipe runs the loop in the parent session, where the user's full MCP set is available.
+**Why this differs from other recipes**: The adjust verification loop is multi-step (edit → verify against MCP → refine → re-verify). A single subagent call cannot host this loop because returning intermediate results to the orchestrator and re-invoking the subagent for each iteration would amplify context cost. The parent session keeps the loop tight. Delegated subagents (ui-analyzer, work-planner, quality-fixer-frontend) each complete in one call and do not need the loop.
 
 ## Workflow Overview
 
 ```
 Adjustment request → external resource hearing (parent session, AskUserQuestion)
                                   ↓
-                     ui-analyzer (subagent: fetch external sources + analyze code)
+                     ui-analyzer (subagent: fetch external sources + analyze code + propose candidateWriteSet)
                                   ↓
-                     scale judgment (parent session, documentation-criteria matrix)
+                     write-set confirmation (parent session, AskUserQuestion)
+                                  ↓
+                     scale judgment on confirmed write set (documentation-criteria matrix)
                                   ↓
             ┌────────────────────┴────────────────────┐
             ↓                                          ↓
@@ -67,14 +69,15 @@ Ground the adjustment in observable facts before scoping the work. ui-analyzer r
 - Invoke **ui-analyzer** using Agent tool
   - `subagent_type: "dev-workflows-frontend:ui-analyzer"`
   - `description: "UI fact gathering for adjustment"`
-  - `prompt: "requirement_analysis: { affectedFiles: [files inferred from the adjustment request], scale: 'unknown', purpose: 'UI adjustment', technicalConsiderations: [] }. requirements: [adjustment request]. target_components: [components named in the request]. ui_spec_path: [path if an existing UI Spec covers the affected components, else absent]. Read docs/project-context/external-resources.md, fetch external UI sources via the declared access methods, and analyze the existing UI codebase."`
-- Read the JSON output. `analysisScope.filesAnalyzed`, `componentStructure[]`, `externalResources.*`, and `focusAreas[]` drive the scale judgment in Step 3 and the adjustment loop in Step 5.
+  - `prompt: "requirement_analysis: { affectedFiles: [files inferred from the adjustment request], scale: 'small', purpose: 'UI adjustment', technicalConsiderations: [] }. requirements: [adjustment request]. target_components: [components named in the request]. ui_spec_path: [path if an existing UI Spec covers the affected components, else absent]. Read docs/project-context/external-resources.md, fetch external UI sources via the declared access methods, and analyze the existing UI codebase. Populate candidateWriteSet[] with the files most likely to require modification."`
+- Read the JSON output. `componentStructure[]`, `externalResources.*`, `focusAreas[]`, and `candidateWriteSet[]` drive the scale judgment in Step 3 and the adjustment loop in Step 5.
 
 ### Step 3: Scale Judgment
-Determine the work footprint using the Creation Decision Matrix in the documentation-criteria skill.
+Scale judgment is based on the **write set** (files that will actually be modified), not on the broader set the analyzer read. The analyzer's `candidateWriteSet[]` is a candidate list, not a commitment — confirm it with the user before branching.
 
-1. Count distinct files that the adjustment will modify, using the ui-analyzer output as the evidence base.
-2. Apply the matrix:
+1. Read `candidateWriteSet[]` from ui-analyzer output. Distinguish high-confidence entries (likely-to-modify) from medium/low-confidence entries (speculative).
+2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, accept the user's edited list.
+3. Apply the Creation Decision Matrix from the documentation-criteria skill to the **confirmed write set count**:
    - **1-2 files**: Direct adjustment, no work plan.
    - **3-5 files**: Work plan required.
    - **6+ files** OR any ADR Creation Condition triggered (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.): Adjustment scope exceeded. Escalate the user to the full frontend design phase. Stop this recipe.
@@ -120,10 +123,16 @@ When the user has not configured an MCP that the verification step would normall
 ### Step 6: Quality Verification (per adjustment unit)
 Delegate quality checks. quality-fixer-frontend runs typecheck / lint / test / format and fixes issues — these do not require MCP access.
 
+`quality-fixer-frontend` expects `task_file` to be an actual file path and uses `filesModified` as the primary scope for incomplete-implementation checks. After per-unit commits, `git diff HEAD` becomes empty for the just-committed unit, so passing `filesModified` explicitly is required for correct scoping.
+
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
-  - `prompt: "task_file: [path to the work plan phase or, for Branch A, a synthesized scope description]. Run quality checks across the adjustment unit's affected files."`
+  - Build the prompt by branch:
+    - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]` so quality-fixer scopes to those files.
+    - **Branch B (3-5 files)**: pass `task_file: <work plan path or per-phase task path when one was generated>` AND `filesModified: [list of files edited in this adjustment unit]`. Both fields together give quality-fixer the work-plan context plus the precise write set.
+  - Example (Branch A): `prompt: "filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
+  - Example (Branch B): `prompt: "task_file: docs/plans/[plan-name].md. filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
 - Parse the response per subagents-orchestration-guide:
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation, then re-run quality-fixer-frontend
@@ -137,11 +146,12 @@ Then loop back to Step 5 for the next unit (Branch B work plan phase, or next fi
 ## Completion Criteria
 
 - [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
-- [ ] ui-analyzer returned a JSON output, including externalResources fetch_status per axis
-- [ ] Scale judgment applied; 6+ files or ADR conditions escalated to the design phase
+- [ ] ui-analyzer returned a JSON output, including externalResources fetch_status per axis and candidateWriteSet
+- [ ] Write set confirmed by the user before scale judgment
+- [ ] Scale judgment applied to the confirmed write set; 6+ files or ADR conditions escalated to the design phase
 - [ ] Branch A: adjustment context presented and confirmed; Branch B: work plan approved
 - [ ] All adjustment units edited and verified via MCP (or manual fallback when MCP absent)
-- [ ] Each adjustment unit passed quality-fixer-frontend
+- [ ] Each adjustment unit passed quality-fixer-frontend with explicit `filesModified` scoping
 - [ ] Each adjustment unit committed
 
 ## Output Example

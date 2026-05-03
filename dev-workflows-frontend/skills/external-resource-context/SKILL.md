@@ -26,9 +26,9 @@ Resources covered: design origin (where the canonical visual specification lives
 
 ### Single Source of Truth Rule
 
-The project tier owns environment facts. The feature tier references the project tier by label and lists only feature-specific identifiers. Feature-tier sections never duplicate environment facts (URL, MCP name, access command). When the environment changes, only the project-tier file is updated.
+The project tier owns environment facts. Feature-tier sections list only feature-specific identifiers (node id within the design source, specific endpoint path within the API, specific IaC module name) and reference project-tier entries by label; URLs, MCP names, and access commands remain in the project-tier file. When the environment changes, only the project-tier file is updated.
 
-Example feature-tier entry: `Design origin: project-tier "Design tool" entry; node id <id-for-this-feature>`.
+Example feature-tier entry uses the table format defined in `references/template.md`: a row with the project-tier label in the first column and the feature-specific identifier in the second column.
 
 ## Hearing Protocol
 

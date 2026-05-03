@@ -211,15 +211,16 @@ When conversion is required, clearly specify wrapper implementation or migration
   - `dataModel` → populate data-related sections (schema references, data contracts)
   - `constraints` → incorporate into design constraints and assumptions
   - Conduct additional investigation only for areas not covered by the analysis or flagged in `limitations`
-- **UI Codebase Analysis** (optional, from ui-codebase-analyzer; runs in parallel with Codebase Analysis):
+- **UI Analysis** (optional, from ui-analyzer; runs in parallel with Codebase Analysis):
   - When provided, use as the primary source for the visual, layout, and interaction portions of the "Existing Codebase Analysis" section
+  - `externalResources` → ground design source / design system / guideline references in the External Resources Used subsection
   - `focusAreas` → contribute rows to the Fact Disposition Table with fact_id values prefixed `ui:` to disambiguate from `code:` facts. Each row inherits evidence, factsToAddress, and risk fields from the analyzer output
   - `componentStructure`, `propsPatterns`, `cssLayout` → ground component design decisions (DOM order, props variants, layout primitives) in observed evidence
   - `stateDisplay` → align with UI Spec state x display matrices; flag states in `unsupportedStates` that the design must add
   - `displayConditions` → drive feature-flag, role, region, tenant, and page-context decisions in the Design Doc
   - `i18n` → inform localization key naming and format decisions
   - `generatedArtifacts` → list in the Quality Assurance Mechanisms section as readiness commands the implementation must run
-  - When both Codebase Analysis and UI Codebase Analysis flag the same fact, merge into a single row with both evidence pointers
+  - When both Codebase Analysis and UI Analysis flag the same fact, merge into a single row with both evidence pointers
 
 - **Prior-Layer Verification** (optional, fullstack flow only): When this Design Doc references contracts from a prior-layer Design Doc that has been through a verification step, the verification result JSON is provided. Use it as follows:
   - `discrepancies[]` → treat as known issues to resolve in this Design Doc, or escalate if out of scope for this layer

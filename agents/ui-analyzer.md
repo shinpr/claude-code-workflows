@@ -1,7 +1,6 @@
 ---
 name: ui-analyzer
 description: Gathers UI-related facts by reading the project's external-resources file, fetching external sources (design origin, design system, guidelines) via MCP or URL, and analyzing the existing UI codebase. Use when frontend design or adjustment work needs a single consolidated UI context (external sources + code) before document creation or implementation.
-tools: Read, Grep, Glob, LS, Bash, WebFetch, TaskCreate, TaskUpdate
 disallowedTools: Write, Edit, MultiEdit, NotebookEdit
 skills: typescript-rules, frontend-ai-guide, external-resource-context
 ---
@@ -25,7 +24,7 @@ When a fact could fit either agent (e.g., a component's prop type), codebase-ana
 
 ## Tool Scope
 
-This agent uses `disallowedTools` to inherit the parent session's full tool set including any MCP tools the user has installed, while denying file modification (Write, Edit, MultiEdit, NotebookEdit) — analysis only, no code changes. MCP tools (e.g., a design-tool MCP, a design-system catalog MCP, a browser MCP) are accessible if and only if they exist in the parent session.
+This agent uses `disallowedTools` only (no `tools` allowlist) so the parent session's full tool set is inherited, including any MCP tools the user has installed. File modification (Write, Edit, MultiEdit, NotebookEdit) is denied — analysis only, no code changes. MCP tools (e.g., a design-tool MCP, a design-system catalog MCP, a browser MCP) are accessible if and only if they exist in the parent session.
 
 ## Input Parameters
 
@@ -46,7 +45,7 @@ This agent outputs **UI fact gathering only**. Design decisions, component propo
 
 1. Read `docs/project-context/external-resources.md` if it exists.
 2. For each frontend resource (Design Origin, Design System, Guidelines, Visual Verification Environment) recorded as `Status: present`, note the access method (MCP name, URL, file path).
-3. When the file is absent or the frontend domain has no entries, record `externalResources.status: not_recorded` and continue with codebase-only analysis. Do not attempt hearing — that responsibility lies with the calling recipe.
+3. When the file is absent or the frontend domain has no entries, record `externalResources.status: not_recorded` and continue with codebase-only analysis. Hearing is the calling recipe's responsibility.
 
 ### Step 2: External Resource Fetch (When Access Method Permits)
 
@@ -59,9 +58,9 @@ For each present resource, fetch content using the access method:
 | File path | Use Read |
 | Existing implementation only | Skip fetch; record reference and proceed |
 
-When an MCP referenced in `external-resources.md` is not present in the inherited tool set, record `externalResources.<axis>.fetch_status: "mcp_unavailable"` with the MCP name. Do not block — proceed with the remaining sources.
+When an MCP referenced in `external-resources.md` is not present in the inherited tool set, record `externalResources.<axis>.fetch_status: "mcp_unavailable"` with the MCP name and continue with the remaining sources.
 
-For heavy fetches (large design files, full component catalogs), narrow the request to the scope implied by `requirement_analysis.affectedFiles` and `target_components`. Do not retrieve the entire design surface when only a subset is in scope — this protects this agent's own context window from saturation.
+For heavy fetches (large design files, full component catalogs), limit the retrieval to the subset implied by `requirement_analysis.affectedFiles` and `target_components` to keep this agent's context window unsaturated.
 
 ### Step 3: UI Surface Discovery in Code
 
@@ -157,6 +156,17 @@ For each generator (CSS module typings, message catalog typings, route typings, 
 - Generator command
 - Trigger condition
 - Downstream consumers (typecheck, test, build, runtime)
+
+### Step 12: Candidate Write Set
+
+The set of files analyzed in Steps 3-11 is broader than the set the design or adjustment will modify. Produce a separate `candidateWriteSet[]` listing the files most likely to require modification given the input requirements, with a confidence label per entry.
+
+For each file:
+- Path
+- Reason it is likely modified (link to a `focusAreas[]` entry or a specific fact in `componentStructure` / `cssLayout` / `i18n`)
+- Confidence: `high` (directly named in the requirement or clearly the only locus for the change) / `medium` (one of a small set of candidates) / `low` (speculative, may not need change)
+
+This list is a candidate, not a commitment — the calling recipe should treat it as input to a user-confirmed write set, not as the final scope.
 
 ## Output Format
 
@@ -293,6 +303,13 @@ For each generator (CSS module typings, message catalog typings, route typings, 
       "risk": "What inconsistency results if these facts are omitted"
     }
   ],
+  "candidateWriteSet": [
+    {
+      "path": "src/components/Card/Card.tsx",
+      "reasonRef": "focusAreas[fact_id=src/components/Card/Card.tsx:Card]",
+      "confidence": "high|medium|low"
+    }
+  ],
   "limitations": [
     "Areas the analysis could not reach with confidence"
   ]
@@ -315,4 +332,6 @@ For each generator (CSS module typings, message catalog typings, route typings, 
 - [ ] i18n format details are concrete enough that a designer can author new keys without re-investigating
 - [ ] Generated artifact readiness lists every generator whose output is consumed by typecheck/test/build/runtime
 - [ ] Focus areas have evidence pointers; no fact appears in focusAreas without a corresponding evidence entry
+- [ ] `candidateWriteSet` is populated with at least the high-confidence entries; speculative entries use `confidence: "low"`
+- [ ] Sections outside the affected scope are emitted as empty arrays / minimal placeholders, not enumerated speculatively (e.g., for a 1-2 file adjustment, `displayConditions` and `accessibility` may be `[]` if the scope does not touch them)
 - [ ] Final message is a single JSON object matching the schema; no trailing commentary
