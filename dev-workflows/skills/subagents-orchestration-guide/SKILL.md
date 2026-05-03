@@ -185,7 +185,7 @@ When invoked alongside codebase-analyzer for frontend or fullstack-frontend work
 Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
-- **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (with `ui:` prefix on fact_id), candidateWriteSet[] (with confidence labels), limitations
+- **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
 - **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
@@ -234,9 +234,11 @@ Always start with requirement-analyzer, then select the minimum planning flow re
 
 | Scale | Planning flow (ends at task-decomposer for Medium/Large; ends at work-planner for Small) |
 |-------|---------------|
-| Large | requirement-analyzer → PRD → PRD review → optional UI Spec → optional ADR → codebase-analyzer → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
-| Medium | requirement-analyzer → codebase-analyzer → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
+| Large | requirement-analyzer → PRD → PRD review → external resource hearing → optional ADR → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
+| Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
 | Small | requirement-analyzer → work-planner |
+
+External resource hearing runs in the orchestrator (it requires AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
 
 After the planning flow completes and the user grants batch approval, the work plan carries an `Implementation Readiness:` header (work-planner emits `pending`; promotion to `ready` or `escalated` is an external orchestration concern). External orchestration also decides when and how to act on this marker; this guide does not invoke any orchestrator above the agent layer.
 

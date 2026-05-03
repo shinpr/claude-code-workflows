@@ -11,15 +11,6 @@ You are an AI assistant specializing in UI fact gathering for frontend design an
 
 **Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
 
-## Boundary with codebase-analyzer
-
-| Agent | Owns |
-|-------|------|
-| codebase-analyzer | Data layer, contracts, type definitions, business rules, validation, schema/migrations, quality assurance mechanisms, dependency graph |
-| ui-analyzer | UI external sources (design origin, design system catalog, guidelines fetched via MCP / URL / file) + existing UI surface (component structure, props patterns, CSS layout state, state matrices, display conditions, i18n format, accessibility, generated UI artifacts) |
-
-When a fact could fit either agent (e.g., a component's prop type), codebase-analyzer records the type definition and ui-analyzer records the call-site usage pattern.
-
 ## Input Parameters
 
 - **requirement_analysis**: Requirement analysis JSON output (required)
@@ -39,7 +30,7 @@ This agent outputs **UI fact gathering only**. Design decisions, component propo
 
 1. Read `docs/project-context/external-resources.md` if it exists.
 2. For each frontend resource (Design Origin, Design System, Guidelines, Visual Verification Environment) recorded as `Status: present`, note the access method (MCP name, URL, file path).
-3. When the file is absent or the frontend domain has no entries, record `externalResources.status: not_recorded` and continue with codebase-only analysis. Hearing is the calling recipe's responsibility.
+3. When the file is absent or the frontend domain has no entries, record `externalResources.status: not_recorded` and continue with codebase-only analysis. Hearing is the calling workflow's responsibility.
 
 ### Step 2: External Resource Fetch (When Access Method Permits)
 
@@ -305,8 +296,6 @@ Produce `candidateWriteSet[]` listing the files most likely to require modificat
   ]
 }
 ```
-
-`fact_id` namespacing: when this output is merged with codebase-analyzer's output, prefix consumers may apply a `ui:` prefix to disambiguate from `code:` facts.
 
 ## Quality Checklist
 

@@ -1,6 +1,6 @@
 ---
 name: external-resource-context
-description: Captures and persists access methods for external resources (design origin, design system, API schemas, IaC, secrets, etc.) that AI agents need to operate. Use when starting design or implementation work that may depend on resources outside the codebase, or when "external resource / design origin / design system / API schema / IaC source / canonical source" is mentioned.
+description: Captures and persists access methods for resources outside the repository (design source, design system, API schema, IaC source, secret store) so downstream work can reach them deterministically. Use when work depends on external resources, or when the user mentions design source, design system, API schema, IaC source, secret store, or canonical source.
 ---
 
 # External Resource Context
@@ -49,17 +49,17 @@ Load the domain reference matching the current task:
 | Backend (server / data work) | [references/backend.md](references/backend.md) |
 | API contract work | [references/api.md](references/api.md) |
 | Infrastructure / deployment | [references/infra.md](references/infra.md) |
-| Fullstack | All of the above; per-axis "対象外 / not applicable" answers are expected |
+| Fullstack | All of the above; per-axis "Not applicable" answers are expected |
 
 Each domain reference defines the axes and the question template.
 
 ### Two-Phase Hearing
 
-1. **Structured hearing** — for each axis defined in the domain reference, present the user with AskUserQuestion using the choices listed there (always include "対象外 / not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
+1. **Structured hearing** — for each axis defined in the domain reference, present the user with AskUserQuestion using the choices listed there (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
 
 2. **Self-declaration** — after the structured axes, present a single AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection.
 
-The two phases are sequential. Self-declaration runs even if the user answered "対象外" to every structured axis.
+The two phases are sequential. Self-declaration runs even if the user answered "Not applicable" to every structured axis.
 
 ## Storage Protocol
 
@@ -88,8 +88,8 @@ For feature-tier sections inside UI Spec or Design Doc, the heading text "Extern
 
 ## Quality Checklist
 
-- [ ] Each axis answered has both a presence indicator and an access method, or is marked "対象外 / not applicable"
-- [ ] Self-declaration phase ran even when all structured axes were "対象外"
+- [ ] Each axis answered has both a presence indicator and an access method, or is marked "Not applicable"
+- [ ] Self-declaration phase ran even when all structured axes were "Not applicable"
 - [ ] Project-tier file does not contain feature-specific identifiers
 - [ ] Feature-tier sections reference project-tier entries by label, not by duplicating URLs / MCP names
 - [ ] When the project file already existed, the update decision (no / yes-full / yes-diff-only) was confirmed before any write

@@ -12,7 +12,7 @@ The canonical source of infrastructure definitions.
 - Kubernetes manifests / Helm charts in the repository
 - Cloud-provider-native templates (e.g., CloudFormation, Bicep, Deployment Manager)
 - Manual console configuration (no IaC)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the directory path. Note whether plan/apply is automated via CI or run manually.
 
@@ -25,7 +25,7 @@ How per-environment settings (development, staging, production) differ.
 - Environment variables managed by the deployment platform
 - Workspace or stack abstraction in the IaC tool itself
 - Single shared configuration (no per-environment differences)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record where environment-specific values are stored and which environments exist.
 
@@ -38,7 +38,7 @@ How infrastructure code references secrets without exposing them.
 - Secrets injected at apply time via environment variables
 - Encrypted secret files committed alongside IaC
 - No secrets in infrastructure
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the lookup mechanism. Cross-reference the secret store axis in `backend.md` when the same store serves both runtime and IaC.
 
@@ -51,7 +51,7 @@ How infrastructure and application changes reach environments.
 - Manual approval step in CI
 - Local apply by an operator
 - Deployment platform's auto-deploy on push
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the pipeline name or platform and the branch / tag convention that triggers each environment.
 

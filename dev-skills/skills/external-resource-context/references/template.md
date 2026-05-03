@@ -112,7 +112,7 @@ Free-form list captured during the self-declaration phase. Each entry: name, pur
 - <name>: <purpose> — <location> — <access method>
 ```
 
-Sections corresponding to domains the user marked "対象外 / not applicable" for every axis can be omitted entirely. Sections with at least one present axis must include all axes within that domain (mark unused axes as "not applicable" inline).
+Sections corresponding to domains the user marked "Not applicable" for every axis can be omitted entirely. Sections with at least one present axis must include all axes within that domain (mark unused axes as "not applicable" inline).
 
 ## Feature-Tier Template
 

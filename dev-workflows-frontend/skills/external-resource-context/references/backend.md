@@ -12,7 +12,7 @@ The canonical source of the database schema (tables, columns, indexes, constrain
 - Database MCP that introspects a live database
 - External schema registry (URL or hosted catalog)
 - No persistent database
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the path, MCP name, or URL. If multiple databases exist (primary, analytics, cache), list each.
 
@@ -25,7 +25,7 @@ How schema changes are tracked over time.
 - ORM-managed migration tool (e.g., Alembic, Flyway, Prisma Migrate)
 - Manual change log document
 - No migration tracking
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the directory path or tool entry command. Note whether migrations are applied automatically on deploy or manually.
 
@@ -38,7 +38,7 @@ Where credentials, API keys, and other secrets are stored and accessed.
 - Environment variables loaded from a `.env` file (development only)
 - Encrypted file in the repository
 - No secrets required
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the access mechanism. Examples — service name, MCP name, retrieval command. Do NOT record actual secret values; record only how they are reached.
 
@@ -51,7 +51,7 @@ How asynchronous work is dispatched and observed.
 - Cron / scheduled tasks managed by deployment platform
 - In-process worker thread
 - No background work
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the queue or scheduler name and how to enqueue / inspect jobs.
 

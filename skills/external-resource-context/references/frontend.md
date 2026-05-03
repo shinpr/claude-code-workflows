@@ -11,7 +11,7 @@ The canonical source of the visual specification.
 - Specification file in the repository (e.g., `DESIGN.md`, `docs/design/...`)
 - Public documentation URL
 - Existing implementation only (no separate design source)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: How is the source accessed? Examples — MCP name, URL, file path, manual screenshot. Record the literal access mechanism.
 
@@ -25,7 +25,7 @@ Reusable component library and design tokens.
 - Storybook or equivalent component catalog
 - Internal package without external documentation
 - No design system (ad-hoc components)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: How is the component catalog accessed? Examples — MCP name, Storybook URL, package name, internal documentation path.
 
@@ -38,7 +38,7 @@ Usage guidance, accessibility rules, anti-patterns, naming conventions for UI wo
 - External documentation site
 - Inline guidance in the design system catalog
 - No documented guidelines
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Where are the guidelines located? Record the path or URL. If multiple guideline files exist for different concerns (CSS, accessibility, i18n), list each.
 
@@ -51,7 +51,7 @@ How rendered output is confirmed during implementation.
 - Local end-to-end test runner with screenshot capability
 - Storybook or equivalent isolated component preview
 - Manual browser inspection only
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: What is the entry command or URL? Examples — MCP name, dev-server command, Storybook port.
 

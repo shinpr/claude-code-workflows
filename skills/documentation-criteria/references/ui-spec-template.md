@@ -24,7 +24,7 @@ Prototype code is an **attachment** to this UI Spec. The canonical specification
 
 ## External Resources Used
 
-Filled per the external-resource-context skill (feature-tier protocol).
+Lists each external resource this feature depends on with its feature-specific identifier. Resources not used by this feature are omitted from the table.
 
 | Resource (project-tier label) | Feature-specific identifier | Notes |
 |-------------------------------|-----------------------------|-------|
@@ -69,7 +69,7 @@ Map PRD acceptance criteria to prototype references. Skip this section if no pro
 
 ### Component: [ComponentName]
 
-> Component heading uniqueness: every `Component: [ComponentName]` heading must be unique within this UI Spec. work-planner and task-decomposer reference components by exact heading text — duplicate names or paraphrased headings break the propagation to implementation tasks.
+> Component heading uniqueness: every `Component: [ComponentName]` heading must be unique within this UI Spec. Duplicate or paraphrased headings break downstream propagation to implementation tasks.
 
 #### State x Display Matrix
 

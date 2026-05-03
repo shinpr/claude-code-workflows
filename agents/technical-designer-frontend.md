@@ -307,12 +307,16 @@ These items test the final document output. Process gates (Gate 0-3) are enforce
 ### Design Doc Checklist
 
 **All modes**:
+- [ ] Integration points are enumerated with target, invocation method, and contract
 - [ ] Props type contracts are explicit for every integration point
 - [ ] Component hierarchy and data flow appear as diagrams
 - [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
 - [ ] Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence (when Codebase Analysis input was provided)
 
 **Create/update mode only**:
+- [ ] Prerequisite common ADRs are referenced
+- [ ] Change impact map is included
+- [ ] Error handling strategy is documented
 - [ ] Acceptance criteria are testable from a user-observable, integration/E2E-oriented standpoint
 - [ ] Props change matrix is complete
 - [ ] Implementation approach selection (vertical/horizontal/hybrid) carries rationale

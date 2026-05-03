@@ -93,10 +93,10 @@ Record the mapping in the Design-to-Plan Traceability table (see plan template).
 
 ### 5a. Map UI Spec Components to Tasks (when UI Spec provided)
 
-When a UI Spec is among the inputs, also map components and states to the tasks that implement them. task-decomposer reads this mapping in Step 6 to populate each task's Investigation Targets, so without this step the UI Spec never reaches the executor.
+When a UI Spec is among the inputs, also map components and states to the tasks that implement them. This mapping is required for downstream task generation; without it the UI Spec does not reach the implementation phase.
 
 For each component documented in the UI Spec:
-1. Identify the component's section heading exactly as it appears in the UI Spec (the heading is the reference key — see ui-spec-designer's heading uniqueness rule)
+1. Identify the component's section heading exactly as it appears in the UI Spec (the heading is the reference key)
 2. Identify which states (default / loading / empty / error / partial) the implementation must cover
 3. Identify the task(s) in this plan that implement the component or its tests
 
@@ -104,7 +104,7 @@ Record the mapping in the **UI Spec Component → Task Mapping** table (see plan
 
 ### 5b. Map Cross-Package Boundaries to Tasks (when implementation crosses runtime/deployment boundaries)
 
-When the implementation crosses a runtime or deployment boundary, build a Connection Map so task-decomposer can propagate boundary context to each affected task.
+When the implementation crosses a runtime or deployment boundary, build a Connection Map. This map is required so boundary context propagates to each affected task in the downstream task generation phase.
 
 **A boundary qualifies for the Connection Map only when ALL of the following hold**:
 - The two sides run in separate processes, services, or runtimes (e.g., web client ↔ HTTP server, service A ↔ service B over a network, frontend bundle ↔ backend handler)

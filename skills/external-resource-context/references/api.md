@@ -12,7 +12,7 @@ The canonical source of API contracts (request/response shapes, endpoints, RPC m
 - GraphQL schema (SDL file or introspection endpoint)
 - TypeScript or other code-first contract definitions in the repository
 - No formal contract (ad-hoc JSON)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the path or URL. When multiple contracts exist (public API, internal services), list each with its purpose.
 
@@ -25,7 +25,7 @@ How clients exercise the API without depending on the live server.
 - Hand-written mock server in the repository
 - Hosted mock service (URL)
 - Live development server (no separate mock)
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the entry command or URL. Note whether the mock is updated automatically when the schema changes.
 
@@ -39,7 +39,7 @@ How the API authenticates and authorizes requests.
 - Session cookie set by a separate login flow
 - Mutual TLS
 - No authentication
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record where credentials are obtained for development and testing. Reference the secret store axis from `backend.md` if applicable.
 
@@ -51,7 +51,7 @@ How breaking and non-breaking schema changes are reviewed and rolled out.
 - Documented contract review process (link to the document)
 - Versioned endpoints (e.g., `/v1/`, `/v2/`)
 - Backward-compatible changes only, no formal versioning
-- 対象外 / not applicable
+- Not applicable
 
 **Follow-up (when not N/A)**: Record the document path or the version negotiation rule.
 

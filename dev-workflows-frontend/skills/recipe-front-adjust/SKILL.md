@@ -1,6 +1,6 @@
 ---
 name: recipe-front-adjust
-description: Coordinate a frontend UI adjustment by hearing external resources, gathering UI facts, scaling the work, optionally creating a work plan, executing the adjustment in this session with MCP-driven verification, and delegating quality checks. Use when "UI adjustment / visual tweak / existing component update / front adjust" is mentioned, or when the user wants to refine an already-implemented UI.
+description: Adjust an already-implemented UI in-session with MCP-driven verification against the design source
 disable-model-invocation: true
 ---
 
