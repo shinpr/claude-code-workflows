@@ -111,7 +111,7 @@ For each adjustment unit (per file in Branch A; per work plan phase in Branch B)
 4. **Refine and re-verify** until the adjustment matches the design source.
 5. When the adjustment unit converges, proceed to Step 6 for that unit.
 
-When the user has not configured an MCP that the verification step would normally use, fall back to manual verification (ask the user to confirm the result, or use file-based comparison if a specification file is available).
+When MCP access is unavailable for the verification step, fall back to manual verification (ask the user to confirm the result, or use file-based comparison if a specification file is available).
 
 ### Step 6: Quality Verification (per adjustment unit)
 

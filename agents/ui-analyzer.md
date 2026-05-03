@@ -310,18 +310,8 @@ Produce `candidateWriteSet[]` listing the files most likely to require modificat
 
 ## Quality Checklist
 
-- [ ] `docs/project-context/external-resources.md` was read (or recorded as absent)
-- [ ] For each present external resource, fetch was attempted via the declared access method, and `fetch_status` records the outcome
-- [ ] Heavy fetches were narrowed to the affected scope rather than the full surface
-- [ ] All affected component files were read in full before extracting structure
-- [ ] DOM order is recorded as literal source order
-- [ ] Props patterns include every call site grouping (canonical and outlier)
-- [ ] CSS layout records gap/wrap/logical-property state for every layout-bearing class in the scope
-- [ ] State x display matrix lists states actually expressed in code and explicitly marks unsupported states
-- [ ] Display conditions record predicate location and gated subtree
-- [ ] i18n format details are concrete enough that a designer can author new keys without re-investigating
-- [ ] Generated artifact readiness lists every generator whose output is consumed by typecheck/test/build/runtime
-- [ ] Focus areas have evidence pointers; no fact appears in focusAreas without a corresponding evidence entry
-- [ ] `candidateWriteSet` is populated with at least the high-confidence entries; speculative entries use `confidence: "low"`
-- [ ] Sections outside the affected scope are emitted as empty arrays / minimal placeholders (e.g., for a 1-2 file adjustment, `displayConditions` and `accessibility` may be `[]` if the scope does not touch them)
+- [ ] Each external resource entry in the output has a `fetch_status` recording the outcome (`fetched` / `mcp_unavailable` / `skipped` / `not_applicable`)
+- [ ] `candidateWriteSet` is populated; high-confidence entries are present when the request maps to clear loci, speculative entries use `confidence: "low"`
+- [ ] Every entry in `focusAreas` carries an `evidence` pointer
+- [ ] Sections outside the affected scope are emitted as empty arrays / minimal placeholders
 - [ ] Final message is a single JSON object matching the schema; no trailing commentary

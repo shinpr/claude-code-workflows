@@ -274,65 +274,15 @@ Execute file output immediately (considered approved at execution).
 
 ## Implementation Sample Standards Compliance
 
-**MANDATORY**: All implementation samples in ADR and Design Docs MUST strictly comply with typescript-rules skill standards without exception.
+Implementation samples in ADR and Design Docs follow the standards loaded from the `typescript-rules` and `frontend-ai-guide` skills:
 
-Implementation sample creation checklist:
-- **Function components required** (React standard, class components deprecated)
-- **Props type definitions required** (explicit type annotations for all Props)
-- **Custom hooks recommended** (for logic reuse and testability)
-- Type safety strategies (use strict types: unknown + type guards for external API responses)
-- Error handling approaches (Error Boundary, error state management)
-- Environment variables (store secrets server-side only)
+- Function components with explicit Props type definitions
+- Custom hooks for logic reuse and testability
+- Type safety: `unknown` + type guards for external responses
+- Error handling: error boundaries and error state management
+- Secrets remain server-side
 
-**Example Implementation Sample**:
-```typescript
-// Compliant: Function component with Props type definition
-type ButtonProps = {
-  label: string
-  onClick: () => void
-  disabled?: boolean
-}
-
-export function Button({ label, onClick, disabled = false }: ButtonProps) {
-  return (
-    <button onClick={onClick} disabled={disabled}>
-      {label}
-    </button>
-  )
-}
-
-// Compliant: Custom hook with type safety
-function useUserData(userId: string) {
-  const [user, setUser] = useState<User | null>(null)
-  const [error, setError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const response = await fetch(`/api/users/${userId}`)
-        const data: unknown = await response.json()
-
-        if (!isUser(data)) {
-          throw new Error('Invalid user data')
-        }
-
-        setUser(data)
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Unknown error'))
-      }
-    }
-
-    fetchUser()
-  }, [userId])
-
-  return { user, error }
-}
-
-// Non-compliant: Class component (deprecated in modern React)
-class Button extends React.Component {
-  render() { return <button>...</button> }
-}
-```
+For concrete code patterns, defer to those skills rather than duplicating sample code in the design document.
 
 ## Diagram Creation (using mermaid notation)
 
@@ -347,42 +297,31 @@ class Button extends React.Component {
 
 ## Quality Checklist
 
+These items test the final document output. Process gates (Gate 0-3) are enforced inline during creation; this checklist focuses on output completeness.
+
 ### ADR Checklist
-- [ ] Problem background and evaluation of multiple options (minimum 3 options)
-- [ ] Clear trade-offs and decision rationale
-- [ ] Principled guidelines for implementation (no specific procedures)
-- [ ] Consistency with existing React architecture
-- [ ] Latest React/frontend technology research conducted and references cited
-- [ ] **Common ADR relationships specified** (when applicable)
-- [ ] Comparison matrix completeness (including performance impact)
+- [ ] Comparison matrix lists at least 3 options with trade-offs and performance impact
+- [ ] Latest React/frontend technology research is cited with references
+- [ ] Implementation guidelines are principled (no step-by-step procedures)
 
 ### Design Doc Checklist
 
 **All modes**:
-- [ ] **Standards identification gate completed** (required)
-- [ ] **Code inspection evidence recorded** (required)
-- [ ] **Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence** (required when Codebase Analysis input is provided)
-- [ ] **Integration points enumerated with contracts** (required)
-- [ ] **Props type contracts clarified** (required)
-- [ ] Component hierarchy and data flow clearly expressed in diagrams
+- [ ] Props type contracts are explicit for every integration point
+- [ ] Component hierarchy and data flow appear as diagrams
+- [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
 
-**Create/update mode only** (skip in reverse-engineer mode):
-- [ ] **Agreement checklist completed** (most important)
-- [ ] **Prerequisite common ADRs referenced** (required)
-- [ ] **Change impact map created** (required)
-- [ ] Response to requirements and design validity
-- [ ] Error handling strategy
-- [ ] Acceptance criteria written in testable format (user-observable behaviors, integration/E2E oriented, CI-isolatable)
-- [ ] Props change matrix completeness
-- [ ] Implementation approach selection rationale (vertical/horizontal/hybrid)
-- [ ] Latest best practices researched and references cited
-- [ ] **Complexity assessment**: complexity_level set; if medium/high, complexity_rationale specifies (1) requirements/ACs, (2) constraints/risks
+**Create/update mode only**:
+- [ ] Acceptance criteria are testable from a user-observable, integration/E2E-oriented standpoint
+- [ ] Props change matrix is complete
+- [ ] Implementation approach selection (vertical/horizontal/hybrid) carries rationale
+- [ ] `complexity_level` is set; when medium/high, `complexity_rationale` covers (1) requirements/ACs, (2) constraints/risks
 
 **Reverse-engineer mode only**:
-- [ ] Every architectural claim cites file:line as evidence
-- [ ] Identifiers transcribed exactly from code
-- [ ] Test existence confirmed by Glob
-- [ ] All items from Unit Inventory (if provided) accounted for
+- [ ] Every architectural claim cites file:line
+- [ ] Identifiers are transcribed exactly from code
+- [ ] Test existence is confirmed by Glob
+- [ ] Items from any provided Unit Inventory are accounted for
 
 ## Acceptance Criteria Creation Guidelines
 

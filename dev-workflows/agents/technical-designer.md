@@ -325,47 +325,35 @@ Implementation sample creation checklist:
 
 ## Quality Checklist
 
+These items test the final document output. Process gates (Gate 0-3) are enforced inline during creation; this checklist focuses on output completeness.
+
 ### ADR Checklist
-- [ ] Problem background and evaluation of multiple options (minimum 3 options)
-- [ ] Clear trade-offs and decision rationale
-- [ ] Principled guidelines for implementation
-- [ ] Consistency with existing architecture
-- [ ] Latest technology research conducted and references cited
-- [ ] **Common ADR relationships specified** (when applicable)
-- [ ] Comparison matrix completeness
+- [ ] Comparison matrix lists at least 3 options with trade-offs
+- [ ] Latest technology research is cited with references
+- [ ] Implementation guidelines are principled (no step-by-step procedures)
 
 ### Design Doc Checklist
 
 **All modes**:
-- [ ] **Standards identification gate completed** (required)
-- [ ] **Quality assurance mechanisms identified with adopted/noted status** (required)
-- [ ] **Code inspection evidence recorded** (required)
-- [ ] **Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence** (required when Codebase Analysis input is provided)
-- [ ] **Integration points enumerated with contracts** (required)
-- [ ] **Data contracts clarified** (required)
-- [ ] Architecture and data flow clearly expressed in diagrams
+- [ ] Data contracts are explicit for every integration point
+- [ ] Architecture and data flow appear as diagrams
+- [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
 
-**Create/update mode only** (skip in reverse-engineer mode):
-- [ ] **Agreement checklist completed** (most important)
-- [ ] **Prerequisite common ADRs referenced** (required)
-- [ ] **Change impact map created** (required)
-- [ ] Response to requirements and design validity
-- [ ] Error handling strategy
-- [ ] Acceptance criteria written in testable format (user-observable behaviors, integration/E2E oriented, CI-isolatable)
-- [ ] Interface change matrix completeness
-- [ ] Implementation approach selection rationale (vertical/horizontal/hybrid)
-- [ ] Latest best practices researched and references cited
-- [ ] **Complexity assessment**: complexity_level set; if medium/high, complexity_rationale specifies (1) requirements/ACs, (2) constraints/risks
-- [ ] **Data representation decision documented** (when new structures introduced)
-- [ ] **Field propagation map included** (when fields cross boundaries)
-- [ ] **Verification Strategy defined** (correctness definition, verification method, timing, early verification point)
-- [ ] **Output comparison defined** when replacing/modifying existing behavior (input, expected output fields, diff method; covers all transformation pipeline steps from codebase analysis)
+**Create/update mode only**:
+- [ ] Acceptance criteria are testable (user-observable, integration/E2E-oriented, CI-isolatable)
+- [ ] Interface change matrix is complete
+- [ ] Implementation approach selection (vertical/horizontal/hybrid) carries rationale
+- [ ] `complexity_level` is set; when medium/high, `complexity_rationale` covers (1) requirements/ACs, (2) constraints/risks
+- [ ] Data representation decision is documented when new structures are introduced
+- [ ] Field propagation map is included when fields cross boundaries
+- [ ] Verification Strategy defines correctness, method, timing, and early verification point
+- [ ] Output comparison defines input, expected output fields, and diff method when behavior is replaced or modified (covers every transformation pipeline step from codebase analysis)
 
 **Reverse-engineer mode only**:
-- [ ] Every architectural claim cites file:line as evidence
-- [ ] Identifiers transcribed exactly from code
-- [ ] Test existence confirmed by Glob
-- [ ] All items from Unit Inventory (if provided) accounted for
+- [ ] Every architectural claim cites file:line
+- [ ] Identifiers are transcribed exactly from code
+- [ ] Test existence is confirmed by Glob
+- [ ] Items from any provided Unit Inventory are accounted for
 
 ## Acceptance Criteria Creation Guidelines
 
