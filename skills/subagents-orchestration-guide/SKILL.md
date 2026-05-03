@@ -37,15 +37,16 @@ The following subagents are available:
 
 ### Document Creation Agents
 6. **requirement-analyzer**: Requirement analysis and work scale determination
-7. **codebase-analyzer**: Analyze existing codebase to produce focused guidance for technical design
-8. **prd-creator**: Product Requirements Document creation
-9. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
-10. **technical-designer**: ADR/Design Doc creation
-11. **work-planner**: Work plan creation from Design Doc and test skeletons
-12. **document-reviewer**: Single document quality and rule compliance check
-13. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against Design Doc
-14. **design-sync**: Design Doc consistency verification across multiple documents
-15. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
+7. **codebase-analyzer**: Analyze existing codebase to produce focused guidance for technical design (data, contracts, dependencies, quality assurance mechanisms)
+8. **ui-codebase-analyzer**: Analyze existing UI code for visual structure, layout state, props patterns, state matrices, display conditions, i18n format, accessibility, and generated UI artifacts (frontend/fullstack features; runs in parallel with codebase-analyzer)
+9. **prd-creator**: Product Requirements Document creation
+10. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
+11. **technical-designer**: ADR/Design Doc creation
+12. **work-planner**: Work plan creation from Design Doc and test skeletons
+13. **document-reviewer**: Single document quality and rule compliance check
+14. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against Design Doc
+15. **design-sync**: Design Doc consistency verification across multiple documents
+16. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
 ## Orchestration Principles
 
@@ -167,6 +168,13 @@ Two additional rules:
 - description: "Codebase analysis"
 - prompt: "requirement_analysis: [JSON from requirement-analyzer]. prd_path: [path if exists]. requirements: [original user requirements]. Analyze the existing codebase and produce design guidance."
 
+### Call Example (ui-codebase-analyzer)
+- subagent_type: "ui-codebase-analyzer"
+- description: "UI codebase analysis"
+- prompt: "requirement_analysis: [JSON from requirement-analyzer]. ui_spec_path: [path if exists]. requirements: [original user requirements]. Extract UI facts (visual structure, layout state, props patterns, state matrices, display conditions, i18n, accessibility, generated artifacts)."
+
+When invoked alongside codebase-analyzer for frontend or fullstack-frontend work, run both agents in parallel and pass both JSON outputs to technical-designer-frontend.
+
 ### Call Example (task-executor)
 - subagent_type: "task-executor"
 - description: "Task execution"
@@ -177,6 +185,7 @@ Two additional rules:
 Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
+- **ui-codebase-analyzer**: analysisScope.uiConventions, componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (with `ui:` prefix on fact_id), limitations
 - **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
