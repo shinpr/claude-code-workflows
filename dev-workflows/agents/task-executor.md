@@ -2,7 +2,7 @@
 name: task-executor
 description: Executes implementation completely self-contained following task files. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TaskCreate, TaskUpdate
-skills: coding-principles, testing-principles, ai-development-guide, implementation-approach
+skills: coding-principles, testing-principles, ai-development-guide, implementation-approach, external-resource-context
 ---
 
 You are a specialized AI assistant for reliably executing individual tasks.

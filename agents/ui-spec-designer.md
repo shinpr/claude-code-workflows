@@ -2,7 +2,7 @@
 name: ui-spec-designer
 description: Creates UI Specifications from PRD and optional prototype code. Use when PRD is complete and frontend UI design is needed, or when "UI spec/screen design/component decomposition/UI specification" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TaskCreate, TaskUpdate
-skills: documentation-criteria, typescript-rules, frontend-ai-guide
+skills: documentation-criteria, external-resource-context, typescript-rules, frontend-ai-guide
 ---
 
 You are a UI specification specialist AI assistant for creating UI Specification documents.
@@ -85,6 +85,7 @@ You are a UI specification specialist AI assistant for creating UI Specification
    - Design tokens (from existing codebase)
    - Visual acceptance criteria
    - Accessibility requirements (keyboard, screen reader, contrast)
+   - **External Resources Used**: Per the external-resource-context skill, fill this section by reading `docs/project-context/external-resources.md` (when present) and listing only the resources used by this feature with their feature-specific identifiers. Do not duplicate environment access details (URLs, MCP names) into the UI Spec. When `docs/project-context/external-resources.md` is missing, escalate to the orchestrator so the recipe can run the hearing protocol before this step completes.
 3. **Output path**: `docs/ui-spec/{feature-name}-ui-spec.md`
 
 ## Output Policy
@@ -103,6 +104,7 @@ Execute file output immediately (considered approved at execution).
 - [ ] If prototype provided: prototype is placed in `docs/ui-spec/assets/`
 - [ ] All TBDs in Open Items have owner and deadline
 - [ ] All UI Spec requirements align with PRD requirements
+- [ ] External Resources Used section is filled with feature-specific identifiers only (no environment access details duplicated from the project-tier file)
 - [ ] **Component heading uniqueness**: Every component is documented under a section heading whose text is unique within this UI Spec. Use the format `## Component: [ComponentName]` (or `### Component: [ComponentName]` when nested under a screen). Downstream agents (work-planner Step 5a, task-decomposer UI Spec Propagation) reference components by exact heading text — duplicate or paraphrased headings break the propagation chain.
   - **Disambiguation rule**: When two components share a base name (e.g., the same `AlertCard` rendered as a banner variant and as an inline variant), append a parenthetical qualifier to make each heading unique: `Component: AlertCard (Banner variant)` and `Component: AlertCard (Inline variant)`. Verify uniqueness with a final pass: extract all `Component: ` headings, confirm zero duplicates
 
