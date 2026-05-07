@@ -189,18 +189,6 @@ async function applyDeprecations(entry, targetDir) {
   }
 }
 
-function unquoteYamlDouble(value) {
-  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
-    return value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\')
-  }
-  return value
-}
-
-function quoteYamlDouble(value) {
-  const escaped = value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
-  return `"${escaped}"`
-}
-
 function injectDeprecationNotice(content, notice, label) {
   const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
   if (!fmMatch) {
@@ -211,14 +199,11 @@ function injectDeprecationNotice(content, notice, label) {
   if (!descLineMatch) {
     throw new Error(`description field not found in frontmatter for: ${label}`)
   }
-  const rawValue = descLineMatch[1]
-  const currentDesc = unquoteYamlDouble(rawValue)
+  const currentDesc = descLineMatch[1]
   if (currentDesc.startsWith(notice)) {
     return content
   }
-  const newValue = `${notice}${currentDesc}`
-  const newLine = `description: ${quoteYamlDouble(newValue)}`
-  const newFm = fm.replace(/^description:[ \t]*.*$/m, newLine)
+  const newFm = fm.replace(/^description:[ \t]*(.*)$/m, `description: ${notice}${currentDesc}`)
   return content.replace(fmMatch[0], `---\n${newFm}\n---`)
 }
 
@@ -239,10 +224,21 @@ async function loadSyncOverrides() {
   return parsed.plugins ?? {}
 }
 
+const ALLOWED_OVERRIDE_KEYS = new Set(['deprecations', 'namespace_rewrites'])
+
 function mergeOverrides(entry, overrides) {
   const o = overrides[entry.name]
   if (!o) return entry
-  return { ...entry, ...o }
+  const merged = { ...entry }
+  for (const [key, value] of Object.entries(o)) {
+    if (!ALLOWED_OVERRIDE_KEYS.has(key)) {
+      throw new Error(
+        `sync-overrides for plugin "${entry.name}" contains disallowed key "${key}" (allowed: ${[...ALLOWED_OVERRIDE_KEYS].join(', ')})`,
+      )
+    }
+    merged[key] = value
+  }
+  return merged
 }
 
 async function syncAll(baseDir) {

@@ -1,6 +1,6 @@
 ---
 name: recipe-fullstack-build
-description: "(Deprecated) Moving to dev-workflows-fullstack plugin in the next release. Execute decomposed fullstack tasks with layer-aware agent routing"
+description: (Deprecated) Moving to dev-workflows-fullstack plugin in the next release. Execute decomposed fullstack tasks with layer-aware agent routing
 disable-model-invocation: true
 ---
 
