@@ -1,5 +1,5 @@
 {
-  "$schema-note": "Per-plugin sync-time hooks applied by scripts/sync-plugins.mjs. Kept outside marketplace.json because `claude plugin validate` rejects unknown keys.",
+  "$schema-note": "Per-plugin sync-time hooks applied by scripts/sync-plugins.mjs. Kept here (not under .claude-plugin/) because that directory is reserved for official Claude Code plugin manifests, and `claude plugin validate` rejects unknown keys in marketplace.json.",
   "plugins": {
     "dev-workflows": {
       "deprecations": [

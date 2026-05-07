@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const MARKETPLACE_PATH = join(ROOT, '.claude-plugin', 'marketplace.json')
-const SYNC_OVERRIDES_PATH = join(ROOT, '.claude-plugin', 'sync-overrides.json')
+const SYNC_OVERRIDES_PATH = join(ROOT, 'scripts', 'sync-overrides.json')
 const CHECK = process.argv.slice(2).includes('--check')
 
 function isLocalSource(source) {
