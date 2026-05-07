@@ -1,0 +1,68 @@
+# [ADR Number] [Title]
+
+## Status
+
+[Proposed | Accepted | Deprecated | Superseded | Rejected]
+
+## Context
+
+[Describe the background and reasons why this decision is needed. Include the essence of the problem, current challenges, and constraints]
+
+## Decision
+
+[Describe the actual decision made. Aim for specific and clear descriptions]
+
+### Decision Details
+
+| Item | Content |
+|------|---------|
+| **Decision** | [The decision in one sentence] |
+| **Why now** | [Why this needs to happen now (timing rationale)] |
+| **Why this** | [Why this option over alternatives (1-3 lines)] |
+| **Known unknowns** | [At least one uncertainty at this point] |
+| **Kill criteria** | [One signal that should trigger reversal of this decision] |
+
+## Rationale
+
+[Explain why this decision was made and why it is the best option compared to alternatives]
+
+### Options Considered
+
+1. **Option 1**: [Description]
+   - Pros: [List advantages]
+   - Cons: [List disadvantages]
+
+2. **Option 2**: [Description]
+   - Pros: [List advantages]
+   - Cons: [List disadvantages]
+
+3. **Option 3 (Selected)**: [Description]
+   - Pros: [List advantages]
+   - Cons: [List disadvantages]
+
+## Consequences
+
+### Positive Consequences
+
+- [List positive impacts on the project or system]
+
+### Negative Consequences
+
+- [List negative impacts or trade-offs that need to be accepted]
+
+### Neutral Consequences
+
+- [List changes that are neither good nor bad]
+
+## Architecture Impact
+
+[Describe how this decision affects existing architecture: (1) components that change, (2) new dependencies introduced, (3) architectural constraints added or removed]
+
+## Implementation Guidance
+
+[Principled direction only. Implementation procedures go to Design Doc]
+Example: "Use dependency injection" ✓, "Implement in Phase 1" ✗
+
+## Related Information
+
+- [Links to related ADRs, documents, issues, PRs, etc.]

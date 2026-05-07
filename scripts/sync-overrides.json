@@ -1,0 +1,23 @@
+{
+  "$schema-note": "Per-plugin sync-time hooks applied by scripts/sync-plugins.mjs. Kept here (not under .claude-plugin/) because that directory is reserved for official Claude Code plugin manifests, and `claude plugin validate` rejects unknown keys in marketplace.json.",
+  "plugins": {
+    "dev-workflows": {
+      "deprecations": [
+        {
+          "name": "recipe-fullstack-build",
+          "notice": "(Deprecated) Moving to dev-workflows-fullstack plugin in the next release. "
+        },
+        {
+          "name": "recipe-fullstack-implement",
+          "notice": "(Deprecated) Moving to dev-workflows-fullstack plugin in the next release. "
+        }
+      ]
+    },
+    "dev-workflows-fullstack": {
+      "namespace_rewrites": [
+        { "from": "dev-workflows-frontend:", "to": "dev-workflows-fullstack:" },
+        { "from": "dev-workflows:", "to": "dev-workflows-fullstack:" }
+      ]
+    }
+  }
+}

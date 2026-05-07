@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const MARKETPLACE_PATH = join(ROOT, '.claude-plugin', 'marketplace.json')
+const SYNC_OVERRIDES_PATH = join(ROOT, 'scripts', 'sync-overrides.json')
 const CHECK = process.argv.slice(2).includes('--check')
 
 function isLocalSource(source) {
@@ -92,6 +93,118 @@ async function generatePlugin(entry, baseDir) {
     await mkdir(dirname(dst), { recursive: true })
     await cp(src, dst, { recursive: true, verbatimSymlinks: true })
   }
+
+  await applyNamespaceRewrites(entry, targetDir)
+  await applyDeprecations(entry, targetDir)
+}
+
+async function applyNamespaceRewrites(entry, targetDir) {
+  const rules = entry.namespace_rewrites ?? []
+  if (rules.length === 0) return
+  for (const rule of rules) {
+    if (typeof rule?.from !== 'string' || typeof rule?.to !== 'string') {
+      throw new Error(
+        `invalid namespace_rewrite in plugin "${entry.name}": both "from" and "to" must be strings`,
+      )
+    }
+    if (!rule.from.endsWith(':') || !rule.to.endsWith(':')) {
+      throw new Error(
+        `invalid namespace_rewrite in plugin "${entry.name}": "from" and "to" must end with ":" (got from=${JSON.stringify(rule.from)}, to=${JSON.stringify(rule.to)})`,
+      )
+    }
+    if (rule.from.length === 1 || rule.to.length === 1) {
+      throw new Error(
+        `invalid namespace_rewrite in plugin "${entry.name}": "from" and "to" must include a non-empty namespace before ":" (got from=${JSON.stringify(rule.from)}, to=${JSON.stringify(rule.to)})`,
+      )
+    }
+  }
+  // Apply longer "from" first to avoid prefix-overlap miswrites
+  // (e.g. rewriting "dev-workflows:" before "dev-workflows-frontend:" would corrupt the latter).
+  const ordered = [...rules].sort((a, b) => b.from.length - a.from.length)
+
+  const files = []
+  await collectMarkdownFiles(targetDir, files)
+  for (const file of files) {
+    const original = await readFile(file, 'utf8')
+    let updated = original
+    for (const rule of ordered) {
+      updated = updated.split(rule.from).join(rule.to)
+    }
+    if (updated !== original) {
+      await writeFile(file, updated)
+    }
+  }
+}
+
+async function collectMarkdownFiles(dir, out) {
+  const entries = await readdir(dir, { withFileTypes: true })
+  for (const e of entries) {
+    const full = join(dir, e.name)
+    if (e.isDirectory()) {
+      await collectMarkdownFiles(full, out)
+    } else if (e.isFile() && e.name.endsWith('.md')) {
+      out.push(full)
+    }
+  }
+}
+
+function skillBaseNames(entry) {
+  return new Set((entry.skills ?? []).map((p) => p.split('/').pop()))
+}
+
+function agentBaseNames(entry) {
+  return new Set((entry.agents ?? []).map((p) => p.split('/').pop().replace(/\.md$/, '')))
+}
+
+function resolveDeprecationTarget(entry, name, targetDir) {
+  const skills = skillBaseNames(entry)
+  const agents = agentBaseNames(entry)
+  const inSkills = skills.has(name)
+  const inAgents = agents.has(name)
+  if (inSkills && inAgents) {
+    throw new Error(
+      `deprecation target "${name}" is ambiguous in plugin "${entry.name}" (matches both a skill and an agent)`,
+    )
+  }
+  if (inSkills) return join(targetDir, 'skills', name, 'SKILL.md')
+  if (inAgents) return join(targetDir, 'agents', `${name}.md`)
+  throw new Error(
+    `deprecation target "${name}" not found in plugin "${entry.name}" (check skills/agents lists for typos)`,
+  )
+}
+
+async function applyDeprecations(entry, targetDir) {
+  for (const dep of entry.deprecations ?? []) {
+    if (typeof dep?.name !== 'string' || typeof dep?.notice !== 'string') {
+      throw new Error(
+        `invalid deprecation entry in plugin "${entry.name}": both "name" and "notice" must be strings`,
+      )
+    }
+    const filePath = resolveDeprecationTarget(entry, dep.name, targetDir)
+    const original = await readFile(filePath, 'utf8')
+    const updated = injectDeprecationNotice(original, dep.notice, `${entry.name}:${dep.name}`)
+    if (updated !== original) {
+      await writeFile(filePath, updated)
+    }
+  }
+}
+
+function injectDeprecationNotice(content, notice, label) {
+  const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
+  if (!fmMatch) {
+    throw new Error(`frontmatter not found for deprecation target: ${label}`)
+  }
+  const fm = fmMatch[1]
+  const descLineMatch = fm.match(/^description:[ \t]*(.*)$/m)
+  if (!descLineMatch) {
+    throw new Error(`description field not found in frontmatter for: ${label}`)
+  }
+  const currentDesc = descLineMatch[1]
+  if (currentDesc.startsWith(notice)) {
+    return content
+  }
+  const newFm = fm.replace(/^description:[ \t]*(.*)$/m, `description: ${notice}${currentDesc}`)
+  return content.replace(fmMatch[0], `---\n${newFm}\n---`)
 }
 
 async function loadLocalPlugins() {
@@ -99,10 +212,48 @@ async function loadLocalPlugins() {
   return marketplace.plugins.filter((p) => isLocalSource(p.source))
 }
 
+async function loadSyncOverrides() {
+  let raw
+  try {
+    raw = await readFile(SYNC_OVERRIDES_PATH, 'utf8')
+  } catch (e) {
+    if (e.code === 'ENOENT') return {}
+    throw e
+  }
+  const parsed = JSON.parse(raw)
+  return parsed.plugins ?? {}
+}
+
+const ALLOWED_OVERRIDE_KEYS = new Set(['deprecations', 'namespace_rewrites'])
+
+function mergeOverrides(entry, overrides) {
+  const o = overrides[entry.name]
+  if (!o) return entry
+  const merged = { ...entry }
+  for (const [key, value] of Object.entries(o)) {
+    if (!ALLOWED_OVERRIDE_KEYS.has(key)) {
+      throw new Error(
+        `sync-overrides for plugin "${entry.name}" contains disallowed key "${key}" (allowed: ${[...ALLOWED_OVERRIDE_KEYS].join(', ')})`,
+      )
+    }
+    merged[key] = value
+  }
+  return merged
+}
+
 async function syncAll(baseDir) {
   const local = await loadLocalPlugins()
+  const overrides = await loadSyncOverrides()
+  const knownPlugins = new Set(local.map((p) => p.name))
+  for (const name of Object.keys(overrides)) {
+    if (!knownPlugins.has(name)) {
+      throw new Error(
+        `sync-overrides.json references unknown plugin "${name}" (not declared in marketplace.json)`,
+      )
+    }
+  }
   for (const entry of local) {
-    await generatePlugin(entry, baseDir)
+    await generatePlugin(mergeOverrides(entry, overrides), baseDir)
   }
   return local
 }
