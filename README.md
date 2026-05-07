@@ -17,7 +17,7 @@
 |---|---|
 | Backend, APIs, CLI tools, or general programming | `dev-workflows` |
 | React / TypeScript frontend | `dev-workflows-frontend` |
-| Full-stack (backend + React) | both `dev-workflows` and `dev-workflows-frontend` |
+| Full-stack (backend + React) | `dev-workflows-fullstack` (single plugin, replaces installing both) |
 | You already have your own orchestration and just want the rules | `dev-skills` (skills only, see [Skills only](#skills-only)) |
 
 ### Common setup
@@ -43,9 +43,8 @@ claude
 /reload-plugins
 /recipe-front-design <your feature>
 
-# Fullstack (install both plugins, then reload)
-/plugin install dev-workflows@claude-code-workflows
-/plugin install dev-workflows-frontend@claude-code-workflows
+# Fullstack (single plugin)
+/plugin install dev-workflows-fullstack@claude-code-workflows
 /reload-plugins
 /recipe-fullstack-implement "Add user authentication with JWT + login form"
 
@@ -54,6 +53,8 @@ claude
 ```
 
 The fullstack recipes create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
+
+> **Migration notice (v0.19.0):** `dev-workflows-fullstack` is the new home for fullstack recipes. Installing both `dev-workflows` and `dev-workflows-frontend` works today, but causes duplicate skill descriptions to compete for context budget. The next release will remove `recipe-fullstack-*` from `dev-workflows`. If you do fullstack work, switch to `dev-workflows-fullstack` now.
 
 ### Optional add-ons
 
@@ -77,7 +78,7 @@ If you already have your own orchestration (custom prompts, scripts, CI-driven l
 - Drop-in best practices without changing your workflow
 - Works as a ruleset layer for your own orchestrator
 
-> **Do not install alongside dev-workflows or dev-workflows-frontend.** Duplicate skills will be silently ignored. See [details below](#warning-duplicate-skills).
+> **Do not install alongside dev-workflows, dev-workflows-frontend, or dev-workflows-fullstack.** Duplicate skills will be silently ignored. See [details below](#warning-duplicate-skills).
 
 ```bash
 # Install skills-only plugin
@@ -100,7 +101,7 @@ Skills auto-load when relevant. `coding-principles` activates during implementat
 
 <a id="warning-duplicate-skills"></a>
 
-> **Warning:** dev-skills and dev-workflows / dev-workflows-frontend share the same skills. Installing both makes skill descriptions appear twice in the system context. Claude Code limits skill descriptions to ~2% of the context window. Exceeding this limit causes skills to be silently ignored.
+> **Warning:** dev-skills and dev-workflows / dev-workflows-frontend / dev-workflows-fullstack share the same skills. Installing more than one of them makes skill descriptions appear multiple times in the system context. Claude Code limits skill descriptions to ~2% of the context window. Exceeding this limit causes skills to be silently ignored. For fullstack work, install only `dev-workflows-fullstack` (do not install it alongside `dev-workflows` or `dev-workflows-frontend`).
 
 ---
 
@@ -193,13 +194,13 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
 | `/recipe-implement` | End-to-end feature development | New features, complete workflows |
-| `/recipe-fullstack-implement` | End-to-end fullstack development | Cross-layer features (requires both plugins) |
+| `/recipe-fullstack-implement` | End-to-end fullstack development | _Deprecated here — moving to `dev-workflows-fullstack` next release_ |
 | `/recipe-task` | Execute single task with precision | Bug fixes, small changes |
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate work plan from design | Planning phase |
 | `/recipe-prepare-implementation` | Verify implementation readiness and resolve gaps | Pre-build check that the work plan is implementable |
 | `/recipe-build` | Execute from existing task plan | Resume implementation |
-| `/recipe-fullstack-build` | Execute fullstack task plan | Resume cross-layer implementation (requires both plugins) |
+| `/recipe-fullstack-build` | Execute fullstack task plan | _Deprecated here — moving to `dev-workflows-fullstack` next release_ |
 | `/recipe-review` | Verify code against design docs | Post-implementation check |
 | `/recipe-diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/recipe-reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
@@ -345,7 +346,7 @@ For example, two components might each handle their own loading state cleanly wh
 # 9. Vertical slices commit early so integration is verified per phase
 ```
 
-> **Requires both plugins installed.** Fullstack recipes route tasks based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/recipe-reverse-engineer` with the fullstack option.
+> **Install `dev-workflows-fullstack`** for fullstack recipes. Tasks are routed based on filename patterns (`*-backend-task-*`, `*-frontend-task-*`). For reverse engineering existing fullstack codebases, use `/recipe-reverse-engineer` with the fullstack option.
 
 ### UI Adjustment (Frontend Plugin)
 

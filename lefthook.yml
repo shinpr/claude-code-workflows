@@ -5,23 +5,28 @@ pre-commit:
         - "agents/**"
         - "skills/**"
         - ".claude-plugin/marketplace.json"
+        - ".claude-plugin/sync-overrides.json"
         - "dev-workflows/**"
         - "dev-workflows-frontend/**"
+        - "dev-workflows-fullstack/**"
         - "dev-skills/**"
-      run: pnpm sync && git add dev-workflows dev-workflows-frontend dev-skills
+      run: pnpm sync && git add dev-workflows dev-workflows-frontend dev-workflows-fullstack dev-skills
 
     - name: validate-plugins
       glob:
         - "agents/**"
         - "skills/**"
         - ".claude-plugin/marketplace.json"
+        - ".claude-plugin/sync-overrides.json"
         - "dev-workflows/**"
         - "dev-workflows-frontend/**"
+        - "dev-workflows-fullstack/**"
         - "dev-skills/**"
       run: |
         claude plugin validate .claude-plugin/marketplace.json && \
         claude plugin validate dev-workflows && \
         claude plugin validate dev-workflows-frontend && \
+        claude plugin validate dev-workflows-fullstack && \
         claude plugin validate dev-skills
 
     - name: check-skills-index

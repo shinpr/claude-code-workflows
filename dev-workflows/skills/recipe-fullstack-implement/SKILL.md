@@ -1,6 +1,6 @@
 ---
 name: recipe-fullstack-implement
-description: Orchestrate full-cycle implementation across backend and frontend layers
+description: "(Deprecated) Moving to dev-workflows-fullstack plugin in the next release. Orchestrate full-cycle implementation across backend and frontend layers"
 disable-model-invocation: true
 ---
 
