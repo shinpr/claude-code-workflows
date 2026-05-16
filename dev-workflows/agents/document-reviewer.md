@@ -83,6 +83,7 @@ For DesignDoc, additionally verify:
 - [ ] Field propagation map present (when fields cross boundaries)
 - [ ] Verification Strategy section present with: correctness definition, verification method, verification timing, early verification point
 - [ ] Fact Disposition Table present and covers every `codebase_analysis.focusAreas` entry (when `codebase_analysis` is provided)
+- [ ] Minimal Surface Alternatives section present with one entry per new in-scope element (persistent state / public-contract or cross-boundary field or prop / behavioral mode/flag/variant / reusable abstraction or component split) (when the design introduces any). Each entry contains the 5-step output (fixed requirements with AC IDs or accepted technical constraint IDs, alternatives table including at least one subtractive option, selected alternative with rationale, rejected alternatives log)
 
 #### Gate 1: Quality Assessment (only after Gate 0 passes)
 
@@ -103,6 +104,14 @@ For DesignDoc, additionally verify:
 - **Verification Strategy quality check**: When Verification Strategy section exists, verify: (1) Correctness definition is specific and measurable — "tests pass" without specifying which tests or what they verify → `important` issue (category: `completeness`). (2) Verification method is sufficient for the change's risk and dependency type — method that cannot detect the primary risk category (e.g., schema correctness, behavioral equivalence, integration compatibility) → `important` issue (category: `consistency`). (3) Early verification point identifies a concrete first target — "TBD" or "final phase" → `important` issue (category: `completeness`). (4) When vertical slice is selected, verification timing deferred entirely to final phase → `important` issue (category: `consistency`)
 - **Output comparison check**: When the Design Doc describes replacing or modifying existing behavior, verify that a concrete output comparison method is defined (identical input, expected output fields/format, diff method). Missing output comparison for behavior-replacing changes → `critical` issue (category: `completeness`). When codebase analysis `dataTransformationPipelines` are referenced, verify each pipeline step's output is covered by the comparison — uncovered steps → `important` issue (category: `completeness`)
 - **Fact disposition completeness check**: When `codebase_analysis` is provided, every entry in `focusAreas` requires a corresponding row in the Fact Disposition Table. Missing rows → `critical` issue (category: `completeness`). `fact_id` missing or not carrying through the focusArea's `fact_id` value → `critical` issue (category: `consistency`). Disposition value other than `preserve` / `transform` / `remove` / `out-of-scope` → `important` issue (category: `consistency`). Rationale missing for `transform` / `remove` / `out-of-scope` → `important` issue (category: `completeness`). Evidence column not carrying through the focusArea's evidence value → `important` issue (category: `consistency`)
+- **Minimal Surface Alternatives check**:
+  - *Scope trigger*: applies when the Design Doc introduces in-scope elements (persistent state; public-contract or cross-boundary fields or props; behavioral modes, flags, or variants; reusable abstractions or component splits).
+  - *Section existence*: when the trigger fires but the "Minimal Surface Alternatives" section is absent or empty → `critical` issue (category: `completeness`).
+  - *Per Element entry*:
+    - (1) Step 1 lists at least one AC ID or accepted technical constraint from the Design Doc → missing linkage or only speculative requirements ("future", "might want") → `critical` issue (category: `compliance`).
+    - (2) Steps 2–3 include at least one subtractive alternative (derive / compute on demand / keep at caller / reuse existing / do not introduce new state) → missing subtractive alternative → `critical` issue (category: `compliance`).
+    - (3) Step 4 rationale either selects the smallest alternative or names a current requirement smaller alternatives fail to satisfy → "useful" / "future-ready" / "convenient" / "users might want" used as primary rationale → `critical` issue (category: `compliance`).
+    - (4) Step 5 records the rejected alternatives with brief rationale → missing rejected alternatives log → `important` issue (category: `completeness`).
 
 **Perspective-specific Mode**:
 - Implement review based on specified mode and focus
@@ -264,6 +273,7 @@ Include in output when `prior_context_count > 0`:
 - [ ] Verification Strategy aligns with design_type and implementation approach
 - [ ] Output comparison defined when design replaces/modifies existing behavior (covers all transformation pipeline steps)
 - [ ] Fact Disposition Table covers every `codebase_analysis.focusAreas` entry (when `codebase_analysis` is provided)
+- [ ] Minimal Surface Alternatives section covers every new in-scope element (persistent state / public-contract or cross-boundary field or prop / behavioral mode/flag/variant / reusable abstraction or component split) with the 5-step output (when the design introduces any); selection rationale cites a named current requirement that smaller alternatives fail to satisfy, or names the smallest alternative as selected
 
 ## Review Criteria (for Comprehensive Mode)
 

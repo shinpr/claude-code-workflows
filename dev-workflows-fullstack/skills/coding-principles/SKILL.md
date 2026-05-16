@@ -9,8 +9,9 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 1. **Maintainability over Speed**: Prioritize long-term code health over initial development velocity
 2. **Simplicity First**: Choose the simplest solution that meets requirements (YAGNI principle)
-3. **Explicit over Implicit**: Make intentions clear through code structure and naming
-4. **Delete over Comment**: Remove unused code instead of commenting it out
+3. **Minimum Surface for Required Coverage**: When introducing maintenance-surface-bearing elements (persistent state, public-contract or cross-boundary fields/props, behavioral modes/flags/variants, reusable abstractions, or component splits), select the smallest design surface that covers the current user-visible requirements and accepted technical constraints (audit, data integrity, compatibility, security, performance, accessibility). Adoption is justified by naming a current requirement or constraint that smaller alternatives fail to cover; value-based arguments serve as tiebreakers. Distinct from YAGNI (time-axis judgment of present vs. future need), this principle governs surface-area minimization at a fixed coverage point.
+4. **Explicit over Implicit**: Make intentions clear through code structure and naming
+5. **Delete over Comment**: Remove unused code instead of commenting it out
 
 ## Code Quality
 

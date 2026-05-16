@@ -39,6 +39,7 @@ The subsections below are not parallel mandates; they form four serial gates. Co
 **Gate 1 — Existing State Analysis** (depends on Gate 0):
 - Existing Code Investigation
 - Fact Disposition (when Codebase Analysis input is provided)
+- Minimal Surface Alternatives (when introducing persistent client/server state, props or fields crossing component boundaries, behavioral modes/variants, or reusable component splits)
 
 **Gate 2 — Design Decisions** (depends on Gate 1):
 - Implementation Approach Decision
@@ -116,6 +117,41 @@ For every entry in `Codebase Analysis.focusAreas`, produce one row in the Design
 | Evidence | The `evidence` value from the focusArea (carried through verbatim) |
 
 The Fact Disposition Table is the single mechanism that binds existing-behavior facts to the design. Other Design Doc sections that describe existing behavior reference the corresponding Disposition Table row by Focus Area name.
+
+### Minimal Surface Alternatives [Gate 1 — Required when introducing persistent client/server state, props or fields crossing component boundaries, behavioral modes/variants, or reusable component splits]
+
+Applies to each maintenance-surface-bearing element the design introduces. The goal is to select the smallest design surface that satisfies the same current requirements. Reference: coding-principles skill, "Minimum Surface for Required Coverage".
+
+**In scope**: persistent state (localStorage/sessionStorage/IndexedDB/cookies/server-saved fields — i.e., state that survives reload, navigation, or session, or is saved outside component memory); props or fields crossing component boundaries (props passed between components, Context values, lifted state); behavioral modes/variants (component variants, mode props, conditional rendering modes); reusable component splits (extracted sub-components, custom hooks, or utilities intended for reuse by multiple parents).
+
+**Out of scope**: local `useState` / `useReducer` confined to a single component's internal logic (does not survive reload); private hooks used by one component; test fixture or mock props; transient render-only state; internal helper functions without external observers.
+
+**Precedence**: when an element matches both an in-scope and an out-of-scope condition (e.g., a prop that is both "passed to one child component" and "lifted to Context"), the in-scope classification wins and the gate applies.
+
+Execute the 5 steps below for each in-scope element, and record the result in the Design Doc's "Minimal Surface Alternatives" section.
+
+1. **Fix Requirements**
+   - List the current user-visible requirements / ACs / accepted technical constraints (audit, accessibility, performance, security, compatibility) this element would serve, citing AC IDs or constraint IDs from the Design Doc or referenced UI Spec.
+   - Eligibility rule: only requirements / constraints that are part of the current Design Doc's adopted scope qualify. Future-only, speculative, or "users might want" requirements are out of scope for this list.
+
+2. **Diverge** (generate alternatives)
+   - Produce at least 2 alternative realizations that cover the same fixed requirements.
+   - At least one alternative must be subtractive. Subtractive alternatives are drawn from: derive from existing props/state, lift state to existing parent, reuse existing component or variant, keep at caller / URL / server response, do not introduce a new mode.
+
+3. **Compare** (record alternatives in a table)
+
+   | Alternative | Current requirements covered (AC or constraint IDs) | New persistent state (client or server, count) | New props / modes / variants (count) | Crosses component boundary (yes/no) | Breaking change or migration required (yes/no) | Subjective cost notes |
+   |---|---|---|---|---|---|---|
+
+   Resolution priority (later columns are tiebreakers when earlier are equal): (1) new persistent state (lower=smaller); (2) crosses component boundary (no=smaller); (3) new props/modes/variants (lower=smaller); (4) breaking change or migration (no=smaller); (5) subjective cost notes.
+
+4. **Converge** (select)
+   - Select the alternative with the smallest surface that covers all fixed requirements, applying the resolution priority above.
+   - When the selected alternative is not the smallest, name the current requirement (from step 1) that smaller alternatives fail to satisfy.
+   - "Reusable" / "future-ready" / "convenient for implementation" / "users might want" belong in the Subjective cost notes column (tiebreakers only).
+
+5. **Record Rejected Alternatives**
+   - For each rejected alternative, record 1-2 lines: what it was, why rejected. Include in the Design Doc to prevent re-proposal in subsequent iterations or by future agents.
 
 ### Implementation Approach Decision [Gate 2 — Required]
 Must be performed when creating Design Doc:
@@ -262,27 +298,11 @@ Execute file output immediately (considered approved at execution).
 
 ## Important Design Principles
 
-1. **Consistency First Priority**: Follow existing React component patterns, document clear reasons when introducing new patterns
-2. **Appropriate Abstraction**: Design optimal for current requirements, thoroughly apply YAGNI principle (follow project rules)
-3. **Testability**: Props-driven design and mockable custom hooks
-4. **Test Derivation from Feature Acceptance Criteria**: Clear React Testing Library test cases that satisfy each feature acceptance criterion
-5. **Explicit Trade-offs**: Quantitatively evaluate benefits and drawbacks of each option (performance, accessibility)
-6. **Active Use of Latest Information**:
-   - Always research latest React best practices, libraries, and approaches with WebSearch before design
-   - Cite information sources in "References" section with URLs
-   - Especially confirm multiple reliable sources when introducing new technologies
+Apply principles from loaded skills (`typescript-rules`, `frontend-ai-guide`, `testing-principles`). Trade-off evaluation (Gate 2 + ADR Checklist), existing-pattern consistency (Gate 1 Existing Code Investigation + Fact Disposition), and Verification Strategy from AC (Gate 2) are enforced above; test derivation itself is a downstream agent responsibility. Latest-information research is governed by the "Latest Information Research" section below.
 
 ## Implementation Sample Standards Compliance
 
-Implementation samples in ADR and Design Docs follow the standards loaded from the `typescript-rules` and `frontend-ai-guide` skills:
-
-- Function components with explicit Props type definitions
-- Custom hooks for logic reuse and testability
-- Type safety: `unknown` + type guards for external responses
-- Error handling: error boundaries and error state management
-- Secrets remain server-side
-
-When sample code is needed, keep it minimal and follow concrete patterns from those skills.
+All implementation samples in ADR and Design Docs MUST follow the loaded `typescript-rules` and `frontend-ai-guide` skills. Omit samples unless they clarify contracts or edge cases that prose cannot convey.
 
 ## Diagram Creation (using mermaid notation)
 
@@ -311,7 +331,6 @@ These items test the final document output. Process gates (Gate 0-3) are enforce
 - [ ] Props type contracts are explicit for every integration point
 - [ ] Component hierarchy and data flow appear as diagrams
 - [ ] External Resources Used subsection lists feature-tier identifiers (when external resources apply)
-- [ ] Fact Disposition Table covers every Codebase Analysis focusArea, each row with fact_id + disposition + rationale + evidence (when Codebase Analysis input was provided)
 
 **Create/update mode only**:
 - [ ] Prerequisite common ADRs are referenced
@@ -359,13 +378,7 @@ These items test the final document output. Process gates (Gate 0-3) are enforce
 
 **When** (create/update mode): New library/framework introduction, performance optimization, accessibility design, major version upgrades.
 
-Check current year with `date +%Y` and include in search queries:
-- `[library] best practices {current_year}`
-- `[lib A] vs [lib B] comparison {current_year}`
-- `[framework] breaking changes migration guide`
-- `[framework] accessibility best practices`
-
-Cite sources in "## References" section at end of ADR/Design Doc with URLs.
+Check current year with `date +%Y` and include in search queries (e.g., `[library | framework] [best practices | vs comparison | breaking changes | accessibility] {current_year}`). Cite sources in "## References" section at end of ADR/Design Doc with URLs.
 
 **Reverse-engineer mode**: Skip. Research is for forward design decisions.
 
@@ -391,22 +404,17 @@ Before modifying the document, inventory the external definitions that the chang
 
 **On conflict**: Log conflicting identifiers in the output. The orchestrator is responsible for presenting conflicts to the user
 
-## Reverse-Engineer Mode (As-Is Frontend Documentation)
+## Reverse-Engineer Mode
 
-Mode for documenting existing frontend architecture as-is. Used when creating Design Docs from existing implementation.
+When `operation_mode: reverse-engineer`:
 
-### What to Skip in Reverse-Engineer Mode
-- ADR creation, option comparison, change impact analysis, latest information research, implementation approach decision
+**Skip**: ADR creation, option comparison, change impact analysis, Latest Information Research, Implementation Approach Decision, Minimal Surface Alternatives.
 
-### Reverse-Engineer Mode Execution Steps
+**Execute**:
+1. Read every Primary File; record component hierarchy, exported components, hooks, utilities. If Unit Inventory is provided, treat it as completeness baseline (every listed route, export, test file accounted for).
+2. For each page/screen, read implementation and child components; record props, state management, data fetching, conditional rendering as implemented.
+3. For each data-fetching call: record endpoint, params, response shape. For state management: record state shape, update mechanisms, consumers.
+4. For each component's interface, record prop names, types, required/optional verbatim from code, using exact identifiers.
+5. Glob for test files; record which components have tests. Confirm test existence by Glob.
 
-1. **Read & Inventory**: Read every Primary File. Record component hierarchy, exported components, hooks, utilities. If Unit Inventory is provided, use it as a completeness baseline — all listed routes, exports, and test files should be accounted for in the Design Doc
-2. **Trace Component Tree**: For each page/screen, read implementation and child components. Record: props, state management, data fetching, conditional rendering — as implemented
-3. **Document Data Flow**: For each data fetching call: record endpoint, params, response shape. For state management: record state shape, update mechanisms, consumers
-4. **Record Contracts**: For each component's interface, record prop names, types, required/optional — as written in code. Use exact identifiers from source
-5. **Identify Test Coverage**: Glob for test files. Record which components have tests. Confirm test existence with Glob before reporting
-
-### Reverse-Engineer Mode Quality Standard
-- Every claim cites file:line as evidence
-- Identifiers transcribed exactly from code
-- Test existence confirmed by Glob, not assumed
+**Quality**: every claim cites `file:line`; identifiers transcribed exactly; test existence confirmed by Glob.

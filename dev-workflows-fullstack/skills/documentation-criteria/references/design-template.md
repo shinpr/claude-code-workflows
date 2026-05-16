@@ -111,7 +111,6 @@ Keywords determine test type and reduce ambiguity.
 ### [Functional Requirement 2]
 
 - [ ] The system shall display data list with pagination of 10 items per page
-- [ ] **When** input is entered in search field, the system shall apply real-time filtering
 
 ## Existing Codebase Analysis
 
@@ -180,13 +179,9 @@ No Ripple Effect:
 
 ### Main Components
 
+Repeat the block below for each component.
+
 #### Component 1
-
-- **Responsibility**: [Scope of responsibility for this component]
-- **Interface**: [APIs and contract definitions provided]
-- **Dependencies**: [Relationships with other components]
-
-#### Component 2
 
 - **Responsibility**: [Scope of responsibility for this component]
 - **Interface**: [APIs and contract definitions provided]
@@ -202,6 +197,38 @@ No Ripple Effect:
 | Boundary/Interop Cost | [Low/Medium/High] | [Cost of sharing across boundaries?] |
 
 **Decision**: [reuse / extend / new] — [rationale in 1-2 sentences]
+
+### Minimal Surface Alternatives (When Introducing Maintenance-Surface Elements)
+
+One entry per new in-scope element. This section records the 5-step output produced by the invoking agent.
+
+#### Element 1: [name of the new element — e.g., persistent state field, public-contract field, cross-boundary prop, behavioral mode/variant, reusable abstraction or component split]
+
+**Step 1 — Fixed Requirements**
+- [AC ID or constraint ID]: [requirement / constraint text]
+- [AC ID or constraint ID]: [requirement / constraint text]
+
+**Steps 2–3 — Alternatives Compared**
+
+| Alternative | Current requirements covered (AC or constraint IDs) | New state introduced (count) | New concept / mode / flag (count) | Crosses component boundary (yes/no) | Breaking change or migration required (yes/no) | Subjective cost notes |
+|---|---|---|---|---|---|---|
+| [The added element as proposed] | | | | | | |
+| [Subtractive alternative — derive / compute on demand / keep at caller / reuse existing / do not introduce new state] | | | | | | |
+| [Optional third alternative] | | | | | | |
+
+**Step 4 — Selected Alternative and Rationale**
+- **Selected**: [alternative name]
+- **Rationale**:
+  - If selected = smallest alternative considered: state "smallest alternative considered; no further reduction available"
+  - If selected > smallest: name the current requirement(s) from step 1 that smaller alternatives fail to satisfy
+
+**Step 5 — Rejected Alternatives Log**
+- [Alternative name]: [1-2 lines on what it was and why rejected]
+- [Alternative name]: [1-2 lines on what it was and why rejected]
+
+(Repeat the Element block above for each additional in-scope element.)
+
+Mark the whole section as N/A with brief rationale when the design introduces no in-scope elements.
 
 ### Contract Definitions
 
@@ -291,13 +318,12 @@ System Invariants:
 ### Technical Dependencies and Implementation Order
 
 #### Required Implementation Order
-1. **[Component/Feature A]**
-   - Technical Reason: [Why this needs to be implemented first]
-   - Dependent Elements: [Other components that depend on this]
 
-2. **[Component/Feature B]**
-   - Technical Reason: [Technical necessity to implement after A]
-   - Prerequisites: [Required pre-implementations]
+Repeat the entry below for each component/feature, in dependency order.
+
+1. **[Component/Feature]**
+   - Technical Reason: [Why this needs to be implemented at this position]
+   - Prerequisites / Dependent Elements: [Components depended on or that depend on this]
 
 ### Migration Strategy
 
@@ -366,9 +392,11 @@ Mark as N/A with brief rationale when the design introduces entirely new behavio
 
 ## Future Extensibility
 
-- **Extension points**: [Interfaces, hooks, or plugin mechanisms designed for future use]
-- **Known future requirements**: [Planned features that influenced current design decisions]
-- **Intentional limitations**: [What was deliberately kept simple and why]
+This section records what was **excluded** from the current design surface. Speculative inclusions belong in a separate proposal.
+
+- **Deferred possibilities**: [Capabilities considered during design and explicitly excluded from the current design surface. Each entry names either the current requirement it would have served, or marks itself as speculative]
+- **Intentional limitations**: [What was deliberately kept small and why]
+- **Extension points (existing, with current consumers)**: [Interfaces or hooks already in use by named current consumers. Each entry names a current consumer]
 
 ## Alternative Solutions
 
