@@ -293,6 +293,7 @@ Recommend higher-level review when:
 - Implementation significantly exceeds Design Doc quality
 - Security concerns discovered
 - Critical performance issues found
+- Implementation introduces in-scope elements (persistent state; public-contract or cross-boundary fields/props; behavioral modes/flags/variants; reusable abstractions or component splits) that are absent from the Design Doc's Minimal Surface Alternatives section
 
 ## Special Considerations
 
