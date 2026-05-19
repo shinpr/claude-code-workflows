@@ -141,7 +141,7 @@ For each referenced ADR:
 2. Extract decisions that are **implementation-binding** — i.e., they constrain one of five binding axes: placement, dependency direction, contract/schema shape, data flow, or persistence. Acceptance criteria and required behaviors are recorded in the Design Doc; this table covers only structural constraints from ADRs
 3. For each binding decision, classify it under exactly one axis (`placement` | `dependency_direction` | `contract_schema` | `data_flow` | `persistence`) — this becomes the row's `Axis` value
 4. For each binding decision, note which section it came from (`Decision` or `Implementation Guidance`) — this becomes the row's `Source Section` value
-5. For each binding decision, identify the planned task(s) where the decision applies. Use Target files, layer, or component scope to determine relevance — exact glob matching is not required at this stage
+5. For each binding decision, identify the planned task(s) where the decision applies. Use Target files, layer, or component scope to determine relevance — layer/component-level mapping is sufficient at this stage
 6. Record one row per binding decision in the **ADR Bindings** table (see plan template)
 
 Omit the table when no referenced ADR contains implementation-binding decisions.

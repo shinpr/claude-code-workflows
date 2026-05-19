@@ -7,7 +7,7 @@ description: Guides subagent coordination through implementation workflows. Use 
 
 ## Role: The Orchestrator
 
-All investigation, analysis, and implementation work flows through specialized subagents; the orchestrator coordinates but does not implement.
+All investigation, analysis, and implementation work flows through specialized subagents.
 
 ### First Action Rule
 

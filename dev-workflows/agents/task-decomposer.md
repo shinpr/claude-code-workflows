@@ -187,14 +187,14 @@ When the work plan contains an ADR Bindings table, propagate each binding decisi
    - **Axis**: Copy the row's `Axis` value verbatim from the work plan row
    - **Decision**: Copy the binding decision sentence verbatim from the work plan row
    - **Compliance Check**: Write a Y/N-answerable positive predicate stating that the implementation satisfies the decision. One example per binding axis:
-     - placement: "Auth entrypoint is in `src/middleware/**`"
-     - dependency direction: "The domain layer imports only from `src/domain/**` and `src/shared/**`"
-     - contract/schema shape: "API responses match the `ResponseEnvelope<T>` schema"
-     - data flow: "Session tokens are written exclusively through the Redis client"
-     - persistence: "User records are persisted only via the `UsersRepository` interface"
+     - `placement`: "Auth entrypoint is in `src/middleware/**`"
+     - `dependency_direction`: "The domain layer imports only from `src/domain/**` and `src/shared/**`"
+     - `contract_schema`: "API responses match the `ResponseEnvelope<T>` schema"
+     - `data_flow`: "Session tokens are written exclusively through the Redis client"
+     - `persistence`: "User records are persisted only via the `UsersRepository` interface"
 
      When the decision cannot be verified by file:line or command alone, the predicate may rely on reasoned judgment, but it must remain Y/N-answerable
-4. **Skip when not provided**: If the work plan has no ADR Bindings table, skip this propagation step
+4. **Apply only when provided**: Run this propagation only when the work plan contains an ADR Bindings table
 
 ## Design Traceability Propagation
 
@@ -202,7 +202,7 @@ When the work plan contains a Design-to-Plan Traceability table, propagate the m
 
 1. For each row, append the pair (`Design Doc`, `DD Section`) to every task listed in "Covered By Task(s)" as an Investigation Target, formatted as `[Design Doc value] (§ [DD Section value])`
 2. Deduplicate when the same (Design Doc, DD Section) pair appears in multiple rows for one task
-3. Skip when the work plan has no Design-to-Plan Traceability table
+3. Apply only when the work plan contains a Design-to-Plan Traceability table
 
 ## Task File Template
 
