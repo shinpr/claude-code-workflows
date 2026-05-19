@@ -17,8 +17,17 @@ Metadata:
 Files to read before starting implementation (file path, with optional search hint):
 - [e.g., src/orders/checkout (processOrder function) — determined during task decomposition based on task nature]
 
+## Binding Decisions
+(Include this section when the work plan's ADR Bindings table covers this task. Omit otherwise.)
+
+Each row is an ADR decision the implementation in this task must comply with.
+
+| Source | Axis | Decision | Compliance Check |
+|---|---|---|---|
+| [docs/adr/ADR-XXXX.md (§ <Source Section>) — substitute the section name (`Decision` or `Implementation Guidance`) from the matching work plan row] | [Axis value copied verbatim from the work plan's ADR Bindings row] | [Binding decision copied from the work plan's ADR Bindings row] | [Y/N-answerable positive predicate that evaluates whether the planned/final implementation satisfies the decision] |
+
 ## Investigation Notes
-(Implementation observations are appended here before implementation begins.)
+(Implementation observations are appended here before implementation begins. When Binding Decisions exist, record the planned implementation approach and each Compliance Check result here.)
 
 ## Implementation Steps (TDD: Red-Green-Refactor)
 ### 1. Red Phase
@@ -51,6 +60,7 @@ Files to read before starting implementation (file path, with optional search hi
 - [ ] All added tests pass
 - [ ] Operation verified per Operation Verification Methods above
 - [ ] Deliverables created (for research/design tasks)
+- [ ] (When Binding Decisions exist) Every Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (file:line, test result, or command output)
 
 ## Notes
 - Impact scope: [Areas where changes may propagate]

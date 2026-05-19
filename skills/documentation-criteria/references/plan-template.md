@@ -39,9 +39,9 @@ Adopted quality gates for the change area. Each task in this plan must satisfy t
 
 Maps each Design Doc technical requirement to the covering task(s). One row per extracted item. Every row must have at least one covering task, or an explicit gap justification.
 
-| DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|
-| [Section name from DD] | [Specific item] | impl-target / connection-switching / contract-change / verification / prerequisite | [Phase X Task Y] | covered | |
+| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
+|---|---|---|---|---|---|---|
+| [docs/design/XXX.md — one of the Related Documents above] | [Section name from DD] | [Specific item] | impl-target / connection-switching / contract-change / verification / prerequisite | [Phase X Task Y] | covered | |
 
 **Category values**: `impl-target` (implementation target), `connection-switching` (connection/switching/registration), `contract-change` (contract change and propagation), `verification` (verification requirement), `prerequisite` (prerequisite work)
 
@@ -58,6 +58,18 @@ Include this section when a UI Spec is among the inputs. Maps each component doc
 **Reference key rule**: The component identifier in column 1 is the UI Spec section heading (verbatim). UI Spec headings are unique by construction so this reference resolves to exactly one section.
 
 **Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
+
+## ADR Bindings
+
+Include this section when ADRs are provided as input or listed in the Design Doc's "Prerequisite ADRs" section. Maps each implementation-binding ADR decision to the task(s) it constrains. Omit the section when no ADR applies.
+
+A decision is **implementation-binding** when it constrains code placement, dependency direction, contract/schema shape, data flow, or persistence. Acceptance criteria and required behaviors are recorded in the Design Doc; this table covers only structural constraints from ADRs.
+
+| ADR | Source Section | Axis | Binding Decision | Covered By Task(s) |
+|---|---|---|---|---|
+| [docs/adr/ADR-XXXX.md] | Decision / Implementation Guidance | placement \| dependency_direction \| contract_schema \| data_flow \| persistence | [One implementation-binding decision sentence, copied or condensed from the named section] | [Phase X Task Y] |
+
+One row per binding decision. A single ADR can contribute multiple rows. A single task can appear in multiple rows.
 
 ## Connection Map
 

@@ -112,6 +112,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    | Cross-package boundary implementation | Both sides of the boundary as listed in the work plan's Connection Map (owner modules and expected signal), the contract definition between them |
    | Bug fix / refactor | The affected code paths, related test coverage, error reproduction context |
    | Behavior replacement / rewrite | The existing implementation being replaced, its observable outputs, Design Doc Verification Strategy section |
+   | Task constrained by an ADR (work plan's ADR Bindings table covers this task) | The ADR file with section hint matching the row's `Source Section` value (e.g., `(§ Decision)` or `(§ Implementation Guidance)`) for each binding row covering this task |
 
    **Principles**:
    - Every task must have at least one Investigation Target (even if just the Design Doc)
@@ -121,6 +122,8 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - When test skeletons exist for the task, always include them as Investigation Targets
    - When the work plan contains a UI Spec Component → Task Mapping table, propagate the matching component section to every task in that row (see UI Spec Propagation below)
    - When the work plan contains a Connection Map, propagate the boundary rows touching this task's target files (see Connection Map Propagation below)
+   - When the work plan contains an ADR Bindings table covering this task, propagate the matching rows (see ADR Binding Propagation below)
+   - When the work plan contains a Design-to-Plan Traceability table, propagate the matching DD section rows (see Design Traceability Propagation below)
 
 7. **Implementation Pattern Consistency**
    When including implementation samples, MUST ensure strict compliance with the Design Doc implementation approach that forms the basis of the work plan
@@ -172,6 +175,34 @@ When the work plan contains a Connection Map table, propagate boundary context t
 2. **Append to Investigation Targets**: Add the boundary's owner module file paths on both sides to each matched task's Investigation Targets
 3. **Add a "Boundary Context" note in the task body**: Record the boundary identifier and expected signal verbatim from the Connection Map row, so the executor knows what observable evidence the implementation must produce
 4. **Skip when not provided**: If the work plan has no Connection Map, skip this propagation step
+
+## ADR Binding Propagation
+
+When the work plan contains an ADR Bindings table, propagate each binding decision to the task(s) it covers:
+
+1. **Lookup by task ID**: For each row in the ADR Bindings table, locate the task(s) listed in the "Covered By Task(s)" column
+2. **Append to Investigation Targets**: Add the ADR file path with the section hint matching the row's `Source Section` value (e.g., `docs/adr/ADR-0042.md (§ Decision)` or `docs/adr/ADR-0042.md (§ Implementation Guidance)`) to each matched task
+3. **Add Binding Decisions table to the task**: For each matched row, add one row to the task's Binding Decisions table:
+   - **Source**: The ADR file path with the section hint matching the row's `Source Section` value
+   - **Axis**: Copy the row's `Axis` value verbatim from the work plan row
+   - **Decision**: Copy the binding decision sentence verbatim from the work plan row
+   - **Compliance Check**: Write a Y/N-answerable positive predicate stating that the implementation satisfies the decision. One example per binding axis:
+     - `placement`: "Auth entrypoint is in `src/middleware/**`"
+     - `dependency_direction`: "The domain layer imports only from `src/domain/**` and `src/shared/**`"
+     - `contract_schema`: "API responses match the `ResponseEnvelope<T>` schema"
+     - `data_flow`: "Session tokens are written exclusively through the Redis client"
+     - `persistence`: "User records are persisted only via the `UsersRepository` interface"
+
+     When the decision cannot be verified by file:line or command alone, the predicate may rely on reasoned judgment, but it must remain Y/N-answerable
+4. **Apply only when provided**: Run this propagation only when the work plan contains an ADR Bindings table
+
+## Design Traceability Propagation
+
+When the work plan contains a Design-to-Plan Traceability table, propagate the matching DD section to each task:
+
+1. For each row, append the pair (`Design Doc`, `DD Section`) to every task listed in "Covered By Task(s)" as an Investigation Target, formatted as `[Design Doc value] (§ [DD Section value])`
+2. Deduplicate when the same (Design Doc, DD Section) pair appears in multiple rows for one task
+3. Apply only when the work plan contains a Design-to-Plan Traceability table
 
 ## Task File Template
 
@@ -274,6 +305,11 @@ Please execute decomposed tasks according to the order.
 - [ ] Quality Assurance Mechanisms from work plan header propagated to relevant tasks
 - [ ] UI Spec Component → Task Mapping rows propagated to matching tasks (when work plan has the table)
 - [ ] Connection Map boundary rows propagated to matching tasks (when work plan has the table)
+- [ ] Design-to-Plan Traceability rows propagated to matching tasks as Investigation Targets (when work plan has the table)
+- [ ] ADR Bindings rows propagated to matching tasks as Binding Decisions (when work plan has the table)
+  - [ ] Source includes ADR path with section hint
+  - [ ] Axis copied verbatim from the work plan row to the task's Binding Decisions table
+  - [ ] Compliance Check is phrased as a Y/N-answerable positive predicate
 - [ ] Clear completion criteria setting
 - [ ] Overall design document creation
 - [ ] Implementation efficiency and rework prevention (pre-identification of common processing, clarification of impact scope)
