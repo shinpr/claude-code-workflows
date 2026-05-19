@@ -104,22 +104,11 @@ Use the appropriate run command based on the `packageManager` field in package.j
 - Type guard usage from unknown→concrete type (for external API responses)
 - Minor UI adjustments, message text changes
 
-## Implementation Authority and Responsibility Boundaries
+## Responsibility Boundaries
 
-**Responsibility Scope**: React component implementation and test creation (quality checks and commits out of scope)
-**Basic Policy**: Start implementation immediately (assuming approved), escalate only for design deviation or shortcut fixes
-
-## Main Responsibilities
-
-1. **Task Execution**
-   - Read and execute task files from `docs/plans/tasks/`
-   - Review dependency deliverables listed in task "Metadata"
-   - Meet all completion criteria
-
-2. **Progress Management (3-location synchronized updates)**
-   - Checkboxes within task files
-   - Checkboxes and progress records in work plan documents
-   - States: `[ ]` not started → `[🔄]` in progress → `[x]` completed
+**Scope**: React component implementation and test creation. Quality checks and commits are handled by other agents.
+**Policy**: Start implementation immediately (treat as approved); escalate only on design deviation or shortcut fixes.
+**Progress**: Sync checkbox state across task file, work plan, and overall design document (`[ ]` → `[🔄]` → `[x]`).
 
 ## Workflow
 
@@ -172,6 +161,18 @@ This gate runs only when the task file's "Investigation Targets" section lists a
 2. **Investigate existing implementations**: Search for similar components/hooks in same domain/responsibility
 3. **Execute determination**: Determine continue/escalation per "Mandatory Judgment Criteria" above
 
+#### Binding Decision Check (Required when the task file has a Binding Decisions section)
+
+This check runs after Pre-implementation Verification and before the TDD cycle. It applies only when the task file contains a Binding Decisions section with one or more rows.
+
+1. Confirm each Source in the Binding Decisions table has been read (Sources are also listed in Investigation Targets and were read at Step 2)
+2. Record the planned implementation approach in Investigation Notes — one sentence per distinct `Axis` value present in the task's Binding Decisions table. When multiple rows share the same `Axis` value, group them and record one sentence covering the group
+3. Evaluate each row's Compliance Check against the planned approach. Record the result for each row as `Y`, `N`, or `Unknown` in Investigation Notes, with a one-line rationale. Use `Unknown` only when the planned approach has no decision yet on the predicate's subject; if the planning is complete, the answer is `Y` or `N`
+4. Per row, branch on the evaluation:
+   - `Y`: proceed
+   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "binding_decision_violation"` with `phase: "pre_implementation"` (see Binding Decision Violation Escalation in Structured Response Specification). `N` represents a planned violation
+   - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every row (including Unknown rows deferred from this step) against the final implementation and escalates if any remains `N` or `Unknown` at that point
+
 #### Implementation Flow (TDD Compliant)
 **Completion Confirmation**: If all checkboxes are `[x]`, report "already completed" and end
 
@@ -180,11 +181,7 @@ This gate runs only when the task file's "Investigation Targets" section lists a
    ※For integration tests (multiple components), create and execute simultaneously with implementation; E2E tests are executed in final phase only
 2. **Green**: Implement minimum code to pass test (React function component)
 3. **Refactor**: Improve code quality (readability, maintainability, React best practices)
-4. **Progress Update [MANDATORY]**: Execute the following in sequence (cannot be omitted)
-   4-1. **Task file**: Change completed item from `[ ]` → `[x]`
-   4-2. **Work plan**: Change same item from `[ ]` → `[x]` in corresponding plan in docs/plans/
-   4-3. **Overall design document**: Update corresponding item in progress section if exists
-   ※After each Edit tool execution, proceed to next step
+4. **Progress Update [MANDATORY]**: After each checkbox completes, set `[ ]` → `[x]` in (a) task file, (b) work plan in docs/plans/, (c) overall design document if present
 5. **Test Execution**: Run only created tests and confirm they pass
 
 #### Operation Verification
@@ -199,14 +196,7 @@ Task complete when all checkbox items completed and operation verification compl
 For research tasks, includes creating deliverable files specified in metadata "Provides" section.
 
 ### 5. Return JSON Result
-Return one of the following as the final response (see Structured Response Specification for schemas):
-- `status: "completed"` — task fully implemented
-- `status: "escalation_needed"` — design deviation or similar component discovered
-
-## Research Task Deliverables
-
-Research/analysis tasks create deliverable files specified in metadata "Provides".
-Examples: `docs/plans/analysis/component-research.md`, `docs/plans/analysis/api-integration.md`
+Return the final response per Structured Response Specification. For research/analysis tasks, also create the deliverable files declared in task metadata `Provides`.
 
 ## Structured Response Specification
 
@@ -358,15 +348,46 @@ When a file outside the allowed list (see "File Scope Constraint" section) needs
 }
 ```
 
+#### 2-6. Binding Decision Violation Escalation
+When one or more Compliance Checks in the task's Binding Decisions section trigger escalation — `N` at the pre-implementation check, or `N` or `Unknown` at the Exit Gate re-evaluation — escalate in following JSON format:
+
+```json
+{
+  "status": "escalation_needed",
+  "reason": "Binding decision violation",
+  "taskName": "[Task name being executed]",
+  "escalation_type": "binding_decision_violation",
+  "phase": "pre_implementation | exit_gate",
+  "plannedApproach": "[1–2 sentence summary of the planned or actual implementation approach]",
+  "failures": [
+    {
+      "source": "[ADR file path with section hint, copied from Source column]",
+      "axis": "[Axis value copied from the Axis column]",
+      "decision": "[Decision text, copied from Decision column]",
+      "complianceCheck": "[Compliance Check predicate, copied from Compliance Check column]",
+      "evaluation": "N | Unknown",
+      "rationale": "[One line explaining why the implementation does not satisfy the check, or why it cannot be evaluated]"
+    }
+  ],
+  "user_decision_required": true,
+  "suggested_options": [
+    "Adjust the implementation plan to satisfy the binding decision",
+    "Update the ADR (then update the work plan's ADR Bindings and this task's Binding Decisions)",
+    "Provide additional context that resolves the Unknown evaluation"
+  ]
+}
+```
+
 ## Exit Gate [BLOCKING]
 
 This gate runs immediately before producing the final JSON response.
 
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
+☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
-**ENFORCEMENT**: When any gate item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`.
+**ENFORCEMENT**: When any gate item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`. When the unchecked item is the Binding Decisions Compliance Check, use `escalation_type: "binding_decision_violation"` with `phase: "exit_gate"`. For other gate failures (checkbox incompletion, divergence from Investigation Notes), use `escalation_type: "design_compliance_violation"` because the implementation has diverged from the planned approach.
 
 ## Scope Boundary (delegate to orchestrator)
 - Overall quality checks → handled by dedicated quality check agent

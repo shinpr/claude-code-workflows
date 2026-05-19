@@ -7,9 +7,7 @@ description: Guides subagent coordination through implementation workflows. Use 
 
 ## Role: The Orchestrator
 
-**The orchestrator coordinates subagents like a conductor—directing the musicians without playing the instruments.**
-
-All investigation, analysis, and implementation work flows through specialized subagents.
+All investigation, analysis, and implementation work flows through specialized subagents; the orchestrator coordinates but does not implement.
 
 ### First Action Rule
 
@@ -26,19 +24,17 @@ When receiving a new task, pass user requirements directly to requirement-analyz
 
 ## Available Subagents
 
-The following subagents are available:
-
-### Implementation Support Agents
+Implementation support:
 1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
 2. **task-decomposer**: Appropriate task decomposition of work plans
 3. **task-executor**: Individual task execution and structured response
 4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
 5. **security-reviewer**: Security compliance review against Design Doc and coding-principles after all tasks complete
 
-### Document Creation Agents
+Document creation:
 6. **requirement-analyzer**: Requirement analysis and work scale determination
 7. **codebase-analyzer**: Analyze existing codebase to produce focused guidance for technical design (data, contracts, dependencies, quality assurance mechanisms)
-8. **ui-analyzer**: Read the project's external-resources file, fetch external UI sources (design origin, design system, guidelines) via MCP/URL/file, and analyze existing UI code (visual structure, layout state, props patterns, state matrices, display conditions, i18n format, accessibility, generated UI artifacts). Frontend/fullstack features; runs in parallel with codebase-analyzer. Uses `disallowedTools` to inherit MCP access
+8. **ui-analyzer**: Read the project's external-resources file, fetch external UI sources (design origin, design system, guidelines) via MCP/URL/file, and analyze existing UI code. Frontend/fullstack features; runs in parallel with codebase-analyzer. Uses `disallowedTools` to inherit MCP access
 9. **prd-creator**: Product Requirements Document creation
 10. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
 11. **technical-designer**: ADR/Design Doc creation
@@ -187,7 +183,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
 - **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
 - **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
-- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain), testsAdded, requiresTestReview
+- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: approvalReady (true/false)
 - **design-sync**: sync_status (synced/conflicts_found)
@@ -202,17 +198,7 @@ requirement-analyzer follows the "completely self-contained" principle and proce
 
 #### How to Integrate Requirements
 
-**Important**: To maximize accuracy, integrate requirements as complete sentences, including all contextual information communicated by the user.
-
-```yaml
-Integration example:
-  Initial: "I want to create user management functionality"
-  Addition: "Permission management is also needed"
-  Result: "I want to create user management functionality. Permission management is also needed.
-
-          Initial requirement: I want to create user management functionality
-          Additional requirement: Permission management is also needed"
-```
+**Important**: To maximize accuracy, integrate requirements as complete sentences, including all contextual information communicated by the user. Result format: raw concatenation of all requirements, followed by a labeled summary (`Initial requirement: …` / `Additional requirement: …`).
 
 ### Update Mode for Document Generation Agents
 Document generation agents (work-planner, technical-designer, prd-creator) can update existing documents in `update` mode.
@@ -422,11 +408,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
 
 ## Important Constraints
 
-- **Quality check is mandatory**: quality-fixer approval needed before commit
-- **Structured response mandatory**: Information transmission between subagents in JSON format
-- **Approval management**: Document creation → Execute document-reviewer → Get user approval before proceeding
-- **Flow confirmation**: After getting approval, always check next step with work planning flow (large/medium/small scale)
-- **Consistency verification**: Resolve subagent conflicts per Decision precedence (see Delegation Boundary section)
+Recap (defined above): quality-fixer approval before commit; inter-agent communication is JSON; document-reviewer + user approval before proceeding; check next step against work planning flow after approval; resolve conflicts via Decision precedence.
 
 ## References
 

@@ -87,7 +87,9 @@ Read the Design Doc template from documentation-criteria skill to identify all s
 | Verification requirement | Verification methods, test boundaries, integration verification points | Verification/test task |
 | Prerequisite work | Migration steps, security measures, environment setup | Prerequisite task |
 
-Map each extracted item to a covering task. Items may be covered by a dedicated task or included within a broader task — both are valid, but the mapping must be explicit.
+Additionally, when these design-attention sections are non-N/A in the DD, always create Traceability rows for their content: Minimal Surface Alternatives (selected alternative), State Transitions and Invariants, Field Propagation Map, Security Considerations, Logging and Monitoring sensitive-data rules, Error Handling matrix. Map each to the most relevant existing category (commonly `verification`, `contract-change`, or `prerequisite`).
+
+Map each extracted item to a covering task. Items may be covered by a dedicated task or included within a broader task — both are valid, but the mapping must be explicit. Each row must record the source DD path (matching one of the Related Documents entries) in the `Design Doc` column so downstream task generation can resolve the file unambiguously.
 
 Record the mapping in the Design-to-Plan Traceability table (see plan template). If an item has no covering task, set Gap Status to `gap` with justification in Notes. Gaps with justification require user confirmation before plan approval.
 
@@ -123,6 +125,26 @@ For each qualifying boundary:
 4. Identify the task(s) that implement either side of the boundary
 
 Record the mapping in the **Connection Map** table (see plan template). Omit this section entirely when no qualifying boundary exists.
+
+### 5c. Map ADR Decisions to Tasks (when ADR provided or referenced from Design Doc)
+
+When an ADR is among the inputs, or when the Design Doc lists ADRs under "Prerequisite ADRs", build the ADR Bindings table. This table is required so binding decisions propagate to each affected task in the downstream task generation phase.
+
+For each referenced ADR:
+1. Resolve the ADR path (file convention: `docs/adr/ADR-[4-digit]-[title].md`):
+   - Full path (e.g., `docs/adr/ADR-0042-foo.md`) — use as-is
+   - ID only (e.g., `ADR-0042`) — glob `docs/adr/ADR-0042-*.md`; require exactly one match
+   - Filename without directory (e.g., `ADR-0042-foo.md`) — prepend `docs/adr/`
+   - Escalate when the glob returns 0 or 2+ matches, or when the resolved path does not exist
+   
+   Then read the ADR's Decision and Implementation Guidance sections
+2. Extract decisions that are **implementation-binding** — i.e., they constrain one of five binding axes: placement, dependency direction, contract/schema shape, data flow, or persistence. Acceptance criteria and required behaviors are recorded in the Design Doc; this table covers only structural constraints from ADRs
+3. For each binding decision, classify it under exactly one axis (`placement` | `dependency_direction` | `contract_schema` | `data_flow` | `persistence`) — this becomes the row's `Axis` value
+4. For each binding decision, note which section it came from (`Decision` or `Implementation Guidance`) — this becomes the row's `Source Section` value
+5. For each binding decision, identify the planned task(s) where the decision applies. Use Target files, layer, or component scope to determine relevance — exact glob matching is not required at this stage
+6. Record one row per binding decision in the **ADR Bindings** table (see plan template)
+
+Omit the table when no referenced ADR contains implementation-binding decisions.
 
 ### 6. Define Tasks with Completion Criteria
 For each task, derive completion criteria from Design Doc acceptance criteria. Apply the 3-element completion definition (Implementation Complete, Quality Complete, Integration Complete).
@@ -302,6 +324,11 @@ When creating work plans, **Phase Structure Diagrams** and **Task Dependency Dia
 - [ ] Connection Map table complete (when implementation crosses packages/services)
   - [ ] Every boundary lists owner modules and expected signal
   - [ ] Every boundary maps to at least one covering task on each side
+- [ ] ADR Bindings table complete (when ADR provided or referenced from Design Doc)
+  - [ ] Each row represents one implementation-binding decision (placement, dependency, contract, data flow, or persistence)
+  - [ ] Each row's `Axis` value is exactly one of `placement` | `dependency_direction` | `contract_schema` | `data_flow` | `persistence`
+  - [ ] Each row's `Source Section` is set to `Decision` or `Implementation Guidance` matching the actual location of the decision in the ADR
+  - [ ] Every row maps to at least one covering task
 - [ ] Verification Strategy extracted from Design Doc and included in plan header
 - [ ] Adopted Quality Assurance Mechanisms extracted from Design Doc and included in plan header
 - [ ] Phase structure matches implementation approach (vertical → value unit phases, horizontal → layer phases)

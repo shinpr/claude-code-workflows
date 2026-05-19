@@ -30,7 +30,7 @@ unknowns:
 
 ### Prerequisite ADRs
 
-- [ADR File Name]: [Related decision items]
+- [docs/adr/ADR-XXXX.md]: [Related decision items]
 - Reference common technical ADRs when applicable
 
 ### External Resources Used
