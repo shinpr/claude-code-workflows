@@ -65,8 +65,6 @@
         "./skills/recipe-build",
         "./skills/recipe-design",
         "./skills/recipe-diagnose",
-        "./skills/recipe-fullstack-build",
-        "./skills/recipe-fullstack-implement",
         "./skills/recipe-implement",
         "./skills/recipe-plan",
         "./skills/recipe-prepare-implementation",

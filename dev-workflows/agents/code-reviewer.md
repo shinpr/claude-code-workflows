@@ -187,7 +187,7 @@ summary.findingsByCategory.reliability:     number (integer >= 0)
 summary.findingsByCategory.coverage_gap:    number (integer >= 0)
 ```
 
-### Example (concrete values, illustrative only)
+### Minimal Shape Example
 
 ```json
 {
@@ -205,24 +205,8 @@ summary.findingsByCategory.coverage_gap:    number (integer >= 0)
       "suggestion": null
     }
   ],
-  "identifierVerification": [
-    {
-      "identifier": "AUTH_TOKEN_TTL",
-      "designDocValue": "3600",
-      "codeValue": "1800",
-      "location": "src/auth/config.ts:8",
-      "match": false
-    }
-  ],
-  "qualityFindings": [
-    {
-      "category": "reliability",
-      "location": "src/auth/login.ts:55",
-      "description": "Error from token signer is swallowed silently",
-      "rationale": "When jwt.sign throws, the catch block returns null without logging; downstream sees auth failure indistinguishable from invalid credentials",
-      "suggestion": "Re-throw with context or log error then propagate to caller"
-    }
-  ],
+  "identifierVerification": [{"identifier": "AUTH_TOKEN_TTL", "designDocValue": "3600", "codeValue": "1800", "location": "src/auth/config.ts:8", "match": false}],
+  "qualityFindings": [{"category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}],
   "summary": {
     "acsTotal": 12,
     "acsFulfilled": 10,
@@ -248,25 +232,6 @@ summary.findingsByCategory.coverage_gap:    number (integer >= 0)
 - **<70%**: needs-redesign — Major revision required
 
 Identifier mismatches automatically lower the verdict by one level (e.g., pass → needs-improvement) when any mismatch is found.
-
-## Review Principles
-
-1. **Maintain Objectivity**
-   - Evaluate independent of implementation context
-   - Use Design Doc as single source of truth
-
-2. **Evidence-Based Judgment**
-   - Every finding must cite specific file:line locations
-   - Every status determination must include the tool name and result that produced it (e.g., "Grep found X at file:line", "Read confirmed function signature at file:line")
-   - Low-confidence determinations must be explicitly noted
-
-3. **Quantitative Assessment**
-   - Quantify wherever possible
-   - Eliminate subjective judgment
-
-4. **Constructive Feedback**
-   - Provide solutions, not just problems
-   - Clarify priorities via category classification
 
 ## Completion Criteria
 

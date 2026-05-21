@@ -106,20 +106,6 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
-### Implementation Example
-
-```
-// Immediate commonalization on 1st duplication
-validateUserEmail(email) { /* ... */ }
-validateContactEmail(email) { /* ... */ }
-
-// Commonalize on 3rd occurrence with context parameter
-validateEmail(email, context) { /* ... */ }
-// context: 'user' | 'contact' | 'admin'
-```
-
-**Adaptation**: Use appropriate abstraction for your codebase (functions, classes, modules, configuration)
-
 ## Common Failure Patterns and Avoidance Methods
 
 ### Pattern 1: Error Fix Chain
@@ -168,14 +154,7 @@ validateEmail(email, context) { /* ... */ }
 3. Identify first line where your code appears
 
 ### 2. 5 Whys - Root Cause Analysis
-```
-Example:
-Symptom: Build error
-Why1: Contract definitions don't match → Why2: Interface was updated
-Why3: Dependency change → Why4: Package update impact
-Why5: Major version upgrade with breaking changes
-Root cause: Inappropriate version specification in dependency manifest
-```
+Trace the failure through repeated "why" questions until the root cause is actionable.
 
 ### 3. Minimal Reproduction Code
 To isolate problems, attempt reproduction with minimal code:
@@ -184,21 +163,7 @@ To isolate problems, attempt reproduction with minimal code:
 - Create minimal configuration that reproduces problem
 
 ### 4. Debug Log Output
-```
-Pattern: Structured logging with context
-{
-  context: 'operation-name',
-  input: { relevant, input, data },
-  state: currentState,
-  timestamp: current_time_ISO8601
-}
-
-Key elements:
-- Operation context (what is being executed)
-- Input data (what was received)
-- Current state (relevant state variables)
-- Timestamp (for correlation)
-```
+Include operation context, relevant input data, current state, and timestamp.
 
 ## Quality Assurance Mechanism Awareness
 
@@ -269,6 +234,13 @@ Auto-fix capabilities (when available):
 - Overly detailed contracts reduce maintainability
 - Design interfaces where each method maps to a single domain operation and parameter types use domain vocabulary
 - Use abstraction mechanisms to reduce duplication
+
+### Scope Expansion
+- Apply implementation/edit instructions to the user's or task's specified scope. Escalate before expanding it.
+- Treat explicit quantities and targets ("one", "this file", "only X") as boundaries
+- Copy/move/mirror requests preserve content verbatim; edit content only when requested
+- Port/translation requests preserve intent and behavior; adapt only what the destination context requires
+- Before changing related files, symmetric locations, adjacent behavior, or adding helpful extras, escalate with the proposed expansion
 
 ## Implementation Completeness Assurance
 

@@ -181,7 +181,7 @@ coverage.unimplemented: string[] (documented specs not yet implemented)
 limitations: string[] (what could not be verified and why)
 ```
 
-Example (concrete values, illustrative only):
+Minimal shape example:
 
 ```json
 {
@@ -193,11 +193,7 @@ Example (concrete values, illustrative only):
     "consistencyScore": 78,
     "status": "mostly_consistent"
   },
-  "claimCoverage": {
-    "sectionsAnalyzed": 9,
-    "sectionsWithClaims": 8,
-    "sectionsWithZeroClaims": ["Future Work"]
-  },
+  "claimCoverage": { "sectionsAnalyzed": 9, "sectionsWithClaims": 8, "sectionsWithZeroClaims": ["Future Work"] },
   "discrepancies": [
     {
       "id": "D001",
@@ -224,11 +220,7 @@ Example (concrete values, illustrative only):
     "undocumentedDataOperations": ["sessions table SELECT (src/auth/repo.ts:42)"],
     "testBoundariesSectionPresent": true
   },
-  "coverage": {
-    "documented": ["login flow", "token refresh"],
-    "undocumented": ["session deletion endpoint"],
-    "unimplemented": ["MFA challenge response"]
-  },
+  "coverage": { "documented": ["login flow"], "undocumented": ["session deletion endpoint"], "unimplemented": ["MFA challenge response"] },
   "limitations": ["Could not verify token refresh against running redis instance"]
 }
 ```
@@ -257,17 +249,6 @@ consistencyScore = (matchCount / verifiableClaimCount) * 100
 | 70-84 | mostly_consistent | Minor updates needed |
 | 50-69 | needs_review | Significant discrepancies exist |
 | <50 | inconsistent | Major rework required |
-
-## Completion Criteria
-
-- [ ] Extracted claims section-by-section with per-section counts recorded
-- [ ] `verifiableClaimCount >= 20` (if not, re-extracted from under-covered sections)
-- [ ] Collected evidence from multiple sources for each claim
-- [ ] Classified each claim (match/drift/gap/conflict)
-- [ ] Performed reverse coverage: routes enumerated via Grep, test files enumerated via Glob, exports enumerated via Grep, data operations enumerated via Grep
-- [ ] Identified undocumented features from reverse coverage
-- [ ] Identified unimplemented specifications
-- [ ] Calculated consistency score
 
 ## Self-Validation [BLOCKING — before output]
 

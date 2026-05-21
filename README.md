@@ -54,7 +54,7 @@ claude
 
 The fullstack recipes create separate Design Docs per layer (backend + frontend), verify cross-layer consistency via design-sync, and route tasks to the appropriate executor based on filename patterns. See [Fullstack Workflow](#fullstack-workflow) for details.
 
-> **Migration notice (v0.19.0):** `dev-workflows-fullstack` is the new home for fullstack recipes. Installing both `dev-workflows` and `dev-workflows-frontend` works today, but causes duplicate skill descriptions to compete for context budget. The next release will remove `recipe-fullstack-*` from `dev-workflows`. If you do fullstack work, switch to `dev-workflows-fullstack` now.
+> **Migration notice:** `recipe-fullstack-*` recipes are available from `dev-workflows-fullstack`, not `dev-workflows`. If you do fullstack work, install only `dev-workflows-fullstack`.
 
 ### Optional add-ons
 
@@ -194,18 +194,18 @@ All workflow entry points use the `recipe-` prefix to distinguish them from know
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
 | `/recipe-implement` | End-to-end feature development | New features, complete workflows |
-| `/recipe-fullstack-implement` | End-to-end fullstack development | _Deprecated here — moving to `dev-workflows-fullstack` next release_ |
 | `/recipe-task` | Execute single task with precision | Bug fixes, small changes |
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate work plan from design | Planning phase |
 | `/recipe-prepare-implementation` | Verify implementation readiness and resolve gaps | Pre-build check that the work plan is implementable |
 | `/recipe-build` | Execute from existing task plan | Resume implementation |
-| `/recipe-fullstack-build` | Execute fullstack task plan | _Deprecated here — moving to `dev-workflows-fullstack` next release_ |
 | `/recipe-review` | Verify code against design docs | Post-implementation check |
 | `/recipe-diagnose` | Investigate problems and derive solutions | Bug investigation, root cause analysis |
 | `/recipe-reverse-engineer` | Generate PRD/Design Docs from existing code | Legacy system documentation, codebase understanding |
 | `/recipe-add-integration-tests` | Add integration/E2E tests to existing code | Test coverage for existing implementations |
 | `/recipe-update-doc` | Update existing design documents with review | Spec changes, review feedback, document maintenance |
+
+For fullstack recipes, install `dev-workflows-fullstack` and use `/recipe-fullstack-implement` or `/recipe-fullstack-build`.
 
 ### Frontend Development (dev-workflows-frontend)
 
