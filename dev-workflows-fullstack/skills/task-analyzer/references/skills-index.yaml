@@ -41,7 +41,6 @@ skills:
       - "AAA Pattern - Arrange-Act-Assert"
       - "Test Pyramid - Mike Cohn"
     sections:
-      - "Core Testing Philosophy"
       - "Test-Driven Development (TDD)"
       - "Quality Requirements"
       - "Test Types"

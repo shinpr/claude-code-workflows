@@ -5,13 +5,6 @@ description: Language-agnostic testing principles including TDD, test quality, c
 
 # Language-Agnostic Testing Principles
 
-## Core Testing Philosophy
-
-1. **Tests are First-Class Code**: Maintain test quality equal to production code
-2. **Fast Feedback**: Tests should run quickly and provide immediate feedback
-3. **Reliability**: Tests should be deterministic and reproducible
-4. **Independence**: Each test should run in isolation
-
 ## Test-Driven Development (TDD)
 
 ### The RED-GREEN-REFACTOR Cycle
@@ -37,13 +30,6 @@ description: Language-agnostic testing principles including TDD, test quality, c
    - Run full test suite
    - Check for regressions
    - Validate refactoring didn't break anything
-
-### TDD Benefits
-
-- Better design through testability requirements
-- Comprehensive test coverage by default
-- Living documentation of expected behavior
-- Confidence to refactor
 
 ## Quality Requirements
 
@@ -77,13 +63,6 @@ All tests must be:
 - Mock external services
 - Majority of your test suite
 
-**Example Scope**:
-```
-✓ Test calculateTotal() function
-✓ Test UserValidator class
-✓ Test parseDate() utility
-```
-
 ### Integration Tests
 
 **Purpose**: Test interactions between components
@@ -95,13 +74,6 @@ All tests must be:
 - Verify contracts between modules
 - Smaller portion of test suite
 
-**Example Scope**:
-```
-✓ Test UserService with Database
-✓ Test API endpoint with authentication
-✓ Test file processing pipeline
-```
-
 ### End-to-End (E2E) Tests
 
 **Purpose**: Test complete workflows from user perspective
@@ -112,13 +84,6 @@ All tests must be:
 - Slowest test type
 - Fewest in number
 - Highest confidence level
-
-**Example Scope**:
-```
-✓ Test user registration flow
-✓ Test checkout process
-✓ Test complete report generation
-```
 
 ## Test Design Principles
 
@@ -146,17 +111,7 @@ assert(result.isValid == true)
 - Multiple assertions OK if testing single concept
 - Split unrelated assertions into separate tests
 
-**Good**:
-```
-test("validates user email format")           // input validation
-test("returns error when service unavailable") // error path
-test("transitions order from pending to paid") // state transition
-```
-
-**Bad**:
-```
-test("validates user") // Tests everything at once
-```
+Example: prefer `returns error when email is invalid` over `validates user`.
 
 ### Descriptive Test Names
 
@@ -349,17 +304,6 @@ Each test must:
 - **Logical grouping**: Group related tests together
 - **Separate test types**: Unit, integration, e2e in separate directories
 
-### Test Suite Organization
-
-```
-tests/
-├── unit/           # Fast, isolated unit tests
-├── integration/    # Integration tests
-├── e2e/            # End-to-end tests
-├── fixtures/       # Test data and fixtures
-└── helpers/        # Shared test utilities
-```
-
 ## Performance Considerations
 
 ### Test Speed
@@ -469,4 +413,3 @@ tests/
 - Include actual vs expected values
 - Add context about what was being tested
 - Make debugging easier
-

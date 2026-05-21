@@ -172,11 +172,12 @@ Before the completion report, delete the implementation task files this recipe c
 
 If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.
 
-## Output Example
-Fullstack implementation phase completed.
-- Task decomposition: Generated under docs/plans/tasks/
-- Implemented tasks: [number] tasks (backend: X, frontend: Y)
-- Quality checks: All passed
-- Commits: [number] commits created
-- Cleanup: Task files removed from docs/plans/tasks/
+## Completion Report Contract
 
+Final report must include:
+- Task decomposition status
+- Implemented task count, including backend/frontend counts
+- Quality check result
+- Commit count
+- Cleanup result
+- Escalation or blocking summary, if any

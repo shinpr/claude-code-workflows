@@ -22,23 +22,9 @@ Operates in an independent context, executing autonomously until task completion
 - **Design Doc**: Required. Source of acceptance criteria for test skeleton generation. When the Design Doc contains a "Test Boundaries" section, use its mock boundary decisions to determine which dependencies to mock and which to test with real implementations.
 - **UI Spec**: Optional. When provided, use screen transitions, state x display matrix, and interaction definitions as additional E2E test candidate sources. See `references/e2e-design.md` in integration-e2e-testing skill for mapping methodology.
 
-## Core Principle: Maximum Coverage, Minimum Tests
-
-**Philosophy**: 10 reliable tests > 100 unmaintained tests
-
-**3-Layer Quality Filtering**:
-1. **Behavior-First**: Only user-observable behavior (not implementation details)
-2. **Two-Pass Generation**: Enumerate candidates → ROI-based selection
-3. **Budget Enforcement**: Hard limits prevent over-generation
-
 ## Test Type Definition
 
 Test type definitions, budgets, and ROI calculations are specified in **integration-e2e-testing skill**.
-
-Key points:
-- **Integration Tests**: MAX 3 per feature, created alongside implementation
-- **fixture-e2e**: MAX 3 per feature, created alongside the UI feature phase, ROI ≥ 20 beyond reserved slot
-- **service-integration-e2e**: MAX 1-2 per feature, executed only in the final phase, ROI > 50 beyond reserved slot
 
 ## 4-Phase Generation Process
 
@@ -169,13 +155,13 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 ## Output Format
 
-### Integration Test File
+### Test Skeleton Shape
 
-The examples below use `//` comment syntax. Adapt to the project's language (e.g., `#` for Python/Ruby).
+Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown, lane, dependency, complexity, verification points, expected results, and pass criteria.
 
 ```
-// [Feature Name] Integration Test - Design Doc: [filename]
-// Generated: [date] | Budget Used: 2/3 integration, 0/2 E2E
+// [Feature Name] [integration|fixture-e2e|service-integration-e2e] Test - Design Doc: [filename]
+// Generated: [date] | Budget Used: [integration], [fixture-e2e], [service-e2e]
 
 [Import statement using detected test framework]
 
@@ -184,59 +170,10 @@ The examples below use `//` comment syntax. Adapt to the project's language (e.g
   // ROI: 98 (BV:10 × Freq:9 + Legal:0 + Defect:8)
   // Behavior: User completes payment → Order created in DB + Payment recorded
   // @category: core-functionality
+  // @lane: integration
   // @dependency: PaymentService, OrderRepository, Database
   // @complexity: high
-  [Test: 'AC1: Successful payment creates persisted order with correct status']
-
-  // AC1-error: "Payment failure shows user-friendly error message"
-  // ROI: 23 (BV:8 × Freq:2 + Legal:0 + Defect:7)
-  // Behavior: Payment fails → User sees actionable error + Order not created
-  // @category: core-functionality
-  // @dependency: PaymentService, ErrorHandler
-  // @complexity: medium
-  [Test: 'AC1: Failed payment displays error without creating order']
-```
-
-### fixture-e2e Test File
-
-```
-// [Feature Name] fixture-e2e Test - Design Doc: [filename]
-// Generated: [date] | Budget Used: 1/3 fixture-e2e
-// Test Type: Browser-level UI verification with mocked backend / fixture-driven state
-// Implementation Timing: Alongside the UI feature implementation
-
-[Import statement using detected test framework]
-
-[Test suite using detected framework syntax]
-  // User Journey: Click Dismiss → card disappears → undo banner appears → Undo restores card
-  // ROI: 60 (BV:6 × Freq:7 + Legal:0 + Defect:8) | reserved slot: user-facing multi-step journey
-  // Verification: UI state transitions are observable in the browser
-  // @category: fixture-e2e
-  // @lane: fixture-e2e
-  // @dependency: full-ui (mocked backend)
-  // @complexity: medium
-  [Test: 'User Journey: Dismiss-then-Undo restores the card to its original state']
-```
-
-### service-integration-e2e Test File
-
-```
-// [Feature Name] service-integration-e2e Test - Design Doc: [filename]
-// Generated: [date] | Budget Used: 1/2 service-integration-e2e
-// Test Type: End-to-end against running local stack
-// Implementation Timing: Executed only in the final phase
-
-[Import statement using detected test framework]
-
-[Test suite using detected framework syntax]
-  // User Journey: Complete purchase flow (browse → checkout → payment → confirmation persisted in DB)
-  // ROI: 119 (BV:10 × Freq:10 + Legal:10 + Defect:9) | reserved slot: cross-service correctness
-  // Verification: Order persists in DB and confirmation event reaches downstream consumer
-  // @category: service-integration-e2e
-  // @lane: service-integration-e2e
-  // @dependency: full-system
-  // @complexity: high
-  [Test: 'User Journey: Complete purchase persists order and emits confirmation event']
+  [Test skeleton: verification points, expected results, pass criteria]
 ```
 
 ### Generation Report
@@ -346,16 +283,10 @@ These annotations are used when planning and prioritizing test implementation. T
 
 ## Quality Assurance Checkpoints
 
-- **Pre-execution**:
-  - Design Doc exists and contains ACs
-  - AC measurability confirmation
-  - Existing test coverage check (Grep)
-- **During execution**:
-  - Behavior-first filtering applied to all ACs
-  - ROI calculations documented
-  - Budget compliance monitored
-- **Post-execution**:
-  - Completeness of selected tests
-  - Dependency validity verified
-  - Integration tests and E2E tests generated in separate files
-  - Generation report completeness
+- Design Doc exists and contains ACs
+- AC measurability confirmed
+- Existing coverage checked with Grep
+- Behavior-first filtering, ROI ranking, and budget enforcement completed
+- Dependency names verified against Design Doc / UI Spec / code, or marked external
+- Integration, fixture-e2e, and service-integration-e2e outputs are separate files when generated
+- Generation report includes all required keys
