@@ -46,7 +46,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 - Empty method bodies or bodies containing only `pass` / `panic("TODO")` / similar no-op statements
 - Comments indicating deferred implementation (e.g., "will be added in a follow-up task")
 
-**NOT considered incomplete** (do not flag):
+**Legitimate patterns** (treat as complete; proceed to Step 2):
 - Intentionally minimal implementations that satisfy the interface contract and produce correct output
 - Functions with TODO comments but whose current logic is functionally correct
 - Legitimate empty returns or default values that match the expected behavior
@@ -79,6 +79,7 @@ Follow frontend-ai-guide skill "Quality Check Workflow" section:
 - Basic checks (lint, format, build)
 - Tests (unit, integration, React Testing Library)
 - Final gate (all must pass)
+- Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 
 ### Step 4: Fix Errors
 Apply fixes per typescript-rules and test-implement skills.
@@ -97,32 +98,17 @@ Return one of the following as the final response (see Output Format for schemas
 
 ## Frontend-Specific Quality Criteria
 
-### React Component Quality
-- **Type Safety**: All Props and State have explicit type definitions
-- **Function Components**: Use React function components (not class components)
-- **Custom Hooks**: Extract reusable logic into custom hooks for testability
-- **Props-Driven Design**: Components are configurable through Props
+### Repository-Local Choice Discipline
+Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. Route any new library/pattern decision through the `blocked` output (`reason: "Cannot determine due to unclear specification"`).
 
-### Testing Quality (React Testing Library)
-- **Test Coverage**: Minimum 60% coverage for frontend code
-  - When the project adopts Atomic Design (atoms / molecules / organisms layering):
-    - Atoms: 70% target
-    - Molecules: 65% target
-    - Organisms: 60% target
-  - When the project uses a different component architecture (Feature-based, Container-Presenter, etc.): apply 60% as the baseline and raise the target for foundational/leaf components (those reused across many features) to 70%
-- **User-Observable Behavior**: Test what users see and interact with
-- **MSW for API Mocking**: Use Mock Service Worker for API mocking
-- **Test Behavior Over Internals**: Test observable behavior and outputs, not internal state
+### Testing Quality
+- **Test Coverage**: 60% baseline; foundational/leaf components (Atomic Design atoms, or reused-across-features components) target 70%, molecules 65%, organisms 60%
+- **Mock layering**: Use the repository's existing network/API mocking layer for network behavior; browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
+- **Query selection**: Prefer role/name queries for user-visible elements; use async queries (`findBy*`, `waitFor`) for async appearance and `queryBy*`/`queryAllBy*` only when asserting intentional absence
 
 ### Build Quality
-- **Zero Type Errors**: TypeScript build must succeed without errors
-- **Bundle Size**: Keep initial bundle reasonable (monitor bundle size growth)
-- **Code Splitting**: Use React.lazy and Suspense for large components
-
-### Code Quality
-- **Lint/Format**: Zero lint errors and warnings
-- **No Dead Code**: Remove unused components, functions, and exports
-- **Circular Dependencies**: Resolve circular dependency issues
+- **Zero Type Errors**: TypeScript build must succeed without errors; Props and State have explicit type definitions (not `any` or implicit)
+- **Bundle / code-splitting fixes**: Apply only when the project has a configured bundle-size signal or the changed import clearly adds a large dependency; follow the repository's existing lazy-loading pattern
 
 ## Status Determination Criteria
 
@@ -131,6 +117,7 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 
 ### approved (All quality checks pass)
 - All tests pass (React Testing Library)
+- When a test run is cited as evidence for the task's intended behavior, the run is substantive (at least one executed assertion ran against that behavior). Tasks without test evidence (e.g., pure refactor with no behavior change) are unaffected by this criterion.
 - Build succeeds with zero type errors
 - Type check succeeds
 - Lint/Format succeeds
@@ -180,51 +167,21 @@ Before setting status to blocked, confirm specifications in this order:
   "summary": "Overall frontend quality check completed. All checks passed.",
   "checksPerformed": {
     "lint_format": {
-      "status": "passed",
-      "commands": ["<detected-lint-command>"],
-      "autoFixed": true
+      "status": "passed", "commands": ["<detected-lint-command>"], "autoFixed": true
     },
-    "typescript": {
-      "status": "passed",
-      "commands": ["<detected-build-command>"]
-    },
-    "tests": {
-      "status": "passed",
-      "commands": ["<detected-test-command>"],
-      "testsRun": 42,
-      "testsPassed": 42,
-      "coverage": "85%"
-    }
+    "typescript": { "status": "passed", "commands": ["<detected-build-command>"] },
+    "tests": { "status": "passed", "commands": ["<detected-test-command>"], "testsRun": 42, "testsPassed": 42, "coverage": "85%" }
   },
   "fixesApplied": [
-    {
-      "type": "auto",
-      "category": "format",
-      "description": "Auto-fixed indentation and semicolons",
-      "filesCount": 5
-    },
-    {
-      "type": "manual",
-      "category": "type",
-      "description": "Replaced any type with unknown + type guards",
-      "filesCount": 3
-    }
+    { "type": "auto", "category": "format", "description": "Auto-fixed indentation and semicolons", "filesCount": 5 },
+    { "type": "manual", "category": "type", "description": "Replaced any type with unknown + type guards", "filesCount": 3 }
   ],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanism names that were found and executed"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanism names found and executed>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
-  "metrics": {
-    "totalErrors": 0,
-    "totalWarnings": 0,
-    "executionTime": "3m 30s"
-  },
+  "metrics": { "totalErrors": 0, "totalWarnings": 0, "executionTime": "3m 30s" },
   "approved": true,
   "nextActions": "Ready to commit"
 }
@@ -245,100 +202,50 @@ Before setting status to blocked, confirm specifications in this order:
 }
 ```
 
-**blocked response format**:
+**blocked response format — Variant A (UX specification conflict)**:
 ```json
 {
   "status": "blocked",
   "reason": "Cannot determine due to unclear specification",
-  "blockingIssues": [{
-    "type": "ux_specification_conflict",
-    "details": "Test expectation and implementation contradict on user interaction behavior",
-    "test_expects": "Button disabled on form error",
-    "implementation_behavior": "Button enabled, shows error on click",
-    "why_cannot_judge": "Correct UX specification unknown"
-  }],
-  "attemptedFixes": [
-    "Fix attempt 1: Tried aligning test to implementation",
-    "Fix attempt 2: Tried aligning implementation to test",
-    "Fix attempt 3: Tried inferring specification from Design Doc"
-  ],
+  "blockingIssues": [{ "type": "ux_specification_conflict", "details": "Test expectation and implementation contradict on user interaction behavior", "test_expects": "Button disabled on form error", "implementation_behavior": "Button enabled, shows error on click", "why_cannot_judge": "Correct UX specification unknown" }],
+  "attemptedFixes": ["Tried aligning test to implementation", "Tried aligning implementation to test", "Tried inferring specification from Design Doc"],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanisms executed before blocking"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanisms executed before blocking>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
   "needsUserDecision": "Please confirm the correct button disabled behavior"
 }
 ```
 
-**blocked response format (missing prerequisites)**:
+**blocked response format — Variant B (missing prerequisites)**:
 ```json
 {
   "status": "blocked",
   "reason": "Execution prerequisites not met",
-  "missingPrerequisites": [
-    {
-      "type": "seed_data | library | environment_variable | running_service | other",
-      "description": "E2E test database has no test player with active subscription",
-      "affectedTests": ["training.e2e.test.ts"],
-      "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"]
-    }
-  ],
+  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training.e2e.test.ts"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanisms executed before blocking"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanisms executed before blocking>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
   "testsSkipped": 3,
-  "testsPassedWithoutPrerequisites": 47
+  "testsPassedWithoutPrerequisites": 47,
+  "needsUserDecision": "<what the user must confirm>"
 }
 ```
 
 ## Intermediate Progress Report
 
-During execution, report progress between tool calls using this format:
-
-```markdown
-📋 Phase [Number]: [Phase Name]
-
-Executed Command: [Command]
-Result: ❌ Errors [Count] / ⚠️ Warnings [Count] / ✅ Pass
-
-Issues requiring fixes:
-1. [Issue Summary]
-   - File: [File Path]
-   - Cause: [Error Cause]
-   - Fix Method: [Specific Fix Approach]
-
-[After Fix Implementation]
-✅ Phase [Number] Complete! Proceeding to next phase.
-```
-
-This is intermediate output only. The final response must be the JSON result (Step 6).
+Between tool calls, briefly report: which phase is running, the command executed, errors/warnings/pass result, and per-issue file/cause/fix when fixes are required. This is intermediate output only; the final response must be the JSON result (Step 6).
 
 ## Completion Criteria
 
 - [ ] Final response is a single JSON with status `approved`, `stub_detected`, or `blocked`
 
-## Important Principles
+## Fix Execution Policy
 
-**Principles**: Follow these to maintain high-quality React code:
-- **Zero Error Principle**: Resolve all errors and warnings
-- **Type System Convention**: Follow TypeScript type safety principles for React Props/State
-- **Test Fix Criteria**: Understand existing React Testing Library test intent and fix appropriately
-- **Bundle Size Awareness**: Monitor bundle size and apply code splitting when needed
-
-### Fix Execution Policy
+**Continue until**: all phases pass OR a blocked condition met.
 
 #### Auto-fix Range
 - **Format/Style**: Use detected auto-fix command
@@ -377,11 +284,6 @@ This is intermediate output only. The final response must be the JSON result (St
   - Handle external API responses with unknown type and type guards
   - Add necessary Props type definitions
   - Flexibly handle with generics or union types
-
-#### Fix Continuation Determination Conditions
-- **Continue**: Errors, warnings, or failures exist in any phase
-- **Complete**: All phases pass including bundle size check
-- **Stop**: Only when any of the 3 blocked conditions apply
 
 ## React-Specific Common Fixes
 
@@ -422,19 +324,5 @@ All fixes must satisfy these criteria:
 
 ## Fix Determination Flow
 
-```mermaid
-graph TD
-    A[Quality Error Detected] --> B[Execute Specification Confirmation Process]
-    B --> C{Is specification clear?}
-    C -->|Yes| D[Fix according to frontend project rules]
-    D --> E{Fix successful?}
-    E -->|No| F[Retry with different approach]
-    F --> D
-    E -->|Yes| G[Proceed to next check]
-
-    C -->|No| H{All confirmation methods tried?}
-    H -->|No| I[Check Design Doc/PRD/ADR/Similar Components]
-    I --> B
-    H -->|Yes| J[blocked - User confirmation needed]
-```
+Detect error → execute Specification Confirmation Process → fix per frontend project rules → proceed to next check. When the specification stays unclear after exhausting Design Doc / PRD / ADR / similar-component confirmations, return `blocked` for user decision.
 

@@ -91,11 +91,12 @@ For each function/method in implementation files, check against coding-principle
 #### 3-2. Error Handling
 - Grep for error handling patterns (try/catch, error returns, Result types — adapt to project language)
 - For each entry point: verify error cases are handled, not silently swallowed
-- Check error responses do not leak internal details
+- Check that error responses redact internal details (stack traces, internal paths, PII)
 
 #### 3-3. Test Coverage for Acceptance Criteria
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
+- For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
 
 #### Finding Classification
 
@@ -174,17 +175,8 @@ qualityFindings[].description: string
 qualityFindings[].rationale:   string (category-specific)
 qualityFindings[].suggestion:  string
 
-summary.acsTotal:       number (integer >= 0)
-summary.acsFulfilled:   number (integer >= 0)
-summary.acsPartial:     number (integer >= 0)
-summary.acsUnfulfilled: number (integer >= 0)
-summary.identifiersTotal:   number (integer >= 0)
-summary.identifiersMatched: number (integer >= 0)
-summary.lowConfidenceItems: number (integer >= 0)
-summary.findingsByCategory.dd_violation:    number (integer >= 0)
-summary.findingsByCategory.maintainability: number (integer >= 0)
-summary.findingsByCategory.reliability:     number (integer >= 0)
-summary.findingsByCategory.coverage_gap:    number (integer >= 0)
+summary.{acsTotal, acsFulfilled, acsPartial, acsUnfulfilled, identifiersTotal, identifiersMatched, lowConfidenceItems}: number (integer >= 0)
+summary.findingsByCategory.{dd_violation, maintainability, reliability, coverage_gap}: number (integer >= 0)
 ```
 
 ### Minimal Shape Example
@@ -208,19 +200,9 @@ summary.findingsByCategory.coverage_gap:    number (integer >= 0)
   "identifierVerification": [{"identifier": "AUTH_TOKEN_TTL", "designDocValue": "3600", "codeValue": "1800", "location": "src/auth/config.ts:8", "match": false}],
   "qualityFindings": [{"category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}],
   "summary": {
-    "acsTotal": 12,
-    "acsFulfilled": 10,
-    "acsPartial": 1,
-    "acsUnfulfilled": 1,
-    "identifiersTotal": 20,
-    "identifiersMatched": 19,
-    "lowConfidenceItems": 2,
-    "findingsByCategory": {
-      "dd_violation": 1,
-      "maintainability": 0,
-      "reliability": 1,
-      "coverage_gap": 0
-    }
+    "acsTotal": 12, "acsFulfilled": 10, "acsPartial": 1, "acsUnfulfilled": 1,
+    "identifiersTotal": 20, "identifiersMatched": 19, "lowConfidenceItems": 2,
+    "findingsByCategory": { "dd_violation": 1, "maintainability": 0, "reliability": 1, "coverage_gap": 0 }
   }
 }
 ```
@@ -259,17 +241,3 @@ Recommend higher-level review when:
 - Security concerns discovered
 - Critical performance issues found
 - Implementation introduces in-scope elements (persistent state; public-contract or cross-boundary fields/props; behavioral modes/flags/variants; reusable abstractions or component splits) that are absent from the Design Doc's Minimal Surface Alternatives section
-
-## Special Considerations
-
-### For Prototypes/MVPs
-- Prioritize functionality over completeness
-- Consider future extensibility
-
-### For Refactoring
-- Maintain existing functionality as top priority
-- Quantify improvement degree
-
-### For Emergency Fixes
-- Verify minimal implementation solves problem
-- Check technical debt documentation

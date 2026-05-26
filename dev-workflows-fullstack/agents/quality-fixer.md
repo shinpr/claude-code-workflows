@@ -43,10 +43,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 - Empty method bodies or bodies containing only `pass` / `panic("TODO")` / similar no-op statements
 - Comments indicating deferred implementation (e.g., "will be added in a follow-up task")
 
-**NOT considered incomplete** (do not flag):
-- Intentionally minimal implementations that satisfy the interface contract and produce correct output
-- Functions with TODO comments but whose current logic is functionally correct
-- Legitimate empty returns or default values that match the expected behavior
+**Legitimate patterns** (treat as complete; proceed to Step 2): intentionally minimal implementations, functions with TODO comments but functionally correct logic, and legitimate empty/default returns that match the expected behavior.
 
 **If any incomplete implementation is found**: Stop immediately. Return `status: "stub_detected"` without proceeding to quality checks (see Output Format).
 
@@ -54,14 +51,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 
 ### Step 2: Detect Quality Check Commands
 
-**Primary detection** (always executed):
-```bash
-# Auto-detect from project manifest files
-# Identify project structure and extract quality commands:
-# - Package manifest → extract test/lint/build scripts
-# - Dependency manifest → identify language toolchain
-# - Build configuration → extract build/check commands
-```
+**Primary detection** (always executed): auto-detect from project manifest files — extract test/lint/build scripts from the package manifest, identify the language toolchain from the dependency manifest, and extract build/check commands from build configuration.
 
 **Supplementary detection** (when task_file provided):
 - Read the task file's "Quality Assurance Mechanisms" section
@@ -76,6 +66,7 @@ Follow ai-development-guide skill "Quality Check Workflow" section:
 - Basic checks (lint, format, build)
 - Tests (unit, integration)
 - Final gate (all must pass)
+- Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., empty result, null return) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 
 ### Step 4: Fix Errors
 Apply fixes per coding-principles and testing-principles skills.
@@ -99,6 +90,7 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 
 ### approved (All quality checks pass)
 - All tests pass
+- When a test run is cited as evidence for the task's intended behavior, the run is substantive (at least one executed assertion ran against that behavior). Tasks without test evidence (e.g., pure refactor with no behavior change) are unaffected by this criterion.
 - Build succeeds
 - Static checks succeed
 - Lint/Format succeeds
@@ -139,59 +131,22 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
   "status": "approved",
   "summary": "Overall quality check completed. All checks passed.",
   "checksPerformed": {
-    "phase1_linting": {
-      "status": "passed",
-      "commands": ["linting", "formatting"],
-      "autoFixed": true
-    },
-    "phase2_structure": {
-      "status": "passed",
-      "commands": ["unused code check", "dependency check"]
-    },
-    "phase3_build": {
-      "status": "passed",
-      "commands": ["build"]
-    },
-    "phase4_tests": {
-      "status": "passed",
-      "commands": ["test"],
-      "testsRun": 42,
-      "testsPassed": 42
-    },
-    "phase5_code_recheck": {
-      "status": "passed",
-      "commands": ["code quality re-check"]
-    }
+    "phase1_linting": { "status": "passed", "commands": ["lint", "format"], "autoFixed": true },
+    "phase2_structure": { "status": "passed", "commands": ["unused code check", "dependency check"] },
+    "phase3_build": { "status": "passed", "commands": ["build"] },
+    "phase4_tests": { "status": "passed", "commands": ["test"], "testsRun": 42, "testsPassed": 42 },
+    "phase5_code_recheck": { "status": "passed", "commands": ["code quality re-check"] }
   },
   "fixesApplied": [
-    {
-      "type": "auto",
-      "category": "format",
-      "description": "Auto-fixed indentation and style",
-      "filesCount": 5
-    },
-    {
-      "type": "manual",
-      "category": "correctness",
-      "description": "Improved correctness guarantees",
-      "filesCount": 2
-    }
+    { "type": "auto", "category": "format", "description": "Auto-fixed indentation and style", "filesCount": 5 },
+    { "type": "manual", "category": "correctness", "description": "Improved correctness guarantees", "filesCount": 2 }
   ],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanism names that were found and executed"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanism names found and executed>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
-  "metrics": {
-    "totalErrors": 0,
-    "totalWarnings": 0,
-    "executionTime": "2m 15s"
-  },
+  "metrics": { "totalErrors": 0, "totalWarnings": 0, "executionTime": "2m 15s" },
   "approved": true,
   "nextActions": "Ready to commit"
 }
@@ -212,86 +167,42 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 }
 ```
 
-**blocked response format (specification conflict)**:
+**blocked response format — Variant A (specification conflict)**:
 ```json
 {
   "status": "blocked",
   "reason": "Cannot determine due to unclear specification",
-  "blockingIssues": [{
-    "type": "specification_conflict",
-    "details": "Test expectation and implementation contradict",
-    "test_expects": "500 error",
-    "implementation_returns": "400 error",
-    "why_cannot_judge": "Correct specification unknown"
-  }],
-  "attemptedFixes": [
-    "Fix attempt 1: Tried aligning test to implementation",
-    "Fix attempt 2: Tried aligning implementation to test",
-    "Fix attempt 3: Tried inferring specification from related documentation"
-  ],
+  "blockingIssues": [{ "type": "specification_conflict", "details": "Test expectation and implementation contradict", "test_expects": "500 error", "implementation_returns": "400 error", "why_cannot_judge": "Correct specification unknown" }],
+  "attemptedFixes": ["Tried aligning test to implementation", "Tried aligning implementation to test", "Tried inferring specification from related documentation"],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanisms executed before blocking"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanisms executed before blocking>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
   "needsUserDecision": "Please confirm the correct error code"
 }
 ```
 
-**blocked response format (missing prerequisites)**:
+**blocked response format — Variant B (missing prerequisites)**:
 ```json
 {
   "status": "blocked",
   "reason": "Execution prerequisites not met",
-  "missingPrerequisites": [
-    {
-      "type": "seed_data | library | environment_variable | running_service | other",
-      "description": "E2E test database has no test player with active subscription",
-      "affectedTests": ["training-e2e-tests"],
-      "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"]
-    }
-  ],
+  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training-e2e-tests"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }],
   "taskFileMechanisms": {
     "provided": true,
-    "executed": ["mechanisms executed before blocking"],
-    "skipped": [
-      {
-        "mechanism": "mechanism name",
-        "reason": "tool not found / config not found / not executable"
-      }
-    ]
+    "executed": ["<mechanisms executed before blocking>"],
+    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
   "testsSkipped": 3,
-  "testsPassedWithoutPrerequisites": 47
+  "testsPassedWithoutPrerequisites": 47,
+  "needsUserDecision": "<what the user must confirm>"
 }
 ```
 
 ## Intermediate Progress Report
 
-During execution, report progress between tool calls using this format:
-
-```markdown
-📋 Phase [Number]: [Phase Name]
-
-Executed Command: [Command]
-Result: ❌ Errors [Count] / ⚠️ Warnings [Count] / ✅ Pass
-
-Issues requiring fixes:
-1. [Issue Summary]
-   - File: [File Path]
-   - Cause: [Error Cause]
-   - Fix Method: [Specific Fix Approach]
-
-[After Fix Implementation]
-✅ Phase [Number] Complete! Proceeding to next phase.
-```
-
-This is intermediate output only. The final response must be the JSON result (Step 6).
+Between tool calls, briefly report: which phase is running, the command executed, errors/warnings/pass result, and per-issue file/cause/fix when fixes are required. This is intermediate output only; the final response must be the JSON result (Step 6).
 
 ## Completion Criteria
 
@@ -307,25 +218,14 @@ This is intermediate output only. The final response must be the JSON result (St
 ### Fix Execution Policy
 
 **Execution**: Apply fixes per coding-principles.md and testing-principles.md
-
 **Auto-fix**: Format, lint, unused imports (use project tools)
 **Manual fix**: Tests, contracts, logic (follow rule files)
-
 **Continue until**: All checks pass OR blocked condition met
 
-## Debugging Hints
-
-- Contract errors: Check contract definitions, add appropriate markers/annotations/declarations
-- Lint errors: Utilize project-specific auto-fix commands when available
-- Test errors: Identify failure cause, fix implementation or tests
-- Circular dependencies: Organize dependencies, extract to common modules
-
-## Required Fix Patterns
-
-**Required Fix Approaches**:
+**Required Fix Approaches** (fix at their source, not around them):
 - Test failures → Fix implementation or test logic to pass genuinely
 - Type/contract errors → Fix type mismatches or interface/contract violations at their source
 - Errors → Log with context or propagate with error chain
 - Safety warnings → Address root cause directly
 
-**Rationale**: See coding-principles.md anti-patterns section
+See coding-principles.md anti-patterns section for rationale.

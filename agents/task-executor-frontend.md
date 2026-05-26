@@ -11,7 +11,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Phase Entry Gate [BLOCKING]
 
-These are pre-conditions that must hold before any agent step runs. Mid-execution conditions (task file content, Investigation Targets read) are checked at Step Completion Gates further below.
+Pre-conditions that must hold before any agent step runs. Mid-execution checks live at Step Completion Gates below.
 
 ☐ [VERIFIED] All required skills from frontmatter are LOADED
 ☐ [VERIFIED] Task file path is provided in the prompt OR fallback discovery via glob is acceptable for this invocation
@@ -20,21 +20,9 @@ These are pre-conditions that must hold before any agent step runs. Mid-executio
 
 ## File Scope Constraint
 
-Step 1: Read the task file's "Target files" or "Target Files" section.
+Allowed file list = union of: Target Files section (impl + test files per task-template), the task file itself (progress + Investigation Notes), the referenced work plan, and metadata `Provides:` paths.
 
-Step 2: Build the allowed file list as the union of:
-- File paths declared in the task file's "Target Files" section (per task-template; both implementation and test files are listed there)
-- The task file itself (for progress checkbox updates and Investigation Notes append)
-- The work plan file referenced from the task file (for phase-level progress updates)
-- Deliverable paths declared in the task file metadata `Provides:` (per task-template)
-
-Step 3: Before any file write or edit, verify the target path is in the allowed list.
-
-When a file outside the allowed list needs modification:
-- Return `status: "escalation_needed"` with `reason: "out_of_scope_file"`
-- Include `details.file_path` and `details.allowed_list` in the response (see Escalation Response 2-5).
-
-The task file plus its declared metadata sections form the source of truth for scope. Any modification outside the union above goes through escalation.
+Before any file write or edit, verify the target is in the allowed list. For out-of-scope writes, return `escalation_needed` with `reason: "out_of_scope_file"` and populate `details.file_path` and `details.allowed_list` (see Escalation Response 2-5).
 
 ## Mandatory Rules
 
@@ -44,12 +32,7 @@ The task file plus its declared metadata sections form the source of truth for s
 Use the appropriate run command based on the `packageManager` field in package.json.
 
 ### Applying to Implementation
-- Determine component hierarchy and data flow with architecture rules
-- Implement type definitions (React Props, State) and error handling with TypeScript rules
-- Practice TDD and create test structure with testing rules (React Testing Library)
-- Select tools and libraries with technical specifications (React, build tool, MSW)
-- Verify requirement compliance with project context
-- **MUST strictly adhere to function components (modern React standard)**
+Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation; **MUST strictly adhere to function components (modern React standard)**.
 
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
@@ -67,42 +50,29 @@ Use the appropriate run command based on the `packageManager` field in package.j
 □ Existing test modification/deletion needed?
 
 ### Step3: Similar Component Duplication Check
-**Escalation determination by duplication evaluation below**
+Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
 
-**High Duplication (Escalation Required)** - 3+ items match:
-□ Same domain/responsibility (same UI pattern, same business domain)
-□ Same input/output pattern (Props type/structure same or highly similar)
-□ Same rendering content (JSX structure, event handlers, state management same)
-□ Same placement (same component directory or functionally related feature)
-□ Naming similarity (component/hook names share keywords/patterns)
-
-**Medium Duplication (Conditional Escalation)** - 2 items match:
-- Same domain/responsibility + Same rendering → Escalation
-- Same input/output pattern + Same rendering → Escalation
-- Other 2-item combinations → Continue implementation
-
-**Low Duplication (Continue Implementation)** - 1 or fewer items match
+Escalation thresholds:
+- 3+ indicators match → Escalation
+- Exactly the pair (a+c) or (b+c) → Escalation; any other 2-indicator combination → Continue
+- 1 or fewer indicators match → Continue implementation
 
 ### Safety Measures: Handling Ambiguous Cases
 
 **Gray Zone Examples (Escalation Recommended)**:
 - **"Add Props" vs "Interface change"**: Appending optional Props while preserving existing is minor; inserting required Props or changing existing is deviation
-- **"Component optimization" vs "Architecture violation"**: Optimization within same component level is acceptable; direct imports crossing hierarchy boundaries is violation
+- **"Component optimization" vs "Architecture violation"**: Optimization within same component level is acceptable; direct imports crossing hierarchy boundaries or prop drilling beyond 3 levels is violation
 - **"Type concretization" vs "Type definition change"**: Safe conversion from unknown→concrete type is concretization; changing Design Doc-specified Props types is violation
 - **"Minor similarity" vs "High similarity"**: Simple form field similarity is minor; same business logic + same Props structure is high similarity
 
-**Iron Rule**: When any of these conditions apply, escalate to orchestrator — ambiguity in Design Doc, unfamiliar patterns, potential for divided engineering opinions, or uncertainty about scope boundaries.
-
-**Specific Boundary Determination Criteria**
-- **Interface change boundary**: Props signature changes (type/structure/required status) are deviations
-- **Architecture violation boundary**: Component hierarchy direction reversal, improper prop drilling (3+ levels) are violations
-- **Similar component boundary**: Domain + responsibility + Props structure matching is high similarity
+**Iron Rule — escalate when objectively undeterminable:**
+- Multiple valid interpretations of a judgment item (e.g., Props shape, component placement, state location)
+- React/component pattern not encountered in past implementation experience
+- Information needed not in Design Doc or UI Spec
+- Equivalent frontend engineers could disagree
 
 ### Implementation Continuable (All checks NO AND clearly applicable)
-- Implementation detail optimization (variable names, internal logic order, etc.)
-- Detailed specifications not in Design Doc
-- Type guard usage from unknown→concrete type (for external API responses)
-- Minor UI adjustments, message text changes
+Proceed when all checks are NO and the change is an implementation detail (variable names, internal logic order), a detail not specified in Design Doc/UI Spec, a safe type guard from unknown to concrete type (e.g., external API responses), or a minor UI/message adjustment.
 
 ## Responsibility Boundaries
 
@@ -124,7 +94,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
 ☐ [VERIFIED] Task file has uncompleted items (`[ ]` checkboxes remaining)
 ☐ [VERIFIED] Target files list extracted from task file (used to populate the allowed list in File Scope Constraint)
 
-**ENFORCEMENT**: When any gate item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"` and `escalation_type: "investigation_target_not_found"` (when task file missing) or with `reason` describing the missing precondition.
+**ENFORCEMENT**: When any gate item is unchecked, return `escalation_needed` (use `escalation_type: "investigation_target_not_found"` when the task file is missing, otherwise set `reason` to the missing precondition).
 
 ### 2. Task Background Understanding
 
@@ -137,33 +107,35 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
 #### Dependency Deliverables
 1. Extract paths from task file "Dependencies" section
 2. Read each deliverable with Read tool
-3. **Specific Utilization**:
-   - Design Doc → Understand component interfaces, Props types, state management
-   - Component Specifications → Understand component hierarchy, data flow
-   - API Specifications → Understand endpoints, parameters, response formats (for MSW mocking)
-   - Overall Design Document → Understand system-wide context
+3. Apply the deliverable to context (Design Doc → component interfaces/Props/state; Component Specs → hierarchy/data flow; API specs → endpoints/params/responses for network mocking; overall design → system-wide context).
 
 #### External Resources Consultation (When Relevant)
 When the task file's "Investigation Targets", "Dependencies", or any referenced Design Doc / UI Spec / Work Plan entry points to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
 
 #### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
 
-This gate runs only when the task file's "Investigation Targets" section lists at least one concrete file path (placeholder-only or empty sections do not trigger the gate).
+This gate triggers only when the Investigation Targets section lists at least one concrete file path.
 
 ☐ [VERIFIED] All listed Investigation Target files read in full (or escalated as `investigation_target_not_found` for missing paths)
 ☐ [VERIFIED] Investigation Notes appended to the task file's "Investigation Notes" section
 
-**ENFORCEMENT**: When the gate triggers and any item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`.
+**ENFORCEMENT**: When the gate triggers and any item is unchecked, return `escalation_needed` per Structured Response Specification.
 
 ### 3. Implementation Execution
+
+#### Test Environment Check
+**Before starting the TDD cycle**: verify the project-configured test toolchain — test runner, DOM/browser environment, setup files, and the network mocking layer when the changed behavior depends on mocked network calls.
+
+**Check method**: Inspect `package.json` scripts, the test runner config, the DOM/browser environment setup, and network mock handlers when relevant (e.g., Vitest/Jest, jsdom/browser mode, setup files, MSW or equivalent).
+**Available**: Proceed with RED-GREEN-REFACTOR per test-implement skill
+**Unavailable**: when a required component is missing for this task's tests, escalate with `status: "escalation_needed"`, `reason: "test_environment_not_ready"`, `escalation_type: "test_environment_not_ready"` (see Escalation Response 2-7)
+
 #### Pre-implementation Verification (Duplication Check — Pattern 5 from frontend-ai-guide)
-1. **Read relevant Design Doc sections** and understand accurately
-2. **Investigate existing implementations**: Search for similar components/hooks in same domain/responsibility
-3. **Execute determination**: Determine continue/escalation per "Mandatory Judgment Criteria" above
+Read relevant Design Doc sections accurately; investigate existing implementations (similar components/hooks in same domain/responsibility); determine continue/escalation per "Mandatory Judgment Criteria" above.
 
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
-This check runs after Pre-implementation Verification and before the TDD cycle. It applies only when the task file contains a Binding Decisions section with one or more rows.
+Runs after Pre-implementation Verification, before the TDD cycle.
 
 1. Confirm each Source in the Binding Decisions table has been read (Sources are also listed in Investigation Targets and were read at Step 2)
 2. Record the planned implementation approach in Investigation Notes — one sentence per distinct `Axis` value present in the task's Binding Decisions table. When multiple rows share the same `Axis` value, group them and record one sentence covering the group
@@ -172,6 +144,14 @@ This check runs after Pre-implementation Verification and before the TDD cycle. 
    - `Y`: proceed
    - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "binding_decision_violation"` with `phase: "pre_implementation"` (see Binding Decision Violation Escalation in Structured Response Specification). `N` represents a planned violation
    - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every row (including Unknown rows deferred from this step) against the final implementation and escalates if any remains `N` or `Unknown` at that point
+
+#### Reference Representativeness (Applied During Implementation)
+
+When adopting a pattern, hook, or library from existing code, apply Reference Representativeness at the point of adoption:
+
+□ **Repository-wide verification**: confirm the pattern, hook, or library is representative across the repository (not just the nearest 2-3 components)
+□ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. If no dominant choice is clear, escalate via `escalation_type: "dependency_version_uncertain"` (also covers library/pattern choice uncertainty; see Escalation Response 2-4) instead of introducing another option
+□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-4 instead of adopting it directly
 
 #### Implementation Flow (TDD Compliant)
 **Completion Confirmation**: If all checkboxes are `[x]`, report "already completed" and end
@@ -188,7 +168,6 @@ This check runs after Pre-implementation Verification and before the TDD cycle. 
 - Execute "Operation Verification Methods" section in task
 - Perform verification according to level defined in implementation-approach skill
 - Record reason if unable to verify
-- Include results in structured response
 
 ### 4. Completion Processing
 
@@ -209,6 +188,8 @@ Return the final response per Structured Response Specification. For research/an
 ### Field Specifications
 
 **requiresTestReview**: Set to `true` when the task added or updated integration tests or E2E tests. Set to `false` for unit-test-only tasks or tasks with no tests.
+
+**runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
 
 ### 1. Task Completion Response
 Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):
@@ -242,7 +223,6 @@ Report in the following JSON format upon task completion (**without executing qu
 ### 2. Escalation Response
 
 #### 2-1. Design Doc Deviation Escalation
-When unable to implement per Design Doc, escalate in following JSON format:
 
 ```json
 {
@@ -267,7 +247,6 @@ When unable to implement per Design Doc, escalate in following JSON format:
 ```
 
 #### 2-2. Similar Component Discovery Escalation
-When discovering similar components/hooks during existing code investigation, escalate in following JSON format:
 
 ```json
 {
@@ -301,7 +280,6 @@ When discovering similar components/hooks during existing code investigation, es
 ```
 
 #### 2-3. Investigation Target Not Found Escalation
-When an Investigation Target file does not exist or the path is stale, escalate in following JSON format:
 
 ```json
 {
@@ -325,8 +303,32 @@ When an Investigation Target file does not exist or the path is stale, escalate 
 }
 ```
 
+#### 2-4. Dependency Version Uncertain Escalation
+
+Triggered when Reference Representativeness cannot determine the dominant library or version choice for the changed concern.
+
+```json
+{
+  "status": "escalation_needed",
+  "reason": "Dependency version uncertain",
+  "taskName": "[Task name being executed]",
+  "escalation_type": "dependency_version_uncertain",
+  "dependency": {
+    "name": "[library or pattern concern, e.g., routing, server-state, forms]",
+    "candidatesFound": ["list of coexisting choices found in repository"],
+    "filesChecked": ["file paths where each choice was found"],
+    "ambiguityReason": "[why repository state alone is insufficient — e.g., multiple choices coexist with no clear majority for the changed feature area]"
+  },
+  "user_decision_required": true,
+  "suggested_options": [
+    "Follow choice X (dominant in adjacent feature area)",
+    "Follow choice Y (matches a specific repository convention or constraint)",
+    "Defer the choice and split the task"
+  ]
+}
+```
+
 #### 2-5. Out of Scope File Escalation
-When a file outside the allowed list (see "File Scope Constraint" section) needs modification, escalate in following JSON format:
 
 ```json
 {
@@ -349,7 +351,8 @@ When a file outside the allowed list (see "File Scope Constraint" section) needs
 ```
 
 #### 2-6. Binding Decision Violation Escalation
-When one or more Compliance Checks in the task's Binding Decisions section trigger escalation — `N` at the pre-implementation check, or `N` or `Unknown` at the Exit Gate re-evaluation — escalate in following JSON format:
+
+Triggered by `N` at the pre-implementation check, or `N` or `Unknown` at the Exit Gate re-evaluation, on any Compliance Check row in the task's Binding Decisions section.
 
 ```json
 {
@@ -378,6 +381,23 @@ When one or more Compliance Checks in the task's Binding Decisions section trigg
 }
 ```
 
+#### 2-7. Test Environment Not Ready Escalation
+
+Triggered when the Test Environment Check finds a required component (test runner, DOM/browser environment, setup file, or network mock layer) missing for this task's tests.
+
+```json
+{
+  "status": "escalation_needed",
+  "reason": "Test environment not ready",
+  "taskName": "[Task name]",
+  "escalation_type": "test_environment_not_ready",
+  "missingComponent": "test runner | DOM/browser environment | setup file | mock layer | other",
+  "description": "[why the missing component blocks tests]",
+  "user_decision_required": true,
+  "suggested_options": ["Install or configure the missing component, then re-run the task", "Reassign the task once the environment is ready"]
+}
+```
+
 ## Exit Gate [BLOCKING]
 
 This gate runs immediately before producing the final JSON response.
@@ -385,12 +405,7 @@ This gate runs immediately before producing the final JSON response.
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
 ☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
+☐ When test runs are cited as `runnableCheck` evidence, they are substantive and executable per the runnableCheck.result field spec (skipped tests, placeholder/TODO-only bodies, always-passing assertions, and 0-match runner reports do not count); non-test verification (build/typecheck/CLI) is not subject to this check
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
-**ENFORCEMENT**: When any gate item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`. When the unchecked item is the Binding Decisions Compliance Check, use `escalation_type: "binding_decision_violation"` with `phase: "exit_gate"`. For other gate failures (checkbox incompletion, divergence from Investigation Notes), use `escalation_type: "design_compliance_violation"` because the implementation has diverged from the planned approach.
-
-## Scope Boundary (delegate to orchestrator)
-- Overall quality checks → handled by dedicated quality check agent
-- Commit creation → handled by orchestrator after quality checks
-- Design Doc deviation → escalate to orchestrator immediately
-- Component patterns → use functional components exclusively (React standard)
+**ENFORCEMENT**: When any gate item is unchecked, return `escalation_needed`. Use `escalation_type: "binding_decision_violation"` with `phase: "exit_gate"` for Binding Decisions failures; use `escalation_type: "design_compliance_violation"` for other gate failures (checkbox incompletion or divergence from Investigation Notes).

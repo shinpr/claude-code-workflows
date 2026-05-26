@@ -38,3 +38,6 @@ node_modules/
 # Misc
 *.bak
 *.backup
+
+# Local planning docs
+docs/plans/

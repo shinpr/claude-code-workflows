@@ -55,6 +55,7 @@ Evaluate each test for:
 - Clear Arrange section (setup)
 - Single Act (action)
 - Meaningful Assert (verification)
+- Substantive assertion: each test must execute at least one assertion that observes the AC's behavior. Always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), TODO-only bodies, or leftover `skip`/`xit` markers on tests that should run do not count as substantive evidence. Tests verifying intentional absence (e.g., `expect(queryAllBy*).toHaveLength(0)`) are substantive when the absence is the AC's expectation
 - Isolated state per test (reset in beforeEach)
 - Deterministic execution (mock time/random sources when needed)
 
@@ -70,28 +71,14 @@ Evaluate each test for:
 {
   "status": "approved|needs_revision|blocked",
   "testFile": "[path]",
-  "verdict": {
-    "decision": "approved|needs_revision|blocked",
-    "summary": "[1-2 sentence summary]"
-  },
+  "verdict": { "decision": "approved|needs_revision|blocked", "summary": "[1-2 sentence summary]" },
   "testsReviewed": 5,
   "passedTests": 3,
   "failedTests": 2,
   "qualityIssues": [
-    {
-      "testName": "[test name]",
-      "issueType": "skeleton_mismatch|aaa_violation|independence_violation|mock_boundary|readability",
-      "severity": "high|medium|low",
-      "description": "[specific issue]",
-      "skeletonExpected": "[what skeleton specified]",
-      "actualImplementation": "[what was found]",
-      "suggestion": "[specific fix]"
-    }
+    { "testName": "[test name]", "issueType": "skeleton_mismatch|aaa_violation|independence_violation|mock_boundary|readability", "severity": "high|medium|low", "description": "[specific issue]", "skeletonExpected": "[what the skeleton specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
   ],
-  "requiredFixes": [
-    "[specific fix 1]",
-    "[specific fix 2]"
-  ]
+  "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
 }
 ```
 
@@ -145,3 +132,7 @@ Evaluate each test for:
 ### Test Independence Violation
 **Issue**: Tests share state or depend on execution order
 **Fix**: Reset state in setup hooks, make each test self-contained
+
+### Hollow or Placeholder Assertion
+**Issue**: Test reads as passing but does not verify the AC's observable behavior (always-true assertion, TODO-only body, or leftover `skip`/`xit` marker on a test that should run)
+**Fix**: Replace with an assertion that observes the AC's behavior; remove `skip`/`xit` markers when the test should run
