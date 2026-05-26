@@ -71,28 +71,14 @@ Evaluate each test for:
 {
   "status": "approved|needs_revision|blocked",
   "testFile": "[path]",
-  "verdict": {
-    "decision": "approved|needs_revision|blocked",
-    "summary": "[1-2 sentence summary]"
-  },
+  "verdict": { "decision": "approved|needs_revision|blocked", "summary": "[1-2 sentence summary]" },
   "testsReviewed": 5,
   "passedTests": 3,
   "failedTests": 2,
   "qualityIssues": [
-    {
-      "testName": "[test name]",
-      "issueType": "skeleton_mismatch|aaa_violation|independence_violation|mock_boundary|readability",
-      "severity": "high|medium|low",
-      "description": "[specific issue]",
-      "skeletonExpected": "[what skeleton specified]",
-      "actualImplementation": "[what was found]",
-      "suggestion": "[specific fix]"
-    }
+    { "testName": "[test name]", "issueType": "skeleton_mismatch|aaa_violation|independence_violation|mock_boundary|readability", "severity": "high|medium|low", "description": "[specific issue]", "skeletonExpected": "[what the skeleton specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
   ],
-  "requiredFixes": [
-    "[specific fix 1]",
-    "[specific fix 2]"
-  ]
+  "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
 }
 ```
 
