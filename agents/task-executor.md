@@ -109,7 +109,7 @@ When the task file's "Investigation Targets", "Dependencies", or any referenced 
 
 #### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
 
-Placeholder-only or empty Investigation Targets do not trigger this gate.
+This gate triggers only when the Investigation Targets section lists at least one concrete file path.
 
 ☐ [VERIFIED] All listed Investigation Target files read in full (or escalated as `investigation_target_not_found` for missing paths)
 ☐ [VERIFIED] Investigation Notes appended to the task file's "Investigation Notes" section

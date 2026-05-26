@@ -46,7 +46,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 - Empty method bodies or bodies containing only `pass` / `panic("TODO")` / similar no-op statements
 - Comments indicating deferred implementation (e.g., "will be added in a follow-up task")
 
-**NOT considered incomplete** (do not flag):
+**Legitimate patterns** (treat as complete; proceed to Step 2):
 - Intentionally minimal implementations that satisfy the interface contract and produce correct output
 - Functions with TODO comments but whose current logic is functionally correct
 - Legitimate empty returns or default values that match the expected behavior
@@ -99,7 +99,7 @@ Return one of the following as the final response (see Output Format for schemas
 ## Frontend-Specific Quality Criteria
 
 ### Repository-Local Choice Discipline
-Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. Route any new library/pattern decision through the `blocked` output (`reason: "Cannot determine due to unclear specification"`) instead of adopting it directly.
+Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. Route any new library/pattern decision through the `blocked` output (`reason: "Cannot determine due to unclear specification"`).
 
 ### Testing Quality
 - **Test Coverage**: 60% baseline; foundational/leaf components (Atomic Design atoms, or reused-across-features components) target 70%, molecules 65%, organisms 60%

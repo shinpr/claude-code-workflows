@@ -43,7 +43,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 - Empty method bodies or bodies containing only `pass` / `panic("TODO")` / similar no-op statements
 - Comments indicating deferred implementation (e.g., "will be added in a follow-up task")
 
-**NOT considered incomplete** (do not flag): intentionally minimal implementations, functions with TODO comments but functionally correct logic, and legitimate empty/default returns that match the expected behavior.
+**Legitimate patterns** (treat as complete; proceed to Step 2): intentionally minimal implementations, functions with TODO comments but functionally correct logic, and legitimate empty/default returns that match the expected behavior.
 
 **If any incomplete implementation is found**: Stop immediately. Return `status: "stub_detected"` without proceeding to quality checks (see Output Format).
 

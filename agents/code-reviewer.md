@@ -91,7 +91,7 @@ For each function/method in implementation files, check against coding-principle
 #### 3-2. Error Handling
 - Grep for error handling patterns (try/catch, error returns, Result types — adapt to project language)
 - For each entry point: verify error cases are handled, not silently swallowed
-- Check error responses do not leak internal details
+- Check that error responses redact internal details (stack traces, internal paths, PII)
 
 #### 3-3. Test Coverage for Acceptance Criteria
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
