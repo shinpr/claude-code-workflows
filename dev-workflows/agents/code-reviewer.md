@@ -96,6 +96,7 @@ For each function/method in implementation files, check against coding-principle
 #### 3-3. Test Coverage for Acceptance Criteria
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
+- For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
 
 #### Finding Classification
 

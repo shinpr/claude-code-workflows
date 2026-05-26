@@ -76,6 +76,7 @@ Follow ai-development-guide skill "Quality Check Workflow" section:
 - Basic checks (lint, format, build)
 - Tests (unit, integration)
 - Final gate (all must pass)
+- Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., empty result, null return) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 
 ### Step 4: Fix Errors
 Apply fixes per coding-principles and testing-principles skills.
@@ -99,6 +100,7 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 
 ### approved (All quality checks pass)
 - All tests pass
+- When a test run is cited as evidence for the task's intended behavior, the run is substantive (at least one executed assertion ran against that behavior). Tasks without test evidence (e.g., pure refactor with no behavior change) are unaffected by this criterion.
 - Build succeeds
 - Static checks succeed
 - Lint/Format succeeds

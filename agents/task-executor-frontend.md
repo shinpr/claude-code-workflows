@@ -210,6 +210,8 @@ Return the final response per Structured Response Specification. For research/an
 
 **requiresTestReview**: Set to `true` when the task added or updated integration tests or E2E tests. Set to `false` for unit-test-only tasks or tasks with no tests.
 
+**runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
+
 ### 1. Task Completion Response
 Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):
 
@@ -385,6 +387,7 @@ This gate runs immediately before producing the final JSON response.
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
 ☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
+☐ When test runs are cited as `runnableCheck` evidence, they are substantive and executable per the runnableCheck.result field spec (skipped tests, placeholder/TODO-only bodies, always-passing assertions, and 0-match runner reports do not count); non-test verification (build/typecheck/CLI) is not subject to this check
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
 **ENFORCEMENT**: When any gate item is unchecked, produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`. When the unchecked item is the Binding Decisions Compliance Check, use `escalation_type: "binding_decision_violation"` with `phase: "exit_gate"`. For other gate failures (checkbox incompletion, divergence from Investigation Notes), use `escalation_type: "design_compliance_violation"` because the implementation has diverged from the planned approach.
