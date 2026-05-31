@@ -157,7 +157,7 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 ### Test Skeleton Shape
 
-Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown, lane, dependency, complexity, verification points, expected results, and pass criteria.
+Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown, lane, dependency, complexity, verification points, expected results, pass criteria, primary failure mode, and proof obligation.
 
 ```
 // [Feature Name] [integration|fixture-e2e|service-integration-e2e] Test - Design Doc: [filename]
@@ -173,6 +173,8 @@ Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user jo
   // @lane: integration
   // @dependency: PaymentService, OrderRepository, Database
   // @complexity: high
+  // Primary failure mode: payment succeeds but the order row is absent or unpersisted
+  // Proof obligation: the order is persisted only after a successful payment; the external payment gateway is the only boundary that may be mocked
   [Test skeleton: verification points, expected results, pass criteria]
 ```
 
@@ -235,13 +237,15 @@ Each test case MUST have the following standard annotations for test implementat
 - **@lane**: integration | fixture-e2e | service-integration-e2e
 - **@dependency**: none | [component names] | full-ui (mocked backend) | full-system
 - **@complexity**: low | medium | high
+- **Primary failure mode**: the specific regression that turns this test red — the behavior the AC promises and would break
+- **Proof obligation**: what the implemented test must assert to prove the claim — the boundary to traverse, the observable state before/after for state-changing ACs, and which boundaries may be mocked and why. Phrase it as design intent describing what to assert; the implementer writes the executable assertions and mock setup
 
-These annotations are used when planning and prioritizing test implementation. The `@lane` annotation is the source of truth for budget accounting and CI gating.
+These annotations are used when planning and prioritizing test implementation. The `@lane` annotation is the source of truth for budget accounting and CI gating. The primary failure mode and proof obligation carry the proof contract to the test implementer and to integration-test-reviewer.
 
 ## Constraints and Quality Standards
 
 **Mandatory Compliance**:
-- Output test skeletons only: verification points, expected results, and pass criteria.
+- Output test skeletons only: verification points, expected results, pass criteria, primary failure mode, and proof obligation.
   Background: implementation code, assertions, and mock setup must not be included — downstream consumers treat skeletons as comment-based design information, not executable code.
 - Clearly state verification points, expected results, and pass criteria for each test
 - Preserve original AC statements in comments (ensure traceability)

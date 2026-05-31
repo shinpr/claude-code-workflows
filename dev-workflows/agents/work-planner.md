@@ -32,6 +32,9 @@ Choose Strategy A (TDD) if test skeletons are provided, Strategy B (implementati
 **Common rules (all approaches)**:
 - **Include Verification Strategy summary in work plan header** for downstream task reference
 - **Include adopted Quality Assurance Mechanisms in work plan header** for downstream task reference — list each adopted mechanism with tool name, what it enforces, configuration path, and covered files (file paths/patterns from Design Doc, or "project-wide" if not scoped to specific files)
+- **Include a Proof Strategy in the work plan header** (see plan template) — name the proof obligation source (test skeleton annotations when skeletons are provided, otherwise each AC's primary failure mode) and state that every claim-implementing task records Proof Obligations for downstream review
+- **Record the Review Scope in the work plan header** — for a fresh pre-implementation plan, the planned-files scope derived from the Design Doc and task target files; for a revision plan over existing work, the base branch and diff range — so the work plan review and downstream verification share one scope
+- **Include a Failure Mode Checklist in the work plan** (see plan template) — enumerate all eight domain-independent failure categories (same-value, no-op, empty input, invalid option, missing config, unavailable boundary, shared-state dependency, rollback-only visibility), mark which apply, and map each applicable one to its covering task(s), keeping entries free of project-specific names
 - Include verification tasks in the phase corresponding to Verification Strategy's verification timing
 - When test skeletons are provided, place integration test implementation in corresponding phases and E2E test execution in the final phase
 - When test skeletons are not provided, include test implementation tasks based on Design Doc acceptance criteria
@@ -330,6 +333,9 @@ When creating work plans, **Phase Structure Diagrams** and **Task Dependency Dia
   - [ ] Each row's `Source Section` is set to `Decision` or `Implementation Guidance` matching the actual location of the decision in the ADR
   - [ ] Every row maps to at least one covering task
 - [ ] Verification Strategy extracted from Design Doc and included in plan header
+- [ ] Proof Strategy included in plan header (proof obligation source + per-task propagation rule)
+- [ ] Review Scope recorded in plan header (base branch / diff range / changed-files scope)
+- [ ] Failure Mode Checklist included, applicable categories mapped to covering tasks, free of project-specific names
 - [ ] Adopted Quality Assurance Mechanisms extracted from Design Doc and included in plan header
 - [ ] Phase structure matches implementation approach (vertical → value unit phases, horizontal → layer phases)
 - [ ] Early verification point placed in Phase 1 (when Verification Strategy specifies one)

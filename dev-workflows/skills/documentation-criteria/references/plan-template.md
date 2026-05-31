@@ -5,6 +5,7 @@ Type: feature|fix|refactor
 Estimated Duration: X days
 Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
+Review Scope: [planned-files scope derived from Design Doc and task targets; for a revision plan over existing work, base branch + diff range]
 Implementation Readiness: pending
 
 ## Related Documents
@@ -26,6 +27,10 @@ Implementation Readiness: pending
 - **Success criteria**: [extracted from Design Doc]
 - **Failure response**: [extracted from Design Doc]
 
+### Proof Strategy
+- **Proof obligation source**: [test skeleton annotations (primary failure mode, proof obligation) when skeletons exist; otherwise each AC's primary failure mode]
+- **Per-task propagation**: every task that implements a claim records Proof Obligations (see task template) so downstream review can judge whether the tests prove the claim, not merely run
+
 ## Quality Assurance Mechanisms (from Design Doc)
 
 Adopted quality gates for the change area. Each task in this plan must satisfy these mechanisms.
@@ -46,6 +51,21 @@ Maps each Design Doc technical requirement to the covering task(s). One row per 
 **Category values**: `impl-target` (implementation target), `connection-switching` (connection/switching/registration), `contract-change` (contract change and propagation), `verification` (verification requirement), `prerequisite` (prerequisite work)
 
 **Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
+
+## Failure Mode Checklist
+
+Domain-independent failure categories this implementation must guard against. Enumerate all eight categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
+
+| Category | Applies? | Covered By Task(s) |
+|---|---|---|
+| same-value | yes/no | [Phase X Task Y] |
+| no-op | yes/no | |
+| empty input | yes/no | |
+| invalid option | yes/no | |
+| missing config | yes/no | |
+| unavailable boundary | yes/no | |
+| shared-state dependency | yes/no | |
+| rollback-only visibility | yes/no | |
 
 ## UI Spec Component → Task Mapping
 

@@ -17,7 +17,7 @@ You are an AI assistant specialized in technical document review.
   - `composite`: Composite perspective review (recommended) - Verifies structure, implementation, and completeness in one execution
   - When unspecified: Comprehensive review
 
-- **doc_type**: Document type (`PRD`/`ADR`/`UISpec`/`DesignDoc`)
+- **doc_type**: Document type (`PRD`/`ADR`/`UISpec`/`DesignDoc`/`WorkPlan`)
 - **target**: Document path to review
 
 - **code_verification**: Code verification results JSON (optional)
@@ -43,6 +43,7 @@ You are an AI assistant specialized in technical document review.
 - Specialized verification based on doc_type
 - For DesignDoc: Verify "Applicable Standards" section exists with explicit/implicit classification
   - Missing or incomplete → `critical` issue; implicit standards without confirmation → `important` issue
+- For WorkPlan: confirm the plan carries the artifacts the semantic gate is judged against — Design-to-Plan Traceability, Failure Mode Checklist, Review Scope, Verification Strategy summary, and Proof Strategy. Read the referenced Design Doc(s) so AC / contract / state-transition coverage can be checked against the plan's tasks
 - If `code_verification` provided: extract discrepancy list and reverse coverage gaps; feed into Gate 1 as pre-verified evidence
 - If `codebase_analysis` provided: extract `focusAreas` and their `evidence` values for Gate 0 / Gate 1 Fact Disposition checks
 
@@ -63,6 +64,13 @@ For DesignDoc, additionally verify:
 - [ ] Verification Strategy section present with: correctness definition, verification method, verification timing, early verification point
 - [ ] Fact Disposition Table present and covers every `codebase_analysis.focusAreas` entry (when `codebase_analysis` is provided)
 - [ ] Minimal Surface Alternatives section present with one entry per new in-scope element (persistent state / public-contract or cross-boundary field or prop / behavioral mode/flag/variant / reusable abstraction or component split) (when the design introduces any). Each entry contains the 5-step output (fixed requirements with AC IDs or accepted technical constraint IDs, alternatives table including at least one subtractive option, selected alternative with rationale, rejected alternatives log)
+
+For WorkPlan, additionally verify:
+- [ ] Review Scope recorded (planned-files scope, or base branch + diff range for a revision plan)
+- [ ] Design-to-Plan Traceability table present with every row mapped to a task or carrying a justified gap
+- [ ] Verification Strategy summary and Proof Strategy present
+- [ ] Failure Mode Checklist present
+- [ ] Final phase includes Quality Assurance (acceptance criteria achievement, all tests passing)
 
 #### Gate 1: Quality Assessment (only after Gate 0 passes)
 
@@ -93,6 +101,14 @@ For DesignDoc, additionally verify:
     - (2) Steps 2–3 include at least one subtractive alternative (derive / compute on demand / keep at caller / reuse existing / do not introduce new state) → missing subtractive alternative → `critical` issue (category: `compliance`).
     - (3) Step 4 rationale either selects the smallest alternative or names a current requirement smaller alternatives fail to satisfy → "useful" / "future-ready" / "convenient" / "users might want" used as primary rationale → `critical` issue (category: `compliance`).
     - (4) Step 5 records the rejected alternatives with brief rationale → missing rejected alternatives log → `important` issue (category: `completeness`).
+
+- **Work plan semantic gate** (doc_type WorkPlan):
+  - (1) Coverage is checked where each item lives in the plan: each acceptance criterion is covered by a task whose completion criteria reference it; each data contract and state transition has a Design-to-Plan Traceability row mapping to a task or an explicit out-of-scope entry; each quality assurance mechanism appears in the Quality Assurance Mechanisms table with covered files. An item with no such coverage → `critical` issue (category: `completeness`). Distinguish the cause for an uncovered acceptance criterion: when the Design Doc supports it but no task maps to it (plan omission, fixable by re-planning) → `critical`; when the Design Doc or inputs give it no basis (a gap re-planning cannot fix) → the `rejected` trigger per the Verdict mapping below
+  - (2) The early verification point sits in an early phase rather than the final phase — deferral to the final phase → `important` issue (category: `consistency`)
+  - (3) Each cross-boundary, public-boundary, or persisted-state change names a task that verifies it through the real boundary — missing → `important` issue (category: `completeness`)
+  - (4) Each traceability table present (Design-to-Plan, UI Spec Component, Connection Map, ADR Bindings) is filled to a granularity that resolves its target task — under-specified rows → `important` issue (category: `completeness`)
+  - (5) The Failure Mode Checklist covers the plan's applicable domain-independent categories (same-value, no-op, empty input, invalid option, missing config, unavailable boundary, shared-state dependency, rollback-only visibility) — missing applicable category → `recommended` issue (category: `completeness`)
+  - Verdict mapping (WorkPlan): any semantic-gate `critical` issue forces the verdict to at least `needs_revision` — except a coverage gap traceable to a missing or contradictory Design Doc/input element (which re-planning cannot fix) → `rejected`; an `important`-only set caps the verdict at `approved_with_conditions`
 
 **Perspective-specific Mode**:
 - Implement review based on specified mode and focus

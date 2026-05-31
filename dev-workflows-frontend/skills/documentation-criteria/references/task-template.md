@@ -56,9 +56,19 @@ Each row is an ADR decision the implementation in this task must comply with.
 - **Failure response**: [What to do if verification fails — e.g., "reassess approach before proceeding", "escalate to user"]
 - **Verification level**: [L1: Functional operation as end-user feature / L2: New tests added and passing / L3: Code builds without errors]
 
+## Proof Obligations
+(One entry per AC or claim this task implements. Derived from test skeleton annotations when present, otherwise from the AC's primary failure mode. Each test must prove its claim, not merely run.)
+- **Claim**: [the behavior the AC promises]
+- **Primary failure mode**: [the regression the test turns red on]
+- **Boundary to exercise**: [public/integration boundary the test traverses, or "in-process unit"]
+- **State assertion**: [observable state before → action → after for state-changing claims; "N/A" otherwise]
+- **Mock boundary rationale**: [which boundaries may be mocked and why; "none" when all real]
+- **Residual**: [what this proof leaves unestablished, if any]
+
 ## Completion Criteria
 - [ ] All added tests pass
 - [ ] Operation verified per Operation Verification Methods above
+- [ ] Each Proof Obligation is met: the test turns red under its primary failure mode and exercises the stated boundary
 - [ ] Deliverables created (for research/design tasks)
 - [ ] (When Binding Decisions exist) Every Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (file:line, test result, or command output)
 
