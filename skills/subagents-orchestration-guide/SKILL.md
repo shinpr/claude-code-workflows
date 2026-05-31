@@ -106,7 +106,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 | UI Spec | After document-reviewer completes UI Spec review (frontend/fullstack) | Approve UI Spec |
 | ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
 | Design | After design-sync completes consistency verification | Approve Design Doc |
-| Work Plan | After work-planner creates plan | Batch approval for implementation phase |
+| Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) or work-planner (Small) completes | Batch approval for implementation phase |
 
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation.
 
@@ -185,7 +185,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
-- **document-reviewer**: approvalReady (true/false)
+- **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
 - **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
@@ -210,7 +210,7 @@ Criteria for timing when to call each agent:
 - **work-planner**: Request updates only before execution
 - **technical-designer**: Request updates according to design changes → Execute document-reviewer for consistency check
 - **prd-creator**: Request updates according to requirement changes → Execute document-reviewer for consistency check
-- **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update
+- **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update, and after Work Plan creation/update at Medium/Large scale (Small uses a simplified plan with no semantic review — no Design Doc to trace against)
 
 ## Basic Flow: Planning and Implementation
 
@@ -220,8 +220,8 @@ Always start with requirement-analyzer, then select the minimum planning flow re
 
 | Scale | Planning flow (ends at task-decomposer for Medium/Large; ends at work-planner for Small) |
 |-------|---------------|
-| Large | requirement-analyzer → PRD → PRD review → external resource hearing → optional ADR → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
-| Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → task-decomposer |
+| Large | requirement-analyzer → PRD → PRD review → external resource hearing → optional ADR → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
+| Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
 | Small | requirement-analyzer → work-planner |
 
 External resource hearing runs in the orchestrator (it requires AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
@@ -237,7 +237,8 @@ Rules:
 - Frontend/fullstack flows add UI Spec before Design Doc creation
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
-- `task-decomposer` begins only after work-planner batch approval
+- `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
+- Work plan review self-heals: on `verdict.decision` `needs_revision`, route back to work-planner (update) and re-review until `approved`/`approved_with_conditions`; `rejected` escalates to the user. The work plan is a derivation of the Design Doc, so plan-fidelity findings need no user adjudication
 
 ## Autonomous Execution Mode
 

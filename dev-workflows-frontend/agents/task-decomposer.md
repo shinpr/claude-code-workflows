@@ -95,6 +95,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Concrete implementation steps
    - **Quality Assurance Mechanisms** (derived from work plan header — see Quality Assurance Mechanism Propagation below)
    - **Operation Verification Methods** (derived from Verification Strategy in work plan)
+   - **Proof Obligations** (per claim — see Proof Obligation Propagation below)
    - Completion criteria
 
 6. **Investigation Targets Determination**
@@ -143,6 +144,14 @@ When the work plan includes a Verification Strategy, derive each task's Operatio
    - **Success criteria**: Instantiate the Verification Strategy's success criteria for this task's scope (e.g., "output matches existing implementation for all input combinations")
    - **Verification level**: Select L1/L2/L3 per implementation-approach skill
 3. **Investigation Targets**: Include resources needed for verification (e.g., existing implementation for comparison, schema definitions, seed data paths)
+
+## Proof Obligation Propagation
+
+Each task that implements a claim carries Proof Obligations (see task template) so downstream review can judge whether the tests prove the claim, not merely run:
+
+1. **Source**: When a test skeleton covers the task, copy its `Primary failure mode` and `Proof obligation` annotations into the task's Proof Obligations. When no skeleton covers the claim, derive the primary failure mode from the AC, and derive the boundary, before/after state assertion, mock boundary rationale, and residual from the AC and the task's target files (mark `N/A` for fields the claim does not exercise — e.g., no state assertion for a non-state-changing claim).
+2. **Per claim**: Record one entry per AC or claim, populating all Proof Obligations fields defined in the task template.
+3. **Apply when claims exist**: Tasks with no behavioral claim (e.g., pure config or scaffolding) omit the section.
 
 ## Quality Assurance Mechanism Propagation
 
@@ -302,6 +311,7 @@ Please execute decomposed tasks according to the order.
 - [ ] Impact scope and boundaries definition for each task
 - [ ] Appropriate granularity (1-5 files/task)
 - [ ] Investigation Targets specified for every task (specific file paths, not vague categories)
+- [ ] Proof Obligations recorded for each claim-implementing task (primary failure mode + boundary to exercise)
 - [ ] Quality Assurance Mechanisms from work plan header propagated to relevant tasks
 - [ ] UI Spec Component → Task Mapping rows propagated to matching tasks (when work plan has the table)
 - [ ] Connection Map boundary rows propagated to matching tasks (when work plan has the table)

@@ -55,7 +55,7 @@ Analyze the Consumed Task Set and determine the action required:
 |-------|----------|-------------|
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
 | No tasks + plan exists | Consumed Task Set is empty but the resolved work plan exists | Confirm with user → run task-decomposer |
-| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create work plan from Design Doc, then proceed to task decomposition |
+| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create work plan from Design Doc, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan); branch on the reviewer's `verdict.decision` — on `needs_revision`, re-invoke work-planner (update) and re-review until `approved`/`approved_with_conditions`, then present the reviewed plan for batch approval before task decomposition; on `rejected`, stop before task decomposition and escalate to the user |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
 ## Task Decomposition Phase (Conditional)

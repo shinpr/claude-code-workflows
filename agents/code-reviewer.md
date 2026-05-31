@@ -97,6 +97,7 @@ For each function/method in implementation files, check against coding-principle
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
 - For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
+- Beyond substance, confirm the test proves the claim: it turns red under the AC's primary failure mode and exercises the claimed boundary rather than a substitute input that bypasses it. A test that passes yet would stay green if the claimed behavior regressed is a `coverage_gap` with rationale naming the unproven failure mode.
 
 #### Finding Classification
 
