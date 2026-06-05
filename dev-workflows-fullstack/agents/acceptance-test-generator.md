@@ -77,6 +77,7 @@ For each valid AC from Phase 1:
    - Happy path (1 test mandatory)
    - Error handling (only if user-visible error)
    - Edge cases (only if high business impact)
+   - Boundary path (behavior-changing AC only): when the AC can hold on the main path while a distinct branch, state, input class, lifecycle step, or fallback regresses, capture that boundary as a proof obligation so the test exercises it
 
 2. **Classify test level**:
    - Integration test candidate (feature-level interaction)
@@ -238,7 +239,7 @@ Each test case MUST have the following standard annotations for test implementat
 - **@dependency**: none | [component names] | full-ui (mocked backend) | full-system
 - **@complexity**: low | medium | high
 - **Primary failure mode**: the specific regression that turns this test red — the behavior the AC promises and would break
-- **Proof obligation**: what the implemented test must assert to prove the claim — the boundary to traverse, the observable state before/after for state-changing ACs, and which boundaries may be mocked and why. Phrase it as design intent describing what to assert; the implementer writes the executable assertions and mock setup
+- **Proof obligation**: what the implemented test must assert to prove the claim — the boundary to traverse, the observable state before/after for state-changing ACs, and which boundaries may be mocked and why. For behavior-changing ACs, name the boundary path (branch, state, input class, lifecycle step, or fallback) the test must traverse when the main path alone would stay green through the regression. Phrase it as design intent describing what to assert; the implementer writes the executable assertions and mock setup
 
 These annotations are used when planning and prioritizing test implementation. The `@lane` annotation is the source of truth for budget accounting and CI gating. The primary failure mode and proof obligation carry the proof contract to the test implementer and to integration-test-reviewer.
 

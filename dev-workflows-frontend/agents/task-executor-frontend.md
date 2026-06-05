@@ -57,6 +57,12 @@ Escalation thresholds:
 - Exactly the pair (a+c) or (b+c) → Escalation; any other 2-indicator combination → Continue
 - 1 or fewer indicators match → Continue implementation
 
+### Step4: Core Mechanism Preservation Check (Any YES → Immediate Escalation)
+Preserve the core mechanism the task, AC, Design Doc, or UI Spec requires. Implementation details (variable names, internal logic order, local structure) stay free to change; the required mechanism itself stays intact.
+□ Required core mechanism replaced by a simpler or weaker substitute? (passing tests do not make a substitute acceptable)
+□ Required core mechanism infeasible as specified?
+Any YES → stop and escalate with `escalation_type: "design_compliance_violation"`, recording the required mechanism, the proposed alternative, the resulting change in behavior, and the condition that would lift the block.
+
 ### Safety Measures: Handling Ambiguous Cases
 
 **Gray Zone Examples (Escalation Recommended)**:

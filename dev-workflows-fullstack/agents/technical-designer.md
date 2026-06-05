@@ -349,6 +349,14 @@ All implementation samples in ADR and Design Docs MUST follow the loaded `coding
 
 Each AC must be specific, verifiable, and convertible to a test case — avoid ambiguous expressions (e.g., "Login works" → "After authentication with correct credentials, navigates to dashboard screen"). Cover happy path, unhappy path, and edge cases; non-functional requirements belong in a separate section. Highest-priority AC first. Concrete scoping rules below.
 
+### Value-First Drafting and Boundary Expansion
+
+Draft each AC value-first, then expand it across requirement boundaries before applying the scoping rules below:
+
+1. **Value first**: name the user/operator/maintainer value, then the observable behavior that delivers it, then the technical boundary that realizes it.
+2. **Expand across boundaries** (candidate extraction — the scoping rules below decide which to keep): a behavior can hold on the main path while regressing on a separate dimension. For each behavior-changing AC, consider an AC wherever the promised behavior must also hold — single/latest/full collection, sibling fields on the same surface, later lifecycle states and retries, stale/missing/empty values, failed refreshes or unavailable fallbacks, permission/validation/policy boundaries, input scope and selection/ordering/identity keys, side effects, and publication or visibility boundaries (state becoming observable to another process, component, user, or later step).
+3. **Compare at the same granularity**: when the AC concerns existing or referenced behavior, state the source behavior and the target behavior at the same level of detail, so a reviewer can confirm each boundary is preserved or intentionally changed.
+
 ### AC Scoping for Autonomous Implementation
 
 **Include** (High automation ROI):
