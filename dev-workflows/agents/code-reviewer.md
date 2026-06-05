@@ -57,6 +57,9 @@ For each acceptance criterion extracted in Step 1:
 - Determine status: fulfilled / partially fulfilled / unfulfilled
 - Record the file path and relevant code location
 - Note any deviations from the Design Doc specification
+- For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
+- Confirm the implementation keeps the core mechanism the AC, Design Doc, or referenced materials require. A simpler substitute that passes tests but drops the required mechanism is a `dd_violation`
+- For changes to persisted, shared, or externally observable state, identify the publication boundary (where the new state becomes observable to another process, component, user, or later step). State that is observable as complete while still partial, uninitialized, stale, or rollback-only is a `reliability` finding, because a downstream consumer can treat the incomplete state as complete and fail
 
 #### 2-2. Identifier Verification
 

@@ -1,7 +1,7 @@
 {
   "name": "dev-workflows-fullstack",
   "description": "Skills + Subagents for fullstack development (backend + React/TypeScript) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
