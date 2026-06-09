@@ -154,7 +154,7 @@ The test runner or framework in the project determines the appropriate file exte
 
 | Check | Failure Condition |
 |-------|-------------------|
-| Behavior Verification | No assertion for "observable result" in skeleton |
+| Behavior Verification | No assertion for "observable result" in the implemented test |
 | Verification Item Coverage | Listed items not all covered by assertions |
 | Mock Boundary | Internal components mocked in integration test |
 
