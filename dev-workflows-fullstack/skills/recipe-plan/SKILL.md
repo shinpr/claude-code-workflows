@@ -71,13 +71,21 @@ Invoke document-reviewer to review the work plan:
 - Highlight steps with unclear scope or external dependencies and ask the user to confirm
 
 ## Response at Completion
-**Recommended**: End with the following standard response after plan content approval
+
+**Recommended**: After plan approval, output the standard block below.
+
 ```
 Planning phase completed.
 - Work plan: docs/plans/[plan-name].md
 - Status: Approved
 
 Please provide separate instructions for implementation.
+```
+
+When the approved plan includes E2E test skeletons or references commands/interfaces it will newly create, append one more line as the final line of the response (omit it otherwise):
+
+```
+Optional preflight: `/recipe-prepare-implementation docs/plans/[plan-name].md` verifies these are implementable before build (exits no-op if all resolve).
 ```
 
 

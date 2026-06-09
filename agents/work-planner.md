@@ -155,8 +155,6 @@ For each task, derive completion criteria from Design Doc acceptance criteria. A
 ### 7. Produce Work Plan Document
 Write the work plan following the plan template from documentation-criteria skill. Include Phase Structure Diagram and Task Dependency Diagram (mermaid).
 
-The plan header MUST include the line `Implementation Readiness: pending`. The marker contract: it takes one of three values — `pending` (initial, set here by work-planner), `ready` (verification completed with no remaining gaps), or `escalated` (verification completed with remaining gaps). The producer that promotes the marker beyond `pending` and the consumer that reads it before execution are external orchestration concerns owned outside this agent.
-
 ## Input Parameters
 
 - **mode**: `create` (default) | `update`

@@ -20,29 +20,20 @@ Work plan: $ARGUMENTS
 
 ## Pre-execution Prerequisites
 
-### Implementation Readiness Check
+### Work Plan Resolution
 
-Before any task processing, locate the work plan to gate against. Resolution rule:
+Before any task processing, locate the work plan. Resolution rule:
 1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md`. Layer-aware fullstack tasks (`{plan-name}-backend-task-*.md` / `{plan-name}-frontend-task-*.md`) are excluded here so a stale fullstack run does not redirect this recipe to the wrong work plan
 2. From the matched files, also exclude every file matching any of these patterns — they originate from other workflow phases and are not implementation tasks for this run's plan: `*-task-prep-*.md` (readiness preflight tasks), `_overview-*.md` (decomposition overview file), `*-phase*-completion.md` (per-phase completion files), `review-fixes-*.md` (post-implementation review fixes), `integration-tests-*-task-*.md` (integration-test add-on scaffolding)
 3. For each remaining file, extract the `{plan-name}` prefix as the segment that appears before `-task-`
 4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
 5. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
 
-Read the work plan header and find the line `Implementation Readiness: <status>`. Apply this rule:
-
-| Status | Action |
-|--------|--------|
-| `ready` | Proceed to Consumed Task Set computation |
-| `escalated` | Read the work plan's Readiness Report section, surface remaining gaps to the user via AskUserQuestion: "Implementation Readiness is `escalated` with the following remaining gaps: [list]. Continue execution? (y/n)". On `y` proceed; on `n` stop |
-| `pending` | Present via AskUserQuestion: "Implementation Readiness is `pending`. To verify the work plan is implementable, run `/recipe-prepare-implementation [plan-path]` first, then resume. That recipe is provided by the dev-workflows plugin — when only this frontend plugin is installed, install dev-workflows to use it, or continue without preflight. Continue without preflight? (y/n)". On `y` proceed; on `n` stop |
-| absent (line missing) | Treat as `pending` — older work plans created before the readiness marker existed should be preflighted explicitly |
-
 ### Consumed Task Set
 
-Compute the **Consumed Task Set** for this run — the exact files this recipe owns, executes, and later deletes. Use the same restricted pattern as the Implementation Readiness Check:
+Compute the **Consumed Task Set** for this run — the exact files this recipe owns, executes, and later deletes. Use the same restricted pattern as Work Plan Resolution:
 
-1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md` for the `{plan-name}` resolved by the readiness check. Layer-aware fullstack tasks are excluded
+1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md` for the `{plan-name}` resolved by Work Plan Resolution. Layer-aware fullstack tasks are excluded
 2. Exclude every file matching: `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md` (these originate from other workflow phases)
 
 Every subsequent reference to "task files" in this recipe — Task Generation Decision Flow, Task Execution Cycle iteration, and Final Cleanup — uses this set, not the unrestricted `docs/plans/tasks/*.md` glob.

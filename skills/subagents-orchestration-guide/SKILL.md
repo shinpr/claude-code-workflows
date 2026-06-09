@@ -226,7 +226,7 @@ Always start with requirement-analyzer, then select the minimum planning flow re
 
 External resource hearing runs in the orchestrator (it requires AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
 
-After the planning flow completes and the user grants batch approval, the work plan carries an `Implementation Readiness:` header (work-planner emits `pending`; promotion to `ready` or `escalated` is an external orchestration concern). External orchestration also decides when and how to act on this marker; this guide does not invoke any orchestrator above the agent layer.
+After the planning flow completes and the user grants batch approval, implementation proceeds. Verifying the plan is implementable end-to-end (verification lanes, fixtures, E2E environment) is an optional preflight the user runs at their discretion via the recipe-prepare-implementation recipe; this guide does not invoke any orchestrator above the agent layer.
 
 Then execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
 

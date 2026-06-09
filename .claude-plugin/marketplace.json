@@ -12,7 +12,7 @@
       "name": "dev-workflows",
       "source": "./dev-workflows",
       "strict": true,
-      "version": "0.20.3",
+      "version": "0.20.4",
       "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -81,7 +81,7 @@
       "name": "dev-workflows-frontend",
       "source": "./dev-workflows-frontend",
       "strict": true,
-      "version": "0.20.3",
+      "version": "0.20.4",
       "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -152,7 +152,7 @@
       "name": "dev-workflows-fullstack",
       "source": "./dev-workflows-fullstack",
       "strict": true,
-      "version": "0.20.3",
+      "version": "0.20.4",
       "description": "Skills + Subagents for fullstack development (backend + React/TypeScript) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -240,7 +240,7 @@
       "name": "dev-skills",
       "source": "./dev-skills",
       "strict": true,
-      "version": "0.20.3",
+      "version": "0.20.4",
       "description": "Lightweight skills for users with existing workflows - coding best practices, testing principles, and design guidelines without recipe workflows or agents",
       "author": {
         "name": "Shinsuke Kagawa",

@@ -13,7 +13,7 @@ disable-model-invocation: true
 **Execution Protocol**:
 1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
 2. **Self-contained scope**: When gaps are found, this recipe BOTH generates resolution tasks AND executes them through the standard 4-step cycle. Recipe completes only when readiness criteria pass or remaining gaps are escalated.
-3. **No-op exit**: When the readiness scan finds no failing criteria, generate no resolution tasks and exit immediately. The only file modifications in this branch are to the work plan itself — promoting the `Implementation Readiness:` header to `ready` and persisting the Readiness Report section. No code or test files are touched.
+3. **No-op exit**: When the readiness scan finds no failing criteria, generate no resolution tasks and exit immediately, presenting the Readiness Report to the user. No files are modified in this branch.
 
 Work plan: $ARGUMENTS
 
@@ -76,11 +76,9 @@ Build the Readiness Report (see Output Format) regardless of outcome.
 ### Step 3: No-op Check
 
 When every applicable criterion is `pass` (zero `fail`):
-- Append (or replace, if already present) a `## Implementation Readiness Report` section in the work plan immediately after the header block, using the same Readiness Report markdown defined in Output Format below
-- Update the work plan header `Implementation Readiness:` line to `ready` (insert it after `Related Issue/PR:` if absent)
-- Present the Readiness Report to the user
+- Present the Readiness Report (see Output Format below) to the user
 - Exit with `outcome: ready, gaps_resolved: 0`
-- The work plan modifications above are the only file modifications in this branch
+- No files are modified in this branch
 
 When one or more criteria are `fail` → proceed to Step 4.
 
@@ -116,24 +114,15 @@ For each resolution task, run the standard 4-step cycle (see subagents-orchestra
 
 Append the Scope Boundary block (below) to every subagent prompt.
 
-### Step 6: Re-scan, Persist Readiness Report, Update Header, Cleanup, Exit
+### Step 6: Re-scan, Present Readiness Report, Cleanup, Exit
 
 1. **Re-scan**: Re-run the Step 2 readiness scan after all resolution tasks are committed.
 
-2. **Persist Readiness Report into work plan body**: Append (or replace, if already present) a `## Implementation Readiness Report` section in the work plan immediately after the header block. Use the same Readiness Report markdown defined in Output Format below. Downstream recipe-*-build / recipe-*-implement read this section when the header is `escalated` to surface remaining gaps to the user.
+2. **Present Readiness Report**: Present the Readiness Report (see Output Format below) to the user. The report is shown in-session and is not written into the work plan — the durable output of this recipe is the committed Phase 0 resolution tasks, not a persisted report.
 
-3. **Update work plan header**: Locate the line `Implementation Readiness: pending` in the work plan and rewrite it based on the re-scan outcome:
+3. **Final Cleanup**: Delete every prep task file this recipe created for the current `{plan-name}` (`docs/plans/tasks/{plan-name}-backend-task-prep-*.md` and `docs/plans/tasks/{plan-name}-frontend-task-prep-*.md`) AND the phase-completion file generated for prep phases (`docs/plans/tasks/{plan-name}-phase0-completion.md` when present, since prep tasks live in Phase 0). Prep task files for other plans are out of scope — this recipe deletes only what it created for the current run. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs. The work plan itself is preserved for the downstream recipe-*-build / recipe-*-implement.
 
-   | Re-scan result | New header value |
-   |----------------|------------------|
-   | All applicable criteria `pass` | `Implementation Readiness: ready` |
-   | One or more `fail` remain | `Implementation Readiness: escalated` |
-
-   If the line is absent (older work plan format), insert it after the `Related Issue/PR:` line.
-
-4. **Final Cleanup**: Delete every prep task file this recipe created for the current `{plan-name}` (`docs/plans/tasks/{plan-name}-backend-task-prep-*.md` and `docs/plans/tasks/{plan-name}-frontend-task-prep-*.md`) AND the phase-completion file generated for prep phases (`docs/plans/tasks/{plan-name}-phase0-completion.md` when present, since prep tasks live in Phase 0). Prep task files for other plans are out of scope — this recipe deletes only what it created for the current run. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs. The work plan itself is preserved for the downstream recipe-*-build / recipe-*-implement.
-
-5. **Exit**:
+4. **Exit**:
 
    | Re-scan result | Action |
    |----------------|--------|
@@ -186,7 +175,5 @@ Gaps resolved: [N]
 - [ ] Readiness scan run with per-criterion result and evidence recorded
 - [ ] No-op exit when all `pass`, OR resolution tasks generated, approved, and executed via the 4-step cycle
 - [ ] Re-scan run after the last resolution task commits
-- [ ] `## Implementation Readiness Report` section persisted into the work plan body
-- [ ] Work plan header `Implementation Readiness:` line updated to `ready` or `escalated`
 - [ ] Prep task files (and Phase 0 phase-completion file when generated) deleted from `docs/plans/tasks/`
 - [ ] Final report presented to the user

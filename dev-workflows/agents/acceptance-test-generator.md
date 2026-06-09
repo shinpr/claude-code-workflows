@@ -160,23 +160,22 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown, lane, dependency, complexity, verification points, expected results, pass criteria, primary failure mode, and proof obligation.
 
+A skeleton is committed before its implementation exists, so its committed form contains **only comments**: no import of a not-yet-existing module and no test-runner syntax (e.g. `describe`/`it`) that the project's static gates evaluate. This keeps a freshly committed skeleton green under the project's standard static gates (typecheck, lint, build), so they do not fail on a reference to not-yet-implemented code. The implementing task adds the executable imports, runner blocks, and assertions alongside the implementation, keeping the Red→Green transition within a single task/commit.
+
 ```
 // [Feature Name] [integration|fixture-e2e|service-integration-e2e] Test - Design Doc: [filename]
 // Generated: [date] | Budget Used: [integration], [fixture-e2e], [service-e2e]
-
-[Import statement using detected test framework]
-
-[Test suite using detected framework syntax]
-  // AC1: "After successful payment, order is created and persisted"
-  // ROI: 98 (BV:10 × Freq:9 + Legal:0 + Defect:8)
-  // Behavior: User completes payment → Order created in DB + Payment recorded
-  // @category: core-functionality
-  // @lane: integration
-  // @dependency: PaymentService, OrderRepository, Database
-  // @complexity: high
-  // Primary failure mode: payment succeeds but the order row is absent or unpersisted
-  // Proof obligation: the order is persisted only after a successful payment; the external payment gateway is the only boundary that may be mocked
-  [Test skeleton: verification points, expected results, pass criteria]
+//
+// AC1: "After successful payment, order is created and persisted"
+// ROI: 98 (BV:10 × Freq:9 + Legal:0 + Defect:8)
+// Behavior: User completes payment → Order created in DB + Payment recorded
+// @category: core-functionality
+// @lane: integration
+// @dependency: PaymentService, OrderRepository, Database
+// @complexity: high
+// Primary failure mode: payment succeeds but the order row is absent or unpersisted
+// Proof obligation: the order is persisted only after a successful payment; the external payment gateway is the only boundary that may be mocked
+// Verification points / expected results / pass criteria: [enumerate the observable checks the implemented test must assert]
 ```
 
 ### Generation Report

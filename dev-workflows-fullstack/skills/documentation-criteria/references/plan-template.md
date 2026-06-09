@@ -6,7 +6,6 @@ Estimated Duration: X days
 Estimated Impact: X files
 Related Issue/PR: #XXX (if any)
 Review Scope: [planned-files scope derived from Design Doc and task targets; for a revision plan over existing work, base branch + diff range]
-Implementation Readiness: pending
 
 ## Related Documents
 - Design Doc(s):

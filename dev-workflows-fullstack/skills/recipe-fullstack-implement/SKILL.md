@@ -88,17 +88,6 @@ When user responds to questions:
 - Run quality-fixer (layer-appropriate) before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
-### Implementation Readiness Check (between work-planner approval and task-decomposer)
-
-After work-planner completes and the user grants batch approval, before invoking task-decomposer, read the work plan header and find the line `Implementation Readiness: <status>`. Apply this rule:
-
-| Status | Action |
-|--------|--------|
-| `ready` | Proceed to task-decomposer |
-| `escalated` | Read the work plan's Readiness Report section, surface remaining gaps to the user via AskUserQuestion: "Implementation Readiness is `escalated` with the following remaining gaps: [list]. Continue execution? (y/n)". On `y` proceed; on `n` stop |
-| `pending` | Present via AskUserQuestion: "Implementation Readiness is `pending`. Run `/recipe-prepare-implementation [plan-path]` first to verify the work plan is implementable, then resume. Continue without preflight? (y/n)". On `y` proceed; on `n` stop |
-| absent (line missing) | Treat as `pending` — older work plans created before the readiness marker existed should be preflighted explicitly |
-
 ## Scope Boundary for Subagents
 
 Append the following block to every subagent prompt invoked from this recipe:

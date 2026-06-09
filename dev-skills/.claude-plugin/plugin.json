@@ -1,7 +1,7 @@
 {
   "name": "dev-skills",
   "description": "Lightweight skills for users with existing workflows - coding best practices, testing principles, and design guidelines without recipe workflows or agents",
-  "version": "0.20.3",
+  "version": "0.20.4",
   "author": {
     "name": "Shinsuke Kagawa",
     "url": "https://github.com/shinpr"
