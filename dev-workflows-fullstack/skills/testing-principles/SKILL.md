@@ -33,12 +33,11 @@ description: Language-agnostic testing principles including TDD, test quality, c
 
 ## Quality Requirements
 
-### Coverage Standards
+### Coverage
 
-- **Minimum 80% code coverage** for production code
-- Prioritize critical paths and business logic
-- Prioritize meaningful assertions over coverage percentage
-- Use coverage as a guide, not a goal
+- Treat coverage as a diagnostic signal for finding untested areas, not a target — a target gets gamed into trivial tests (Goodhart's Law)
+- Concentrate tests on critical paths, business logic, and behavior whose regression would matter
+- Prioritize meaningful assertions over the coverage number; any CI threshold is the project's config, not a quality goal in itself
 
 ### Test Characteristics
 
