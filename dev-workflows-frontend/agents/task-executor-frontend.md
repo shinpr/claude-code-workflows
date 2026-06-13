@@ -139,6 +139,14 @@ This gate triggers only when the Investigation Targets section lists at least on
 #### Pre-implementation Verification (Duplication Check — Pattern 5 from frontend-ai-guide)
 Read relevant Design Doc sections accurately; investigate existing implementations (similar components/hooks in same domain/responsibility); determine continue/escalation per "Mandatory Judgment Criteria" above.
 
+#### Adjacent Case Sweep (Required when the task file has a `Change Category` field set to one or more of `bug-fix`, `regression`, `state-change`, `boundary-change`)
+
+Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task decomposition wrote — read the field value and treat it as authoritative for whether the sweep applies.
+
+1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
+2. Check each for the same class of defect this task corrects.
+3. Fold adjacent residuals within the Target Files scope into this task's failing tests and implementation. Record any residual outside scope in the task file's Investigation Notes so downstream review (code-reviewer / verifier) can detect it.
+
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
 Runs after Pre-implementation Verification, before the TDD cycle.
@@ -209,18 +217,8 @@ Report in the following JSON format upon task completion (**without executing qu
   "testsAdded": ["src/components/Button/Button.test.tsx"],
   "requiresTestReview": false,
   "newTestsPassed": true,
-  "progressUpdated": {
-    "taskFile": "5/8 items completed",
-    "workPlan": "Relevant sections updated",
-    "designDoc": "Progress section updated or N/A"
-  },
-  "runnableCheck": {
-    "level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test",
-    "executed": true,
-    "command": "test -- Button.test.tsx",
-    "result": "passed / failed / skipped",
-    "reason": "Test execution reason/verification content"
-  },
+  "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
+  "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
   "readyForQualityCheck": true,
   "nextActions": "Overall quality verification by quality assurance process"
 }
@@ -235,19 +233,10 @@ Report in the following JSON format upon task completion (**without executing qu
   "status": "escalation_needed",
   "reason": "Design Doc deviation",
   "taskName": "[Task name being executed]",
-  "details": {
-    "design_doc_expectation": "[Exact quote from relevant Design Doc section]",
-    "actual_situation": "[Details of situation actually encountered]",
-    "why_cannot_implement": "[Technical reason why cannot implement per Design Doc]",
-    "attempted_approaches": ["List of solution methods considered for trial"]
-  },
+  "details": {"design_doc_expectation": "[Exact quote from relevant Design Doc section]", "actual_situation": "[Details of situation actually encountered]", "why_cannot_implement": "[Technical reason why cannot implement per Design Doc]", "attempted_approaches": ["List of solution methods considered for trial"]},
   "escalation_type": "design_compliance_violation",
   "user_decision_required": true,
-  "suggested_options": [
-    "Modify Design Doc to match reality",
-    "Implement missing components first",
-    "Reconsider requirements and change implementation approach"
-  ],
+  "suggested_options": ["Modify Design Doc to match reality", "Implement missing components first", "Reconsider requirements and change implementation approach"],
   "claude_recommendation": "[Specific proposal for most appropriate solution direction]"
 }
 ```
@@ -260,27 +249,12 @@ Report in the following JSON format upon task completion (**without executing qu
   "reason": "Similar component/hook discovered",
   "taskName": "[Task name being executed]",
   "similar_components": [
-    {
-      "file_path": "src/components/ExistingButton/ExistingButton.tsx",
-      "component_name": "ExistingButton",
-      "similarity_reason": "Same UI pattern, same Props structure",
-      "code_snippet": "[Excerpt of relevant component code]",
-      "technical_debt_assessment": "high/medium/low/unknown"
-    }
+    {"file_path": "src/components/ExistingButton/ExistingButton.tsx", "component_name": "ExistingButton", "similarity_reason": "Same UI pattern, same Props structure", "code_snippet": "[Excerpt of relevant component code]", "technical_debt_assessment": "high/medium/low/unknown"}
   ],
-  "search_details": {
-    "keywords_used": ["component keywords", "feature keywords"],
-    "files_searched": 15,
-    "matches_found": 3
-  },
+  "search_details": {"keywords_used": ["component keywords", "feature keywords"], "files_searched": 15, "matches_found": 3},
   "escalation_type": "similar_component_found",
   "user_decision_required": true,
-  "suggested_options": [
-    "Extend and use existing component",
-    "Refactor existing component then use",
-    "New implementation as technical debt (create ADR)",
-    "New implementation (clarify differentiation from existing)"
-  ],
+  "suggested_options": ["Extend and use existing component", "Refactor existing component then use", "New implementation as technical debt (create ADR)", "New implementation (clarify differentiation from existing)"],
   "claude_recommendation": "[Recommended approach based on existing component analysis]"
 }
 ```
@@ -294,18 +268,10 @@ Report in the following JSON format upon task completion (**without executing qu
   "taskName": "[Task name being executed]",
   "escalation_type": "investigation_target_not_found",
   "missingTargets": [
-    {
-      "path": "[path specified in task file]",
-      "searchHint": "[section/function hint if provided, or null]",
-      "searchAttempts": ["Checked path directly", "Searched for similar filenames in same directory"]
-    }
+    {"path": "[path specified in task file]", "searchHint": "[section/function hint if provided, or null]", "searchAttempts": ["Checked path directly", "Searched for similar filenames in same directory"]}
   ],
   "user_decision_required": true,
-  "suggested_options": [
-    "Provide correct file path",
-    "Remove this Investigation Target and proceed",
-    "Update task file with current paths"
-  ]
+  "suggested_options": ["Provide correct file path", "Remove this Investigation Target and proceed", "Update task file with current paths"]
 }
 ```
 
@@ -319,18 +285,9 @@ Triggered when Reference Representativeness cannot determine the dominant librar
   "reason": "Dependency version uncertain",
   "taskName": "[Task name being executed]",
   "escalation_type": "dependency_version_uncertain",
-  "dependency": {
-    "name": "[library or pattern concern, e.g., routing, server-state, forms]",
-    "candidatesFound": ["list of coexisting choices found in repository"],
-    "filesChecked": ["file paths where each choice was found"],
-    "ambiguityReason": "[why repository state alone is insufficient — e.g., multiple choices coexist with no clear majority for the changed feature area]"
-  },
+  "dependency": {"name": "[library or pattern concern, e.g., routing, server-state, forms]", "candidatesFound": ["list of coexisting choices found in repository"], "filesChecked": ["file paths where each choice was found"], "ambiguityReason": "[why repository state alone is insufficient — e.g., multiple choices coexist with no clear majority for the changed feature area]"},
   "user_decision_required": true,
-  "suggested_options": [
-    "Follow choice X (dominant in adjacent feature area)",
-    "Follow choice Y (matches a specific repository convention or constraint)",
-    "Defer the choice and split the task"
-  ]
+  "suggested_options": ["Follow choice X (dominant in adjacent feature area)", "Follow choice Y (matches a specific repository convention or constraint)", "Defer the choice and split the task"]
 }
 ```
 
@@ -342,17 +299,9 @@ Triggered when Reference Representativeness cannot determine the dominant librar
   "reason": "Out of scope file",
   "taskName": "[Task name being executed]",
   "escalation_type": "out_of_scope_file",
-  "details": {
-    "file_path": "[path attempted to modify]",
-    "allowed_list": ["[union of Target Files entries, task file, work plan, Provides paths]"],
-    "modification_reason": "[why modification was attempted]"
-  },
+  "details": {"file_path": "[path attempted to modify]", "allowed_list": ["[union of Target Files entries, task file, work plan, Provides paths]"], "modification_reason": "[why modification was attempted]"},
   "user_decision_required": true,
-  "suggested_options": [
-    "Add this file to task Target files and retry",
-    "Split into a separate task for this file",
-    "Reconsider the implementation approach to stay within scope"
-  ]
+  "suggested_options": ["Add this file to task Target files and retry", "Split into a separate task for this file", "Reconsider the implementation approach to stay within scope"]
 }
 ```
 
@@ -369,21 +318,10 @@ Triggered by `N` at the pre-implementation check, or `N` or `Unknown` at the Exi
   "phase": "pre_implementation | exit_gate",
   "plannedApproach": "[1–2 sentence summary of the planned or actual implementation approach]",
   "failures": [
-    {
-      "source": "[ADR file path with section hint, copied from Source column]",
-      "axis": "[Axis value copied from the Axis column]",
-      "decision": "[Decision text, copied from Decision column]",
-      "complianceCheck": "[Compliance Check predicate, copied from Compliance Check column]",
-      "evaluation": "N | Unknown",
-      "rationale": "[One line explaining why the implementation does not satisfy the check, or why it cannot be evaluated]"
-    }
+    {"source": "[ADR file path with section hint, copied from Source column]", "axis": "[Axis value copied from the Axis column]", "decision": "[Decision text, copied from Decision column]", "complianceCheck": "[Compliance Check predicate, copied from Compliance Check column]", "evaluation": "N | Unknown", "rationale": "[One line explaining why the implementation does not satisfy the check, or why it cannot be evaluated]"}
   ],
   "user_decision_required": true,
-  "suggested_options": [
-    "Adjust the implementation plan to satisfy the binding decision",
-    "Update the ADR (then update the work plan's ADR Bindings and this task's Binding Decisions)",
-    "Provide additional context that resolves the Unknown evaluation"
-  ]
+  "suggested_options": ["Adjust the implementation plan to satisfy the binding decision", "Update the ADR (then update the work plan's ADR Bindings and this task's Binding Decisions)", "Provide additional context that resolves the Unknown evaluation"]
 }
 ```
 

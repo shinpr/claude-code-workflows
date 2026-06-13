@@ -61,7 +61,8 @@ Check the upstream investigation's pathMap for completeness:
 
 1. **Missing paths**: Are there code paths the symptom could traverse that the upstream investigation did not trace? (e.g., error handling branches, async forks, fallback paths)
 2. **Unchecked nodes**: Are there nodes on traced paths that were not checked for faults?
-3. **Additional failure points**: If missing paths or unchecked nodes reveal new faults, record them
+3. **Adjacent cases**: When the investigation concerns a `bug-fix`, `regression`, `state-change`, or `boundary-change` (the debugging flow carries no Change Category field, so judge these from the investigation itself), are there cases sharing the same path, contract, persisted state, or external boundary that could carry the same fault? Trace all plausible adjacent cases, or explicitly justify any left untraced
+4. **Additional failure points**: If missing paths, unchecked nodes, or adjacent cases reveal new faults, record them
 
 The goal is to verify that the upstream investigation's path coverage is sufficient.
 
@@ -117,78 +118,33 @@ Evaluate each failure point independently (do NOT select a single "winner"):
     "identifiedGaps": ["Missing paths or unchecked nodes"]
   },
   "triangulationSupplements": [
-    {
-      "source": "Additional information source investigated",
-      "findings": "Content discovered",
-      "impactOnFailurePoints": "Impact on existing failure points"
-    }
+    {"source": "Additional information source investigated", "findings": "Content discovered", "impactOnFailurePoints": "Impact on existing failure points"}
   ],
   "externalResearch": [
-    {
-      "query": "Search query used",
-      "source": "Information source",
-      "findings": "Related information discovered",
-      "impactOnFailurePoints": "Impact on failure points"
-    }
+    {"query": "Search query used", "source": "Information source", "findings": "Related information discovered", "impactOnFailurePoints": "Impact on failure points"}
   ],
   "coverageCheck": {
     "missingPaths": ["Paths not traced by upstream investigation"],
     "uncheckedNodes": ["Nodes on traced paths that were not checked"],
     "additionalFailurePoints": [
-      {
-        "id": "AFP1",
-        "nodeId": "Node reference",
-        "symptomId": "Symptom reference",
-        "description": "Newly discovered fault",
-        "checkStatus": "supported|weakened|blocked|not_reached",
-        "evidence": [
-          {"type": "supporting", "detail": "Evidence detail", "source": "file:line"}
-        ]
-      }
+      {"id": "AFP1", "nodeId": "Node reference", "symptomId": "Symptom reference", "description": "Newly discovered fault", "checkStatus": "supported|weakened|blocked|not_reached", "evidence": [{"type": "supporting", "detail": "Evidence detail", "source": "file:line"}]}
     ]
   },
   "devilsAdvocateFindings": [
-    {
-      "targetFailurePoint": "FP1",
-      "alternativeExplanation": "Could this be correct behavior?",
-      "hiddenAssumptions": ["Implicit assumptions"],
-      "potentialCounterEvidence": ["Potentially overlooked counter-evidence"]
-    }
+    {"targetFailurePoint": "FP1", "alternativeExplanation": "Could this be correct behavior?", "hiddenAssumptions": ["Implicit assumptions"], "potentialCounterEvidence": ["Potentially overlooked counter-evidence"]}
   ],
   "failurePointEvaluation": [
-    {
-      "failurePointId": "FP1 or AFP1",
-      "description": "Failure point description",
-      "originalCheckStatus": "checkStatus from prior investigation input (null for items discovered during this verification)",
-      "finalStatus": "supported|weakened|blocked|not_reached",
-      "statusChangeReason": "Why status changed (if changed)",
-      "remainingUncertainty": ["Remaining uncertainty"]
-    }
+    {"failurePointId": "FP1 or AFP1", "description": "Failure point description", "originalCheckStatus": "checkStatus from prior investigation input (null for items discovered during this verification)", "finalStatus": "supported|weakened|blocked|not_reached", "statusChangeReason": "Why status changed (if changed)", "remainingUncertainty": ["Remaining uncertainty"]}
   ],
   "conclusion": {
     "confirmedFailurePoints": [
-      {
-        "failurePointId": "FP1",
-        "description": "What the fault is",
-        "location": "file:line",
-        "symptomId": "S1",
-        "symptomExplained": "How this fault leads to the observed symptom",
-        "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor",
-        "finalStatus": "supported|weakened",
-        "causalChain": ["Phenomenon", "→ Direct cause", "→ Root cause"],
-        "impactScope": ["Affected file paths"],
-        "recurrenceRisk": "low|medium|high"
-      }
+      {"failurePointId": "FP1", "description": "What the fault is", "location": "file:line", "symptomId": "S1", "symptomExplained": "How this fault leads to the observed symptom", "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor", "finalStatus": "supported|weakened", "causalChain": ["Phenomenon", "→ Direct cause", "→ Root cause"], "impactScope": ["Affected file paths"], "recurrenceRisk": "low|medium|high"}
     ],
     "refutedFailurePoints": [
       {"failurePointId": "FP2", "reason": "Reason for refutation"}
     ],
     "failurePointRelationships": [
-      {
-        "points": ["FP1", "FP3"],
-        "relationship": "independent|dependent|same_chain",
-        "detail": "Description of how the failure points relate"
-      }
+      {"points": ["FP1", "FP3"], "relationship": "independent|dependent|same_chain", "detail": "Description of how the failure points relate"}
     ],
     "coverageAssessment": "sufficient|partial|insufficient",
     "unresolvedSymptoms": ["Symptoms not fully explained by confirmed failure points"],
