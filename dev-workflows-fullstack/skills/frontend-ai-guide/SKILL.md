@@ -141,7 +141,8 @@ To isolate problems, attempt reproduction with minimal code:
 - Create minimal configuration that reproduces problem
 - Use React DevTools to inspect component tree
 
-### 4. Debug Log Output
+### 4. Debug Log Output (temporary)
+Add structured debug logs to isolate the issue, then remove them before commit (per "Delete debug `console.log()`" in typescript-rules):
 ```typescript
 console.log('DEBUG:', {
   context: 'user-form-submission',
@@ -153,38 +154,19 @@ console.log('DEBUG:', {
 
 ## Quality Check Workflow
 
-Use the appropriate run command based on the `packageManager` field in package.json.
+Read `package.json` scripts and run them with the project's package manager (`packageManager` field). Map the project's actual script names to the phases below — do not assume fixed names.
 
-### Build Commands
-- `dev` - Development server
-- `build` - Production build
-- `preview` - Preview production build
-- `type-check` - Type check (no emit)
-
-### Quality Check Phases
-
-**Phase 1-3: Basic Checks**
-- `check` - Biome (lint + format)
-- `build` - TypeScript build
-
-**Phase 4-5: Tests and Final Confirmation**
-- `test` - Test execution
-- `test:coverage:fresh` - Coverage measurement (fresh cache)
-- `check:all` - Overall integrated check
-
-### Auxiliary Commands
-- `test:coverage` - Run tests with coverage
-- `test:safe` - Safe test execution (with auto cleanup)
-- `cleanup:processes` - Cleanup Vitest processes
-- `format` - Format fixes
-- `lint:fix` - Lint fixes
-- `open coverage/index.html` - Check coverage report
+### Phases (run in order)
+1. **Lint/format** — the project's formatter + linter (e.g., Biome, or ESLint + Prettier)
+2. **Type check** — type check without emit
+3. **Build** — production build
+4. **Test** — unit/integration tests
+5. **Coverage** — coverage run when the task added or changed behavior
 
 ### Troubleshooting
-- **Port in use error**: Run `cleanup:processes` script
-- **Cache issues**: Run `test:coverage:fresh` script
-- **Dependency errors**: Clean reinstall dependencies
-- **Vite preview not starting**: Check port 4173 availability
+- **Port already in use** — stop the stale dev/preview/test process holding the port
+- **Stale cache** — re-run with the project's fresh/clean-cache option
+- **Dependency errors** — clean reinstall dependencies
 
 ## Situations Requiring Technical Decisions
 
@@ -196,6 +178,7 @@ Use the appropriate run command based on the `packageManager` field in package.j
 ### Performance vs Readability
 - Prioritize readability unless React DevTools Profiler identifies a measurable bottleneck (e.g., render time exceeding 16ms, unnecessary re-renders)
 - Measure before optimizing with React DevTools Profiler
+- When React Compiler is enabled, routine memoization is automatic; manual memoization is a profiler- or identity-justified exception (measured bottleneck, or stable reference identity for third-party APIs / effect dependencies)
 - Document reason with comments when optimizing
 
 ### Granularity of Component/Type Definitions

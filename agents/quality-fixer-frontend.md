@@ -102,7 +102,7 @@ Return one of the following as the final response (see Output Format for schemas
 Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. Route any new library/pattern decision through the `blocked` output (`reason: "Cannot determine due to unclear specification"`).
 
 ### Testing Quality
-- **Test Coverage**: 60% baseline; foundational/leaf components (Atomic Design atoms, or reused-across-features components) target 70%, molecules 65%, organisms 60%
+- **Test Coverage**: concentrate rigor on foundational/high-reuse units (shared components, hooks, utils); treat coverage as a signal for gaps, not a target. Enforce the project's configured threshold when one exists
 - **Mock layering**: Use the repository's existing network/API mocking layer for network behavior; browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
 - **Query selection**: Prefer role/name queries for user-visible elements; use async queries (`findBy*`, `waitFor`) for async appearance and `queryBy*`/`queryAllBy*` only when asserting intentional absence
 

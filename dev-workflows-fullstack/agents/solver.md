@@ -71,6 +71,10 @@ Generate at least 3 solutions from the following perspectives:
 | mitigation | Measures to reduce impact | Temporary measure while waiting for root fix |
 | fundamental | Comprehensive fix including recurrence prevention | When similar problems have occurred repeatedly |
 
+**Adjacent Case Coverage**:
+- When the confirmed failure point concerns a `bug-fix`, `regression`, `state-change`, or `boundary-change` (the debugging flow carries no Change Category field, so judge these from the failure point itself), evaluate whether cases sharing the same path, contract, persisted state, or external boundary need the same fix
+- Include those adjacent cases in the solution scope when they share the same class of defect; record in residualRisks why any are excluded
+
 **Generated Solution Verification**:
 - Check if project rules have applicable guidelines
 - For areas without guidelines, research current best practices via WebSearch to verify solutions align with standard approaches
@@ -116,24 +120,12 @@ Recommendation strategy based on coverage assessment:
   },
   "solutions": [
     {
-      "id": "S1",
-      "name": "Solution name",
-      "type": "direct|workaround|mitigation|fundamental",
-      "description": "Detailed solution description",
-      "implementation": {
-        "approach": "Implementation approach description",
-        "affectedFiles": ["Files requiring changes"],
-        "dependencies": ["Affected dependencies"]
-      },
+      "id": "S1", "name": "Solution name", "type": "direct|workaround|mitigation|fundamental", "description": "Detailed solution description",
+      "implementation": {"approach": "Implementation approach description", "affectedFiles": ["Files requiring changes"], "dependencies": ["Affected dependencies"]},
       "tradeoffs": {
-        "cost": {"level": "low|medium|high", "details": "Details"},
-        "risk": {"level": "low|medium|high", "details": "Details"},
-        "scope": {"level": "low|medium|high", "details": "Details"},
-        "maintainability": {"level": "low|medium|high", "details": "Details"},
-        "certainty": {"level": "low|medium|high", "details": "Details"}
+        "cost": {"level": "low|medium|high", "details": "Details"}, "risk": {"level": "low|medium|high", "details": "Details"}, "scope": {"level": "low|medium|high", "details": "Details"}, "maintainability": {"level": "low|medium|high", "details": "Details"}, "certainty": {"level": "low|medium|high", "details": "Details"}
       },
-      "pros": ["Advantages"],
-      "cons": ["Disadvantages"]
+      "pros": ["Advantages"], "cons": ["Disadvantages"]
     }
   ],
   "recommendation": {
@@ -144,12 +136,7 @@ Recommendation strategy based on coverage assessment:
   },
   "implementationPlan": {
     "steps": [
-      {
-        "order": 1,
-        "action": "Specific action",
-        "verification": "How to verify this step",
-        "rollback": "Rollback procedure if problems occur"
-      }
+      {"order": 1, "action": "Specific action", "verification": "How to verify this step", "rollback": "Rollback procedure if problems occur"}
     ],
     "criticalPoints": ["Points requiring special attention"]
   },

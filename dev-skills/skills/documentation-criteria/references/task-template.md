@@ -17,6 +17,13 @@ Metadata:
 Files to read before starting implementation (file path, with optional search hint):
 - [e.g., src/orders/checkout (processOrder function) — determined during task decomposition based on task nature]
 
+## Change Category
+(Include this field only when the task is a bug fix, regression, state-change, or boundary-change — populated during task decomposition. Omit otherwise.)
+
+`Change Category: <one or more of bug-fix, regression, state-change, boundary-change — comma-separated>`
+
+When present, the implementation sweeps the cases sharing the same path, contract, persisted state, or external boundary for the same class of defect (see Implementation Steps Red Phase).
+
 ## Binding Decisions
 (Include this section when the work plan's ADR Bindings table covers this task. Omit otherwise.)
 
@@ -32,6 +39,7 @@ Each row is an ADR decision the implementation in this task must comply with.
 ## Implementation Steps (TDD: Red-Green-Refactor)
 ### 1. Red Phase
 - [ ] Read all Investigation Targets and record key observations
+- [ ] (When Change Category is set) Sweep the adjacent cases sharing the same path/contract/state/boundary for the same class of defect; fold any found within scope into the failing tests
 - [ ] Review dependency deliverables (if any)
 - [ ] Verify/create contract definitions
 - [ ] Write failing tests

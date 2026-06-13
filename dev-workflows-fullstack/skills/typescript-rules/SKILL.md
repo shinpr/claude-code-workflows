@@ -65,6 +65,11 @@ function isUser(value: unknown): value is User {
 - **Component Hierarchy**: Use the project's adopted component architecture. When the project uses Atomic Design: Atoms → Molecules → Organisms → Templates → Pages. When the project uses Feature-based, Container-Presenter, or another structure: follow that structure consistently and document the chosen layering in the project README or design doc
 - **Co-location**: Place tests, styles, and related files alongside components
 
+**Server/Client Boundary (RSC frameworks only — e.g., Next.js App Router)**
+- Default to server components for data fetching and rendering; isolate interactivity behind a `"use client"` boundary at the smallest scope that needs it
+- Keep browser-only APIs (`window`, `localStorage`, event handlers) inside client components; calling them in a server component breaks the render
+- N/A for client-only SPAs (e.g., Vite) — skip when the project has no server-component runtime
+
 **State Management Patterns**
 - **Local State**: `useState` for component-specific state
 - **Context API**: For sharing state across component tree (theme, auth, etc.)
@@ -93,15 +98,17 @@ setUsers(prev => [...prev, newUser])
 - Type-safe: Always define Props type explicitly
 
 **Environment Variables**
-- **Use build tool's environment variable system**: `process.env` does not work in browsers
-- Centrally manage environment variables through configuration layer
-- Define a typed config object with defaults for every environment variable
+- **Use the build tool's env accessor**: read client-side env through the bundler's exposed accessor — Vite via `import.meta.env`, Next.js/CRA via prefixed `process.env`. Raw, unprefixed access is `undefined` in the browser bundle
+- **Only prefixed vars reach the client**: build tools expose only vars carrying their public prefix; an unprefixed var is `undefined` in the browser. The prefix differs per tool — match the project's bundler (Vite `VITE_`, Next.js public `NEXT_PUBLIC_`, CRA `REACT_APP_`)
+- Centrally manage env through a typed config object with a default for every variable
 
 ```typescript
-// Use import.meta.env (not process.env — unavailable in browser bundles)
+// Client-exposed env must carry the bundler's public prefix, or it is undefined in the browser.
+// Vite:    import.meta.env.VITE_API_URL
+// Next.js: process.env.NEXT_PUBLIC_API_URL
 const config = {
-  apiUrl: import.meta.env.API_URL || 'http://localhost:3000',
-  appName: import.meta.env.APP_NAME || 'My App'
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000', // adjust accessor + prefix to the project's bundler
+  appName: import.meta.env.VITE_APP_NAME || 'My App'
 }
 ```
 
@@ -123,6 +130,7 @@ const response = await fetch('/api/data') // Backend handles API key authenticat
 - Promise Handling: Always use `async/await`
 - Error Handling: Always handle with `try-catch` or Error Boundary
 - Type Definition: Explicitly define return value types (e.g., `Promise<Result>`)
+- Effect race/cleanup: guard `useEffect` data fetches against out-of-order responses and post-unmount state updates — abort or ignore stale results (`AbortController` or a mounted flag), or use a server-state library (React Query/SWR) that cancels and dedupes. `try-catch` alone does not cover this
 
 **Format Rules**
 - Semicolon omission (follow Biome settings)
@@ -195,10 +203,10 @@ Redact sensitive fields (password, token, apiKey, secret, creditCard) before log
 
 ## Performance Optimization
 
-- Component Memoization: Use React.memo for expensive components
+- Automatic memoization: when React Compiler is enabled, rely on it; reach for manual `React.memo`/`useMemo`/`useCallback` only as a profiler- or identity-justified escape hatch (a measured bottleneck, or stable reference identity for third-party APIs / effect dependencies)
 - State Optimization: Minimize re-renders with proper state structure
-- Lazy Loading: Use React.lazy and Suspense for code splitting
-- Bundle Size: Monitor with the `build` script and keep under 500KB
+- Lazy Loading: Use `React.lazy` and `Suspense` for code splitting
+- Bundle Size: Monitor via the build script against the project's budget
 
 ## Non-functional Requirements
 
