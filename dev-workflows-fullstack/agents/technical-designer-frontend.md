@@ -47,7 +47,6 @@ The subsections below are not parallel mandates; they form four serial gates. Co
 Each subsection below carries a `[Gate N — ...]` annotation in its heading. Subsections appear in Gate order (Gate 0 → 1 → 2 → 3); execute them in document order.
 
 ### Agreement Checklist [Gate 0 — Required]
-Must be performed at the beginning of Design Doc creation:
 
 1. **List agreements with user in bullet points**
    - Scope (which components/features to change)
@@ -64,7 +63,6 @@ Must be performed at the beginning of Design Doc creation:
 Fill the Design Doc's "External Resources Used" subsection (under Background and Context) per the external-resource-context skill (feature-tier protocol). When a UI Spec exists, inherit its External Resources Used table and expand it with Design-Doc-specific resources (API schema source, IaC source, etc.).
 
 ### Standards Identification [Gate 0 — Required]
-Must be performed before existing-state investigation:
 
 1. **Identify Project Standards**
    - Scan project configuration, rule files, UI Spec / UI analysis inputs, and existing frontend code patterns
@@ -86,7 +84,6 @@ Must be performed before existing-state investigation:
    - Deviations require documented rationale
 
 ### Existing Code Investigation [Gate 1 — Required]
-Must be performed before Design Doc creation:
 
 1. **Implementation File Path Verification**
    - First grasp overall structure with `Glob: src/**/*.tsx`
@@ -168,7 +165,6 @@ Execute the 5 steps below for each in-scope element, and record the result in th
    - For each rejected alternative, record 1-2 lines: what it was, why rejected. Include in the Design Doc to prevent re-proposal in subsequent iterations or by future agents.
 
 ### Implementation Approach Decision [Gate 2 — Required]
-Must be performed when creating Design Doc:
 
 1. **Approach Selection Criteria**
    - Execute Phase 1-4 of implementation-approach skill to select strategy
@@ -182,7 +178,6 @@ Must be performed when creating Design Doc:
    - Verification level for each task (L1/L2/L3 defined in implementation-approach skill)
 
 ### Common ADR Process [Gate 2 — Required]
-Perform before Design Doc creation:
 1. Identify common technical areas (component patterns, state management, error handling, accessibility, etc.)
 2. Search `docs/ADR/ADR-COMMON-*`, create if not found
 3. Include in Design Doc's "Prerequisite ADRs"
@@ -194,6 +189,9 @@ Define Props types and state management contracts between components (types, pre
 
 ### State Transitions [Gate 2 — Required when applicable]
 Document state definitions and transitions for stateful components (loading, error, success states).
+
+### Serialized Boundary Contract [Gate 2 — Required when a value crosses a serialized boundary]
+When a component emits or consumes a value through a **URL query, route param, form post, browser/session/local storage, generated config/artifact value, or any other encoded value another component, tool, or backend parses**, record it in the Design Doc's **Field Propagation Map**: the exact **Serialized Format** the producer emits and the **Consumer Parse Rule** (how the other side decodes/validates it). The producer and consumer must agree on the representation. Skip when no value crosses a serialized boundary.
 
 ## UI Spec Integration
 
@@ -222,7 +220,6 @@ For each integration boundary, define the contract:
 Confirm and document conflicts with existing components (naming conventions, prop patterns) at each integration point.
 
 ### Change Impact Map [Gate 3 — Required]
-Must be included when creating Design Doc:
 
 ```yaml
 Change Target: UserProfileCard component
@@ -300,34 +297,19 @@ When conversion is required, clearly specify wrapper implementation or migration
 - Follow respective templates (`template-en.md`)
 - For ADR, check existing numbers and use max+1, initial status is "Proposed"
 
-## ADR Responsibility Boundaries
+## Output Rules
 
-Include in ADR: Decisions, rationale, principled guidelines
-Exclude from ADR: Schedules, implementation procedures, specific code
-
-Implementation guidelines should only include principles (e.g., "Use custom hooks for logic reuse" ✓, "Implement in Phase 1" ✗)
-
-## Output Policy
-Execute file output immediately (considered approved at execution).
-
-## Scope Boundary
-
-Test derivation itself is a downstream agent responsibility.
-
-## Implementation Sample Standards Compliance
-
-All implementation samples in ADR and Design Docs MUST follow the loaded `typescript-rules` and `frontend-ai-guide` skills. Omit samples unless they clarify contracts or edge cases that prose cannot convey.
+- Execute file output immediately (considered approved at execution).
+- ADR includes decisions, rationale, and principled guidelines (e.g., "Use custom hooks for logic reuse" ✓, "Implement in Phase 1" ✗); it excludes schedules, implementation procedures, and specific code.
+- Test derivation is a downstream agent responsibility.
+- Implementation samples MUST follow the loaded `typescript-rules` and `frontend-ai-guide` skills; include a sample only when it clarifies a contract or edge case prose cannot convey.
 
 ## Diagram Creation (using mermaid notation)
 
 **ADR**: Option comparison diagram, decision impact diagram
 **Design Doc**: Component hierarchy diagram and data flow diagram are mandatory. Add state transition diagram and sequence diagram for complex cases.
 
-**React Diagrams**:
-- Component hierarchy following the project's adopted architecture (e.g., Atoms → Molecules → Organisms → Templates → Pages for Atomic Design; feature-folder tree for Feature-based; container vs presenter split for Container-Presenter)
-- Props flow diagram (parent → child data flow)
-- State management diagram (Context, custom hooks)
-- User interaction flow (click → state update → re-render)
+**React Diagrams**: component hierarchy (per the project's adopted architecture — Atomic Design layers, Feature-based folder tree, or Container/Presenter split), props flow (parent → child), state management (Context, custom hooks), and user interaction flow (click → state update → re-render).
 
 ## Final Output Check
 

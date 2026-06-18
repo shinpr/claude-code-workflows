@@ -183,7 +183,7 @@ When the work plan contains a Connection Map table, propagate boundary context t
 
 1. **Lookup by task ID**: For each row in the Connection Map, locate the task(s) listed in the "Covered By Task(s)" column
 2. **Append to Investigation Targets**: Add the boundary's owner module file paths on both sides to each matched task's Investigation Targets
-3. **Add a "Boundary Context" note in the task body**: Record the boundary identifier and expected signal verbatim from the Connection Map row, so the executor knows what observable evidence the implementation must produce
+3. **Add a "Boundary Context" note in the task body**: Record the boundary identifier and expected signal verbatim from the Connection Map row, so the executor knows what observable evidence the implementation must produce. When the row carries a **Serialized Format** and **Consumer Parse Rule** (a serialized in-runtime boundary), copy both verbatim into the note and state the roundtrip check the task must satisfy: the value the producer emits parses to the value the consumer expects.
 4. **Skip when not provided**: If the work plan has no Connection Map, skip this propagation step
 
 ## ADR Binding Propagation
@@ -213,6 +213,19 @@ When the work plan contains a Design-to-Plan Traceability table, propagate the m
 1. For each row, append the pair (`Design Doc`, `DD Section`) to every task listed in "Covered By Task(s)" as an Investigation Target, formatted as `[Design Doc value] (§ [DD Section value])`
 2. Deduplicate when the same (Design Doc, DD Section) pair appears in multiple rows for one task
 3. Apply only when the work plan contains a Design-to-Plan Traceability table
+
+## Reference Contract Propagation
+
+When the work plan contains a **Reference Contract Values** table, propagate each binding observable value to the task(s) it covers, so the executor is checked against the exact value rather than a back-pointer it must re-derive:
+
+1. **Lookup by task ID**: For each row, locate the task(s) listed in "Covered By Task(s)"
+2. **Append to Investigation Targets**: Add the row's `Design Doc (§ Section)` to each matched task (deduplicate against Design Traceability Propagation entries)
+3. **Add a Reference Contracts table row to the task**: For each matched row, add one row to the task's Reference Contracts table (see task template):
+   - **Source**: the `Design Doc (§ Section)` value
+   - **Contract Type**: copy the `Contract Type` value verbatim (structure-order / derived-display / state-lifecycle-negative)
+   - **Required Observable Value**: copy the value **verbatim** from the work plan row, preserving its exact wording and detail
+   - **Compliance Check**: write a Y/N-answerable positive predicate stating the final implementation reproduces the value (e.g., "the listed fields render in the specified order"; "the label shows the looked-up name in place of the raw code"; "the persisted state is applied only when the restore signal is present")
+4. **Apply only when provided**: Run this propagation only when the work plan contains a Reference Contract Values table. Serialized boundaries are propagated by Connection Map Propagation above, not here.
 
 ## Change Category Classification
 
@@ -333,6 +346,7 @@ Please execute decomposed tasks according to the order.
 - [ ] UI Spec Component → Task Mapping rows propagated to matching tasks (when work plan has the table)
 - [ ] Connection Map boundary rows propagated to matching tasks (when work plan has the table)
 - [ ] Design-to-Plan Traceability rows propagated to matching tasks as Investigation Targets (when work plan has the table)
+- [ ] Reference Contract Values rows propagated to matching tasks as Reference Contracts, value copied verbatim (when work plan has the table)
 - [ ] ADR Bindings rows propagated to matching tasks as Binding Decisions (when work plan has the table)
   - [ ] Source includes ADR path with section hint
   - [ ] Axis copied verbatim from the work plan row to the task's Binding Decisions table
