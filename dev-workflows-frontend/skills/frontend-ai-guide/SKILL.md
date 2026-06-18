@@ -178,7 +178,6 @@ Read `package.json` scripts and run them with the project's package manager (`pa
 ### Performance vs Readability
 - Prioritize readability unless React DevTools Profiler identifies a measurable bottleneck (e.g., render time exceeding 16ms, unnecessary re-renders)
 - Measure before optimizing with React DevTools Profiler
-- Memoization policy (React Compiler vs manual `React.memo`/`useMemo`/`useCallback`): follow the typescript-rules skill (Performance Optimization)
 - Document reason with comments when optimizing
 
 ### Granularity of Component/Type Definitions

@@ -72,6 +72,8 @@ Run the hearing protocol per the external-resource-context skill (frontend domai
 
 ### Step 3: Scale Judgment
 
+Execute Skill: documentation-criteria (loads the Creation Decision Matrix and ADR Creation Conditions used in this step and in the Escalation Boundary).
+
 1. Read `candidateWriteSet[]` from ui-analyzer output.
 2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, send a follow-up plain message asking the user to paste the edited file list, then proceed with that list.
 3. Apply the Creation Decision Matrix from the documentation-criteria skill to the **confirmed write set count**:
