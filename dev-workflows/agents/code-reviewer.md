@@ -45,6 +45,7 @@ Read the Design Doc **in full** and extract:
 - Architecture design and data flow
 - Interface contracts (function signatures, API endpoints, data structures)
 - Identifier specifications (resource names, endpoint paths, configuration keys, error codes, schema/model names)
+- Binding observable contracts: column/label sets and order, derived-display rules, and state-lifecycle negatives; plus Field Propagation Map rows that carry a Serialized Format + Consumer Parse Rule
 - Error handling policy
 - Non-functional requirements
 
@@ -60,7 +61,7 @@ For each acceptance criterion extracted in Step 1:
 - For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
 - Confirm the implementation keeps the core mechanism the AC, Design Doc, or referenced materials require. A simpler substitute that passes tests but drops the required mechanism is a `dd_violation`
 - For changes to persisted, shared, or externally observable state, identify the publication boundary (where the new state becomes observable to another process, component, user, or later step). State that is observable as complete while still partial, uninitialized, stale, or rollback-only is a `reliability` finding, because a downstream consumer can treat the incomplete state as complete and fail
-- When the reviewed change is classified as `bug-fix`, `regression`, `state-change`, or `boundary-change` (the task's `Change Category` field, when present, names the kind), check the cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect the change addressed is an `adjacent_residual` finding
+- When the reviewed change is classified as `bug-fix`, `regression`, `state-change`, or `boundary-change` (the task's `Change Category` field, when present, names the kind; when no field is present — e.g., reviewing a diff without task files — classify from the diff itself), check the cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect the change addressed is an `adjacent_residual` finding. When the task file is in scope, also read its Investigation Notes for residuals the executor recorded as out-of-scope, and verify each recorded residual; if it remains unfixed within the reviewed scope, report it as `adjacent_residual`, otherwise record why it is resolved or outside the review scope
 
 #### 2-2. Identifier Verification
 
@@ -81,6 +82,13 @@ Assign confidence based on evidence count:
 - **high**: 3+ sources agree
 - **medium**: 2 sources agree
 - **low**: 1 source only (implementation exists but no test or type confirmation)
+
+#### 2-4. Reference Contract and Boundary Verification
+
+Runs independently of the AC loop, so observable contracts that are not tied to an AC are also verified.
+
+1. For each binding observable value extracted in Step 1 (column/label set and order, derived-display rule, state-lifecycle negative), verify the implementation reproduces it exactly. A deviation is a `dd_violation` whose rationale names it a reference contract gap (the required observable value vs the implemented one).
+2. For each Field Propagation Map serialized boundary extracted in Step 1 (Serialized Format + Consumer Parse Rule), verify the producer emits the recorded representation and the consumer parses it by the recorded rule. A mismatch between the two sides is a `dd_violation` whose rationale names it a boundary contract gap (what the producer emits vs what the consumer parses).
 
 ### 3. Assess Code Quality
 

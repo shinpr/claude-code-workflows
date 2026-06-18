@@ -145,7 +145,7 @@ Runs after Pre-implementation Verification, before the Binding Decision Check. T
 
 1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
 2. Check each for the same class of defect this task corrects.
-3. Fold adjacent residuals within the Target Files scope into this task's failing tests and implementation. Record any residual outside scope in the task file's Investigation Notes so downstream review (code-reviewer / verifier) can detect it.
+3. Plan to fold adjacent residuals within the Target Files scope into this task's failing tests and implementation during the Red phase. Record any residual outside scope in the task file's Investigation Notes so downstream review (code-reviewer) can read and detect it.
 
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
@@ -158,6 +158,18 @@ Runs after Pre-implementation Verification, before the TDD cycle.
    - `Y`: proceed
    - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "binding_decision_violation"` with `phase: "pre_implementation"` (see Binding Decision Violation Escalation in Structured Response Specification). `N` represents a planned violation
    - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every row (including Unknown rows deferred from this step) against the final implementation and escalates if any remains `N` or `Unknown` at that point
+
+#### Reference Contract Check (Required when the task file has a Reference Contracts section)
+
+Runs after Pre-implementation Verification, alongside the Binding Decision Check.
+
+1. Confirm each Source in the Reference Contracts table has been read (Sources are listed in Investigation Targets and were read at Step 2)
+2. Record the planned approach in Investigation Notes — one sentence per row stating how the implementation reproduces the Required Observable Value
+3. Evaluate each row's Compliance Check against the planned approach. Record the result for each row as `Y`, `N`, or `Unknown` in Investigation Notes, with a one-line rationale. Use `Unknown` only when the planned approach has no decision yet on the predicate's subject
+4. Per row, branch on the evaluation:
+   - `Y`: proceed
+   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "design_compliance_violation"` (Escalation Response 2-1), populating `details.design_doc_expectation` with the Reference Contract row's Required Observable Value and `details.actual_situation` with the planned approach
+   - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every deferred row against the final implementation
 
 #### Reference Representativeness (Applied During Implementation)
 
@@ -349,6 +361,8 @@ This gate runs immediately before producing the final JSON response.
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
 ☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
+☐ Every Reference Contracts Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Reference Contracts section). Re-evaluate here even when the pre-implementation check passed
+☐ A test exercises the roundtrip — the value the producer emits parses to the value the consumer expects (when the task has a Boundary Context with a roundtrip check from the work plan's Connection Map)
 ☐ When test runs are cited as `runnableCheck` evidence, they are substantive and executable per the runnableCheck.result field spec (skipped tests, placeholder/TODO-only bodies, always-passing assertions, and 0-match runner reports do not count); non-test verification (build/typecheck/CLI) is not subject to this check
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 

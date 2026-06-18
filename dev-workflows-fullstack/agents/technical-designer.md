@@ -49,7 +49,6 @@ The subsections below are not parallel mandates; they form four serial gates. Co
 Each subsection below carries a `[Gate N — ...]` annotation in its heading. Subsections appear in Gate order (Gate 0 → 1 → 2 → 3); execute them in document order.
 
 ### Agreement Checklist [Gate 0 — Required]
-Must be performed at the beginning of Design Doc creation:
 
 1. **List agreements with user in bullet points**
    - Scope (what to change)
@@ -66,7 +65,6 @@ Must be performed at the beginning of Design Doc creation:
 Fill the Design Doc's "External Resources Used" subsection (under Background and Context) per the external-resource-context skill (feature-tier protocol).
 
 ### Standards Identification [Gate 0 — Required]
-Must be performed before any investigation:
 
 1. **Identify Project Standards**
    - Scan project configuration, rule files, and existing code patterns
@@ -88,7 +86,6 @@ Must be performed before any investigation:
    - Deviations require documented rationale
 
 ### Existing Code Investigation [Gate 1 — Required]
-Must be performed before Design Doc creation:
 
 1. **Implementation File Path Verification**
    - First grasp overall structure using Glob with detected project patterns
@@ -187,7 +184,6 @@ Execute the 5 steps below for each in-scope element, and record the result in th
    - For each rejected alternative, record 1-2 lines: what it was, why rejected. Include in the Design Doc to prevent re-proposal in subsequent iterations or by future agents.
 
 ### Implementation Approach Decision [Gate 2 — Required]
-Must be performed when creating Design Doc:
 
 1. **Approach Selection Criteria**
    - Execute Phase 1-4 of implementation-approach skill to select strategy
@@ -210,7 +206,6 @@ Must be performed when creating Design Doc:
    - Define early verification point: what is the first thing to verify, and how, to confirm the approach is correct before scaling. For replacements/modifications, the early verification point must be an output comparison of at least one representative case
 
 ### Common ADR Process [Gate 2 — Required]
-Perform before Design Doc creation:
 1. Identify common technical areas (logging, error handling, contract definitions, API design, etc.)
 2. Search `docs/ADR/ADR-COMMON-*`, create if not found
 3. Include in Design Doc's "Prerequisite ADRs"
@@ -240,7 +235,6 @@ For each integration boundary, define the contract:
 Confirm and document conflicts with existing systems (priority, naming conventions) at each integration point.
 
 ### Change Impact Map [Gate 3 — Required]
-Must be included when creating Design Doc:
 
 ```yaml
 Change Target: [ServiceName.methodName()]
@@ -258,6 +252,9 @@ No Ripple Effect:
 When new or changed fields cross component boundaries:
 
 Document each field's status (preserved / transformed / dropped) at each boundary with rationale.
+
+When the boundary is **serialized** — the value is encoded and re-parsed across a medium such as a query string, CLI argument, environment variable, config entry, message/queue payload, storage key, or file — also fill the template's **Serialized Format** (the exact representation the producer emits) and **Consumer Parse Rule** (how the consumer decodes/validates it) columns, so producer and consumer agree on the representation. Set both to "—" for in-memory field crossings.
+
 Skip if no fields cross component boundaries.
 
 ### Interface Change Impact Analysis [Gate 3 — Required]
@@ -314,23 +311,12 @@ When conversion is required, clearly specify adapter implementation or migration
 - Follow respective templates (`template.md`)
 - For ADR, check existing numbers and use max+1, initial status is "Proposed"
 
-## ADR Responsibility Boundaries
+## Output Rules
 
-Include in ADR: Decisions, rationale, principled guidelines
-Exclude from ADR: Schedules, implementation procedures, specific code
-
-Implementation guidelines should only include principles (e.g., "Use dependency injection"), not schedules or procedures.
-
-## Output Policy
-Execute file output immediately (considered approved at execution).
-
-## Scope Boundary
-
-Test derivation itself is a downstream agent responsibility.
-
-## Implementation Sample Standards Compliance
-
-All implementation samples in ADR and Design Docs MUST follow the loaded `coding-principles` and `testing-principles` skills. Omit samples unless they clarify contracts or edge cases that prose cannot convey.
+- Execute file output immediately (considered approved at execution).
+- ADR includes decisions, rationale, and principled guidelines (e.g., "Use dependency injection"); it excludes schedules, implementation procedures, and specific code.
+- Test derivation is a downstream agent responsibility.
+- Implementation samples MUST follow the loaded `coding-principles` and `testing-principles` skills; include a sample only when it clarifies a contract or edge case prose cannot convey.
 
 ## Diagram Creation (using mermaid notation)
 

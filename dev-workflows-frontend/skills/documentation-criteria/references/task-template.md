@@ -33,6 +33,15 @@ Each row is an ADR decision the implementation in this task must comply with.
 |---|---|---|---|
 | [docs/adr/ADR-XXXX.md (§ <Source Section>) — substitute the section name (`Decision` or `Implementation Guidance`) from the matching work plan row] | [Axis value copied verbatim from the work plan's ADR Bindings row] | [Binding decision copied from the work plan's ADR Bindings row] | [Y/N-answerable positive predicate that evaluates whether the planned/final implementation satisfies the decision] |
 
+## Reference Contracts
+(Include this section when the work plan's Reference Contract Values table covers this task. Omit otherwise.)
+
+Each row is a DD-derived observable contract the implementation in this task must reproduce exactly. Serialized boundaries are carried by the Boundary Context (from the work plan's Connection Map), and ADR-derived structural decisions by Binding Decisions above.
+
+| Source | Contract Type | Required Observable Value | Compliance Check |
+|---|---|---|---|
+| [Design Doc path (§ Section) copied from the matching work plan Reference Contract Values row] | [Contract Type copied from the work plan row: structure-order / derived-display / state-lifecycle-negative] | [Required Observable Value copied verbatim from the work plan row] | [Y/N-answerable positive predicate that evaluates whether the planned/final implementation reproduces the value] |
+
 ## Investigation Notes
 (Implementation observations are appended here before implementation begins. When Binding Decisions exist, record the planned implementation approach and each Compliance Check result here.)
 
@@ -79,6 +88,7 @@ Each row is an ADR decision the implementation in this task must comply with.
 - [ ] Each Proof Obligation is met: the test turns red under its primary failure mode and exercises the stated boundary
 - [ ] Deliverables created (for research/design tasks)
 - [ ] (When Binding Decisions exist) Every Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (file:line, test result, or command output)
+- [ ] (When Reference Contracts exist) Every Reference Contract Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes
 
 ## Notes
 - Impact scope: [Areas where changes may propagate]

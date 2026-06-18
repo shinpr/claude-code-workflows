@@ -51,6 +51,16 @@ Maps each Design Doc technical requirement to the covering task(s). One row per 
 
 **Gap Status values**: `covered` (task exists), `gap` (no task — requires justification in Notes, user confirmation required before plan approval)
 
+## Reference Contract Values
+
+Include this section when a Traceability row's DD Item encodes a **binding observable value** the implementation must reproduce exactly: a column/label set and order, a derived-display rule (display value derived from another field), or a state-lifecycle negative (the condition under which the state must stay unused). **Serialized boundaries** (a value encoded and re-parsed across a boundary) are owned by the Connection Map / Field Propagation Map — record those there. These are DD-derived observable contracts; ADR-derived structural decisions belong in ADR Bindings. Omit the section when none apply.
+
+The Traceability table records *that* a row is covered; this table carries the row's value *verbatim* so the covering task can be checked against the exact contract rather than a re-derived summary.
+
+| Design Doc (§ Section) | Contract Type | Required Observable Value (verbatim) | Covered By Task(s) |
+|---|---|---|---|
+| [docs/design/XXX.md (§ Section)] | structure-order / derived-display / state-lifecycle-negative | [the exact value copied from the Design Doc — e.g., "the listed fields in the specified order"; "the label shows the looked-up name in place of the raw code"; "the persisted state is applied only when an explicit restore signal is present"] | [Phase X Task Y] |
+
 ## Failure Mode Checklist
 
 Domain-independent failure categories this implementation must guard against. Enumerate all eight categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
@@ -92,11 +102,13 @@ One row per binding decision. A single ADR can contribute multiple rows. A singl
 
 ## Connection Map
 
-Include this section when the implementation crosses more than one package, service, or process boundary. Document each boundary. Omit the section when the implementation stays within a single package.
+Include this section when the implementation crosses a package, service, or process boundary, **or when a value is serialized and re-parsed across a boundary even within a single runtime** — through a medium such as a query string, CLI argument, environment variable, config entry, message/queue payload, storage key, or file (the producer and consumer must agree on the exact representation). Omit the section when no such boundary exists.
 
-| Boundary | Owner (left side) | Owner (right side) | Expected Signal | Covered By Task(s) |
-|---|---|---|---|---|
-| [e.g., "web client → API gateway"] | [module/package on the request side] | [module/package on the response side] | [Observable evidence the boundary works — e.g., "HTTP 200 with response matching ContractA", "row inserted in tableB", "message published to topicC"] | [Phase X Task Y on each side] |
+For a serialized boundary, fill Serialized Format and Consumer Parse Rule. Set them to "—" when the contract is already captured by the Expected Signal (e.g., a cross-process call whose body matches the agreed schema); fill them when producer and consumer must agree on a specific encoding of a value (query string, storage key, CLI argument, config entry, message field).
+
+| Boundary | Owner (left side) | Owner (right side) | Serialized Format | Consumer Parse Rule | Expected Signal | Covered By Task(s) |
+|---|---|---|---|---|---|---|
+| [producing side → consuming side] | [module/component on the producing side] | [module/component on the consuming side] | [exact representation the producer emits; "—" if not serialized] | [how the consumer decodes/validates it; "—" if not serialized] | [Observable evidence the boundary works — e.g., a response matching the agreed contract, or the consumer reproducing the producer's values] | [Phase X Task Y on each side] |
 
 ## Objective
 [Why this change is necessary, what problem it solves]

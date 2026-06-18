@@ -107,10 +107,7 @@ Keywords determine test type and reduce ambiguity.
 - [ ] **When** user clicks login button with valid credentials, the system shall authenticate and redirect to dashboard
 - [ ] **If** credentials are invalid, **then** the system shall display error message "Invalid credentials"
 - [ ] **While** user is logged in, the system shall maintain the session for configured timeout period
-
-### [Functional Requirement 2]
-
-- [ ] The system shall display data list with pagination of 10 items per page
+- [ ] (ubiquitous, no keyword) The system shall display the data list with pagination of 10 items per page
 
 ## Existing Codebase Analysis
 
@@ -174,14 +171,11 @@ No Ripple Effect:
 
 | Integration Point | Location | Old Implementation | New Implementation | Switching Method | Verification Method |
 |-------------------|----------|-------------------|-------------------|------------------|-------------------|
-| Integration Point 1 | [Class/Function] | [Existing Process] | [New Process] | [DI/Factory etc.] | [How to verify this switching works] |
-| Integration Point 2 | [Another Location] | [Existing] | [New] | [Method] | [Verification approach] |
+| [Integration Point] | [Class/Function] | [Existing Process or N/A] | [New Process] | [DI/Factory/config/etc.] | [How to verify this switching works] |
 
 ### Main Components
 
-Repeat the block below for each component.
-
-#### Component 1
+#### [Component] (repeat per component)
 
 - **Responsibility**: [Scope of responsibility for this component]
 - **Interface**: [APIs and contract definitions provided]
@@ -206,7 +200,6 @@ One entry per new in-scope element. This section records the 5-step output produ
 
 **Step 1 — Fixed Requirements**
 - [AC ID or constraint ID]: [requirement / constraint text]
-- [AC ID or constraint ID]: [requirement / constraint text]
 
 **Steps 2–3 — Alternatives Compared**
 
@@ -214,7 +207,6 @@ One entry per new in-scope element. This section records the 5-step output produ
 |---|---|---|---|---|---|---|
 | [The added element as proposed] | | | | | | |
 | [Subtractive alternative — derive / compute on demand / keep at caller / reuse existing / do not introduce new state] | | | | | | |
-| [Optional third alternative] | | | | | | |
 
 **Step 4 — Selected Alternative and Rationale**
 - **Selected**: [alternative name]
@@ -224,23 +216,17 @@ One entry per new in-scope element. This section records the 5-step output produ
 
 **Step 5 — Rejected Alternatives Log**
 - [Alternative name]: [1-2 lines on what it was and why rejected]
-- [Alternative name]: [1-2 lines on what it was and why rejected]
 
 (Repeat the Element block above for each additional in-scope element.)
 
 Mark the whole section as N/A with brief rationale when the design introduces no in-scope elements.
 
-### Contract Definitions
+### Data Contracts
 
-```
-// Record major contract/interface definitions here
-```
-
-### Data Contract
-
-#### Component 1
+#### [Component or Boundary] (repeat per component/boundary)
 
 ```yaml
+Contract: [interface / function / API / schema name]
 Input:
   Type: [Data shape, contract, or schema]
   Preconditions: [Required items, format constraints]
@@ -257,9 +243,11 @@ Invariants:
 
 ### Field Propagation Map (When Fields Cross Boundaries)
 
-| Field | Boundary | Status | Detail |
-|-------|----------|--------|--------|
-| [field name] | [Component A → B] | preserved / transformed / dropped | [logic or reason] |
+A boundary here includes a **serialized boundary** — a value encoded on one side and parsed on the other through a medium such as a query string, CLI argument, environment variable, config entry, message/queue payload, storage key, or file — not only cross-process calls. For those, record the exact encoded representation and how the consumer parses it, so producer and consumer agree.
+
+| Field | Boundary | Status | Serialized Format | Consumer Parse Rule | Detail |
+|-------|----------|--------|-------------------|---------------------|--------|
+| [field name] | [Component A → B] | preserved / transformed / dropped | [exact representation the producer emits when the boundary is serialized; "—" otherwise] | [how the consumer decodes and validates that representation; "—" when not serialized] | [logic or reason] |
 
 ### State Transitions and Invariants (When Applicable)
 
@@ -317,9 +305,7 @@ System Invariants:
 
 ### Technical Dependencies and Implementation Order
 
-#### Required Implementation Order
-
-Repeat the entry below for each component/feature, in dependency order.
+#### Required Implementation Order (in dependency order, one entry per component/feature)
 
 1. **[Component/Feature]**
    - Technical Reason: [Why this needs to be implemented at this position]
@@ -365,15 +351,11 @@ Verification Strategy defines what correctness means and how to prove it at desi
 
 ### Correctness Proof Method
 
-How will this change's correctness be demonstrated?
-
 - **Correctness definition**: [What "correct" means for this change — e.g., "output matches existing behavior", "all ACs pass in production-equivalent environment", "generated queries execute without error on target DB"]
 - **Verification method**: [Specific technique — e.g., "compare new implementation output against existing implementation", "run against staging DB", "contract test with real API"]
 - **Verification timing**: [When verification occurs — e.g., "after first vertical slice", "per repository", "at integration phase"]
 
 ### Early Verification Point
-
-What is verified first, and how, to confirm the approach is correct before scaling?
 
 - **First verification target**: [The smallest unit that proves the approach works — e.g., "first repository migration", "single API endpoint", "one screen flow"]
 - **Success criteria**: [Observable outcome — e.g., "CSV download produces identical output to legacy", "API returns 200 with expected schema"]
@@ -400,12 +382,9 @@ This section records what was **excluded** from the current design surface. Spec
 
 ## Alternative Solutions
 
-### Alternative 1
-
-- **Overview**: [Description of alternative solution]
-- **Advantages**: [Advantages]
-- **Disadvantages**: [Disadvantages]
-- **Reason for Rejection**: [Why it wasn't adopted]
+| Alternative | Overview | Advantages | Disadvantages | Reason for Rejection |
+|---|---|---|---|---|
+| [Alternative 1] | | | | |
 
 ## Risks and Mitigation
 
