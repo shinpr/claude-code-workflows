@@ -301,6 +301,17 @@
       "description": "Turns requirements into structured Linear tasks — validates before decomposing, so downstream design starts clean",
       "category": "workflow-orchestration",
       "homepage": "https://github.com/shinpr/linear-prism"
+    },
+    {
+      "name": "pr-review",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/shinpr/pr-review-skill.git",
+        "path": "plugins/pr-review"
+      },
+      "description": "Reviews GitHub PRs with Claude Code or Codex reviewers on deterministic PR snapshots, repo-specific quality criteria, and severity-gated posting with approval",
+      "category": "quality-enforcement",
+      "homepage": "https://github.com/shinpr/pr-review-skill"
     }
   ]
 }
