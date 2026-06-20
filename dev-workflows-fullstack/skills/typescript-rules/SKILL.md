@@ -11,9 +11,9 @@ description: React/TypeScript frontend development rules including type safety, 
 - **Delete code when no current caller exists** - YAGNI principle (Kent Beck)
 
 ## Comment Writing Rules
-- **Function Description Focus**: Describe what the code "does"
+Code first: names and types carry meaning; a comment must add what code cannot, and one comment per decision is enough. Frontend specifics:
+- **Comment intent, not markup**: explain why a component memoizes, guards, or re-renders — not what the JSX renders
 - **Timeless content only**: Record decisions and rationale; leave chronological history to version control
-- **Conciseness**: Keep explanations to necessary minimum
 
 ## Type Safety
 

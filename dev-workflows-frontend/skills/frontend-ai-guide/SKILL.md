@@ -70,7 +70,7 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 
 ### Implementation Example
 ```typescript
-// Immediate commonalization on 1st duplication
+// 1st-2nd occurrence: keep separate, no commonalization yet
 function UserEmailInput() { /* ... */ }
 function ContactEmailInput() { /* ... */ }
 

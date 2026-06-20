@@ -8,10 +8,12 @@ E2E tests in this workflow split into two lanes (see parent skill Test Type Defi
 
 | Lane | When | ROI gate | Cost |
 |------|------|----------|------|
-| **fixture-e2e** | UI journey verification with deterministic fixtures (mocked backend / fixture data) | None — selected by ranking within MAX 3 budget | Comparable to integration; runs in CI without infrastructure setup |
+| **fixture-e2e** | UI journey verification with deterministic fixtures (mocked backend / fixture data) | ROI ≥ 20 (beyond reserved slot); selected by ranking within MAX 3 budget | Comparable to integration; runs in CI without infrastructure setup |
 | **service-integration-e2e** | Journey correctness depends on real cross-service behavior (data persistence, transactional consistency, external contracts) | ROI > 50 (beyond reserved slot) | 3-10× higher than integration; reserved for what cannot be faked safely |
 
 Both lanes typically use Playwright; the difference is whether the backend is mocked / fixture-driven or running for real.
+
+The **reserved slot** referenced in the ROI gates is a per-lane slot for a qualifying multi-step user journey that is emitted regardless of its ROI score; it is defined in the parent skill's *Multi-Step User Journey Definition* section.
 
 ## When to Create E2E Tests
 
@@ -99,6 +101,6 @@ When UI Spec defines responsive behavior, test critical breakpoints:
 ## Budget Enforcement
 
 Hard limits per feature (same as parent skill):
-- **fixture-e2e**: MAX 3 tests, no ROI gate (selected by ranking)
+- **fixture-e2e**: MAX 3 tests, ROI ≥ 20 beyond the reserved slot (selected by ranking)
 - **service-integration-e2e**: MAX 1-2 tests, ROI > 50 beyond the reserved slot
 - Prefer fewer, comprehensive journey tests over many granular tests in both lanes
