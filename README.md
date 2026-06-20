@@ -63,11 +63,13 @@ These optional plugins cover adjacent stages in the workflow:
 - [claude-code-discover](https://github.com/shinpr/claude-code-discover): turns feature ideas into evidence-backed PRDs.
 - [metronome](https://github.com/shinpr/metronome): detects shortcut-taking behavior and nudges Claude to proceed step by step.
 - [linear-prism](https://github.com/shinpr/linear-prism): turns requirements into structured Linear tasks. Validates before decomposing, so downstream design starts clean.
+- [pr-review](https://github.com/shinpr/pr-review-skill): reviews GitHub PRs with Claude Code or Codex reviewers on deterministic PR snapshots, repo-specific quality criteria, and severity-gated posting with approval.
 
 ```bash
 /plugin install discover@claude-code-workflows
 /plugin install metronome@claude-code-workflows
 /plugin install linear-prism@claude-code-workflows
+/plugin install pr-review@claude-code-workflows
 ```
 
 ### Skills only
