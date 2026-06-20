@@ -114,17 +114,21 @@ Nearby code is a starting point for investigation, not a sufficient basis for ad
 
 ## Commenting Principles
 
-### When to Comment
-- **Document "what"**: Describe what the code does
-- **Explain "why"**: Clarify reasoning behind decisions
-- **Note limitations**: Document known constraints or edge cases
-- **API documentation**: Public interfaces need clear documentation
+### Default: code first
+Names, types, and structure are the primary medium. A comment earns its place only by carrying information the code itself cannot express. When in doubt, improve the name instead of adding a comment.
+
+### The test for every comment
+A comment is justified only if it answers one of these:
+- **Why**: reasoning, trade-off, or constraint behind a non-obvious decision
+- **Limitation / edge case**: a boundary a reader cannot infer from the code
+- **Public API contract**: behavior, inputs, outputs of an exported interface
+
+One comment per decision. If a comment restates what the names and control flow already show, delete it and rename instead.
 
 ### Comment Scope
-- Comment the "what" and "why"; the code itself communicates the "how"
+- Comment the why, limits, and public contracts (per the test above); let names and structure carry everything else, including the "how"
 - Record historical context in version control commit messages, not in comments
 - Delete commented-out code (retrieve from git history when needed)
-- Write comments that add information beyond what the code states
 
 ### Comment Quality
 - Write comments that remain accurate regardless of future code changes; avoid references to dates, versions, or temporary state

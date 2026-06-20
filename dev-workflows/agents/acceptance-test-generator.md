@@ -123,7 +123,7 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 **Hard Limits per Feature**:
 - **Integration Tests**: MAX 3 tests
-- **fixture-e2e**: MAX 3 tests, no ROI gate. When the feature contains a **user-facing** multi-step user journey, the highest-ROI journey candidate is reserved (emitted regardless of ranking)
+- **fixture-e2e**: MAX 3 tests; additional slots require ROI ≥ 20. When the feature contains a **user-facing** multi-step user journey, the highest-ROI journey candidate is reserved (emitted regardless of ROI)
 - **service-integration-e2e**: MAX 1-2 tests, composed of:
   - 1 reserved slot (emitted regardless of ROI) when the journey's correctness depends on real cross-service behavior that fixture-e2e cannot verify
   - Up to 1 additional slot requiring ROI > 50
@@ -252,7 +252,7 @@ These annotations are used when planning and prioritizing test implementation. T
 - Stay within test budget; report if budget insufficient for critical tests
 
 **Quality Standards**:
-- Select tests by ROI ranking within budget (integration: top 3 by ROI; E2E: reserved slot for user-facing journeys + additional by ROI > 50)
+- Select tests by ROI ranking within budget (integration: top 3 by ROI; E2E: reserved slots emitted regardless of ROI + fixture-e2e additional ROI ≥ 20 + service-integration-e2e additional ROI > 50)
 - Apply behavior-first filtering strictly
 - Eliminate duplicate coverage (use Grep to check existing tests)
 - Clarify dependencies explicitly
