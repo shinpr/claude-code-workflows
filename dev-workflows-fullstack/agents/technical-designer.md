@@ -341,7 +341,8 @@ Draft each AC value-first, then expand it across requirement boundaries before a
 
 1. **Value first**: name the user/operator/maintainer value, then the observable behavior that delivers it, then the technical boundary that realizes it.
 2. **Expand across boundaries** (candidate extraction — the scoping rules below decide which to keep): a behavior can hold on the main path while regressing on a separate dimension. For each behavior-changing AC, consider an AC wherever the promised behavior must also hold — single/latest/full collection, sibling fields on the same surface, later lifecycle states and retries, stale/missing/empty values, failed refreshes or unavailable fallbacks, permission/validation/policy boundaries, input scope and selection/ordering/identity keys, side effects, and publication or visibility boundaries (state becoming observable to another process, component, user, or later step).
-3. **Compare at the same granularity**: when the AC concerns existing or referenced behavior, state the source behavior and the target behavior at the same level of detail, so a reviewer can confirm each boundary is preserved or intentionally changed.
+3. **Expand mode × branch combinations**: when the change adds a mode, flag, or variant that overlays an existing branch axis (selection, ordering, filtering, or display), expand the combination of the new value with each existing axis value — a mode can take effect on one branch while silently no-opping on the others.
+4. **Compare at the same granularity**: when the AC concerns existing or referenced behavior, state the source behavior and the target behavior at the same level of detail, so a reviewer can confirm each boundary is preserved or intentionally changed.
 
 ### AC Scoping for Autonomous Implementation
 

@@ -335,7 +335,8 @@ Draft each AC value-first, then expand it across requirement boundaries before a
 
 1. **Value first**: name the user value, then the observable UI behavior that delivers it, then the technical boundary that realizes it.
 2. **Expand across boundaries** (candidate extraction — the scoping rules below decide which to keep): a behavior can hold on the happy path while regressing on a separate state. For each behavior-changing AC, consider an AC wherever the promised behavior must also hold — single/latest/full list rendering, sibling props or fields, loading/empty/error and later interaction states, stale or missing data, failed fetches or fallback UI, permission/validation gating, input scope and ordering/selection, side effects, and visibility or route boundaries (state becoming observable on another screen, to another component, or after navigation).
-3. **Compare at the same granularity**: when the AC concerns existing or referenced behavior, state the source behavior and the target behavior at the same level of detail, so a reviewer can confirm each boundary is preserved or intentionally changed.
+3. **Expand mode × branch combinations**: when the change adds a mode, toggle, or variant that overlays an existing branch (sort, filter, view, or display), expand the combination of the new value with each existing branch value — a mode can take effect on one branch while silently no-opping on the others.
+4. **Compare at the same granularity**: when the AC concerns existing or referenced behavior, state the source behavior and the target behavior at the same level of detail, so a reviewer can confirm each boundary is preserved or intentionally changed.
 
 ### AC Scoping for Autonomous Implementation (Frontend)
 

@@ -150,9 +150,18 @@ When the work plan includes a Verification Strategy, derive each task's Operatio
 
 Each task that implements a claim carries Proof Obligations (see task template) so downstream review can judge whether the tests prove the claim, not merely run:
 
-1. **Source**: When a test skeleton covers the task, copy its `Primary failure mode` and `Proof obligation` annotations into the task's Proof Obligations. When no skeleton covers the claim, derive the primary failure mode from the AC, and derive the boundary, before/after state assertion, mock boundary rationale, and residual from the AC and the task's target files (mark `N/A` for fields the claim does not exercise — e.g., no state assertion for a non-state-changing claim).
-2. **Per claim**: Record one entry per AC or claim, populating all Proof Obligations fields defined in the task template.
-3. **Apply when claims exist**: Tasks with no behavioral claim (e.g., pure config or scaffolding) omit the section.
+1. **Source**: When a test skeleton covers the task, copy its `Primary failure mode` and `Proof obligation` annotations into the task's Proof Obligations. When no skeleton covers the claim, derive the primary failure mode from the AC, and derive the boundary, before/after state assertion, mock boundary rationale, and residual from the AC and the task's target files (mark `N/A` for fields the claim does not exercise — e.g., no state assertion for a non-state-changing claim). A Failure Mode Checklist category mapped to this task is a further source — see Failure Mode Propagation below.
+2. **Per claim**: Record one entry per AC, claim, or mapped Failure Mode category, populating all Proof Obligations fields defined in the task template.
+3. **Apply when claims exist**: Tasks with neither a behavioral claim nor a mapped Failure Mode Checklist category (e.g., pure config or scaffolding) omit the section.
+
+## Failure Mode Propagation
+
+When the work plan contains a Failure Mode Checklist, propagate each applicable category to the task(s) it maps to, so the failure mode reaches the executor as a provable obligation rather than a plan-only declaration:
+
+1. **Lookup by task ID**: For each Checklist row marked `Applies? = yes`, locate the task(s) listed in the "Covered By Task(s)" column.
+2. **Add a Proof Obligation per category**: Ensure each matched task carries a Proof Obligation whose `Primary failure mode` is that category, instantiated for the task's target (e.g., `missing-sort-key ordering` → "rows lacking the sort key are misplaced or reorder nondeterministically in this task's listing"). Populate the remaining Proof Obligations fields from the AC and target files per Proof Obligation Propagation above. When no AC covers the category, set `Claim` to the failure-mode condition the task must prevent and `State assertion` to `N/A` unless the task changes state.
+3. **Merge into the existing entry**: When an AC-derived Proof Obligation already covers the same failure mode for that task, keep the single entry rather than adding a parallel one.
+4. **Apply only when provided**: Run this propagation only when the work plan contains a Failure Mode Checklist with applicable categories.
 
 ## Quality Assurance Mechanism Propagation
 
@@ -347,6 +356,7 @@ Please execute decomposed tasks according to the order.
 - [ ] Connection Map boundary rows propagated to matching tasks (when work plan has the table)
 - [ ] Design-to-Plan Traceability rows propagated to matching tasks as Investigation Targets (when work plan has the table)
 - [ ] Reference Contract Values rows propagated to matching tasks as Reference Contracts, value copied verbatim (when work plan has the table)
+- [ ] Failure Mode Checklist applicable categories propagated to covering tasks as Proof Obligations (when work plan has the table)
 - [ ] ADR Bindings rows propagated to matching tasks as Binding Decisions (when work plan has the table)
   - [ ] Source includes ADR path with section hint
   - [ ] Axis copied verbatim from the work plan row to the task's Binding Decisions table

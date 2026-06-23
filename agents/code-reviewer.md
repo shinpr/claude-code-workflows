@@ -109,7 +109,7 @@ For each function/method in implementation files, check against coding-principle
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
 - For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
-- Beyond substance, confirm the test proves the claim: it turns red under the AC's primary failure mode and exercises the claimed boundary rather than a substitute input that bypasses it. A test that passes yet would stay green if the claimed behavior regressed is a `coverage_gap` with rationale naming the unproven failure mode.
+- Beyond substance, confirm the test proves the claim: it turns red under the AC's primary failure mode and exercises the claimed boundary rather than a substitute input that bypasses it. When the task file is in scope, apply the same check to each of its Proof Obligations — including any derived from a Failure Mode Checklist category rather than an AC — using the obligation's own primary failure mode and boundary. A test that passes yet would stay green if the claimed behavior or mapped failure-mode condition regressed is a `coverage_gap` with rationale naming the unproven failure mode.
 
 #### Finding Classification
 
@@ -120,7 +120,7 @@ Classify each quality finding into one of:
 | **dd_violation** | Implementation contradicts or deviates from Design Doc specification | Wrong identifier, missing specified behavior, incorrect data flow |
 | **maintainability** | Code structure impedes future changes or comprehension | Long functions, deep nesting, multiple responsibilities, unclear naming |
 | **reliability** | Missing safeguards that could cause runtime failures | Unhandled error paths, missing validation at boundaries, silent failures |
-| **coverage_gap** | Acceptance criteria lack corresponding test verification | AC fulfilled in code but no test exercises it |
+| **coverage_gap** | Acceptance criteria or task Proof Obligations lack corresponding test verification | AC or Proof Obligation fulfilled in code but no test exercises it |
 | **adjacent_residual** | A case sharing the change's path, contract, persisted state, or external boundary still carries the class of defect the change addressed | Fallback path left unfixed, sibling state transition still stale, another consumer of a changed contract not updated |
 
 Each finding must include a `rationale` field:
@@ -130,7 +130,7 @@ Each finding must include a `rationale` field:
 | **dd_violation** | What the Design Doc specifies vs what the code does, with exact references |
 | **maintainability** | What specific maintenance or comprehension risk this creates |
 | **reliability** | What failure scenario is unguarded and under what conditions it could occur |
-| **coverage_gap** | Which AC is untested and why test coverage matters for this specific case |
+| **coverage_gap** | Which AC or Proof Obligation is untested and why test coverage matters for this specific case |
 | **adjacent_residual** | Which adjacent case shares the path/contract/state/boundary and how it still exhibits the defect class |
 
 ### 4. Check Architecture Compliance
