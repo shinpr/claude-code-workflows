@@ -271,11 +271,13 @@ System Invariants:
 
 ### Client State Design (when feature includes frontend)
 
-| State Category | State | Management Method | Sync Strategy |
-|---------------|-------|-------------------|---------------|
-| Server state | [Fetched data] | [Cache library / custom hook] | [Polling / WebSocket / manual refresh] |
-| Local UI state | [Modal open, tab selection] | [useState / useReducer] | - |
-| Temporary state | [Form input, draft] | [useState / form library] | [Auto-save / manual save] |
+| State Category | State | Management Method | Sync Strategy | Reset/Clear Behavior |
+|---------------|-------|-------------------|---------------|----------------------|
+| Server state | [Fetched data] | [Cache library / custom hook] | [Polling / WebSocket / manual refresh] | [Cleared on clear-all / preserved] |
+| Local UI state | [Modal open, tab selection] | [useState / useReducer] | - | [Reset to default / preserved] |
+| Temporary state | [Form input, draft] | [useState / form library] | [Auto-save / manual save] | [Cleared on reset / persisted] |
+
+Fill the Reset/Clear Behavior column when the feature has a reset or clear-all operation. A state that must return to its unused/default value on reset is a state-lifecycle negative (an observable contract: the state stays unused after reset) — record it so it is verified rather than assumed.
 
 ### UI Action - API Contract Mapping (when feature includes frontend)
 

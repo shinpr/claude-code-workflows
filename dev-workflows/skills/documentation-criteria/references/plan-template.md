@@ -63,7 +63,7 @@ The Traceability table records *that* a row is covered; this table carries the r
 
 ## Failure Mode Checklist
 
-Domain-independent failure categories this implementation must guard against. Enumerate all eight categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
+Domain-independent failure categories this implementation must guard against. Enumerate all nine categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
 
 | Category | Applies? | Covered By Task(s) |
 |---|---|---|
@@ -75,6 +75,7 @@ Domain-independent failure categories this implementation must guard against. En
 | unavailable boundary | yes/no | |
 | shared-state dependency | yes/no | |
 | rollback-only visibility | yes/no | |
+| missing-sort-key ordering | yes/no | |
 
 ## UI Spec Component → Task Mapping
 
