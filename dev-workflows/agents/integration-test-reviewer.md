@@ -61,10 +61,10 @@ Evaluate each test for:
 
 ### 4. Claim Proof Adequacy
 
-Confirm each test proves its AC's claim, not merely that code ran. Record a `proof_insufficient` issue for each obligation the test leaves unproven:
-- The test turns red under the AC's primary failure mode (an assertion observes the specific behavior the AC promises, so a regression in that behavior fails the test).
-- When the AC claims a public or integration boundary, the test exercises that boundary rather than a substitute input that bypasses it.
-- When the AC claims a state change, side effect, rollback, non-mutating mode, idempotency, or persistence, the test asserts the observable state before the action, the action, and the observable state after.
+Confirm each test proves its AC's claim or task Proof Obligation, not merely that code ran. Record a `proof_insufficient` issue for each obligation the test leaves unproven:
+- The test turns red under the primary failure mode of the AC or task Proof Obligation it covers, including obligations derived from a Failure Mode Checklist category rather than an AC (an assertion observes the specific promised behavior or failure-mode condition, so a regression in it fails the test).
+- When the AC or task Proof Obligation claims a public or integration boundary, the test exercises that boundary rather than a substitute input that bypasses it.
+- When the AC or task Proof Obligation claims a state change, side effect, rollback, non-mutating mode, idempotency, or persistence, the test asserts the observable state before the action, the action, and the observable state after.
 - Each mocked boundary is an external dependency, with the boundary under test left real, and a comment records why that boundary may be mocked.
 - Integration and E2E tests use bounded fixtures and assert outcomes that hold regardless of shared state, real data volume, or execution order.
 
@@ -113,7 +113,7 @@ Confirm each test proves its AC's claim, not merely that code ran. Record a `pro
 
 - [ ] Every test has corresponding skeleton comment
 - [ ] Observable result from Behavior is asserted
-- [ ] Each test proves its AC's claim: turns red under the primary failure mode, exercises the claimed boundary, and asserts before/after state for state-changing claims
+- [ ] Each test proves its AC's claim or task Proof Obligation: turns red under the primary failure mode, exercises the claimed boundary, and asserts before/after state for state-changing claims
 - [ ] All Verification items are covered
 - [ ] Mock only external dependencies in integration tests
 - [ ] Clear Arrange/Act/Assert separation
