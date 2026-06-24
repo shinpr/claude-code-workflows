@@ -14,11 +14,12 @@ function parseSkillsIndex(content) {
   let currentSkill = null
   let inSections = false
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
     const skillMatch = /^ {2}([\w-]+):\s*$/.exec(line)
     if (skillMatch) {
       currentSkill = skillMatch[1]
-      skills[currentSkill] = { sections: [], lineNumber: lines.indexOf(line) + 1 }
+      skills[currentSkill] = { sections: [], lineNumber: i + 1 }
       inSections = false
       continue
     }
