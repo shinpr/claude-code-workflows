@@ -203,8 +203,10 @@ function injectDeprecationNotice(content, notice, label) {
   if (currentDesc.startsWith(notice)) {
     return content
   }
-  const newFm = fm.replace(/^description:[ \t]*(.*)$/m, `description: ${notice}${currentDesc}`)
-  return content.replace(fmMatch[0], `---\n${newFm}\n---`)
+  const newFm = fm.replace(/^description:[ \t]*(.*)$/m, (_, matchedDesc) => {
+    return `description: ${notice}${matchedDesc}`
+  })
+  return content.replace(fmMatch[0], () => `---\n${newFm}\n---`)
 }
 
 async function loadLocalPlugins() {
