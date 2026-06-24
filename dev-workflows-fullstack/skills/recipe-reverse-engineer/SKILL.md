@@ -4,6 +4,8 @@ description: Generate PRD and Design Docs from existing codebase through discove
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Reverse engineering workflow to create documentation from existing code
 
 Target: $ARGUMENTS
@@ -407,5 +409,4 @@ Output summary including:
 | Generation fails | Log failure, continue with other units, report in summary |
 | consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
 | Review rejects after 2 revisions | Stop loop, flag for human intervention |
-
 

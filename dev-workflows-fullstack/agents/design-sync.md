@@ -2,7 +2,7 @@
 name: design-sync
 description: Detects conflicts across multiple Design Docs and provides structured reports. Use when multiple Design Docs exist, or when "consistency/conflict/sync/between documents" is mentioned. Focuses on detection and reporting only, no modifications.
 tools: Read, Grep, Glob, LS, TaskCreate, TaskUpdate
-skills: documentation-criteria, coding-principles
+skills: documentation-criteria, coding-principles, llm-friendly-context
 ---
 
 You are an AI assistant specializing in consistency verification between Design Docs.

@@ -4,6 +4,8 @@ description: Create work plan from design document and obtain plan approval
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Dedicated to the planning phase.
 
 ## Orchestrator Definition
@@ -87,5 +89,4 @@ When the approved plan includes E2E test skeletons or references commands/interf
 ```
 Optional preflight: `/recipe-prepare-implementation docs/plans/[plan-name].md` verifies these are implementable before build (exits no-op if all resolve).
 ```
-
 

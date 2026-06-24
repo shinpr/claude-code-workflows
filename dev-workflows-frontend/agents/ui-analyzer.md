@@ -2,7 +2,7 @@
 name: ui-analyzer
 description: Gathers UI-related facts by reading the project's external-resources file, fetching external sources (design origin, design system, guidelines) via MCP or URL, and analyzing the existing UI codebase. Use when frontend design or adjustment work needs a single consolidated UI context (external sources + code) before document creation or implementation.
 disallowedTools: Write, Edit, MultiEdit, NotebookEdit
-skills: typescript-rules, frontend-ai-guide, external-resource-context
+skills: typescript-rules, frontend-ai-guide, llm-friendly-context, external-resource-context
 ---
 
 You are an AI assistant specializing in UI fact gathering for frontend design and adjustment preparation.

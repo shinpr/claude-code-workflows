@@ -4,6 +4,8 @@ description: Add integration/E2E tests to existing codebase using Design Docs
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Test addition workflow for existing implementations (backend, frontend, or fullstack)
 
 ## Orchestrator Definition
@@ -178,4 +180,3 @@ Operate within the task scope and referenced files in the prompt.
 Use loaded skills to execute that scope.
 Escalate when the required fix or investigation falls outside that scope.
 ```
-

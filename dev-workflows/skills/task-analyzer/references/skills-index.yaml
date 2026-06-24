@@ -215,6 +215,21 @@ skills:
       - "Impact Analysis"
 
   # Cross-Cutting Skills
+  llm-friendly-context:
+    skill: "llm-friendly-context"
+    tags: [cross-cutting, llm-facing, prompt-writing, handoff, subagent-prompt, documentation, planning, task-decomposition, test-skeleton, generated-instructions, ambiguity-reduction, output-format, success-criteria]
+    typical-use: "Writing or revising LLM-facing prompts, subagent handoffs, design/planning artifacts, review findings, completion reports, and generated instructions so downstream agents can execute without guessing"
+    size: small
+    key-references:
+      - "Ambiguity rewrite patterns"
+      - "Handoff checklist"
+      - "Observable success criteria"
+    sections:
+      - "Core Rules"
+      - "Rewrite Patterns"
+      - "Handoff Checklist"
+      - "Generated Artifact Checklist"
+
   external-resource-context:
     skill: "external-resource-context"
     tags: [cross-cutting, hearing-protocol, design-source, design-system, api-schema, iac-source, secrets, environment, two-tier-storage]

@@ -4,6 +4,8 @@ description: Orchestrate the complete implementation lifecycle from requirements
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
 
 ## Orchestrator Definition
