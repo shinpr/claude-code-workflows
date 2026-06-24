@@ -289,6 +289,7 @@ The backend plugin includes proven best practices that work with any language:
 - **Implementation Approach.** Design decisions and trade-offs.
 - **Documentation Standards.** Clear, maintainable docs.
 - **External Resource Context.** Two-tier file recording how to reach resources outside the repo (design source, design system, API schema, IaC, etc.). Available across all three plugins.
+- **LLM-Friendly Context.** Clear prompts, handoffs, generated artifacts, and instructions for downstream agents.
 
 These are loaded as skills and automatically applied by agents when relevant.
 
@@ -446,6 +447,7 @@ claude-code-workflows/
 │   ├── testing-principles/
 │   ├── implementation-approach/
 │   ├── external-resource-context/  # Cross-cutting: external resources
+│   ├── llm-friendly-context/       # Cross-cutting: LLM-facing prompts, handoffs, and generated instructions
 │   ├── typescript-rules/       # Frontend-specific
 │   └── ...
 │

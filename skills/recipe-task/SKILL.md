@@ -4,6 +4,8 @@ description: Execute tasks following appropriate rules with rule-advisor metacog
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 # Task Execution with Metacognitive Analysis
 
 Task: $ARGUMENTS
@@ -56,5 +58,4 @@ Proceed with task execution following:
 - Task structure (managed via TaskCreate/TaskUpdate)
 - Quality standards defined in the selectedRules output from rule-advisor
 - Monitor warningPatterns flags throughout execution and adjust approach when triggered
-
 

@@ -4,6 +4,8 @@ description: Adjust an already-implemented UI in-session with verification again
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
 
 ## Execution Pattern

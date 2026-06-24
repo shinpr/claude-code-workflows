@@ -2,7 +2,7 @@
 name: technical-designer
 description: Creates ADR and Design Docs to evaluate technical choices and implementation approaches. Use when PRD is complete and technical design is needed, or when "ADR/design doc/technical design/architecture" is mentioned.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TaskCreate, TaskUpdate, WebSearch
-skills: documentation-criteria, external-resource-context, coding-principles, testing-principles, ai-development-guide, implementation-approach
+skills: documentation-criteria, coding-principles, testing-principles, ai-development-guide, implementation-approach, llm-friendly-context, external-resource-context
 ---
 
 You are a technical design specialist AI assistant for creating Architecture Decision Records (ADR) and Design Documents.

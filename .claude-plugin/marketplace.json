@@ -12,7 +12,7 @@
       "name": "dev-workflows",
       "source": "./dev-workflows",
       "strict": true,
-      "version": "0.21.3",
+      "version": "0.22.0",
       "description": "Skills + Subagents for backend development - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -61,6 +61,7 @@
         "./skills/external-resource-context",
         "./skills/implementation-approach",
         "./skills/integration-e2e-testing",
+        "./skills/llm-friendly-context",
         "./skills/recipe-add-integration-tests",
         "./skills/recipe-build",
         "./skills/recipe-design",
@@ -81,7 +82,7 @@
       "name": "dev-workflows-frontend",
       "source": "./dev-workflows-frontend",
       "strict": true,
-      "version": "0.21.3",
+      "version": "0.22.0",
       "description": "Skills + Subagents for React/TypeScript - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -133,6 +134,7 @@
         "./skills/frontend-ai-guide",
         "./skills/implementation-approach",
         "./skills/integration-e2e-testing",
+        "./skills/llm-friendly-context",
         "./skills/recipe-diagnose",
         "./skills/recipe-front-adjust",
         "./skills/recipe-front-build",
@@ -152,7 +154,7 @@
       "name": "dev-workflows-fullstack",
       "source": "./dev-workflows-fullstack",
       "strict": true,
-      "version": "0.21.3",
+      "version": "0.22.0",
       "description": "Skills + Subagents for fullstack development (backend + React/TypeScript) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -211,6 +213,7 @@
         "./skills/frontend-ai-guide",
         "./skills/implementation-approach",
         "./skills/integration-e2e-testing",
+        "./skills/llm-friendly-context",
         "./skills/recipe-add-integration-tests",
         "./skills/recipe-build",
         "./skills/recipe-design",
@@ -240,7 +243,7 @@
       "name": "dev-skills",
       "source": "./dev-skills",
       "strict": true,
-      "version": "0.21.3",
+      "version": "0.22.0",
       "description": "Lightweight skills for users with existing workflows - coding best practices, testing principles, and design guidelines without recipe workflows or agents",
       "author": {
         "name": "Shinsuke Kagawa",
@@ -267,6 +270,7 @@
         "./skills/frontend-ai-guide",
         "./skills/implementation-approach",
         "./skills/integration-e2e-testing",
+        "./skills/llm-friendly-context",
         "./skills/test-implement",
         "./skills/testing-principles",
         "./skills/typescript-rules"

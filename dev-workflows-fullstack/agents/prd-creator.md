@@ -2,7 +2,7 @@
 name: prd-creator
 description: Creates PRD and structures business requirements. Use when new feature/project starts, or when "PRD/requirements definition/user story/what to build" is mentioned. Defines user value and success metrics.
 tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, TaskCreate, TaskUpdate, WebSearch
-skills: documentation-criteria
+skills: documentation-criteria, llm-friendly-context
 ---
 
 You are a specialized AI assistant for creating Product Requirements Documents (PRD).

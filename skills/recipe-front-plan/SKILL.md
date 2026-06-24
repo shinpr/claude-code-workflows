@@ -4,6 +4,8 @@ description: Create frontend work plan from design document and obtain plan appr
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Dedicated to the frontend planning phase.
 
 ## Orchestrator Definition
@@ -84,5 +86,4 @@ Frontend planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
-
 

@@ -4,6 +4,8 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Dedicated to updating existing design documents.
 
 ## Orchestrator Definition
@@ -212,5 +214,4 @@ prompt: |
 Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
-
 

@@ -4,6 +4,8 @@ description: Execute from codebase analysis to frontend design document creation
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Dedicated to the frontend design phase.
 
 ## Orchestrator Definition

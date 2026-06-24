@@ -4,6 +4,8 @@ description: Orchestrate full-cycle implementation across backend and frontend l
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Full-cycle fullstack implementation management (Requirements Analysis → Design (backend + frontend) → Planning → Implementation → Quality Assurance)
 
 ## Orchestrator Definition

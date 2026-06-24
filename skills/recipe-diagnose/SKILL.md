@@ -4,6 +4,8 @@ description: Investigate problem, verify findings, and derive solutions
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Diagnosis flow to identify root cause and present solutions
 
 Target problem: $ARGUMENTS
@@ -230,5 +232,4 @@ Rationale: [Selection rationale]
 - [ ] Executed solver
 - [ ] Achieved coverageAssessment=sufficient (or obtained user approval after 2 additional iterations)
 - [ ] Presented final report to user
-
 

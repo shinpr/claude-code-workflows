@@ -4,6 +4,8 @@ description: Design Doc compliance and security validation with optional auto-fi
 disable-model-invocation: true
 ---
 
+Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+
 **Context**: Post-implementation quality assurance for React/TypeScript frontend
 
 ## Orchestrator Definition
@@ -221,4 +223,3 @@ Operate within the review scope and referenced files in the prompt.
 Use loaded skills to execute that scope.
 Escalate when the required fix or investigation falls outside that scope.
 ```
-
