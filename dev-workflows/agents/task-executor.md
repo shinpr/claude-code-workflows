@@ -134,6 +134,15 @@ This gate triggers only when the Investigation Targets section lists at least on
 #### Pre-implementation Verification (Pattern 5 Compliant)
 Read relevant Design Doc sections (interface contracts, data structures, dependency constraints); investigate existing implementations in the same domain/responsibility; determine continue/escalation per "Mandatory Judgment Criteria" above.
 
+#### Unimplemented Dependency Handling
+
+Applies when Pre-implementation Verification finds a dependency this task requires is absent or unimplemented (e.g., a Design Doc component marked "requires new creation"). A missing dependency is a stop condition only when it prevents preserving the required contract and no local, reversible construct can satisfy it.
+
+1. Determine whether a local, reversible construct — a local slice, or a contract-preserving stub/adapter scoped to the Target Files — preserves the required contract.
+2. Branch on the result:
+   - One local, reversible approach preserves the contract → proceed with it and record the integration handoff (what the real dependency must later provide, and where it connects) in Investigation Notes.
+   - No local construct preserves the contract, or several valid constructs differ on an architectural trade-off (placement, dependency direction, contract shape) → stop and escalate with `escalation_type: "design_compliance_violation"` (see Design Doc Deviation Escalation in Structured Response Specification; populate every `details` field that schema requires). Map the Design Doc requirement for the dependency to `details.design_doc_expectation`, and the absent/unimplemented dependency with the exact undecided decision to `details.actual_situation`.
+
 #### Adjacent Case Sweep (Required when the task file has a `Change Category` field set to one or more of `bug-fix`, `regression`, `state-change`, `boundary-change`)
 
 Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task decomposition wrote — read the field value and treat it as authoritative for whether the sweep applies.
@@ -163,7 +172,7 @@ Runs after Pre-implementation Verification, alongside the Binding Decision Check
 3. Evaluate each row's Compliance Check against the planned approach. Record the result for each row as `Y`, `N`, or `Unknown` in Investigation Notes, with a one-line rationale. Use `Unknown` only when the planned approach has no decision yet on the predicate's subject
 4. Per row, branch on the evaluation:
    - `Y`: proceed
-   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "design_compliance_violation"` (Escalation Response 2-1), populating `details.design_doc_expectation` with the Reference Contract row's Required Observable Value and `details.actual_situation` with the planned approach
+   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "design_compliance_violation"` (see Design Doc Deviation Escalation in Structured Response Specification; populate every `details` field that schema requires). Map the Reference Contract row's Required Observable Value to `details.design_doc_expectation` and the planned approach to `details.actual_situation`
    - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every deferred row against the final implementation
 
 #### Reference Representativeness (Applied During Implementation)
