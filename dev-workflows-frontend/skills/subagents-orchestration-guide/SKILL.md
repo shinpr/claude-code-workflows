@@ -124,7 +124,7 @@ Autonomous execution MUST stop and wait for user input at these points.
 ## How to Call Subagents
 
 ### Execution Method
-All subagent invocation uses the **Agent tool** with:
+Each subagent invocation is a **fresh Agent tool** call, isolating each phase's context; a SendMessage resume reuses the prior agent's context and breaks that isolation. Each call uses:
 - `subagent_type`: Agent name (e.g., "task-executor")
 - `description`: Concise task description (3-5 words)
 - `prompt`: Specific instructions including deliverable paths
