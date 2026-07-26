@@ -376,8 +376,8 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    - Do not pass `code_paths`; code-verifier discovers scope from the document
 
    #### HC-04: code-verifier + codebase-analyzer → document-reviewer
-   - Pass: `code_verification` JSON and the same `codebase_analysis` JSON previously given to the designer
-   - Purpose: reviewer validates both discrepancy integration and Fact Disposition coverage against `focusAreas`
+   - Pass: `code_verification` JSON and the same `codebase_analysis` JSON previously given to the designer; for a DesignDoc creation review, also pass the original user requirements as `requirements_verbatim` and confirmed scope and user decisions as `confirmed_decisions`
+   - Purpose: reviewer validates discrepancy integration, Fact Disposition coverage against `focusAreas`, and Design Convergence against the effective requirements
 
    #### HC-05: code-verifier → next-layer technical-designer (fullstack only)
    - Defined only for multi-layer fullstack flow in `references/monorepo-flow.md`

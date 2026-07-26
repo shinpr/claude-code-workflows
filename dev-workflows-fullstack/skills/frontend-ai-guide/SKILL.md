@@ -5,6 +5,12 @@ description: Applies React/TypeScript-specific technical decision criteria, anti
 
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection (Frontend)
 
+## Value-First Engineering
+
+Explore broadly, then converge on the lowest-lifecycle-cost solution that delivers the required user value while keeping the UI correct and maintainable.
+- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
+- Introduce state, props, variants, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
+
 ## Technical Anti-patterns (Red Flag Patterns)
 
 Pause the affected decision and review the design when detecting the following patterns:
@@ -114,7 +120,7 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 **Avoidance Methods**:
 - Before implementation, always search for similar functionality (using domain, responsibility, component patterns as keywords)
 - Similar functionality found → Verify that its props, lifecycle, design-system role, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
-- Similar functionality is technical debt → Create ADR improvement proposal before implementation
+- Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
 
