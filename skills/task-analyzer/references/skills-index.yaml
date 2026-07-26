@@ -71,6 +71,7 @@ skills:
       - "DRY Principle - The Pragmatic Programmer"
       - "YAGNI Principle - Extreme Programming"
     sections:
+      - "Value-First Engineering"
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fail-Fast Fallback Design Principles"
       - "Rule of Three - Criteria for Code Duplication"
@@ -204,6 +205,7 @@ skills:
       - "Rule of Three - Martin Fowler"
       - "React Best Practices"
     sections:
+      - "Value-First Engineering"
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fallback Design Principles"
       - "Rule of Three - Criteria for Code Duplication"

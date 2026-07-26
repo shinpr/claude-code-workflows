@@ -5,6 +5,12 @@ description: Applies language-agnostic and backend technical decision criteria, 
 
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection
 
+## Value-First Engineering
+
+Explore broadly, then converge on the lowest-lifecycle-cost solution that delivers the required user, operator, or maintainer value while keeping the system correct and maintainable.
+- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
+- Introduce capabilities, infrastructure, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
+
 ## Technical Anti-patterns (Red Flag Patterns)
 
 Pause the affected decision and review the design when detecting the following patterns:
@@ -145,7 +151,7 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 **Avoidance Methods**:
 - Before implementation, always search for similar functionality (using domain, responsibility, configuration patterns as keywords)
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
-- Similar functionality is technical debt → Create ADR improvement proposal before implementation
+- Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
 - **Reference representativeness check**: When adopting a pattern or dependency from nearby code, verify it is representative across the repository before adopting — nearby files alone are an insufficient basis

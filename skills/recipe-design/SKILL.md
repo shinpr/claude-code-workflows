@@ -95,10 +95,10 @@ After the user confirms the scope, count the confirmed target files and set the 
 **[STOP]**: Wait for the user's choice before proceeding.
 
 ### Step 4: Design Document Creation
-Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-02). technical-designer presents at least two design alternatives with trade-offs for each.
+Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-02). ADRs use alternative comparison; Design Docs use Design Convergence.
 
 - Invoke **technical-designer** using Agent tool
-  - For Design Doc: `subagent_type: "dev-workflows:technical-designer"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Apply the code: prefix to codebase-analyzer fact_ids when filling the Fact Disposition Table. Present at least two architecture alternatives with trade-offs."`
+  - For Design Doc: `subagent_type: "dev-workflows:technical-designer"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Apply the code: prefix to codebase-analyzer fact_ids when filling the Fact Disposition Table."`
   - For ADR: `subagent_type: "dev-workflows:technical-designer"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Present at least two alternatives with trade-offs."`
 - **(Design Doc only)** Invoke **code-verifier** to verify the Design Doc against existing code. Skip for ADR.
   - `subagent_type: "dev-workflows:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`

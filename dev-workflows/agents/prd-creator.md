@@ -110,10 +110,11 @@ PRDs focus solely on "what to build." Implementation phases and task decompositi
 - Use business terminology accessible to all stakeholders
 - Include specific use cases
 
-### 2. Clear Prioritization
-- Utilize MoSCoW method (Must/Should/Could/Won't)
-- Clearly separate MVP and Future phases
-- Make trade-offs explicit
+### 2. MVP Convergence
+1. State the user problem and value as observable outcomes
+2. Define the smallest coherent behavior or journey that delivers that value
+3. Remove each Must item in turn; move it out of MVP when value and required legal, contractual, security, and compatibility obligations still hold
+4. Place excluded capabilities in Future or Out of Scope with a brief reason
 
 ### 3. Measurable Success Metrics
 - Set specific numerical targets for quantitative metrics

@@ -199,34 +199,14 @@ No Ripple Effect:
 
 **Decision**: [reuse / extend / new] — [rationale in 1-2 sentences]
 
-### Minimal Surface Alternatives (When Introducing Maintenance-Surface Elements)
+### Design Convergence
 
-One entry per new in-scope element. This section records the 5-step output produced by the invoking agent.
+In a future-state document, use `None` for empty Failed Items, Adopted Additions, or Rejected Additions. Mark this whole section `N/A — reverse-engineer/as-is document` for a reverse-engineer/as-is document.
 
-#### Element 1: [name of the new element — e.g., persistent state field, public-contract field, cross-boundary prop, behavioral mode/variant, reusable abstraction or component split]
-
-**Step 1 — Fixed Requirements**
-- [AC ID or constraint ID]: [requirement / constraint text]
-
-**Steps 2–3 — Alternatives Compared**
-
-| Alternative | Current requirements covered (AC or constraint IDs) | New state introduced (count) | New concept / mode / flag (count) | Crosses component boundary (yes/no) | Breaking change or migration required (yes/no) | Subjective cost notes |
-|---|---|---|---|---|---|---|
-| [The added element as proposed] | | | | | | |
-| [Subtractive alternative — derive / compute on demand / keep at caller / reuse existing / do not introduce new state] | | | | | | |
-
-**Step 4 — Selected Alternative and Rationale**
-- **Selected**: [alternative name]
-- **Rationale**:
-  - If selected = smallest alternative considered: state "smallest alternative considered; no further reduction available"
-  - If selected > smallest: name the current requirement(s) from step 1 that smaller alternatives fail to satisfy
-
-**Step 5 — Rejected Alternatives Log**
-- [Alternative name]: [1-2 lines on what it was and why rejected]
-
-(Repeat the Element block above for each additional in-scope element.)
-
-Mark the whole section as N/A with brief rationale when the design introduces no in-scope elements.
+1. **Direct MVP**: [Simplest end-to-end design using existing system capabilities]
+2. **Failed Items**: [Unmet item -> requirement, verified constraint, observed problem, or evidence-backed material risk | None]
+3. **Adopted Additions**: [Addition -> Failed Item -> evidence that lower-surface resolutions fail -> item becomes unmet against its evidence when removed | None]
+4. **Rejected Additions**: [Considered option -> brief rejection reason | None]
 
 ### Data Contracts
 
@@ -388,12 +368,6 @@ This section records what was **excluded** from the current design surface. Spec
 - **Deferred possibilities**: [Capabilities considered during design and explicitly excluded from the current design surface. Each entry names either the current requirement it would have served, or marks itself as speculative]
 - **Intentional limitations**: [What was deliberately kept small and why]
 - **Extension points (existing, with current consumers)**: [Interfaces or hooks already in use by named current consumers. Each entry names a current consumer]
-
-## Alternative Solutions
-
-| Alternative | Overview | Advantages | Disadvantages | Reason for Rejection |
-|---|---|---|---|---|
-| [Alternative 1] | | | | |
 
 ## Risks and Mitigation
 

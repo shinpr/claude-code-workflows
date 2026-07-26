@@ -96,7 +96,7 @@ Read the Design Doc template from documentation-criteria skill to identify all s
 | Verification requirement | Verification methods, test boundaries, integration verification points | Verification/test task |
 | Prerequisite work | Migration steps, security measures, environment setup | Prerequisite task |
 
-Additionally, when these design-attention sections are non-N/A in the DD, always create Traceability rows for their content: Minimal Surface Alternatives (selected alternative), State Transitions and Invariants, Field Propagation Map, Security Considerations, Logging and Monitoring sensitive-data rules, Error Handling matrix. Map each to the most relevant existing category (commonly `verification`, `contract-change`, or `prerequisite`).
+Additionally, create Traceability rows for Design Convergence when it contains one or more Adopted Additions. For these other design-attention sections, create rows when the section is present and not N/A: State Transitions and Invariants, Field Propagation Map, Security Considerations, Logging and Monitoring sensitive-data rules, Error Handling matrix. Map each to the most relevant existing category (commonly `verification`, `contract-change`, or `prerequisite`).
 
 Map each extracted item to a covering task. Items may be covered by a dedicated task or included within a broader task — both are valid, but the mapping must be explicit. Each row must record the source DD path (matching one of the Related Documents entries) in the `Design Doc` column so downstream task generation can resolve the file unambiguously.
 

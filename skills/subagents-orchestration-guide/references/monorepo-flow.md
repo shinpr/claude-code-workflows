@@ -26,7 +26,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 | 10 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 11 as `prior_layer_verification`) | Backend verification |
 | 11 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 10 + UI Spec) | Frontend Design Doc |
 | 12 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 13 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
+| 13 | document-reviewer ×2 | Review each Design Doc using HC-04 | Reviews |
 | 14 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
 | 15 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
 | 16 | work-planner | Work plan from all Design Docs | Work plan |
@@ -46,7 +46,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 | 8 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 9 as `prior_layer_verification`) | Backend verification |
 | 9 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 8 + UI Spec) | Frontend Design Doc |
 | 10 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 11 | document-reviewer ×2 | Review each Design Doc (with code-verifier results as `code_verification`) | Reviews |
+| 11 | document-reviewer ×2 | Review each Design Doc using HC-04 | Reviews |
 | 12 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
 | 13 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
 | 14 | work-planner | Work plan from all Design Docs | Work plan |

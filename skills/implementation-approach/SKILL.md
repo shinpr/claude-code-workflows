@@ -24,7 +24,20 @@ Historical Context Understanding: Current form rationale, past decision validity
 - What dependencies or implicit preconditions are unclear from the code?
 - What benefits and constraints does the current design bring?
 
-### Phase 2: Strategy Exploration and Creation
+### Phase 2: Design Convergence
+
+Complete these steps in order before selecting an implementation strategy:
+
+1. **Direct MVP**: Describe the simplest end-to-end design that delivers the current required outcome using existing system capabilities. Explicit user requirements and confirmed decisions are binding; technical mechanisms framed as suggestions or options remain candidates unless confirmed as mandatory.
+2. **Failure Check**: Test the Direct MVP against current requirements, verified constraints, observed problems within confirmed scope or dependencies required for the outcome, and evidence-backed material risks. Record only unmet items as `Failed Items` with their evidence; record `None` when all pass. Report problems outside that boundary separately for a scope decision.
+3. **Targeted Expansion**: For each Failed Item, first test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary within the existing design surface. When these fail, select the smallest sufficient addition. Record `Adopted Additions` as addition → Failed Item → evidence that lower-surface resolutions fail; an addition requires a Failed Item.
+4. **Subtraction Check**: Temporarily remove each Adopted Addition and re-test its Failed Item. Keep the addition when the item becomes unmet again. Record options considered in step 3 but not adopted as `Rejected Additions` with a brief reason; record `None` when step 3 had no rejected candidate.
+
+Classify supporting claims as observed, inferred, or unknown. When an unknown blocks the next step, stop at the current step and name the evidence or user decision required.
+
+**Design Doc output**: Direct MVP, Failed Items, Adopted Additions, and Rejected Additions.
+
+### Phase 3: Strategy Exploration and Creation
 
 **Core Question**: "When determining before → after, what implementation patterns or strategies should be referenced?"
 
@@ -54,7 +67,7 @@ External Research: Official/current sources only when repository evidence cannot
 
 Use these patterns only when their named migration or dependency problem exists. Start with the direct strategy. Compare an alternative when it would materially change risk, rollout, compatibility, or the early verification point; do not add a pattern or combination only to increase the option count.
 
-### Phase 3: Risk Assessment and Control
+### Phase 4: Risk Assessment and Control
 
 **Core Question**: "What risks arise when applying this to existing implementation, and what's the best way to control them?"
 
@@ -71,7 +84,7 @@ Preventive Measures: Phased migration, parallel operation verification, integrat
 Incident Response: Rollback procedures, log/metrics preparation, communication system, service continuation procedures
 ```
 
-### Phase 4: Constraint Compatibility Verification
+### Phase 5: Constraint Compatibility Verification
 
 **Core Question**: "What are this project's constraints?"
 
@@ -83,7 +96,7 @@ Resource Constraints: Team/skills, work hours/systems, budget, external contract
 Business Constraints: Market launch timing, customer impact, regulatory compliance
 ```
 
-### Phase 5: Implementation Approach Decision
+### Phase 6: Implementation Approach Decision
 
 Select the implementation approach that directly fits the verified dependency and delivery constraints:
 
@@ -102,13 +115,13 @@ Select the implementation approach that directly fits the verified dependency an
 **Application Conditions**: Use when a verified foundation step is required first and later work can proceed as independently verifiable value slices. Resolve blocking requirement ambiguity before selecting the implementation approach
 **Verification Method**: Verify at appropriate L1/L2/L3 levels according to each phase's goals
 
-### Phase 6: Decision Rationale Documentation
+### Phase 7: Decision Rationale Documentation
 
 **Design Doc Documentation**: Record in the Design Doc's implementation approach section:
 1. Selected strategy name and characteristics
 2. A materially different alternative and reason for rejection, when one was compared
-3. Risk mitigation plan (from Phase 3)
-4. Constraint compliance summary (from Phase 4)
+3. Risk mitigation plan (from Phase 4)
+4. Constraint compliance summary (from Phase 5)
 5. Verification level (L1/L2/L3) and integration point definition
 
 ## Verification Level Definitions
@@ -132,14 +145,14 @@ Define integration points according to selected strategy:
 ## Quality Checks
 
 1. Confirm Phase 1 identifies the current responsibility, dependency path, and historical constraints before selecting a strategy
-2. Confirm the direct strategy satisfies every accepted requirement and constraint; when it does not, compare the smallest alternative that covers the gap
-3. Confirm Phase 3 records the material risks and concrete controls before implementation starts
-4. Confirm Phase 4 checks the constraints that can change strategy selection; mark non-applicable categories explicitly rather than inventing content
-5. Confirm Phase 6 records the selected strategy, any materially different alternative, and the early verification point
+2. Confirm Phase 2 records all four Design Convergence outputs, evidence for every Failed Item, and each Adopted Addition's Failed Item mapping, lower-surface insufficiency rationale, and subtraction result
+3. Confirm Phase 4 records the material risks and concrete controls before implementation starts
+4. Confirm Phase 5 checks the constraints that can change strategy selection; mark non-applicable categories explicitly rather than inventing content
+5. Confirm Phase 7 records the selected strategy, any materially different alternative, and the early verification point
 
 ## Guidelines for Meta-cognitive Execution
 
 1. **Leverage Known Patterns**: Use a pattern when its problem and trade-off match the observed repository state
 2. **Conditional External Research**: Use official/current sources when a time-sensitive capability, compatibility, or dependency decision remains unresolved after repository inspection
 3. **Apply 5 Whys**: Pursue root causes to grasp essence
-4. **Multi-perspective Evaluation**: Comprehensively evaluate from each Phase 1-4 perspective
+4. **Multi-perspective Evaluation**: Evaluate current state, convergence, risk, and constraints before selecting the implementation approach

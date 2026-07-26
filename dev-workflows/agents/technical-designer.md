@@ -38,8 +38,8 @@ The subsections below are not parallel mandates; they form four serial gates. Co
 **Gate 1 — Existing State Analysis** (depends on Gate 0):
 - Existing Code Investigation
 - Fact Disposition (when Codebase Analysis input is provided)
+- Design Convergence
 - Data Representation Decision (when new or modified data structures are introduced)
-- Minimal Surface Alternatives (when introducing persistent state, public-contract or cross-boundary fields, behavioral modes/flags, or reusable abstractions)
 
 **Gate 2 — Design Decisions** (depends on Gate 1):
 - Implementation Approach Decision
@@ -108,7 +108,7 @@ Fill the Design Doc's "External Resources Used" subsection (under Background and
    - Look for implementations with same domain, responsibilities, or configuration patterns
    - Decision and action:
      - Similar functionality found → Use existing implementation
-     - Similar functionality is technical debt → Create ADR improvement proposal before implementation
+     - Similar functionality is technical debt → Repair it when required for the current outcome or confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
      - No similar functionality → Proceed with new implementation
 
 4. **Dependency Existence Verification**
@@ -116,7 +116,7 @@ Fill the Design Doc's "External Resources Used" subsection (under Background and
    - Typical targets include: interfaces, classes, repositories, service methods, API endpoints, DB tables/columns, configuration keys, enum values, type definitions
    - If found in codebase: record file path and definition location
    - If found outside codebase (external API, separate repository, generated artifact): record the authoritative source and mark as "external dependency"
-   - If not found anywhere: mark as "requires new creation" in the Design Doc and reflect in implementation order dependencies
+   - If not found anywhere: record a failed assumption for Design Convergence to resolve through reuse, repair, or justified creation
 
 5. **Behavioral Claim Verification**
    - For each factual claim the design relies on about behavior or current state — framework/library default behavior ("X defaults to Y"), a capability assumed already provided ("the service already returns Z", "the endpoint already validates W"), or a feature assumed already implemented ("already handled upstream") — attach one evidence source at design time: a codebase reference (file:line from Grep/Read), an executed command result, or an authoritative doc/spec URL.
@@ -126,8 +126,8 @@ Fill the Design Doc's "External Resources Used" subsection (under Background and
 6. **Include in Design Doc**
    - Always include investigation results in "## Existing Codebase Analysis" section
    - Clearly document similar functionality search results (found implementations or "none")
-   - Include dependency existence verification results (verified existing / requires new creation)
-   - Record adopted decision (use existing/improvement proposal/new implementation) and rationale
+   - Include dependency existence verification results (verified existing / failed assumption / external dependency)
+   - Record adopted decision (reuse / repair / new implementation) and rationale
 
 7. **Code Inspection Evidence**
    - Record all inspected files and key functions in "Code Inspection Evidence" section of Design Doc
@@ -147,8 +147,12 @@ For every entry in `Codebase Analysis.focusAreas`, produce one row in the Design
 
 The Fact Disposition Table is the single mechanism that binds existing-behavior facts to the design. Other Design Doc sections that describe existing behavior reference the corresponding Disposition Table row by Focus Area name.
 
-### Data Representation Decision [Gate 1 — Required when new or modified data structures are introduced]
-When the design introduces or significantly modifies data structures:
+### Design Convergence [Gate 1 — Required]
+
+Apply implementation-approach Phase 2 and record Direct MVP, Failed Items, Adopted Additions, and Rejected Additions in the Design Doc. Proceed to data representation and implementation strategy decisions after all four outputs are complete.
+
+### Data Representation Decision [Gate 1 — Required when an Adopted Addition introduces or modifies data structures]
+When the converged design introduces or significantly modifies data structures:
 
 1. **Reuse-vs-New Assessment**
    - Search for existing structures with overlapping purpose
@@ -160,45 +164,10 @@ When the design introduces or significantly modifies data structures:
    - 3+ criteria fail → New structure justified
    - Record decision and rationale in Design Doc
 
-### Minimal Surface Alternatives [Gate 1 — Required when introducing persistent state, public-contract or cross-boundary fields, behavioral modes/flags, or reusable abstractions]
-
-Applies to each maintenance-surface-bearing element the design introduces. The goal is to select the smallest design surface that satisfies the same current requirements. Reference: coding-principles skill, "Minimum Surface for Required Coverage".
-
-**In scope**: persistent state (DB columns/tables, file fields, cache entries, queue payloads, session/cookie data, any state outliving a single operation); public-contract elements (exported types, API request/response fields, exported function signatures, schema definitions); cross-boundary fields (passed between modules/services/components); behavioral modes/flags (state-machine states, feature flags, config options); reusable abstractions (new types/classes/modules/interfaces intended for reuse).
-
-**Out of scope**: local variables within a single function; internal struct fields used only within one module/package; test fixture or mock fields; transient state confined to a single operation; private state without external observers.
-
-**Precedence**: when an element matches both an in-scope and an out-of-scope condition (e.g., a struct field that is both "internal to one module" and "persisted to a DB column"), the in-scope classification wins and the gate applies.
-
-Execute the 5 steps below for each in-scope element, and record the result in the Design Doc's "Minimal Surface Alternatives" section.
-
-1. **Fix Requirements**
-   - List the current user-visible requirements / ACs / accepted technical constraints (audit, data integrity, compatibility, security, performance) this element would serve, citing AC IDs or constraint IDs from the Design Doc.
-   - Eligibility rule: only requirements / constraints that are part of the current Design Doc's adopted scope qualify. Future-only, speculative, or "users might want" requirements are out of scope for this list.
-
-2. **Diverge** (generate alternatives)
-   - Produce at least 2 alternative realizations that cover the same fixed requirements.
-   - At least one alternative must be subtractive. Subtractive alternatives are drawn from: derive from existing data, compute on demand, keep at caller / invocation boundary, reuse existing structure, do not introduce new state.
-
-3. **Compare** (record alternatives in a table)
-
-   | Alternative | Current requirements covered (AC or constraint IDs) | New persistent state (count) | New concept / mode / flag (count) | Crosses component boundary (yes/no) | Breaking change or migration required (yes/no) | Subjective cost notes |
-   |---|---|---|---|---|---|---|
-
-   Resolution priority (later columns are tiebreakers when earlier are equal): (1) new persistent state (lower=smaller); (2) crosses component boundary (no=smaller); (3) new concept/mode/flag (lower=smaller); (4) breaking change or migration (no=smaller); (5) subjective cost notes.
-
-4. **Converge** (select)
-   - Select the alternative with the smallest surface that covers all fixed requirements, applying the resolution priority above.
-   - When the selected alternative is not the smallest, name the current requirement (from step 1) that smaller alternatives fail to satisfy.
-   - "Useful" / "future-ready" / "convenient for implementation" / "users might want" belong in the Subjective cost notes column (tiebreakers only).
-
-5. **Record Rejected Alternatives**
-   - For each rejected alternative, record 1-2 lines: what it was, why rejected. Include in the Design Doc to prevent re-proposal in subsequent iterations or by future agents.
-
 ### Implementation Approach Decision [Gate 2 — Required]
 
 1. **Approach Selection Criteria**
-   - Execute Phase 1-4 of implementation-approach skill to select strategy
+   - Execute implementation-approach Phases 3–7, using Gate 1 Existing State Analysis and Design Convergence as the completed Phase 1–2 inputs
    - **Vertical Slice**: Complete by feature unit, minimal external dependencies, early value delivery
    - **Horizontal Slice**: Implementation by layer, important common foundation, technical consistency priority
    - **Hybrid**: Composite, handles complex requirements
@@ -408,7 +377,7 @@ Log conflicts in the output; the orchestrator presents conflicts to the user.
 
 When `operation_mode: reverse-engineer`:
 
-**Skip**: ADR creation, Option comparison, Change Impact Map, Field Propagation Map, Implementation Approach Decision, Latest Information Research, Minimal Surface Alternatives.
+**Mode scope**: Produce the evidence-backed as-is documentation from the steps below. Future-state decision outputs—ADR and option selection, Change Impact Map, Field Propagation Map, Implementation Approach Decision, Latest Information Research, and Design Convergence—are N/A.
 
 **Execute**:
 1. Read every Primary File; record public interfaces per file. If Unit Inventory is provided, treat it as completeness baseline (every listed route, export, test file accounted for).
