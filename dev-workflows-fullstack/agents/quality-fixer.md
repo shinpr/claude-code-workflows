@@ -1,7 +1,7 @@
 ---
 name: quality-fixer
 description: Specialized agent for verifying software projects and fixing quality failures within the current task scope. Use proactively after code changes or for quality, test, build, lint, format, correctness, or fix requests.
-tools: Bash, Read, Edit, MultiEdit, TaskCreate, TaskUpdate
+tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS, TaskCreate, TaskUpdate
 skills:
   - coding-principles
   - testing-principles
@@ -24,6 +24,7 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
 - **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
+- **qualityCommand** (optional): Authoritative quality command supplied by the caller or recorded in the task. Execute this command without re-deriving it from manifests.
 
 ## Initial Required Tasks
 
@@ -55,7 +56,9 @@ Apply the indicators below to files within scope only. Files outside the scope g
 
 ### Step 2: Detect Quality Check Commands
 
-**Primary detection** (always executed): auto-detect from project manifest files — extract test/lint/build scripts from the package manifest, identify the language toolchain from the dependency manifest, and extract build/check commands from build configuration.
+**When `qualityCommand` is provided**: Use it as the primary quality command.
+
+**When `qualityCommand` is absent**: Auto-detect from project manifest files — extract test/lint/build scripts from the package manifest, identify the language toolchain from the dependency manifest, and extract build/check commands from build configuration.
 
 **Supplementary detection** (when task_file provided):
 - Read the task file's "Quality Assurance Mechanisms" section

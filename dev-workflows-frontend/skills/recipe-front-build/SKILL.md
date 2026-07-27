@@ -6,6 +6,10 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
+## Quality Command Handoff
+
+When invoking quality-fixer-frontend, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer-frontend performs its independent detection.
+
 ## Orchestrator Definition
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)

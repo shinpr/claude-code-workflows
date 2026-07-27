@@ -6,6 +6,10 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
+## Quality Command Handoff
+
+When invoking quality-fixer, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer performs its independent detection.
+
 **Context**: Post-implementation quality assurance
 
 ## Orchestrator Definition
