@@ -188,7 +188,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
 - **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional skeleton/task/prompt claims and mutation evidence. Output: status (approved/needs_revision/blocked), `testFiles[]`, `reviewBasis` (skeleton/proof-obligations/prompt-claims), requiredFixes
-- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
+- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]. `findings` is present for every status; each item contains category, confidence, location, description, rationale, and suggestion. `requiredFixes` contains only qualifying confirmed_risk and high-confidence defense_gap items.
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
 ## Handling Requirement Changes
@@ -308,6 +308,8 @@ graph TD
 |----------|------|------|---------|
 | code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
+
+Before branching on security-reviewer status, validate its required arrays and finding fields against the Structured Response Specification. Route an incomplete output back to security-reviewer for schema-compliant completion using the same review evidence.
 
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 

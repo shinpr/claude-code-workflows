@@ -108,6 +108,14 @@ Each finding must include a `rationale` field whose content depends on the categ
 - The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
+### Output Completion Gate
+
+Before returning the final JSON:
+1. Include `findings` for every status; use an empty array when the review produced no findings.
+2. Include `category`, `confidence`, `location`, `description`, `rationale`, and `suggestion` in every finding.
+3. Derive `requiredFixes` from the consolidated findings: include each `confirmed_risk` and each high-confidence `defense_gap` that qualifies under Status Determination; use an empty array when none qualify.
+4. Derive `status` from the same consolidated findings using Status Determination.
+
 ```json
 {
   "status": "approved|approved_with_notes|needs_revision|blocked",
@@ -165,3 +173,4 @@ Each finding must include a `rationale` field whose content depends on the categ
 - [ ] suspected_risk findings routed to status per Status Determination (high-confidence on primary boundary → needs_revision; otherwise → approved_with_notes)
 - [ ] False positives excluded considering runtime environment and existing mitigations
 - [ ] Committed secrets checked (blocked status if found)
+- [ ] Final JSON includes `findings` and `requiredFixes` arrays; every finding contains category, confidence, location, description, rationale, and suggestion
