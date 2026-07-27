@@ -129,7 +129,7 @@ Escalate when the required fix or investigation falls outside that scope.
 
 After all task cycles finish, run verification agents **in parallel** before the completion report:
 
-1. **Invoke both in parallel** using Agent tool:
+1. **Invoke all required verifiers concurrently**: place every per-Design-Doc code-verifier call and the security-reviewer call as Agent tool-use blocks in one assistant message. Wait for all results before Step 2; separate assistant messages are serial and do not satisfy this step.
    - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → invoke **once per Design Doc** (`doc_type: design-doc`, single `document_path`, `code_paths`: implementation file list from `git diff --name-only main...HEAD`)
    - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → Design Doc path(s), implementation file list
 
@@ -141,7 +141,7 @@ After all task cycles finish, run verification agents **in parallel** before the
 3. **Fix cycle** (when any verifier failed):
    - Consolidate all actionable findings into a single task file
    - Execute layer-appropriate task-executor with consolidated fixes → quality-fixer
-   - Re-run both code-verifier and security-reviewer
+   - Re-run every required code-verifier and security-reviewer call as Agent tool-use blocks in one assistant message, then wait for all results
    - Repeat until all pass or `blocked` → Escalate to user
 
 4. **All passed** → Proceed to Final Cleanup
