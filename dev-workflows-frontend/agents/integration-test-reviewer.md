@@ -84,7 +84,14 @@ Confirm each test proves its AC's claim or task Proof Obligation, not merely tha
 - Each mocked boundary is an external dependency, with the boundary under test left real, and a comment records why that boundary may be mocked.
 - Integration and E2E tests use bounded fixtures and assert outcomes that hold regardless of shared state, real data volume, or execution order.
 
-### 5. Mutation Evidence Evaluation
+### 5. Route Parity Review
+
+When multiple routes in the changed tests or selected review basis reach the same mutation:
+1. Compare validation, classification, resource bounds, read/parse order, mutation order, and reporting order across every route.
+2. Match each difference to an authoritative requirement, design contract, or explicit test claim.
+3. Record `route_parity` for every unexplained difference and require a test that exposes the bypass or inconsistent outcome.
+
+### 6. Mutation Evidence Evaluation
 
 When `mutationEvidence` is present:
 1. Confirm every entry contains all required fields and its target revision or file hashes match the files under review.
@@ -109,7 +116,7 @@ When `mutationEvidence` is present:
   "passedTests": 3,
   "failedTests": 2,
   "qualityIssues": [
-    { "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
+    { "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|route_parity|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
   ],
   "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
 }
@@ -140,6 +147,7 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 - [ ] Every changed test maps to a claim in the selected review basis
 - [ ] Observable result from the selected claim is asserted
 - [ ] Each test satisfies the applicable Verification mode and Evidence requirement, exercises the claimed boundary, and asserts before/after state for state-changing claims
+- [ ] Routes reaching the same mutation have parity evidence for validation, classification, resource bounds, read/parse order, mutation order, and reporting order
 - [ ] All Verification items are covered
 - [ ] Mock only external dependencies in integration tests
 - [ ] Clear Arrange/Act/Assert separation

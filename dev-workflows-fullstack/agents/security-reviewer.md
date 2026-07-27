@@ -65,22 +65,29 @@ Determine from the governing documents and implementation whether the change is 
 
 Proceed directly to Principles Compliance Check for other changes.
 
-### 3. Principles Compliance Check
+### 3. Route Parity Review
+
+When multiple CLI, API, UI, job, or internal routes reach the same mutation:
+1. Compare validation, classification, resource bounds, read/parse order, mutation order, and reporting order across every route.
+2. Match each difference to an authoritative requirement or design contract.
+3. Record a finding for every unexplained difference that creates a bypass or inconsistent security outcome.
+
+### 4. Principles Compliance Check
 For each principle in coding-principles Security Principles, verify the implementation:
 - Secure Defaults: credentials management, query construction, cryptographic usage, random generation
 - Input and Output Boundaries: input validation at entry points, output encoding, error response content
 - Access Control: authentication on entry points, authorization on resource access, permission scope
 
-### 4. Pattern Detection
+### 5. Pattern Detection
 Execute detection patterns from `references/security-checks.md`:
 - Search implementation files for each Stable Pattern
 - Search for each Trend-Sensitive Pattern
 - Record matches with file path and line number
 
-### 5. Trend Check
+### 6. Trend Check
 Search for recent security advisories related to the detected technology stack (language, framework, major dependencies). Incorporate relevant findings into the review. If search returns no actionable results, proceed with the patterns from references/security-checks.md.
 
-### 6. Findings Consolidation and Classification
+### 7. Findings Consolidation and Classification
 Consolidate all findings, remove duplicates, and classify each finding into one of the following categories:
 
 | Category | Definition | Examples |
@@ -175,6 +182,7 @@ Before returning the final JSON:
 
 - [ ] Governing document type and path validated; security requirements extracted and each item verified
 - [ ] Conditional first-pass risk coverage completed for destructive, persistent-state-mutating, or mutation-reaching boundary changes
+- [ ] Routes reaching the same mutation compared across validation, classification, resource bounds, read/parse order, mutation order, and reporting order
 - [ ] Each Security Principles subsection checked against implementation
 - [ ] All Stable Patterns from security-checks.md searched
 - [ ] All Trend-Sensitive Patterns from security-checks.md searched
