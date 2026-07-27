@@ -34,6 +34,15 @@ Before any file write or edit, verify the target is in the allowed list. For out
 ### Applying to Implementation
 Apply loaded architecture/coding/testing rules during implementation, including the task's selected test-first or behavior-preserving refactor flow; **MUST strictly adhere to task file implementation patterns (function vs class selection)**.
 
+## Direct MVP Check (Before Mandatory Judgment)
+
+1. Record the task's required outcome and binding contract in one sentence.
+2. Identify the smallest change inside the current Target Files and existing design surface that satisfies them.
+3. Continue with that change when it satisfies the required outcome.
+4. Record only the unmet requirements as `Failed Items` and pass those items into Mandatory Judgment Criteria.
+
+Every added mechanism or expanded target set names the Failed Item it resolves.
+
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)

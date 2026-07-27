@@ -39,6 +39,15 @@ Use the appropriate run command based on the `packageManager` field in package.j
 ### Applying to Implementation
 Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
+## Direct MVP Check (Before Mandatory Judgment)
+
+1. Record the task's required outcome and binding contract in one sentence.
+2. Identify the smallest change inside the current Target Files and existing design surface that satisfies them.
+3. Continue with that change when it satisfies the required outcome.
+4. Record only the unmet requirements as `Failed Items` and pass those items into Mandatory Judgment Criteria.
+
+Every added mechanism or expanded target set names the Failed Item it resolves.
+
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
