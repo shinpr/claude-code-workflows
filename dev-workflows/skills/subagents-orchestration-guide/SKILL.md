@@ -29,7 +29,7 @@ Implementation support:
 2. **task-decomposer**: Appropriate task decomposition of work plans
 3. **task-executor**: Individual task execution and structured response
 4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
-5. **security-reviewer**: Security compliance review against Design Doc and coding-principles after all tasks complete
+5. **security-reviewer**: Security compliance review against the governing Design Doc or Work Plan and coding-principles after all tasks complete
 
 Document creation:
 6. **requirement-analyzer**: Requirement analysis and work scale determination
@@ -40,7 +40,7 @@ Document creation:
 11. **technical-designer**: ADR/Design Doc creation
 12. **work-planner**: Work plan creation from Design Doc and test skeletons
 13. **document-reviewer**: Single document quality and rule compliance check
-14. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against Design Doc
+14. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against the governing Design Doc or Work Plan
 15. **design-sync**: Design Doc consistency verification across multiple documents
 16. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
 
@@ -182,7 +182,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
 - **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
-- **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
+- **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
@@ -283,7 +283,7 @@ graph TD
     COMMIT --> CHECK{Any remaining tasks?}
     CHECK -->|Yes| LOOP
     CHECK -->|No| VERIFY[Post-implementation verification]
-    VERIFY --> CV[code-verifier: DD consistency check]
+    VERIFY --> CV[code-verifier: Governing document consistency check]
     VERIFY --> SEC[security-reviewer: Security review]
     CV --> VRESULT{Verification results}
     SEC --> VRESULT
@@ -306,7 +306,7 @@ graph TD
 
 | Verifier | Pass | Fail | Blocked |
 |----------|------|------|---------|
-| code-verifier | `status` is `consistent` or `mostly_consistent` | `status` is `needs_review` or `inconsistent` | — |
+| code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
@@ -412,6 +412,13 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    - Evidence is reusable when every entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes, and the target revision still matches the reviewed files.
    - The receiving reviewer independently evaluates whether the evidence proves the claimed behavior.
    - Incomplete evidence, a revision mismatch, or a contradictory review finding triggers a fresh mutation run and replacement evidence.
+
+   #### HC-08: implementation flow → final verifiers
+
+   - Resolve governing documents from the approved Work Plan before final verification.
+   - When referenced Design Doc paths exist, invoke code-verifier once per Design Doc with `doc_type: design-doc`; pass those same documents to security-reviewer as `governingDocuments`.
+   - When no Design Doc exists, invoke code-verifier once with the resolved Work Plan and `doc_type: work-plan`; pass that Work Plan to security-reviewer as `governingDocuments`.
+   - An absent or unreadable governing document produces a `blocked` result and user escalation.
 
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 

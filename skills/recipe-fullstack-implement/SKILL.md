@@ -131,12 +131,14 @@ Escalate when the required fix or investigation falls outside that scope.
 
 After all task cycles finish, run verification agents **in parallel** before the completion report:
 
-1. **Invoke all required verifiers concurrently**: place every per-Design-Doc code-verifier call and the security-reviewer call as Agent tool-use blocks in one assistant message. Wait for all results before Step 2; separate assistant messages are serial and do not satisfy this step.
-   - code-verifier (subagent_type: "dev-workflows:code-verifier") → invoke **once per Design Doc** (`doc_type: design-doc`, single `document_path`, `code_paths`: implementation file list from `git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → Design Doc path(s), implementation file list
+Resolve governing documents from the approved Work Plan. Use every referenced Design Doc whose path exists; when no Design Doc exists, use the resolved Work Plan itself. An empty set or unreadable governing document is a blocking result to escalate to the user.
+
+1. **Invoke all required verifiers concurrently**: place every governing-document code-verifier call and the security-reviewer call as Agent tool-use blocks in one assistant message. Wait for all results before Step 2; separate assistant messages are serial and do not satisfy this step.
+   - code-verifier (subagent_type: "dev-workflows:code-verifier") → invoke once per resolved governing document with its `doc_type` (`design-doc` or `work-plan`), single `document_path`, and `code_paths`: implementation file list from `git diff --name-only main...HEAD`
+   - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → `governingDocuments`: the same typed document list, and `implementationFiles`: implementation file list
 
 2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
+   - code-verifier: **pass** when `summary.status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. **blocked** → Escalate to user. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
    - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
    - Present unified verification report to user
 

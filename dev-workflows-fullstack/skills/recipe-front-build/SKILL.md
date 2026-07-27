@@ -131,12 +131,14 @@ Verify task files exist per Pre-execution Checklist, then enter autonomous execu
 
 After all task cycles finish, run verification agents **in parallel** before the completion report:
 
+Resolve the governing document from the approved Work Plan. Use its referenced Design Doc when that path exists; otherwise use the resolved Work Plan itself. An absent or unreadable governing document is a blocking result to escalate to the user.
+
 1. **Invoke both concurrently**: place the code-verifier and security-reviewer Agent tool-use blocks in one assistant message. Wait for both results before Step 2; two separate assistant messages are serial and do not satisfy this step.
-   - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → `doc_type: design-doc`, Design Doc path, `code_paths`: implementation file list (`git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → Design Doc path, implementation file list
+   - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → resolved `doc_type` (`design-doc` or `work-plan`), `document_path`, and `code_paths`: implementation file list (`git diff --name-only main...HEAD`)
+   - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → `governingDocuments`: the same typed document, and `implementationFiles`: implementation file list
 
 2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
+   - code-verifier: **pass** when `summary.status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. **blocked** → Escalate to user. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
    - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
    - Present unified verification report to user
 

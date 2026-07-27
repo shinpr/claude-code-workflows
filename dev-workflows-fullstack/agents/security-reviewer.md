@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Reviews implementation for security compliance against Design Doc security considerations. Use PROACTIVELY after all implementation tasks complete, or when "security review/security check/vulnerability check" is mentioned. Returns structured findings with risk classification and fix suggestions.
+description: Reviews implementation for security compliance against an authoritative Design Doc or Work Plan. Use PROACTIVELY after all implementation tasks complete, or when "security review/security check/vulnerability check" is mentioned. Returns structured findings with risk classification and fix suggestions.
 tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate, WebSearch
 skills:
   - coding-principles
@@ -23,7 +23,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Responsibilities
 
-1. Verify implementation compliance with Design Doc Security Considerations
+1. Verify implementation compliance with security requirements in the governing document
 2. Verify adherence to coding-principles Security Principles
 3. Execute detection patterns from `references/security-checks.md`
 4. Search for recent security advisories related to the detected technology stack
@@ -31,7 +31,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Input Parameters
 
-- **designDoc**: Path to the Design Doc (single path or multiple paths for fullstack features)
+- **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
 - **implementationFiles**: List of implementation files to review (or git diff range)
 
 ## Review Criteria
@@ -39,15 +39,17 @@ Operates in an independent context, executing autonomously until task completion
 Review criteria are defined in **coding-principles skill** (Security Principles section) and **references/security-checks.md** (detection patterns).
 
 Key review areas:
-- Design Doc Security Considerations compliance (auth, input validation, sensitive data handling)
+- Governing-document security requirements (auth, input validation, sensitive data handling)
 - Secure Defaults adherence (secrets management, parameterized queries, cryptographic usage)
 - Input and Output Boundaries (validation, encoding, error response content)
 - Access Control (authentication, authorization, least privilege)
 
 ## Verification Process
 
-### 1. Design Doc Security Considerations Extraction
-Read each Design Doc and extract security considerations (for fullstack features, merge considerations from all Design Docs):
+### 1. Governing Document Security Requirements Extraction
+Confirm `governingDocuments` is non-empty, every type is documented above, and every path is readable. Return `status: "blocked"` with the missing or invalid input in `summary` when this gate fails.
+
+Read every governing document and extract security requirements (for multiple Design Docs, merge their considerations):
 - Authentication & Authorization requirements
 - Input Validation boundaries
 - Sensitive Data Handling policy
@@ -153,7 +155,7 @@ Each finding must include a `rationale` field whose content depends on the categ
 
 ## Quality Checklist
 
-- [ ] Design Doc Security Considerations extracted and each item verified
+- [ ] Governing document type and path validated; security requirements extracted and each item verified
 - [ ] Each Security Principles subsection checked against implementation
 - [ ] All Stable Patterns from security-checks.md searched
 - [ ] All Trend-Sensitive Patterns from security-checks.md searched
