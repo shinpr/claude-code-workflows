@@ -49,6 +49,9 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Document concrete executable procedures
    - **Always include operation verification methods**
    - Define clear completion criteria within the task scope
+   - Generate Hard Constraints only from the user request, an approved governing document section, or a named task dependency
+   - State each Hard Constraint as an allowed action with its authoritative source
+   - Omit a Hard Constraint when no authoritative source exists
 
 ## Task Size Criteria
 - **Small (Recommended)**: 1-2 files
@@ -97,6 +100,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    Include the following in each task file:
    - Task overview
    - Target files
+   - **Hard Constraints** with `Allowed action` and `Source` when an authoritative constraint applies
    - **Investigation Targets** (required pre-implementation reading)
    - **Change Category** (when the task is a bug fix / regression / state-change / boundary-change — see Change Category Classification below)
    - Concrete implementation steps
@@ -104,6 +108,8 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - **Operation Verification Methods** (derived from Verification Strategy in work plan)
    - **Proof Obligations** (per claim — see Proof Obligation Propagation below)
    - Completion criteria
+
+   When a Hard Constraint applies, include the task-template rule that records the smallest option satisfying both the required outcome and every constraint before the constraint can block execution.
 
 6. **Investigation Targets Determination**
    For each task, determine the required reading from the task's nature:
