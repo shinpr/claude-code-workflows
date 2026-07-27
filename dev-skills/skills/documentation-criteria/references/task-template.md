@@ -14,13 +14,12 @@ Metadata:
 - [ ] [Test file path]
 
 ## Hard Constraints
-(Include this section only when an authoritative source constrains the implementation. Omit it when no such constraint exists.)
 
 | Allowed action | Source |
 |---|---|
 | [What the implementation may do while preserving the protected boundary] | [User request / approved governing document path (§ section) / named task dependency] |
 
-Every row requires one of the listed source types. Before treating a constraint as blocking, record in Investigation Notes the smallest option inside the current target files and existing design surface that satisfies both the required outcome and every constraint. Continue with that option when it satisfies the outcome; otherwise pass the unmet item to the existing escalation process.
+Include this section only for constraints with a listed source. Before escalation, record and use the smallest in-scope option satisfying both the outcome and every constraint; escalate only the unmet item.
 
 ## Investigation Targets
 Files to read before starting implementation (file path, with optional search hint):

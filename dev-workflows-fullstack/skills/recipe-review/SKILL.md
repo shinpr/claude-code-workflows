@@ -6,10 +6,6 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
-## Quality Command Handoff
-
-When invoking quality-fixer, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer performs its independent detection.
-
 **Context**: Post-implementation quality assurance
 
 ## Orchestrator Definition
@@ -109,13 +105,7 @@ Resolve discrepancies — confirm or override the recommended route per finding:
 
 Use AskUserQuestion. The default offer is **"accept all recommended routes"** — a single confirmation for the typical case where the orchestrator's recommendations are correct. When the user wants to override, collect per-finding c/d/s decisions instead. If the user selects `s` for everything: skip Steps 5-10, proceed to Step 11.
 
-#### Approved Change Contract
-
-1. Record each approved finding, its selected route, and the files or document sections it covers.
-2. When approval includes `minimal`, `a few lines`, or an explicit line estimate, record that expression as a total budget and estimate the complete change before editing.
-3. Pass the approved findings, routes, and total budget to every update or fix agent.
-4. After each update or fix and before re-validation, inspect the complete diff and map every hunk to an approved finding or a directly required consistency update.
-5. Keep other improvement candidates in a separate list. When a hunk has no mapping or the complete diff exceeds the total budget, return to the user for a scope decision before continuing.
+Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update; request a scope decision for unmapped or over-budget changes.
 
 ### Step 5: Execute Skill
 
@@ -162,6 +152,7 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:quality-fixer"
 - `description`: "Quality gate check"
+- Pass Step 7 `mutationEvidence` and `qualityCommand` from the caller or current task when available.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 9: Re-validate code-reviewer

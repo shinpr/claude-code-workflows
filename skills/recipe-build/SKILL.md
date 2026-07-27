@@ -6,10 +6,6 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
-## Quality Command Handoff
-
-When invoking quality-fixer, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer performs its independent detection.
-
 ## Orchestrator Definition
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
@@ -89,23 +85,17 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 ## Task Execution Cycle (4-Step Cycle)
 **MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
 
-Before entering the per-task loop, register these orchestration phases once with TaskCreate:
-1. "Execute consumed task set"
-2. "Run post-implementation verification"
-3. "Clean up consumed task files"
-4. "Report completion"
-
-Set "Execute consumed task set" to `in_progress`. At each phase boundary below, complete the current phase and set the next phase to `in_progress` using TaskUpdate.
+Before the loop, register `"Execute consumed task set"`, `"Run post-implementation verification"`, `"Clean up consumed task files"`, and `"Report completion"` once with TaskCreate; mark and advance the active phase with TaskUpdate.
 
 For EACH task in the Consumed Task Set, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows:task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, `promptClaims` (claims present only in the executor prompt), and `mutationEvidence`
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - `readyForQualityCheck: true` → Proceed to step 3
-3. **QUALITY-FIX**: Invoke quality-fixer, execute all quality checks and fixes, and **always pass** the current task file path as `task_file`
+3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or current task when available
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
    - `approved` → Proceed to step 4
@@ -128,26 +118,13 @@ Verify task files exist per Pre-execution Checklist, then enter autonomous execu
 
 ## Post-Implementation Verification (After All Tasks Complete)
 
-After all task cycles finish, run verification agents **in parallel** before the completion report:
+Resolve the Work Plan's readable Design Doc, or the Work Plan itself when no Design Doc exists; missing input blocks verification.
 
-Resolve the governing document from the approved Work Plan. Use its referenced Design Doc when that path exists; otherwise use the resolved Work Plan itself. An absent or unreadable governing document is a blocking result to escalate to the user.
+Emit these Agent calls in one assistant message, then await both:
+- code-verifier (subagent_type: "dev-workflows:code-verifier") → resolved `doc_type`, `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
+- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the same typed `governingDocuments` and `implementationFiles`
 
-1. **Invoke both concurrently**: place the code-verifier and security-reviewer Agent tool-use blocks in one assistant message. Wait for both results before Step 2; two separate assistant messages are serial and do not satisfy this step.
-   - code-verifier (subagent_type: "dev-workflows:code-verifier") → resolved `doc_type` (`design-doc` or `work-plan`), `document_path`, and `code_paths`: implementation file list (`git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → `governingDocuments`: the same typed document, and `implementationFiles`: implementation file list
-
-2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `summary.status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. **blocked** → Escalate to user. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
-   - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
-   - Present unified verification report to user
-
-3. **Fix cycle** (when any verifier failed):
-   - Consolidate all actionable findings into a single task file
-   - Execute task-executor with consolidated fixes → quality-fixer
-   - Re-run code-verifier and security-reviewer with both Agent tool-use blocks in one assistant message, then wait for both results
-   - Repeat until all pass or `blocked` → Escalate to user
-
-4. **All passed** → Proceed to Final Cleanup
+Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules. Present the unified report; proceed to Final Cleanup after both pass.
 
 ## Final Cleanup
 

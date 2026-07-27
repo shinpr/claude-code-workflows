@@ -6,10 +6,6 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
-## Quality Command Handoff
-
-When invoking a layer-appropriate quality-fixer, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so the quality-fixer performs its independent detection.
-
 **Context**: Full-cycle fullstack implementation management (Requirements Analysis → Design (backend + frontend) → Planning → Implementation → Quality Assurance)
 
 ## Orchestrator Definition
@@ -64,13 +60,7 @@ Key points to enforce as the orchestrator runs the flow:
 
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-**After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
-- First task: "Select and map applicable rules"
-- Register each design-through-planning step as an individual task
-- Register "Execute implementation task cycles", "Run final verification", "Clean up consumed task files", and final task "Report completion"
-- Set currently executing step to `in_progress` using TaskUpdate
-- Complete the current phase and set the next phase to `in_progress` at each flow boundary
-- **Complete task registration before invoking subagents**
+After scale determination, use TaskCreate to register `"Select and map applicable rules"`, each design/planning step, and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
 
 ## After requirement-analyzer [Stop]
 
@@ -121,7 +111,7 @@ Escalate when the required fix or investigation falls outside that scope.
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check)
-3. Quality-fixer MUST run after each executor before proceeding to commit. **Always pass** the current task file path as `task_file`
+3. Run quality-fixer after each executor with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or task when available
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
@@ -129,26 +119,13 @@ Escalate when the required fix or investigation falls outside that scope.
 
 ### Post-Implementation Verification (After All Tasks Complete)
 
-After all task cycles finish, run verification agents **in parallel** before the completion report:
+Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
 
-Resolve governing documents from the approved Work Plan. Use every referenced Design Doc whose path exists; when no Design Doc exists, use the resolved Work Plan itself. An empty set or unreadable governing document is a blocking result to escalate to the user.
+Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
+- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → each resolved `doc_type`, single `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
+- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
 
-1. **Invoke all required verifiers concurrently**: place every governing-document code-verifier call and the security-reviewer call as Agent tool-use blocks in one assistant message. Wait for all results before Step 2; separate assistant messages are serial and do not satisfy this step.
-   - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → invoke once per resolved governing document with its `doc_type` (`design-doc` or `work-plan`), single `document_path`, and `code_paths`: implementation file list from `git diff --name-only main...HEAD`
-   - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → `governingDocuments`: the same typed document list, and `implementationFiles`: implementation file list
-
-2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `summary.status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. **blocked** → Escalate to user. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
-   - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
-   - Present unified verification report to user
-
-3. **Fix cycle** (when any verifier failed):
-   - Consolidate all actionable findings into a single task file
-   - Execute layer-appropriate task-executor with consolidated fixes → quality-fixer
-   - Re-run every required code-verifier and security-reviewer call as Agent tool-use blocks in one assistant message, then wait for all results
-   - Repeat until all pass or `blocked` → Escalate to user
-
-4. **All passed** → Proceed to Final Cleanup
+Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
 
 ### Final Cleanup
 

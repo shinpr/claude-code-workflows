@@ -22,30 +22,6 @@ When receiving a new task, pass user requirements directly to requirement-analyz
 
 **When any signal is detected → Re-run requirement-analyzer with integrated requirements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate. Preserve earlier outputs that remain valid.**
 
-## Agents Used by the Declared Guide Flows
-
-This list describes agents used by the generic flows in this guide. Owning recipes and references declare their recipe-specific, frontend, and fullstack routing.
-
-Implementation support:
-1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
-2. **task-decomposer**: Appropriate task decomposition of work plans
-3. **task-executor**: Individual task execution and structured response
-4. **integration-test-reviewer**: Review integration/E2E tests against the selected review basis and quality criteria
-5. **security-reviewer**: Security compliance review against the governing Design Doc or Work Plan and coding-principles after all tasks complete
-
-Document creation:
-6. **requirement-analyzer**: Requirement analysis and work scale determination
-7. **codebase-analyzer**: Analyze existing codebase to produce focused guidance for technical design (data, contracts, dependencies, quality assurance mechanisms)
-8. **ui-analyzer**: Read the project's external-resources file, fetch external UI sources (design origin, design system, guidelines) via MCP/URL/file, and analyze existing UI code. Frontend/fullstack features; runs in parallel with codebase-analyzer. Uses `disallowedTools` to inherit MCP access
-9. **prd-creator**: Product Requirements Document creation
-10. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
-11. **technical-designer**: ADR/Design Doc creation
-12. **work-planner**: Work plan creation from Design Doc and test skeletons
-13. **document-reviewer**: Single document quality and rule compliance check
-14. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against the governing Design Doc or Work Plan
-15. **design-sync**: Design Doc consistency verification across multiple documents
-16. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
-
 ## Orchestration Principles
 
 ### Delegation Boundary: What vs How
@@ -189,8 +165,8 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional `skeletonFiles`, `taskFile`, `promptClaims`, and `mutationEvidence`. Output: status (approved/needs_revision/blocked), `testFiles[]`, `reviewBasis` (skeleton/proof-obligations/prompt-claims), requiredFixes
-- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]. `findings` is present for every status; each item contains category, confidence, location, description, rationale, and suggestion. `requiredFixes` contains only qualifying confirmed_risk and high-confidence defense_gap items.
+- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status, `reviewBasis`, requiredFixes
+- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
 ## Handling Requirement Changes
@@ -311,8 +287,6 @@ graph TD
 | code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
-Before branching on security-reviewer status, validate its required arrays and finding fields against the Structured Response Specification. Route an incomplete output back to security-reviewer for schema-compliant completion using the same review evidence.
-
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
 ### Conditions for Stopping Autonomous Execution
@@ -340,11 +314,11 @@ Stop autonomous execution and escalate to user in the following cases:
 1. **Execute**: invoke Agent tool (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, `promptClaims` (claims present only in the executor prompt), and `mutationEvidence`
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - Otherwise → Proceed to step 3
-3. **Quality-fix**: invoke quality-fixer and **always pass** the current task file path as `task_file`
+3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or task when available
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
@@ -409,27 +383,6 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    **Pass to work-planner**: integration / fixture-e2e / service-integration-e2e file paths (or null per lane), per-lane absence reasons, plus timing guidance — integration tests are created alongside each phase implementation, fixture-e2e tests are created alongside the UI feature phase, service-integration-e2e tests are executed only in the final phase.
 
    **On error**: Escalate to user when status != completed and integration file generation failed unexpectedly. A null E2E lane with a valid absence reason is not an error.
-
-   #### HC-07: task-executor → test and quality reviewers
-
-   - Pass `mutationEvidence` from the task completion response to integration-test-reviewer and quality-fixer.
-   - Evidence is reusable when every entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes, and the target revision still matches the reviewed files.
-   - The receiving reviewer independently evaluates whether the evidence proves the claimed behavior.
-   - Incomplete evidence, a revision mismatch, or a contradictory review finding triggers a fresh mutation run and replacement evidence.
-
-   #### HC-08: implementation flow → final verifiers
-
-   - Resolve governing documents from the approved Work Plan before final verification.
-   - When referenced Design Doc paths exist, invoke code-verifier once per Design Doc with `doc_type: design-doc`; pass those same documents to security-reviewer as `governingDocuments`.
-   - When no Design Doc exists, invoke code-verifier once with the resolved Work Plan and `doc_type: work-plan`; pass that Work Plan to security-reviewer as `governingDocuments`.
-   - An absent or unreadable governing document produces a `blocked` result and user escalation.
-
-   #### HC-09: task-executor → integration-test-reviewer
-
-   - Record `diffBase` before invoking task-executor.
-   - Pass `changedTestFiles`: every changed integration/E2E test path from `filesModified` or `testsAdded` that differs from `diffBase`.
-   - Pass the current task file as `taskFile`, claims added only in the executor prompt as `promptClaims`, and the task response evidence as `mutationEvidence`.
-   - The reviewer selects one complete basis for the change set: skeleton annotations, task Proof Obligations, or prompt claims.
 
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 

@@ -6,10 +6,6 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
-## Quality Command Handoff
-
-When invoking quality-fixer-frontend, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer-frontend performs its independent detection.
-
 **Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
 
 ## Execution Pattern
@@ -130,6 +126,7 @@ When the project-tier file declares no automated verification mechanism for an a
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-fullstack:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
+  - Pass `qualityCommand` from the caller or current task when available.
   - Build the prompt by branch. Scope is always `filesModified`; `task_file` (when passed) is a supplementary hint that quality-fixer-frontend may use to read the document's "Quality Assurance Mechanisms" section.
     - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]`.
     - **Branch B (3-5 files)**: pass `task_file: <work plan path>` (supplementary hint) AND `filesModified: [list of files edited in this adjustment unit]` (primary scope).

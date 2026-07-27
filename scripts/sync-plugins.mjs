@@ -8,6 +8,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const MARKETPLACE_PATH = join(ROOT, '.claude-plugin', 'marketplace.json')
 const SYNC_OVERRIDES_PATH = join(ROOT, 'scripts', 'sync-overrides.json')
 const CHECK = process.argv.slice(2).includes('--check')
+const SUBAGENT_REFERENCE =
+  /subagent_type`?\s*:\s*(?:`?["'])?([a-z0-9][a-z0-9-]*):([a-z0-9][a-z0-9-]*)(?=[`"',)\s]|$)/gi
 
 function isLocalSource(source) {
   return typeof source === 'string' && source.startsWith('./')
@@ -96,6 +98,7 @@ async function generatePlugin(entry, baseDir) {
 
   await applyNamespaceRewrites(entry, targetDir)
   await applyDeprecations(entry, targetDir)
+  await validateLocalAgentNamespaces(entry, targetDir)
 }
 
 async function applyNamespaceRewrites(entry, targetDir) {
@@ -144,6 +147,29 @@ async function collectMarkdownFiles(dir, out) {
       await collectMarkdownFiles(full, out)
     } else if (e.isFile() && e.name.endsWith('.md')) {
       out.push(full)
+    }
+  }
+}
+
+async function validateLocalAgentNamespaces(entry, targetDir) {
+  const localAgents = agentBaseNames(entry)
+  const files = []
+  await collectMarkdownFiles(join(targetDir, 'skills'), files)
+
+  for (const file of files) {
+    const path = relative(targetDir, file).split(sep).join('/')
+    if (!/^skills\/recipe-[^/]+\/SKILL\.md$/.test(path)) continue
+
+    const lines = (await readFile(file, 'utf8')).split('\n')
+    for (const [index, line] of lines.entries()) {
+      SUBAGENT_REFERENCE.lastIndex = 0
+      for (const match of line.matchAll(SUBAGENT_REFERENCE)) {
+        if (localAgents.has(match[2]) && match[1] !== entry.name) {
+          throw new Error(
+            `plugin "${entry.name}" recipe ${path}:${index + 1} references local agent "${match[2]}" through namespace "${match[1]}"`,
+          )
+        }
+      }
     }
   }
 }

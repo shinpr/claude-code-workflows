@@ -78,11 +78,11 @@ Domain-independent failure categories this implementation must guard against. En
 | missing-sort-key ordering | yes/no | |
 | irreversible-operation | yes/no | |
 
-Set `irreversible-operation` to `yes` when the work is destructive, mutates persistent state, or changes a boundary that reaches a mutation. When it applies, include the following First-Pass Risk Coverage table before the implementation phases. Omit the table for other work.
+Set `irreversible-operation` to `yes` when the work is destructive, mutates persistent state, or changes a boundary that reaches a mutation. For applicable work, include this table before the implementation phases and give mutation, partial evidence, retry, concurrency, identity, and input-route separate `covered` / `not applicable` / `blocked` dispositions.
 
-| Operation | All Reaching Routes | Incomplete-Evidence Conditions | Default Behavior | mutation | partial evidence | retry | concurrency | identity | input-route | Covered By Task(s) |
-|---|---|---|---|---|---|---|---|---|---|---|
-| [destructive/stateful/boundary-changing operation] | [every CLI/API/UI/job/internal route that can reach it] | [missing, stale, partial, or contradictory evidence states] | [behavior before sufficient evidence exists] | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | [Phase X Task Y] |
+| Operation | Reaching Routes | Incomplete Evidence and Safe Default | Hazard Dispositions | Covered By Task(s) |
+|---|---|---|---|---|
+| [operation] | [every CLI/API/UI/job/internal route] | [missing/stale/partial/contradictory states and behavior] | [six required dispositions] | [Phase X Task Y] |
 
 ## UI Spec Component → Task Mapping
 

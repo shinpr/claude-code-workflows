@@ -40,12 +40,7 @@ Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules durin
 
 ## Direct MVP Check (Before Mandatory Judgment)
 
-1. Record the task's required outcome and binding contract in one sentence.
-2. Identify the smallest change inside the current Target Files and existing design surface that satisfies them.
-3. Continue with that change when it satisfies the required outcome.
-4. Record only the unmet requirements as `Failed Items` and pass those items into Mandatory Judgment Criteria.
-
-Every added mechanism or expanded target set names the Failed Item it resolves.
+Apply implementation-approach Design Convergence to the current Target Files. Use its `Failed Items` as input to Mandatory Judgment Criteria, and map every added mechanism or expanded target to one Failed Item.
 
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
@@ -64,11 +59,7 @@ Any YES below requires immediate escalation:
 □ Error handling bypass needed? (exception ignore, error suppression, empty catch blocks)
 □ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
 
-Classify existing-test changes separately:
-
-- Weakening, deleting, skipping, or re-baselining an existing test to make the change pass → escalate.
-- Updating an existing expectation to match a contract change accepted by the task file, Design Doc, Work Plan, or UI Spec → proceed and record the accepted source in Investigation Notes.
-- Changing behavior pinned by an existing test without an accepted source → escalate.
+Existing-test changes proceed only when updating an expectation for an accepted task/Design Doc/Work Plan/UI Spec contract; record that source. Escalate test weakening or behavior changes without an accepted source.
 
 ### Step3: Similar Component Duplication Check
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
@@ -128,7 +119,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
 #### Investigation Targets (Required when present)
 1. Extract file paths from task file "Investigation Targets" section
 2. Read each file with Read tool **before any implementation**. When a search hint is provided (e.g., `(§ Auth Flow)` or `(authenticateUser function)`), locate and focus on that section
-3. Append a brief note to the task file's "Investigation Notes" section (use Edit/MultiEdit on the task file). Identify observations by symbol, function, contract, or section name, and record the key interfaces, control/data flow, state transitions, and side effects. Reserve file:line references for post-edit evidence when a consumer contract requires them. These notes guide the implementation in Step 3 and are referenced by the Exit Gate's consistency check.
+3. Append brief Investigation Notes identified by symbol, function, contract, or section, covering key interfaces, flow, state transitions, and side effects. Reserve file:line for post-edit evidence that requires it.
 4. If an Investigation Target file does not exist or the path is stale, escalate with `reason: "investigation_target_not_found"` (see Escalation Response 2-3)
 
 #### Dependency Deliverables
@@ -177,9 +168,8 @@ Applies when Pre-implementation Verification finds a dependency this task requir
 Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task decomposition wrote — read the field value and treat it as authoritative for whether the sweep applies.
 
 1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
-2. Check each for the same class of defect this task corrects.
-3. Record each inspected case and its disposition in Investigation Notes: `incorporated`, `unchanged` with evidence, or `out-of-scope` with the scope decision required. When the sweep finds no adjacent case, record the searched surface and that result.
-4. Fold adjacent residuals within the Target Files scope into the applicable Proof Obligation's selected Verification mode, Evidence requirement, and implementation; for `red-test`, include them in the failing tests.
+2. Check the same defect class and record each case as `incorporated`, `unchanged` with evidence, or `out-of-scope` with the required scope decision; when none exist, record the searched surface.
+3. Fold in-scope residuals into the applicable Proof Obligation and implementation; for `red-test`, include them in the failing tests.
 
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
@@ -251,7 +241,7 @@ Return the final response per Structured Response Specification. For research/an
 
 **runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
 
-**mutationEvidence**: When mutation verification was executed, include one object per mutation with `mutation` (description or patch), `killedTest`, `baselineResult`, `mutatedResult`, `restorationProof` (restoration checksum or clean diff), and `targetRevision` (revision or file hashes). Use an empty array when this task produced no mutation evidence.
+**mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
 
 ### 1. Task Completion Response
 Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):

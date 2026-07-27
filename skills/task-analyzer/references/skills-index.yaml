@@ -57,8 +57,8 @@ skills:
       - "Continuous Integration"
       - "Test Design Guardrails"
       - "Regression Testing"
-      - "Testing Best Practices by Language Paradigm"
       - "Documentation and Communication"
+      - "References"
 
   ai-development-guide:
     skill: "ai-development-guide"
@@ -150,7 +150,6 @@ skills:
       - "Conductor Pattern"
     sections:
       - "Role: The Orchestrator"
-      - "Agents Used by the Declared Guide Flows"
       - "Orchestration Principles"
       - "Constraints Between Subagents"
       - "Explicit Stop Points"

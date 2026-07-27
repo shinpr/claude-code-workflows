@@ -26,6 +26,7 @@ The goal is stable downstream execution: the next agent should know what to read
 4. **Provide necessary context**
    - Include the purpose, source artifacts, hard constraints, accepted decisions, and unresolved conditions.
    - Prefer concrete file paths and section hints over broad module names.
+   - Follow references while they can change an in-scope decision, action, or verification result.
 
 5. **Decompose complex work into verifiable steps**
    - Split work with 3+ objectives or sequential dependencies into ordered steps.
@@ -38,10 +39,6 @@ The goal is stable downstream execution: the next agent should know what to read
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
    - Keep simple downstream tasks lightweight when the target action, context, and success criteria are already clear.
-
-8. **Apply size constraints to the complete change**
-   - Treat `minimal`, `a few lines`, and explicit line estimates as total budgets.
-   - Record a total estimate before editing and compare it with the completed diff.
 
 ## Rewrite Patterns
 
@@ -70,7 +67,6 @@ Before sending a prompt or artifact to another agent, verify:
 - [ ] Success criteria are observable.
 - [ ] Ambiguous expressions have been rewritten or marked as unresolved.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
-- [ ] Each size budget has a before-edit estimate and a completed-diff comparison.
 - [ ] The next agent can complete its scope with explicit choices, decision rules, or blocking unresolved items.
 
 ## Generated Artifact Checklist
@@ -81,6 +77,5 @@ Before writing or finalizing a generated document:
 - [ ] Every executable instruction names the target, action, and expected result.
 - [ ] Verification steps say what to run or observe and what result proves success.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
-- [ ] Each size budget has a before-edit estimate and a completed-diff comparison.
 - [ ] If an artifact is derived from another artifact, copied decisions stay consistent in wording and meaning.
 - [ ] If downstream work is blocked by missing information, the artifact records the missing input and escalation condition.

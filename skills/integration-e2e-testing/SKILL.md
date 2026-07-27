@@ -178,15 +178,7 @@ The test runner or framework in the project determines the appropriate file exte
 
 ### Route Parity for Shared Mutations
 
-When two or more CLI, API, UI, job, or internal routes reach the same mutation, compare the routes across:
-- validation;
-- classification;
-- resource bounds;
-- read/parse order;
-- mutation order;
-- reporting order.
-
-Each intentional difference requires evidence from an authoritative requirement, design contract, or explicit test claim. A difference without evidence is a route-parity failure and requires a test that exposes the bypass or inconsistent outcome.
+When multiple routes reach the same mutation, compare validation, classification, resource bounds, and read/parse/mutation/reporting order. Each difference requires an authoritative requirement, design contract, or explicit test claim; otherwise require a test exposing the bypass or inconsistent outcome.
 
 ## Quality Standards
 

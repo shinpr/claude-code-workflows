@@ -296,12 +296,7 @@ Each test must:
 
 ### Capability Probe Postconditions
 
-A capability probe passes when it proves the exact property the test consumer uses:
-1. Name the consumer and required property.
-2. Exercise the capability through the same boundary the consumer uses.
-3. Assert the consumer-observable postcondition.
-
-Command success, import success, or object existence is setup evidence; pair it with the consumed postcondition. For example, `mkfifo` can exit successfully in a compatibility shell while a Windows test consumer cannot observe a usable FIFO. The probe passes only after the consumer opens and transfers data through the resulting pipe.
+A capability probe passes when it uses the consumer's boundary and asserts the exact property that consumer needs. Command success, import success, or object existence is setup evidence.
 
 ## Test Organization
 
@@ -379,34 +374,6 @@ Command success, import success, or object existence is setup evidence; pair it 
 - Gradually improve coverage
 - Refactor with confidence
 
-## Testing Best Practices by Language Paradigm
-
-### Type System Utilization
-
-**For languages with static type systems:**
-- Leverage compile-time verification for correctness
-- Focus tests on business logic and runtime behavior
-- Use language's type system to prevent invalid states
-
-**For languages with dynamic typing:**
-- Add comprehensive runtime validation tests
-- Explicitly test data contract validation
-- Consider property-based testing for broader coverage
-
-### Programming Paradigm Considerations
-
-**Functional approach:**
-- Test pure functions thoroughly (deterministic, no side effects)
-- Test side effects at system boundaries
-- Leverage property-based testing for invariants
-
-**Object-oriented approach:**
-- Test behavior through public interfaces
-- Mock dependencies via abstraction layers
-- Test polymorphic behavior carefully
-
-**Common principle:** Adapt testing strategy to leverage language strengths while ensuring comprehensive coverage
-
 ## Documentation and Communication
 
 ### Tests as Documentation
@@ -422,3 +389,7 @@ Command success, import success, or object existence is setup evidence; pair it 
 - Include actual vs expected values
 - Add context about what was being tested
 - Make debugging easier
+
+## References
+
+- `references/language-paradigms.md`: Language and programming-paradigm-specific test selection

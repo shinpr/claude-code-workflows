@@ -6,10 +6,6 @@ disable-model-invocation: true
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
-## Quality Command Handoff
-
-When invoking quality-fixer, use the caller-supplied `qualityCommand`; otherwise use an exact executable command recorded in the current task. Pass the resolved value as the `qualityCommand` input field. When neither source provides a command, omit the field so quality-fixer performs its independent detection.
-
 **Context**: Test addition workflow for existing implementations (backend, frontend, or fullstack)
 
 ## Orchestrator Definition
@@ -152,6 +148,7 @@ Invoke quality-fixer routed by task filename pattern:
 - `*-backend-task-*` → `subagent_type`: "dev-workflows-fullstack:quality-fixer"
 - `*-frontend-task-*` → `subagent_type`: "dev-workflows-fullstack:quality-fixer-frontend"
 - `description`: "Final quality assurance"
+- Pass Step 4 `mutationEvidence` and `qualityCommand` from the caller or current task when available.
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
 **Expected output**: `status` (approved/stub_detected/blocked)

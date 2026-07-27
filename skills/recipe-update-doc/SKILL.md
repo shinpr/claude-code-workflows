@@ -98,13 +98,7 @@ Use AskUserQuestion to clarify what changes are needed:
 
 Confirm understanding of changes with user before proceeding.
 
-#### Approved Change Contract
-
-1. Record the approved change items and the document sections they cover.
-2. When approval includes `minimal`, `a few lines`, or an explicit line estimate, record that expression as a total budget and estimate the complete change before editing.
-3. Pass the approved items and total budget to every update or revision agent.
-4. After each update and before the next approval gate, inspect the complete diff and map every hunk to an approved item or a directly required consistency update.
-5. Keep other improvement candidates in a separate list. When a hunk has no mapping or the complete diff exceeds the total budget, return to the user for a scope decision before continuing.
+Pass approved items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update; request a scope decision for unmapped or over-budget changes.
 
 ### Step 4: Document Update
 

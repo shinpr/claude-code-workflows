@@ -30,7 +30,7 @@ Operates in an independent context, executing autonomously until task completion
 - **skeletonFiles** (optional): Generated skeleton files whose annotations govern the changed tests
 - **taskFile** (optional): Task file containing Proof Obligations for the changed tests
 - **promptClaims** (optional): Explicit behavior claims from the invoking prompt
-- **mutationEvidence** (optional): Revision-bound evidence from the upstream task executor. Each entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes.
+- **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
 
 ## Review Criteria
 
@@ -44,12 +44,7 @@ Key checks:
 
 ### 1. Review Basis Selection
 
-Confirm every path in `changedTestFiles` exists and differs from `diffBase`. Select the first basis that covers every changed test:
-1. `skeleton`: annotations in the changed tests or supplied `skeletonFiles`
-2. `proof-obligations`: Proof Obligations in `taskFile`
-3. `prompt-claims`: explicit `promptClaims`
-
-Return `status: "blocked"` when `diffBase` is unavailable, the changed set is empty, or no basis covers every changed test.
+Confirm every changed path exists and differs from `diffBase`. Select the first basis covering every test: `skeleton` annotations/files, task `proof-obligations`, then explicit `prompt-claims`; return `blocked` when the inputs or a complete basis are unavailable.
 
 For the `skeleton` basis, extract the following comment patterns from the changed tests and supplied skeleton files:
 Annotation patterns (comment syntax varies by project language):
@@ -83,21 +78,10 @@ Confirm each test proves its AC's claim or task Proof Obligation, not merely tha
 - When the AC or task Proof Obligation claims a state change, side effect, rollback, non-mutating mode, idempotency, or persistence, the test asserts the observable state before the action, the action, and the observable state after.
 - Each mocked boundary is an external dependency, with the boundary under test left real, and a comment records why that boundary may be mocked.
 - Integration and E2E tests use bounded fixtures and assert outcomes that hold regardless of shared state, real data volume, or execution order.
-- When a capability probe establishes a test prerequisite, identify the consumer and require the consumer-observable postcondition through the same boundary. Command success, import success, or object existence alone leaves the capability unproven. For example, a successful `mkfifo` command requires a subsequent open and data transfer by the test consumer.
 
-### 5. Route Parity Review
+### 5. Mutation Evidence Evaluation
 
-When multiple routes in the changed tests or selected review basis reach the same mutation:
-1. Compare validation, classification, resource bounds, read/parse order, mutation order, and reporting order across every route.
-2. Match each difference to an authoritative requirement, design contract, or explicit test claim.
-3. Record `route_parity` for every unexplained difference and require a test that exposes the bypass or inconsistent outcome.
-
-### 6. Mutation Evidence Evaluation
-
-When `mutationEvidence` is present:
-1. Confirm every entry contains all required fields and its target revision or file hashes match the files under review.
-2. Evaluate whether the killed test and before/after results prove the relevant claim.
-3. Reuse adequate matching evidence. Run a fresh mutation and replace the evidence when a field is missing, the revision is stale, or another finding contradicts the evidence.
+When `mutationEvidence` is present, reuse it after confirming complete fields, matching revision/files, restoration, and proof of the relevant claim; otherwise run and record a fresh mutation.
 
 ## Output Format
 
@@ -112,7 +96,6 @@ When `mutationEvidence` is present:
   "status": "approved|needs_revision|blocked",
   "testFiles": ["[path]"],
   "reviewBasis": "skeleton|proof-obligations|prompt-claims|null",
-  "verdict": { "decision": "approved|needs_revision|blocked", "summary": "[1-2 sentence summary]" },
   "testsReviewed": 5,
   "passedTests": 3,
   "failedTests": 2,
@@ -148,8 +131,8 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 - [ ] Every changed test maps to a claim in the selected review basis
 - [ ] Observable result from the selected claim is asserted
 - [ ] Each test satisfies the applicable Verification mode and Evidence requirement, exercises the claimed boundary, and asserts before/after state for state-changing claims
-- [ ] Capability probes assert the exact postcondition consumed by the test
-- [ ] Routes reaching the same mutation have parity evidence for validation, classification, resource bounds, read/parse order, mutation order, and reporting order
+- [ ] testing-principles Capability Probe Postconditions applied
+- [ ] integration-e2e-testing Route Parity applied to shared mutations
 - [ ] All Verification items are covered
 - [ ] Mock only external dependencies in integration tests
 - [ ] Clear Arrange/Act/Assert separation
