@@ -12,6 +12,7 @@ The goal is stable downstream execution: the next agent should know what to read
 1. **Use positive, executable instructions**
    - State what the next agent should do.
    - Convert quality policies into positive criteria.
+   - Keep a prohibition only when it protects an irreversible boundary or shipped contract. Name the protected condition and the allowed action.
    - Example: "Preserve existing public API behavior across the documented compatibility cases."
 
 2. **Make vague instructions concrete**
@@ -37,6 +38,10 @@ The goal is stable downstream execution: the next agent should know what to read
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
    - Keep simple downstream tasks lightweight when the target action, context, and success criteria are already clear.
+
+8. **Apply size constraints to the complete change**
+   - Treat `minimal`, `a few lines`, and explicit line estimates as total budgets.
+   - Record a total estimate before editing and compare it with the completed diff.
 
 ## Rewrite Patterns
 
@@ -64,6 +69,8 @@ Before sending a prompt or artifact to another agent, verify:
 - [ ] Output format or expected status fields are specified.
 - [ ] Success criteria are observable.
 - [ ] Ambiguous expressions have been rewritten or marked as unresolved.
+- [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
+- [ ] Each size budget has a before-edit estimate and a completed-diff comparison.
 - [ ] The next agent can complete its scope with explicit choices, decision rules, or blocking unresolved items.
 
 ## Generated Artifact Checklist
@@ -73,5 +80,7 @@ Before writing or finalizing a generated document:
 - [ ] Each requirement, claim, task, test skeleton, or review finding has enough source context to trace why it exists.
 - [ ] Every executable instruction names the target, action, and expected result.
 - [ ] Verification steps say what to run or observe and what result proves success.
+- [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
+- [ ] Each size budget has a before-edit estimate and a completed-diff comparison.
 - [ ] If an artifact is derived from another artifact, copied decisions stay consistent in wording and meaning.
 - [ ] If downstream work is blocked by missing information, the artifact records the missing input and escalation condition.
