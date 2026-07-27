@@ -105,10 +105,10 @@ Escalate when the required fix or investigation falls outside that scope.
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
-1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Pass task file path in prompt, receive structured response
+1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - Otherwise → Proceed to step 3

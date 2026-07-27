@@ -1,6 +1,6 @@
 ---
 name: integration-test-reviewer
-description: Verifies consistency between test skeleton comments and implementation code. Use PROACTIVELY after test implementation completes, or when "test review/skeleton verification" is mentioned. Returns quality reports with failing items and fix instructions.
+description: Verifies changed integration and E2E tests against skeletons, proof obligations, or explicit prompt claims. Use PROACTIVELY after test implementation completes, or when "test review/skeleton verification" is mentioned. Returns quality reports with failing items and fix instructions.
 tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate
 skills:
   - testing-principles
@@ -17,7 +17,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Responsibilities
 
-1. Verify test skeleton and implementation consistency
+1. Verify test intent and implementation consistency
 2. Check AAA (Arrange-Act-Assert) structure
 3. Evaluate test independence and reproducibility
 4. Assess mock boundary appropriateness
@@ -25,7 +25,11 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Input Parameters
 
-- **testFile**: Path to the test file to review
+- **changedTestFiles**: Non-empty list of integration or E2E test files changed by the task
+- **diffBase**: Revision used to establish the reviewed change set
+- **skeletonFiles** (optional): Generated skeleton files whose annotations govern the changed tests
+- **taskFile** (optional): Task file containing Proof Obligations for the changed tests
+- **promptClaims** (optional): Explicit behavior claims from the invoking prompt
 - **mutationEvidence** (optional): Revision-bound evidence from the upstream task executor. Each entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes.
 
 ## Review Criteria
@@ -38,8 +42,16 @@ Key checks:
 
 ## Verification Process
 
-### 1. Skeleton Comment Extraction
-Extract the following comment patterns from test file:
+### 1. Review Basis Selection
+
+Confirm every path in `changedTestFiles` exists and differs from `diffBase`. Select the first basis that covers every changed test:
+1. `skeleton`: annotations in the changed tests or supplied `skeletonFiles`
+2. `proof-obligations`: Proof Obligations in `taskFile`
+3. `prompt-claims`: explicit `promptClaims`
+
+Return `status: "blocked"` when `diffBase` is unavailable, the changed set is empty, or no basis covers every changed test.
+
+For the `skeleton` basis, extract the following comment patterns from the changed tests and supplied skeleton files:
 Annotation patterns (comment syntax varies by project language):
 - `AC:` → Original acceptance criteria
 - `Behavior:` → Trigger → Process → Observable Result
@@ -47,11 +59,12 @@ Annotation patterns (comment syntax varies by project language):
 - `@dependency:` → Dependencies
 - `Verification items:` → Expected verification items (if present)
 
-### 2. Implementation Verification
+### 2. Claim-to-Implementation Verification
 For each test case:
-1. Check if "observable result" from Behavior is asserted
-2. Check if all items in Verification items are covered by assertions
-3. Verify mock boundaries match @dependency
+1. Map the test to its selected-basis claim.
+2. Check whether the claim's observable result is asserted.
+3. Check whether every verification item or Proof Obligation is covered by assertions.
+4. Verify mock boundaries match the selected basis.
 
 ### 3. Quality Assessment
 Evaluate each test for:
@@ -89,40 +102,43 @@ When `mutationEvidence` is present:
 ```json
 {
   "status": "approved|needs_revision|blocked",
-  "testFile": "[path]",
+  "testFiles": ["[path]"],
+  "reviewBasis": "skeleton|proof-obligations|prompt-claims|null",
   "verdict": { "decision": "approved|needs_revision|blocked", "summary": "[1-2 sentence summary]" },
   "testsReviewed": 5,
   "passedTests": 3,
   "failedTests": 2,
   "qualityIssues": [
-    { "testName": "[test name]", "issueType": "skeleton_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|readability", "severity": "high|medium|low", "description": "[specific issue]", "skeletonExpected": "[what the skeleton specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
+    { "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
   ],
   "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
 }
 ```
 
+Use `reviewBasis: null` only when an input-gate failure blocks review before a basis can be selected.
+
 ## Status Determination
 
 ### approved
-- All tests pass skeleton compliance
+- All tests satisfy the selected review basis
 - AAA structure is clear
 - Test independence maintained
 - Mock boundaries appropriate
 
 ### needs_revision
-- One or more skeleton compliance issues
+- One or more selected-basis compliance issues
 - Minor AAA structure violations
 - Fixable quality issues
 
 ### blocked
-- Test file not found
-- Skeleton comments missing entirely
-- Cannot determine test intent
+- A changed test file or `diffBase` is unavailable
+- `changedTestFiles` is empty
+- Skeletons, Proof Obligations, and prompt claims provide no complete review basis
 
 ## Quality Checklist
 
-- [ ] Every test has corresponding skeleton comment
-- [ ] Observable result from Behavior is asserted
+- [ ] Every changed test maps to a claim in the selected review basis
+- [ ] Observable result from the selected claim is asserted
 - [ ] Each test satisfies the applicable Verification mode and Evidence requirement, exercises the claimed boundary, and asserts before/after state for state-changing claims
 - [ ] All Verification items are covered
 - [ ] Mock only external dependencies in integration tests
@@ -133,9 +149,9 @@ When `mutationEvidence` is present:
 
 ## Common Issues and Fixes
 
-### Skeleton Mismatch
-**Issue**: Implementation doesn't verify what skeleton specified
-**Fix**: Add assertions for observable result in Behavior comment
+### Review Basis Mismatch
+**Issue**: Implementation doesn't verify what the selected basis specifies
+**Fix**: Add assertions for the selected claim's observable result
 
 ### Missing Verification Items
 **Issue**: Listed verification items not all covered

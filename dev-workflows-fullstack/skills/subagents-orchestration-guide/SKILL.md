@@ -187,7 +187,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
+- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional skeleton/task/prompt claims and mutation evidence. Output: status (approved/needs_revision/blocked), `testFiles[]`, `reviewBasis` (skeleton/proof-obligations/prompt-claims), requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
@@ -333,10 +333,10 @@ Stop autonomous execution and escalate to user in the following cases:
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-1. **Agent tool** (subagent_type: "task-executor") → Pass task file path in prompt, receive structured response
+1. **Agent tool** (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - Otherwise → Proceed to step 3
@@ -419,6 +419,13 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    - When referenced Design Doc paths exist, invoke code-verifier once per Design Doc with `doc_type: design-doc`; pass those same documents to security-reviewer as `governingDocuments`.
    - When no Design Doc exists, invoke code-verifier once with the resolved Work Plan and `doc_type: work-plan`; pass that Work Plan to security-reviewer as `governingDocuments`.
    - An absent or unreadable governing document produces a `blocked` result and user escalation.
+
+   #### HC-09: task-executor → integration-test-reviewer
+
+   - Record `diffBase` before invoking task-executor.
+   - Pass `changedTestFiles`: every changed integration/E2E test path from `filesModified` or `testsAdded` that differs from `diffBase`.
+   - Pass the current task file, any claims added only in the executor prompt, and `mutationEvidence`.
+   - The reviewer selects one complete basis for the change set: skeleton annotations, task Proof Obligations, or prompt claims.
 
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 

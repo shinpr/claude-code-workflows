@@ -115,7 +115,7 @@ Implement test cases defined in skeleton files.
 
 ### Step 4: Test Implementation
 
-For each task file from Step 3, invoke task-executor routed by filename pattern (per monorepo-flow.md):
+For each task file from Step 3, record the current HEAD as `diffBase`, then invoke task-executor routed by filename pattern (per monorepo-flow.md):
 - `*-backend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor"
 - `*-frontend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor-frontend"
 - `description`: "Implement integration tests"
@@ -130,9 +130,9 @@ Execute one task file at a time through Steps 4→5→6→7 before starting the 
 Invoke integration-test-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:integration-test-reviewer"
 - `description`: "Review test quality"
-- `prompt`: "Review test quality. Test files: [paths from Step 4 testsAdded]. Skeleton files: [layer-specific paths from Step 2 generatedFiles matching current task's layer]"
+- `prompt`: "Review test quality. changedTestFiles: [integration/E2E paths in Step 4 filesModified or testsAdded that differ from diffBase]. diffBase: [revision recorded before Step 4]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles matching current task's layer]. taskFile: [current task file]. mutationEvidence: [Step 4 mutationEvidence]."
 
-**Expected output**: `status` (approved/needs_revision), `requiredFixes`
+**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `requiredFixes`
 
 ### Step 6: Apply Review Fixes
 

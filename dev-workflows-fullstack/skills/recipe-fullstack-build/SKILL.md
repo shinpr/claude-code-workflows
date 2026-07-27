@@ -115,10 +115,10 @@ Before entering the per-task loop, register these orchestration phases once with
 Set "Execute consumed task set" to `in_progress`. At each phase boundary below, complete the current phase and set the next phase to `in_progress` using TaskUpdate.
 
 For EACH task, YOU MUST:
-1. **Agent tool** (subagent_type per routing table) → Pass task file path in prompt, receive structured response
+1. **Agent tool** (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. **CHECK executor response**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - `readyForQualityCheck: true` → Proceed to step 3
