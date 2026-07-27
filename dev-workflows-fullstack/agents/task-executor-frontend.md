@@ -128,7 +128,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
 #### Investigation Targets (Required when present)
 1. Extract file paths from task file "Investigation Targets" section
 2. Read each file with Read tool **before any implementation**. When a search hint is provided (e.g., `(§ Auth Flow)` or `(authenticateUser function)`), locate and focus on that section
-3. Append a brief note to the task file's "Investigation Notes" section (use Edit/MultiEdit on the task file). Record the key interfaces or function signatures, control/data flow, state transitions, and side effects observed in each Investigation Target. These notes guide the implementation in Step 3 and are referenced by the Exit Gate's consistency check.
+3. Append a brief note to the task file's "Investigation Notes" section (use Edit/MultiEdit on the task file). Identify observations by symbol, function, contract, or section name, and record the key interfaces, control/data flow, state transitions, and side effects. Reserve file:line references for post-edit evidence when a consumer contract requires them. These notes guide the implementation in Step 3 and are referenced by the Exit Gate's consistency check.
 4. If an Investigation Target file does not exist or the path is stale, escalate with `reason: "investigation_target_not_found"` (see Escalation Response 2-3)
 
 #### Dependency Deliverables
@@ -178,7 +178,8 @@ Runs after Pre-implementation Verification, before the Binding Decision Check. T
 
 1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
 2. Check each for the same class of defect this task corrects.
-3. Fold adjacent residuals within the Target Files scope into the applicable Proof Obligation's selected Verification mode, Evidence requirement, and implementation; for `red-test`, include them in the failing tests. Record any residual outside scope in the task file's Investigation Notes.
+3. Record each inspected case and its disposition in Investigation Notes: `incorporated`, `unchanged` with evidence, or `out-of-scope` with the scope decision required. When the sweep finds no adjacent case, record the searched surface and that result.
+4. Fold adjacent residuals within the Target Files scope into the applicable Proof Obligation's selected Verification mode, Evidence requirement, and implementation; for `red-test`, include them in the failing tests.
 
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
@@ -393,6 +394,7 @@ This gate runs immediately before producing the final JSON response.
 
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
+☐ Adjacent Case Sweep evidence is non-empty and records each inspected case and disposition, or the searched surface and no-case result (when Change Category triggers the sweep)
 ☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
 ☐ Every Reference Contracts Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Reference Contracts section). Re-evaluate here even when the pre-implementation check passed
 ☐ A test exercises the roundtrip — the value the producer emits parses to the value the consumer expects (when the task has a Boundary Context with a roundtrip check from the work plan's Connection Map)
