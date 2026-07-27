@@ -65,9 +65,11 @@ Key points to enforce as the orchestrator runs the flow:
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
 **After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
-- First task: "Map preloaded skills to applicable concrete rules"
-- Register each step as individual task
+- First task: "Select and map applicable rules"
+- Register each design-through-planning step as an individual task
+- Register "Execute implementation task cycles", "Run final verification", "Clean up consumed task files", and final task "Report completion"
 - Set currently executing step to `in_progress` using TaskUpdate
+- Complete the current phase and set the next phase to `in_progress` at each flow boundary
 - **Complete task registration before invoking subagents**
 
 ## After requirement-analyzer [Stop]

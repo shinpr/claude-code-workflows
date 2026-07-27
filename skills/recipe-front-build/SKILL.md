@@ -89,21 +89,28 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 ## Task Execution Cycle (4-Step Cycle)
 **MANDATORY EXECUTION CYCLE**: `task-executor-frontend → escalation check → quality-fixer-frontend → commit`
 
+Before entering the per-task loop, register these orchestration phases once with TaskCreate:
+1. "Execute consumed task set"
+2. "Run post-implementation verification"
+3. "Clean up consumed task files"
+4. "Report completion"
+
+Set "Execute consumed task set" to `in_progress`. At each phase boundary below, complete the current phase and set the next phase to `in_progress` using TaskUpdate.
+
 For EACH task in the Consumed Task Set, YOU MUST:
-1. **Register tasks using TaskCreate**: Register work steps. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON"
-2. **Agent tool** (subagent_type: "dev-workflows-frontend:task-executor-frontend") → Pass task file path in prompt, receive structured response
-3. **CHECK task-executor-frontend response**:
+1. **Agent tool** (subagent_type: "dev-workflows-frontend:task-executor-frontend") → Pass task file path in prompt, receive structured response
+2. **CHECK task-executor-frontend response**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
    - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
-     - `needs_revision` → Return to step 2 with `requiredFixes`
-     - `approved` → Proceed to step 4
-   - `readyForQualityCheck: true` → Proceed to step 4
-4. **INVOKE quality-fixer-frontend**: Execute all quality checks and fixes. **Always pass** the current task file path as `task_file`
-5. **CHECK quality-fixer-frontend response**:
-   - `stub_detected` → Return to step 2 with `incompleteImplementations[]` details
+     - `needs_revision` → Return to step 1 with `requiredFixes`
+     - `approved` → Proceed to step 3
+   - `readyForQualityCheck: true` → Proceed to step 3
+3. **INVOKE quality-fixer-frontend**: Execute all quality checks and fixes. **Always pass** the current task file path as `task_file`
+4. **CHECK quality-fixer-frontend response**:
+   - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
-   - `approved` → Proceed to step 6
-6. **COMMIT on approval**: Execute git commit
+   - `approved` → Proceed to step 5
+5. **COMMIT on approval**: Execute git commit
 
 **CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after quality-fixer-frontend returns `approved`.
 

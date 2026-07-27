@@ -65,9 +65,11 @@ When user responds to questions:
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
 **After scale determination, register all steps of the applicable flow using TaskCreate**:
-- First task: "Map preloaded skills to applicable concrete rules"
-- Register each step as individual task
+- First task: "Select and map applicable rules"
+- Register each design-through-planning step as an individual task
+- Register "Execute implementation task cycles", "Run final verification", "Clean up consumed task files", and final task "Report completion"
 - Set currently executing step to `in_progress` using TaskUpdate
+- Complete the current phase and set the next phase to `in_progress` at each flow boundary
 - **Complete task registration before invoking subagents**
 
 ## Subagents Orchestration Guide Compliance Execution
