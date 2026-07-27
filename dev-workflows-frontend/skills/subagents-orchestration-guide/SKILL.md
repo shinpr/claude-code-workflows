@@ -406,6 +406,13 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
 
    **On error**: Escalate to user when status != completed and integration file generation failed unexpectedly. A null E2E lane with a valid absence reason is not an error.
 
+   #### HC-07: task-executor → test and quality reviewers
+
+   - Pass `mutationEvidence` from the task completion response to integration-test-reviewer and quality-fixer.
+   - Evidence is reusable when every entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes, and the target revision still matches the reviewed files.
+   - The receiving reviewer independently evaluates whether the evidence proves the claimed behavior.
+   - Incomplete evidence, a revision mismatch, or a contradictory review finding triggers a fresh mutation run and replacement evidence.
+
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
 
 ## Important Constraints

@@ -26,6 +26,7 @@ Operates in an independent context, executing autonomously until task completion
 ## Input Parameters
 
 - **testFile**: Path to the test file to review
+- **mutationEvidence** (optional): Revision-bound evidence from the upstream task executor. Each entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes.
 
 ## Review Criteria
 
@@ -69,6 +70,13 @@ Confirm each test proves its AC's claim or task Proof Obligation, not merely tha
 - When the AC or task Proof Obligation claims a state change, side effect, rollback, non-mutating mode, idempotency, or persistence, the test asserts the observable state before the action, the action, and the observable state after.
 - Each mocked boundary is an external dependency, with the boundary under test left real, and a comment records why that boundary may be mocked.
 - Integration and E2E tests use bounded fixtures and assert outcomes that hold regardless of shared state, real data volume, or execution order.
+
+### 5. Mutation Evidence Evaluation
+
+When `mutationEvidence` is present:
+1. Confirm every entry contains all required fields and its target revision or file hashes match the files under review.
+2. Evaluate whether the killed test and before/after results prove the relevant claim.
+3. Reuse adequate matching evidence. Run a fresh mutation and replace the evidence when a field is missing, the revision is stale, or another finding contradicts the evidence.
 
 ## Output Format
 

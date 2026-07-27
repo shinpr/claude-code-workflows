@@ -251,6 +251,8 @@ Return the final response per Structured Response Specification. For research/an
 
 **runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
 
+**mutationEvidence**: When mutation verification was executed, include one object per mutation with `mutation` (description or patch), `killedTest`, `baselineResult`, `mutatedResult`, `restorationProof` (restoration checksum or clean diff), and `targetRevision` (revision or file hashes). Use an empty array when this task produced no mutation evidence.
+
 ### 1. Task Completion Response
 Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):
 
@@ -265,6 +267,7 @@ Report in the following JSON format upon task completion (**without executing qu
   "newTestsPassed": true,
   "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
+  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
   "readyForQualityCheck": true,
   "nextActions": "Overall quality verification by quality assurance process"
 }

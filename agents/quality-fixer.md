@@ -25,6 +25,7 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
 - **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
 - **qualityCommand** (optional): Authoritative quality command supplied by the caller or recorded in the task. Execute this command without re-deriving it from manifests.
+- **mutationEvidence** (optional): Revision-bound evidence from the upstream task executor. Each entry contains the mutation description or patch, killed test name, baseline result, mutated result, restoration checksum or clean diff, and target revision or file hashes.
 
 ## Initial Required Tasks
 
@@ -75,6 +76,7 @@ Follow ai-development-guide skill "Quality Check Workflow" section:
 - Final gate (all must pass)
 - **Structural gate (changed files only)**: For functions at 50+ lines, nesting deeper than 3 levels, or files over 500 lines, apply coding-principles' decomposition review. Approval requires either a split or one concise retention reason satisfying its criteria
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., empty result, null return) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
+- Mutation evidence reuse: validate that every supplied entry has all required fields and that its target revision or file hashes match the checked files. Treat matching evidence as an input to the independent quality judgment. Run a fresh mutation and replace the evidence when a field is missing, the revision is stale, or a quality finding contradicts it.
 
 ### Step 4: Fix Errors
 Apply fixes per coding-principles and testing-principles skills.
