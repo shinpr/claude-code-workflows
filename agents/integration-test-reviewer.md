@@ -83,6 +83,7 @@ Confirm each test proves its AC's claim or task Proof Obligation, not merely tha
 - When the AC or task Proof Obligation claims a state change, side effect, rollback, non-mutating mode, idempotency, or persistence, the test asserts the observable state before the action, the action, and the observable state after.
 - Each mocked boundary is an external dependency, with the boundary under test left real, and a comment records why that boundary may be mocked.
 - Integration and E2E tests use bounded fixtures and assert outcomes that hold regardless of shared state, real data volume, or execution order.
+- When a capability probe establishes a test prerequisite, identify the consumer and require the consumer-observable postcondition through the same boundary. Command success, import success, or object existence alone leaves the capability unproven. For example, a successful `mkfifo` command requires a subsequent open and data transfer by the test consumer.
 
 ### 5. Route Parity Review
 
@@ -147,6 +148,7 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 - [ ] Every changed test maps to a claim in the selected review basis
 - [ ] Observable result from the selected claim is asserted
 - [ ] Each test satisfies the applicable Verification mode and Evidence requirement, exercises the claimed boundary, and asserts before/after state for state-changing claims
+- [ ] Capability probes assert the exact postcondition consumed by the test
 - [ ] Routes reaching the same mutation have parity evidence for validation, classification, resource bounds, read/parse order, mutation order, and reporting order
 - [ ] All Verification items are covered
 - [ ] Mock only external dependencies in integration tests

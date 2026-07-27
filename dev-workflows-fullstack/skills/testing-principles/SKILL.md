@@ -294,6 +294,15 @@ Each test must:
 - ✓ No flaky tests — make deterministic
 - ✓ Tests run within performance thresholds
 
+### Capability Probe Postconditions
+
+A capability probe passes when it proves the exact property the test consumer uses:
+1. Name the consumer and required property.
+2. Exercise the capability through the same boundary the consumer uses.
+3. Assert the consumer-observable postcondition.
+
+Command success, import success, or object existence is setup evidence; pair it with the consumed postcondition. For example, `mkfifo` can exit successfully in a compatibility shell while a Windows test consumer cannot observe a usable FIFO. The probe passes only after the consumer opens and transfers data through the resulting pipe.
+
 ## Test Organization
 
 ### File Structure
