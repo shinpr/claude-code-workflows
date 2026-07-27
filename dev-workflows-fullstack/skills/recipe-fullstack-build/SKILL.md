@@ -24,7 +24,7 @@ When invoking a layer-appropriate quality-fixer, use the caller-supplied `qualit
 2. **Route agents by task filename pattern** (see monorepo-flow.md reference):
    - `*-backend-task-*` → task-executor + quality-fixer
    - `*-frontend-task-*` → task-executor-frontend + quality-fixer-frontend
-3. **Follow the 4-step task cycle exactly**: executor → escalation check → quality-fixer → commit
+3. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
 4. **Enter autonomous mode** when user provides execution instruction with existing task files — this IS the batch approval
 5. **Scope**: Complete when all tasks are committed or escalation occurs
 
@@ -102,9 +102,10 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 |-----------------|----------|---------------|
 | `*-backend-task-*` | dev-workflows-fullstack:task-executor | dev-workflows-fullstack:quality-fixer |
 | `*-frontend-task-*` | dev-workflows-fullstack:task-executor-frontend | dev-workflows-fullstack:quality-fixer-frontend |
-| `*-task-*` (no layer prefix) | dev-workflows-fullstack:task-executor | dev-workflows-fullstack:quality-fixer (default) |
 
 ### Task Execution (4-Step Cycle)
+
+**MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
 
 Before entering the per-task loop, register these orchestration phases once with TaskCreate:
 1. "Execute consumed task set"
@@ -115,19 +116,18 @@ Before entering the per-task loop, register these orchestration phases once with
 Set "Execute consumed task set" to `in_progress`. At each phase boundary below, complete the current phase and set the next phase to `in_progress` using TaskUpdate.
 
 For EACH task, YOU MUST:
-1. **Agent tool** (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
-2. **CHECK executor response**:
+1. **EXECUTE**: invoke Agent tool (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, `promptClaims` (claims present only in the executor prompt), and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - `readyForQualityCheck: true` → Proceed to step 3
-3. **INVOKE quality-fixer**: Execute all quality checks and fixes (layer-appropriate per routing table). **Always pass** the current task file path as `task_file`
-4. **CHECK quality-fixer response**:
+3. **QUALITY-FIX**: Invoke the layer-appropriate quality-fixer, execute all quality checks and fixes, and **always pass** the current task file path as `task_file`
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
-   - `approved` → Proceed to step 5
-5. **COMMIT on approval**: Execute git commit
+   - `approved` → Proceed to step 4
+4. **COMMIT**: Execute git commit after the layer-appropriate quality-fixer returns `approved`
 
 **CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after layer-appropriate quality-fixer returns `approved`.
 

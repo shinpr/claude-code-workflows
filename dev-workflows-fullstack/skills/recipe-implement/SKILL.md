@@ -108,7 +108,7 @@ Escalate when the required fix or investigation falls outside that scope.
 1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, `promptClaims` (claims present only in the executor prompt), and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - Otherwise → Proceed to step 3

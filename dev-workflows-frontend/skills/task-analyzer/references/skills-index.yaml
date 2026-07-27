@@ -150,7 +150,7 @@ skills:
       - "Conductor Pattern"
     sections:
       - "Role: The Orchestrator"
-      - "Available Subagents"
+      - "Agents Used by the Declared Guide Flows"
       - "Orchestration Principles"
       - "Constraints Between Subagents"
       - "Explicit Stop Points"

@@ -22,13 +22,15 @@ When receiving a new task, pass user requirements directly to requirement-analyz
 
 **When any signal is detected → Re-run requirement-analyzer with integrated requirements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate. Preserve earlier outputs that remain valid.**
 
-## Available Subagents
+## Agents Used by the Declared Guide Flows
+
+This list describes agents used by the generic flows in this guide. Owning recipes and references declare their recipe-specific, frontend, and fullstack routing.
 
 Implementation support:
 1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
 2. **task-decomposer**: Appropriate task decomposition of work plans
 3. **task-executor**: Individual task execution and structured response
-4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
+4. **integration-test-reviewer**: Review integration/E2E tests against the selected review basis and quality criteria
 5. **security-reviewer**: Security compliance review against the governing Design Doc or Work Plan and coding-principles after all tasks complete
 
 Document creation:
@@ -187,7 +189,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional skeleton/task/prompt claims and mutation evidence. Output: status (approved/needs_revision/blocked), `testFiles[]`, `reviewBasis` (skeleton/proof-obligations/prompt-claims), requiredFixes
+- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional `skeletonFiles`, `taskFile`, `promptClaims`, and `mutationEvidence`. Output: status (approved/needs_revision/blocked), `testFiles[]`, `reviewBasis` (skeleton/proof-obligations/prompt-claims), requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]. `findings` is present for every status; each item contains category, confidence, location, description, rationale, and suggestion. `requiredFixes` contains only qualifying confirmed_risk and high-confidence defense_gap items.
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
@@ -335,18 +337,18 @@ Stop autonomous execution and escalate to user in the following cases:
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-1. **Agent tool** (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
-2. Check task-executor response:
+1. **Execute**: invoke Agent tool (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, prompt-only claims when present, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Execute **integration-test-reviewer** with `changedTestFiles` (integration/E2E paths in `filesModified` or `testsAdded` that differ from `diffBase`), `diffBase`, `taskFile`, `promptClaims` (claims present only in the executor prompt), and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
    - Otherwise → Proceed to step 3
-3. quality-fixer → Quality check and fixes. **Always pass** the current task file path as `task_file`
+3. **Quality-fix**: invoke quality-fixer and **always pass** the current task file path as `task_file`
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
-4. git commit → Execute with Bash (on `approved`)
+4. **Commit**: execute git commit with Bash after quality-fixer returns `approved`
 
 ### Progress Tracking
 
@@ -426,7 +428,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
 
    - Record `diffBase` before invoking task-executor.
    - Pass `changedTestFiles`: every changed integration/E2E test path from `filesModified` or `testsAdded` that differs from `diffBase`.
-   - Pass the current task file, any claims added only in the executor prompt, and `mutationEvidence`.
+   - Pass the current task file as `taskFile`, claims added only in the executor prompt as `promptClaims`, and the task response evidence as `mutationEvidence`.
    - The reviewer selects one complete basis for the change set: skeleton annotations, task Proof Obligations, or prompt claims.
 
 3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
