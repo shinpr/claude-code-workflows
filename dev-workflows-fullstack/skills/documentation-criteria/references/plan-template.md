@@ -63,7 +63,7 @@ The Traceability table records *that* a row is covered; this table carries the r
 
 ## Failure Mode Checklist
 
-Domain-independent failure categories this implementation must guard against. Enumerate all nine categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
+Domain-independent failure categories this implementation must guard against. Enumerate all ten categories, mark which apply, and list a covering task for each that applies; keep entries free of project-specific names.
 
 | Category | Applies? | Covered By Task(s) |
 |---|---|---|
@@ -76,6 +76,13 @@ Domain-independent failure categories this implementation must guard against. En
 | shared-state dependency | yes/no | |
 | rollback-only visibility | yes/no | |
 | missing-sort-key ordering | yes/no | |
+| irreversible-operation | yes/no | |
+
+Set `irreversible-operation` to `yes` when the work is destructive, mutates persistent state, or changes a boundary that reaches a mutation. When it applies, include the following First-Pass Risk Coverage table before the implementation phases. Omit the table for other work.
+
+| Operation | All Reaching Routes | Incomplete-Evidence Conditions | Default Behavior | mutation | partial evidence | retry | concurrency | identity | input-route | Covered By Task(s) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [destructive/stateful/boundary-changing operation] | [every CLI/API/UI/job/internal route that can reach it] | [missing, stale, partial, or contradictory evidence states] | [behavior before sufficient evidence exists] | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | covered / not applicable / blocked | [Phase X Task Y] |
 
 ## UI Spec Component → Task Mapping
 

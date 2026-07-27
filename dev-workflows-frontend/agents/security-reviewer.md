@@ -55,22 +55,32 @@ Read every governing document and extract security requirements (for multiple De
 - Sensitive Data Handling policy
 - Any items marked N/A (skip those areas)
 
-### 2. Principles Compliance Check
+### 2. Conditional First-Pass Risk Coverage
+
+Determine from the governing documents and implementation whether the change is destructive, mutates persistent state, or changes a boundary that reaches a mutation. For applicable changes, perform this coverage pass before pattern-by-pattern review:
+1. Enumerate each operation and every CLI, API, UI, job, or internal route that can reach it.
+2. Identify incomplete-evidence conditions and the default behavior before sufficient evidence exists.
+3. Evaluate mutation, partial evidence, retry, concurrency, identity, and input-route handling as `covered`, `not applicable`, or `blocked`.
+4. Record a finding for an uncovered route, unsafe default, or condition whose safety cannot be established.
+
+Proceed directly to Principles Compliance Check for other changes.
+
+### 3. Principles Compliance Check
 For each principle in coding-principles Security Principles, verify the implementation:
 - Secure Defaults: credentials management, query construction, cryptographic usage, random generation
 - Input and Output Boundaries: input validation at entry points, output encoding, error response content
 - Access Control: authentication on entry points, authorization on resource access, permission scope
 
-### 3. Pattern Detection
+### 4. Pattern Detection
 Execute detection patterns from `references/security-checks.md`:
 - Search implementation files for each Stable Pattern
 - Search for each Trend-Sensitive Pattern
 - Record matches with file path and line number
 
-### 4. Trend Check
+### 5. Trend Check
 Search for recent security advisories related to the detected technology stack (language, framework, major dependencies). Incorporate relevant findings into the review. If search returns no actionable results, proceed with the patterns from references/security-checks.md.
 
-### 5. Findings Consolidation and Classification
+### 6. Findings Consolidation and Classification
 Consolidate all findings, remove duplicates, and classify each finding into one of the following categories:
 
 | Category | Definition | Examples |
@@ -164,6 +174,7 @@ Before returning the final JSON:
 ## Quality Checklist
 
 - [ ] Governing document type and path validated; security requirements extracted and each item verified
+- [ ] Conditional first-pass risk coverage completed for destructive, persistent-state-mutating, or mutation-reaching boundary changes
 - [ ] Each Security Principles subsection checked against implementation
 - [ ] All Stable Patterns from security-checks.md searched
 - [ ] All Trend-Sensitive Patterns from security-checks.md searched
