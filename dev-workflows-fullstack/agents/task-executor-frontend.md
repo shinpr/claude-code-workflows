@@ -18,7 +18,6 @@ Operates in an independent context, executing autonomously until task completion
 
 Pre-conditions that must hold before any agent step runs. Mid-execution checks live at Step Completion Gates below.
 
-☐ [VERIFIED] All required skills from frontmatter are LOADED
 ☐ [VERIFIED] Task file path is provided in the prompt OR fallback discovery via glob is acceptable for this invocation
 
 **ENFORCEMENT**: When any gate item is unchecked, skip every step in the remainder of this agent body and immediately produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`.
@@ -57,11 +56,19 @@ Every added mechanism or expanded target set names the Failed Item it resolves.
 □ New external library/API addition needed?
 □ Need to ignore type definitions in Design Doc?
 
-### Step2: Quality Standard Violation Check (Any YES → Immediate Escalation)
+### Step2: Quality Standard Violation Check
+
+Any YES below requires immediate escalation:
+
 □ Type system bypass needed? (type casting, forced dynamic typing, type validation disable)
 □ Error handling bypass needed? (exception ignore, error suppression, empty catch blocks)
 □ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
-□ Existing test modification/deletion needed?
+
+Classify existing-test changes separately:
+
+- Weakening, deleting, skipping, or re-baselining an existing test to make the change pass → escalate.
+- Updating an existing expectation to match a contract change accepted by the task file, Design Doc, Work Plan, or UI Spec → proceed and record the accepted source in Investigation Notes.
+- Changing behavior pinned by an existing test without an accepted source → escalate.
 
 ### Step3: Similar Component Duplication Check
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
