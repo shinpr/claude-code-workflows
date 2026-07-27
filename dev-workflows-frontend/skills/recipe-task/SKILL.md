@@ -15,7 +15,7 @@ Task: $ARGUMENTS
 **Step 1: Rule Selection via rule-advisor (REQUIRED)**
 
 Invoke rule-advisor using Agent tool:
-- `subagent_type`: "dev-workflows:rule-advisor"
+- `subagent_type`: "dev-workflows-frontend:rule-advisor"
 - `description`: "Rule selection"
 - `prompt`: "Task: $ARGUMENTS. Select appropriate rules and perform metacognitive analysis."
 

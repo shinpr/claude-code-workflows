@@ -10,7 +10,8 @@
   "scripts": {
     "prepare": "lefthook install",
     "sync": "node scripts/sync-plugins.mjs",
-    "sync:check": "node scripts/sync-plugins.mjs --check",
+    "sync:check": "node scripts/sync-plugins.mjs --check && node scripts/check-agent-references.mjs",
+    "check:agent-references": "node scripts/check-agent-references.mjs",
     "check:skills-index": "node scripts/check-skills-index.mjs"
   },
   "devDependencies": {
