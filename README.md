@@ -9,7 +9,7 @@ Repeatable software development workflows for Claude Code that keep design decis
 
 Each phase runs in a fresh agent context and hands off through explicit artifacts. The workflow inspects the existing codebase, designs the smallest sufficient change, pauses for approval, implements one task at a time, and checks whether the finished work still matches the agreed scope and requirements.
 
-For a one-file edit, `/recipe-task` keeps the task-level checks without the planning stages. The end-to-end workflow earns its keep on production changes that span files, layers, or contributors, where a long AI coding session can quietly grow in scope or lose an important decision between design and implementation.
+Use the end-to-end recipes for production changes that span files, layers, or contributors, where a long AI coding session can quietly grow in scope or lose an important decision between design and implementation. Focused recipes let you stop after design, continue from approved artifacts, review an implementation, or investigate a problem without changing the code.
 
 ---
 
@@ -31,13 +31,15 @@ Requires a Claude Code release with plugin marketplace support.
 
 ### Choose a path
 
-| What are you changing? | Start with | Plugin |
+| What do you need? | Start with | Plugin |
 |---|---|---|
-| Backend, API, CLI, or general code across several files | `/recipe-implement` | `dev-workflows` |
-| React / TypeScript frontend | `/recipe-front-design` | `dev-workflows-frontend` |
-| Backend and React frontend together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
-| A small, well-understood fix | `/recipe-task` | `dev-workflows` or `dev-workflows-frontend` |
-| An undocumented existing system | `/recipe-reverse-engineer` | `dev-workflows` or `dev-workflows-fullstack` |
+| Deliver a backend, API, CLI, or general change end to end | `/recipe-implement` | `dev-workflows` |
+| Design a backend or general change before implementation | `/recipe-design` | `dev-workflows` |
+| Design and build a React / TypeScript frontend | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| Deliver a backend and React frontend change together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| Review an implementation against its design | `/recipe-review` or `/recipe-front-review` | `dev-workflows` or `dev-workflows-frontend` |
+| Investigate a problem before choosing a fix | `/recipe-diagnose` | Any workflow plugin |
+| Document an existing system from its code | `/recipe-reverse-engineer` | `dev-workflows` or `dev-workflows-fullstack` |
 | A throwaway experiment or prototype | Use Claude Code directly | None |
 
 ### Common setup
@@ -70,6 +72,8 @@ claude
 ```
 
 Install only one workflow plugin. `dev-workflows-fullstack` already contains the backend and frontend workflows. If you previously used full-stack recipes from `dev-workflows`, migrate to `dev-workflows-fullstack`.
+
+`/recipe-front-design` stops after the UI Spec and Design Doc are reviewed and approved. Run `/recipe-front-plan` and `/recipe-front-build` when you are ready to continue. For a backend or general change, `/recipe-design`, `/recipe-plan`, and `/recipe-build` provide the same staged path.
 
 ### Team setup
 
@@ -135,7 +139,7 @@ After the first run, inspect the artifacts:
 
 ## Typical Workflows
 
-### Backend or general development
+### End-to-end backend or general development
 
 ```bash
 /recipe-implement "Add rate limiting to the public API"
@@ -143,14 +147,23 @@ After the first run, inspect the artifacts:
 
 The recipe scopes the change, inspects the current implementation, creates only the documents required for its size, pauses when a decision is needed, and carries the plan through implementation and final review.
 
-### Frontend development
+### Design first, implement later
 
 ```bash
+# Backend or general
+/recipe-design "Design rate limiting for the public API"
+/recipe-plan
+/recipe-build
+
+# React frontend
 /recipe-front-design "Build a user profile dashboard"
+/recipe-front-plan
 /recipe-front-build
 ```
 
-The frontend workflow adds UI analysis, component architecture, React Testing Library, and TypeScript checks. Its UI Spec records states that a visual prototype usually leaves open.
+The design recipes inspect the existing code, confirm the scope, create the required documents, run an independent consistency review, and stop for approval. Planning and implementation can continue later, in a new context or by another contributor, from those approved artifacts.
+
+The frontend path adds UI analysis, component architecture, React Testing Library, and TypeScript checks. Its UI Spec records states that a visual prototype usually leaves open.
 
 For example, two dashboard components may each handle loading correctly while the combined screen has no defined behavior when one is loading and the other has failed. The UI Spec records that state combination and traces it into design and test work before integration.
 
@@ -167,17 +180,13 @@ Use `/recipe-fullstack-build` to continue from an existing full-stack work plan.
 <details>
 <summary>More workflow examples</summary>
 
-#### Small fix
-
-```bash
-/recipe-task "Fix the validation error message"
-```
-
 #### Review an implementation against its design
 
 ```bash
 /recipe-review
 ```
+
+The review workflow compares the implementation with its Design Docs and runs an independent security review. A fix that changes an approved decision returns to the relevant document instead of silently changing the contract.
 
 #### Diagnose before choosing a fix
 
@@ -219,7 +228,6 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
 | `/recipe-implement` | End-to-end feature development | New features, complete workflows |
-| `/recipe-task` | Execute a single task | Bug fixes, small changes |
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate a work plan from design | Planning phase |
 | `/recipe-prepare-implementation` | Find and resolve readiness gaps | Before building from a work plan |
@@ -229,6 +237,7 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | `/recipe-reverse-engineer` | Derive PRDs and Design Docs from code | Existing-system documentation |
 | `/recipe-add-integration-tests` | Add integration or E2E tests | Coverage for existing code |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
+| `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
 
 </details>
 
@@ -244,9 +253,9 @@ The frontend plugin adds React-specific analysis, component architecture, React 
 | `/recipe-front-build` | Execute a frontend work plan | Resume React implementation |
 | `/recipe-front-adjust` | Adjust an implemented UI with external verification | Visual refinements |
 | `/recipe-front-review` | Verify code against frontend Design Docs | Post-implementation check |
-| `/recipe-task` | Execute a single task | Component fixes |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
+| `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
 
 </details>
 
