@@ -4,15 +4,13 @@
 skills:
   coding-principles:
     skill: "coding-principles"
-    tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, parameterized-dependencies, performance, security]
-    typical-use: "Language-agnostic code creation, modification, and refactoring principles applicable to all programming languages"
+    tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, parameterized-dependencies, performance, security, reference-representativeness]
+    typical-use: "Language-agnostic implementation and review rules with repository-wide reference checks, structural thresholds, scope-aware deletion, and security boundaries"
     size: medium
     key-references:
-      - "YAGNI Principle - Kent Beck"
-      - "Clean Code - Robert C. Martin"
-      - "DRY Principle - The Pragmatic Programmer"
-      - "Refactoring - Martin Fowler"
-      - "Single Responsibility Principle - SOLID"
+      - "Design Convergence - implementation-approach"
+      - "Reference Representativeness"
+      - "references/security-checks.md"
     sections:
       - "Core Philosophy"
       - "Code Quality"
@@ -24,45 +22,31 @@ skills:
       - "Code Organization"
       - "Commenting Principles"
       - "Refactoring Approach"
-      - "Testing Considerations"
       - "Security Principles"
-      - "Documentation"
-      - "Version Control Practices"
-      - "Language-Specific Adaptations"
 
   testing-principles:
     skill: "testing-principles"
-    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd, test-quality-criteria, capability-probe, consumer-postcondition]
-    typical-use: "Universal testing principles, TDD practice, test quality criteria, capability probe validation, and quality assurance for all programming languages"
-    size: large
+    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, test-quality-criteria, data-layer-testing, capability-probe, consumer-postcondition, regression-evidence]
+    typical-use: "Repository-aware test design rules for independent oracles, mock boundaries, data-layer evidence, capability probes, and regression verification"
+    size: small
     key-references:
-      - "Test-Driven Development - Kent Beck"
-      - "Red-Green-Refactor Cycle - Kent Beck"
-      - "AAA Pattern - Arrange-Act-Assert"
-      - "Test Pyramid - Mike Cohn"
+      - "Capability Probe Postconditions"
+      - "Independent oracle and boundary rules"
+      - "Regression evidence selection"
     sections:
       - "Test-Driven Development (TDD)"
       - "Quality Requirements"
-      - "Test Types"
-      - "Test Design Principles"
-      - "Test Independence"
-      - "Mocking and Test Doubles"
+      - "Test Design Rules"
+      - "Mock and Boundary Rules"
       - "Data Layer Testing"
-      - "Test Quality Practices"
-      - "What to Test"
-      - "Test Quality Criteria"
       - "Verification Requirements"
       - "Test Organization"
-      - "Performance Considerations"
-      - "Continuous Integration"
-      - "Test Design Guardrails"
       - "Regression Testing"
-      - "Documentation and Communication"
 
   ai-development-guide:
     skill: "ai-development-guide"
-    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, best-practices, fail-fast, error-handling, impact-analysis]
-    typical-use: "Technical decision criteria, anti-pattern detection, debugging techniques, quality check workflows, impact analysis procedures"
+    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, fail-fast, error-handling, impact-analysis, scope-control]
+    typical-use: "Technical decision criteria, anti-pattern gates, repository quality-check discovery, scope control, and impact analysis"
     size: large
     key-references:
       - "Rule of Three - Martin Fowler"
@@ -75,7 +59,6 @@ skills:
       - "Fail-Fast Fallback Design Principles"
       - "Rule of Three - Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
-      - "Debugging Techniques"
       - "Quality Assurance Mechanism Awareness"
       - "Quality Check Workflow"
       - "Situations Requiring Technical Decisions"
@@ -165,28 +148,26 @@ skills:
   # Frontend-Specific Skills
   typescript-rules:
     skill: "typescript-rules"
-    tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management]
-    typical-use: "Frontend TypeScript development rules, React function components, Props-driven design, type safety, state management patterns"
-    size: large
+    tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management, state-ownership, server-client-boundary, performance-evidence]
+    typical-use: "Repository-aware React and TypeScript boundaries for external data, component and state ownership, async errors, bundler configuration, and evidence-gated optimization"
+    size: small
     key-references:
-      - "React Function Components"
-      - "TypeScript Best Practices"
-      - "Props-Driven Design"
+      - "Repository-local component and state ownership"
+      - "React Compiler memoization boundary"
+      - "Bundler environment exposure rules"
     sections:
-      - "Basic Principles"
       - "Comment Writing Rules"
       - "Type Safety"
       - "Coding Conventions"
       - "Error Handling"
-      - "Refactoring Techniques"
       - "Performance Optimization"
       - "Non-functional Requirements"
 
   test-implement:
     skill: "test-implement"
     tags: [testing, frontend, react, react-testing-library, msw, playwright, e2e, fixture-e2e, service-integration-e2e, coverage, tdd]
-    typical-use: "Test implementation patterns. references/frontend.md for RTL+Vitest+MSW, references/e2e.md for Playwright with both fixture-e2e (mocked backend) and service-integration-e2e (live local stack) patterns"
-    size: large
+    typical-use: "Repository-aware frontend test implementation. Load references/frontend.md for component tests or references/e2e.md for fixture and service browser lanes"
+    size: medium
     key-references:
       - "references/frontend.md"
       - "references/e2e.md"
@@ -208,7 +189,6 @@ skills:
       - "Fallback Design Principles"
       - "Rule of Three - Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
-      - "Debugging Techniques"
       - "Quality Check Workflow"
       - "Situations Requiring Technical Decisions"
       - "Implementation Completeness Assurance"

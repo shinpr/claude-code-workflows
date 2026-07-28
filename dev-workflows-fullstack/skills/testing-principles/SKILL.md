@@ -7,292 +7,41 @@ description: Language-agnostic testing principles including TDD, test quality, c
 
 ## Test-Driven Development (TDD)
 
-### The RED-GREEN-REFACTOR Cycle
-
 Use this cycle for new or changed executable behavior and reproducible bug fixes. For a behavior-preserving refactor, first confirm existing tests pass or add passing characterization tests, then refactor and rerun the same regression evidence.
 
-1. **RED**: Write a failing test first
-   - Write the test before implementation
-   - Ensure the test fails for the right reason
-   - Verify test can actually fail
-
-2. **GREEN**: Write minimal code to pass
-   - Implement just enough to make the test pass
-   - Focus on making it work
-
-3. **REFACTOR**: Improve code structure
-   - Clean up implementation
-   - Eliminate duplication
-   - Improve naming and clarity
-   - Keep all tests passing
-
-4. **VERIFY**: Ensure all tests still pass
-   - Run full test suite
-   - Check for regressions
-   - Validate refactoring didn't break anything
+RED: confirm the new test fails for the intended reason. GREEN: implement the smallest passing change. REFACTOR: improve structure while the test remains green. VERIFY: run the repository's applicable regression checks.
 
 ## Quality Requirements
-
-### Coverage
 
 - Treat coverage as a diagnostic signal for finding untested areas, not a target — a target gets gamed into trivial tests (Goodhart's Law)
 - Concentrate tests on critical paths, business logic, and behavior whose regression would matter
 - Prioritize meaningful assertions over the coverage number; any CI threshold is the project's config, not a quality goal in itself
+- Use project-configured speed budgets when present. Otherwise treat unit tests ≥ 100ms, integration tests ≥ 1s, or a full suite ≥ 10 minutes as mandatory slow-test review triggers; retain slower tests only when their boundary/value requires it and record the reason
 
-### Test Characteristics
+## Test Design Rules
 
-All tests must be:
+- Structure each test as Arrange, one Act, and Assert; multiple assertions may prove one behavior.
+- Follow the repository's test naming convention and name the condition and observable outcome.
+- Exercise behavior through a public or integration boundary. Assertions verify return values, outputs, errors, or state changes rather than private implementation.
+- Use independently derived literal, property, approved snapshot, or fixture expectations. An implementation-derived oracle cannot detect the same implementation defect.
+- Keep each test's expected outcome unconditional. Table-driven or property-based cases are acceptable when each case is reported distinctly and uses an independent oracle.
+- Cover accepted boundary and error behavior; derive cases from the contract instead of adding generic edge-case permutations.
+- Each test creates and cleans up its own state, passes in isolation and any order, and controls time or randomness that affects its result.
+- Keep tests executable. Fix or remove tests that no longer describe accepted behavior; restore tests disabled only to bypass a failure.
 
-- **Independent**: No dependencies between tests (see Test Independence Verification for detailed criteria)
-- **Reproducible**: Same input always produces same output
-- **Fast**: Use project-configured budgets when present. Otherwise treat unit tests ≥ 100ms, integration tests ≥ 1s, or a full suite ≥ 10 minutes as mandatory slow-test review triggers; retain slower tests only when their boundary/value requires it and record the reason
-- **Self-checking**: Clear pass/fail without manual verification
-- **Timely**: Written close to the code they test
+## Mock and Boundary Rules
 
-## Test Types
-
-### Unit Tests
-
-**Purpose**: Test individual components in isolation
-
-**Characteristics**:
-- Test single function, method, or class
-- Fast execution (milliseconds)
-- No external dependencies
-- Mock external services
-- Majority of your test suite
-
-### Integration Tests
-
-**Purpose**: Test interactions between components
-
-**Characteristics**:
-- Test multiple components together
-- May include database, file system, or APIs
-- Slower than unit tests
-- Verify contracts between modules
-- Smaller portion of test suite
-
-### End-to-End (E2E) Tests
-
-**Purpose**: Test complete workflows from user perspective
-
-**Characteristics**:
-- Test entire application stack
-- Simulate real user interactions
-- Slowest test type
-- Fewest in number
-- Highest confidence level
-
-## Test Design Principles
-
-### AAA Pattern (Arrange-Act-Assert)
-
-Structure every test in three clear phases:
-
-```
-// Arrange: Setup test data and conditions
-user = createTestUser()
-validator = createValidator()
-
-// Act: Execute the code under test
-result = validator.validate(user)
-
-// Assert: Verify expected outcome
-assert(result.isValid == true)
-```
-
-**Adaptation**: Apply this structure using your language's idioms (methods, functions, procedures)
-
-### One Assertion Per Concept
-
-- Test one behavior per test case
-- Multiple assertions OK if testing single concept
-- Split unrelated assertions into separate tests
-
-Example: prefer `returns error when email is invalid` over `validates user`.
-
-### Descriptive Test Names
-
-Test names should clearly describe:
-- What is being tested
-- Under what conditions
-- What the expected outcome is
-
-**Recommended format**: `"should [expected behavior] when [condition]"`
-
-**Examples**:
-```
-test("should return error when email is invalid")
-test("should calculate discount when user is premium")
-test("should throw exception when file not found")
-```
-
-**Adaptation**: Follow your project's naming convention (camelCase, snake_case, describe/it blocks)
-
-## Test Independence
-
-### Setup and Teardown
-
-- Use setup hooks to prepare test environment
-- Use teardown hooks to clean up resources
-- Keep setup minimal and focused
-- Ensure teardown runs even if test fails
-
-## Mocking and Test Doubles
-
-### When to Use Mocks
-
-- **Mock external dependencies**: APIs, databases, file systems
-- **Mock slow operations**: Network calls, heavy computations
-- **Mock unpredictable behavior**: Random values, current time
-- **Mock unavailable services**: Third-party services
-
-### Mocking Principles
-
-- Mock at boundaries, not internally
-- Keep mocks simple and focused
-- Verify mock expectations when relevant
-- Use an existing application-owned adapter as the mock boundary. Introduce an adapter when the external library owns I/O, unstable contracts, or substitution that application tests must control; direct use is acceptable for stable pure libraries when a wrapper adds no contract value
+- Mock direct external I/O boundaries; keep internal business logic and the boundary under test real.
+- Use the existing application-owned adapter as the mock boundary. Introduce an adapter only when external I/O, an unstable contract, or required substitution cannot be controlled through the current design.
+- Keep mock behavior limited to the contract needed by the test.
 
 ## Data Layer Testing
 
-### Mock Limitations for Data Layer
+Mock-based tests are sufficient when data access is only a dependency of the behavior under test. Verify against the project's real database engine or its accepted equivalent when the subject is a query, repository implementation, schema constraint, or migration compatibility. Resolve the test environment from repository configuration; when no representative environment exists and adding one is outside the approved work, report the missing verification decision.
 
-Mocks validate call patterns but cannot verify data layer correctness. The following pass through undetected with mock-only testing:
-- Schema mismatches (table names, column names, data types)
-- Query correctness (joins, filters, aggregations, grouping)
-- Database constraints (NOT NULL, UNIQUE, foreign keys)
-- Migration drift (schema changes that make code out of sync)
-
-### When Mocks Are Appropriate for Data Access
-
-- Testing business logic that receives data from the data layer (mock the repository, test the service)
-- Testing error handling paths (simulating connection failures, timeouts)
-- Unit tests where data access is a dependency, not the subject under test
-
-### When Mocks Are Insufficient for Data Access
-
-- Testing repository or data access implementations themselves
-- Verifying query correctness (joins, filters, aggregations, grouping)
-- Testing data integrity constraints
-- Testing migration compatibility
-
-### Real Database Testing (Environment-Dependent)
-
-Options for verifying data layer correctness against a real database engine:
-- **Containerized databases** for CI environments
-- **In-memory databases** for fast feedback (note: dialect differences may mask issues)
-- **Dedicated test databases** with seed data
-
-The appropriate approach depends on project environment and CI/CD capabilities.
-
-### AI-Generated Code and Schema Awareness
-
-- AI-generated data access code has heightened schema hallucination risk
-- Generated queries may use correct syntax but reference nonexistent schema elements
-- Mock-based tests pass regardless of schema accuracy
-- Mitigation: Design Docs should include explicit schema references so that documented schemas can be cross-checked against data access code during review
-
-## Test Quality Practices
-
-### Keep Tests Active
-
-- **Fix or delete failing tests**: Resolve failures immediately
-- **Remove commented-out tests**: Fix them or delete entirely
-- **Keep tests running**: Broken tests lose value quickly
-- **Maintain test suite**: Refactor tests as needed
-
-### Test Helpers and Utilities
-
-- Create reusable test data builders
-- Extract common setup into helper functions
-- Build test utilities for complex scenarios
-- Share helpers across test files appropriately
-
-## What to Test
-
-### Focus on Behavior
-
-**Test observable behavior, not implementation**:
-
-✓ **Good**: Test that function returns expected output
-✓ **Good**: Test that correct API endpoint is called
-✗ **Bad**: Test that internal variable was set
-✗ **Bad**: Test order of private method calls
-
-### Test Public APIs
-
-- Test through public interfaces
-- Avoid testing private methods directly
-- Test return values, outputs, exceptions
-- Test side effects (database, files, logs)
-
-### Test Edge Cases
-
-Always test:
-- **Boundary conditions**: Min/max values, empty collections
-- **Error cases**: Invalid input, null values, missing data
-- **Edge cases**: Special characters, extreme values
-- **Happy path**: Normal, expected usage
-
-## Test Quality Criteria
-
-These criteria ensure reliable, maintainable tests.
-
-### Literal Expected Values
-
-- Use hardcoded literal values in assertions by default
-- Calculate expected values independently from the implementation
-- Use an independently derived property, approved snapshot, or fixture expectation when it expresses the oracle more clearly than a literal
-- If the implementation has a bug, the test catches it through independent verification
-- If expected value equals mock return value unchanged, the test verifies nothing (no transformation occurred)
-
-### Result-Based Verification
-
-- Verify final results and observable outcomes
-- Assert on return values, output data, or system state changes
-- For mock verification, check that correct arguments were passed
-
-### Meaningful Assertions
-
-- Every test must include at least one assertion
-- Assertions must validate observable behavior
-- A test without assertions always passes and provides no value
-
-### Appropriate Mock Scope
-
-- Mock direct external I/O dependencies: databases, HTTP clients, file systems
-- Use real implementations for internal utilities and business logic
-- Over-mocking reduces test value by verifying wiring instead of behavior
-
-### Boundary Value Testing
-
-Test at boundaries of valid input ranges:
-- Minimum valid value
-- Maximum valid value
-- Just below minimum (invalid)
-- Just above maximum (invalid)
-- Empty input (where applicable)
-
-### Test Independence Verification
-
-Each test must:
-- Create its own test data
-- Not depend on execution order
-- Clean up its own state
-- Pass when run in isolation
+Cross-check data-access code against the schema source named in the Design Doc or repository configuration. Successful mocks do not prove table, column, type, constraint, or dialect compatibility.
 
 ## Verification Requirements
-
-### Before Commit
-
-- ✓ All tests pass — fix failing tests immediately
-- ✓ No tests skipped or commented — delete or fix
-- ✓ No debug code left in tests
-- ✓ Test coverage meets standards
-- ✓ No flaky tests — make deterministic
-- ✓ Tests run within performance thresholds
 
 ### Capability Probe Postconditions
 
@@ -300,92 +49,9 @@ A capability probe passes when it uses the consumer's boundary and asserts the e
 
 ## Test Organization
 
-### File Structure
-
-- **Mirror production structure**: Tests follow code organization
-- **Clear naming conventions**: Follow project's test file patterns
-  - Examples: `UserService.test.*`, `user_service_test.*`, `test_user_service.*`, `UserServiceTests.*`
-- **Logical grouping**: Group related tests together
-- **Separate test types**: Follow the repository's established layout. When establishing a new convention, separate integration/E2E tests when their setup, runner routing, or environment differs from unit tests
-
-## Performance Considerations
-
-### Test Speed
-
-- **Unit tests**: Review at ≥ 100ms each unless the project defines another budget
-- **Integration tests**: Review at ≥ 1s each unless the project defines another budget
-- **Full suite**: Review at ≥ 10 minutes unless the project defines another budget
-
-### Optimization Strategies
-
-- Run tests in parallel when possible
-- Use in-memory databases for tests
-- Mock expensive operations
-- Split slow test suites
-- Profile and optimize slow tests
-
-## Continuous Integration
-
-### CI/CD Requirements
-
-- Run full test suite on every commit
-- Block merges if tests fail
-- Run tests in isolated environments
-- Test on target platforms/versions
-
-### Test Reports
-
-- Generate coverage reports
-- Track test execution time
-- Identify flaky tests
-- Monitor test trends
-
-## Test Design Guardrails
-
-### Every Test Must
-
-- Include at least one meaningful assertion
-- Create its own test data and clean up its own state
-- Pass when run in any order and in isolation
-- Test observable behavior through public interfaces
-- Keep each test body's expected outcome unconditional: no branches that allow multiple pass paths. Table-driven or property-based iteration is allowed when the framework reports each case clearly and the oracle remains independent
-- Mock only external I/O boundaries, use real implementations for internal logic
-
-### Flaky Test Resolution
-
-- Use deterministic time mocking instead of real clocks
-- Use fixed seed values instead of random data
-- Ensure proper resource cleanup in teardown
-- Resolve race conditions with synchronization primitives
+Follow the repository's established test paths, runner routing, and naming. When establishing an approved new convention, separate test types only when their setup, runner, or environment differs.
 
 ## Regression Testing
 
-### Prevent Regressions
-
-- Add a regression test for every reproducible behavior bug fix. When executable reproduction is impossible, record the reason and the alternative static, contract, or environment evidence that prevents recurrence
-- Maintain comprehensive test suite
-- Run full suite regularly
-- Keep all tests unless the tested functionality is removed
-
-### Legacy Code
-
-- Add characterization tests before refactoring
-- Test existing behavior first
-- Gradually improve coverage
-- Refactor with confidence
-
-## Documentation and Communication
-
-### Tests as Documentation
-
-- Tests document expected behavior
-- Use clear, descriptive test names
-- Include examples of usage
-- Show edge cases and error handling
-
-### Test Failure Messages
-
-- Provide clear, actionable error messages
-- Include actual vs expected values
-- Add context about what was being tested
-- Make debugging easier
+- Add a regression test for every reproducible behavior bug fix. When executable reproduction is impossible, record the reason and the alternative static, contract, or environment evidence that prevents recurrence.
+- Before behavior-preserving changes to uncharacterized legacy code, establish passing characterization evidence and rerun it after the change.

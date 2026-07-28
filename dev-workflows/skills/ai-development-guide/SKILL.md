@@ -156,25 +156,6 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
 - **Reference representativeness check**: When adopting a pattern or dependency from nearby code, verify it is representative across the repository before adopting — nearby files alone are an insufficient basis
 
-## Debugging Techniques
-
-### 1. Error Analysis Procedure
-1. Read error message (first line) accurately
-2. Focus on first and last of stack trace
-3. Identify first line where your code appears
-
-### 2. 5 Whys - Root Cause Analysis
-Trace the failure through repeated "why" questions until the root cause is actionable.
-
-### 3. Minimal Reproduction Code
-To isolate problems, attempt reproduction with minimal code:
-- Remove unrelated parts
-- Replace external dependencies with mocks
-- Create minimal configuration that reproduces problem
-
-### 4. Debug Log Output
-Include operation context, relevant input data, current state, and timestamp.
-
 ## Quality Assurance Mechanism Awareness
 
 Before executing quality checks, identify what quality mechanisms exist for the change area:

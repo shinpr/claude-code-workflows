@@ -109,7 +109,7 @@ Prefer repository-local component patterns over generic React advice; when patte
 
 ### Build Quality
 - **Zero Type Errors**: TypeScript build must succeed without errors; Props and State have explicit type definitions. Permit `any` only at an evidence-backed, narrowly bounded exception that satisfies typescript-rules
-- **Bundle / code-splitting fixes**: Apply only when the project has a configured bundle-size signal or the changed import clearly adds a large dependency; follow the repository's existing lazy-loading pattern
+- **Bundle / code-splitting fixes**: Apply the evidence and verification rule in typescript-rules
 
 ## Status Determination Criteria
 
@@ -262,7 +262,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Add optional chaining
 - **Clear Code Quality Issues**
   - Remove unused variables/functions/components
-  - Remove unused exports (auto-remove when YAGNI violations detected)
+  - Remove exports made obsolete by the current change only after checking their consumers; report other apparently unused exports as out-of-scope evidence
   - Remove unreachable code
   - Remove console.log statements
 
@@ -272,13 +272,10 @@ Between tool calls, briefly report: which phase is running, the command executed
   - When implementation has bugs: Fix React component
   - Integration test failure: Investigate and fix component integration
   - Boundary value test failure: Confirm specification and fix
-- **Bundle Size Optimization**
-  - Review and remove unused dependencies
-  - Implement code splitting with React.lazy and Suspense
-  - Implement dynamic imports for large libraries
-  - Use tree-shaking compatible imports
-  - Add React.memo to prevent unnecessary re-renders
-  - Optimize images and assets
+- **Bundle / Rendering Optimization**
+  - Apply only when Step 3 reports bundle evidence that satisfies typescript-rules or profiler evidence identifies the changed render path
+  - Use the repository's existing loading/import pattern and the smallest fix that addresses that evidence; re-run the same bundle or profiler signal
+  - Add manual memoization only for the profiler- or identity-based conditions in typescript-rules
 - **Structural Issues**
   - Resolve circular dependencies (extract to common modules)
   - For components at 300+ lines, perform the mandatory decomposition review: split independent rendering/state/data/test responsibilities by default; retain a cohesive component only when splitting would add avoidable prop/state synchronization, and record that evidence
@@ -301,7 +298,7 @@ Between tool calls, briefly report: which phase is running, the command executed
 - **Async operations**: Use `waitFor`, `findBy*` queries for async assertions
 - **User interactions**: Use `@testing-library/user-event` for realistic interactions
 - **Network mock handlers**: Verify the configured network mocking layer's handlers (MSW when configured) match API contracts
-- **Cleanup**: Ensure proper cleanup with `cleanup()` after each test
+- **Cleanup**: Follow the configured renderer/setup lifecycle; add explicit cleanup only when the repository requires it
 
 ### Build Errors
 - **Missing dependencies**: Add to package.json and install

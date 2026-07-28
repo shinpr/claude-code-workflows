@@ -146,20 +146,6 @@ One comment per decision. If a comment restates what the names and control flow 
 - Complex conditional logic
 - Unclear naming or structure
 
-## Testing Considerations
-
-### Testability
-- Write testable code from the start
-- Avoid hidden dependencies
-- Keep side effects explicit
-- Design for parameterized dependencies
-
-### Test-Driven Development
-- Write tests before implementation when appropriate
-- Keep tests simple and focused
-- Test behavior, not implementation
-- Maintain test quality equal to production code
-
 ## Security Principles
 
 ### Secure Defaults
@@ -180,45 +166,4 @@ One comment per decision. If a comment restates what the names and control flow 
 - Grant only the permissions required for the operation (files, database connections, API scopes)
 - For changes involving identity or protected resources, prioritize authentication and per-resource authorization review
 
-### Knowledge Cutoff Supplement (2026-03)
-- OWASP Top 10:2025 shifted from symptoms to root causes; added "Software Supply Chain Failures" (A03) and "Mishandling of Exceptional Conditions" (A10)
-- OpenSSF published "Security-Focused Guide for AI Code Assistant Instructions" — recommends language-specific, actionable constraints over generic advice
-- For detailed detection patterns, see `references/security-checks.md`
-
-## Documentation
-
-### Code Documentation
-- Document public APIs and interfaces
-- Include usage examples for complex functionality
-- Maintain README files for modules
-- Update documentation in the same commit that changes the corresponding behavior
-
-### Architecture Documentation
-- Document high-level design decisions
-- Explain integration points
-- Clarify data flows and boundaries
-- Record trade-offs and alternatives considered
-
-## Version Control Practices
-
-### Commit Practices
-- Make atomic, focused commits
-- Write clear, descriptive commit messages
-- Commit working code (passes tests)
-- Commit only production-ready code; store secrets in environment variables or secret managers
-
-### Code Review Readiness
-- Self-review before requesting review
-- Keep changes focused and reviewable
-- Provide context in pull request descriptions
-- Respond to feedback constructively
-
-## Language-Specific Adaptations
-
-While these principles are language-agnostic, adapt them to your specific programming language:
-
-- **Static typing**: Use strong types when available
-- **Dynamic typing**: Add runtime validation
-- **OOP languages**: Apply SOLID principles
-- **Functional languages**: Prefer pure functions and immutability
-- **Concurrency**: Follow language-specific patterns for thread safety
+For concrete detection patterns used by security review, see `references/security-checks.md`.

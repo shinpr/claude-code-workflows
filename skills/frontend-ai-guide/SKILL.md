@@ -124,41 +124,6 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
 
-## Debugging Techniques
-
-### 1. Error Analysis Procedure
-1. Read error message (first line) accurately
-2. Focus on first and last of stack trace
-3. Identify first line where your code appears
-4. Check React DevTools for component hierarchy
-
-### 2. 5 Whys - Root Cause Analysis
-```
-Symptom: Component not rendering
-Why1: Props are undefined → Why2: Parent component didn't pass props
-Why3: Parent using old prop names → Why4: Component interface was updated
-Why5: No update to parent after refactoring
-Root cause: Incomplete refactoring, missing call-site updates
-```
-
-### 3. Minimal Reproduction Code
-To isolate problems, attempt reproduction with minimal code:
-- Remove unrelated components
-- Replace API calls with mocks
-- Create minimal configuration that reproduces problem
-- Use React DevTools to inspect component tree
-
-### 4. Debug Log Output (temporary)
-Add structured debug logs to isolate the issue, then remove temporary logs before commit:
-```typescript
-console.log('DEBUG:', {
-  context: 'user-form-submission',
-  props: { email, name },
-  state: currentState,
-  timestamp: new Date().toISOString()
-})
-```
-
 ## Quality Check Workflow
 
 Read `package.json` scripts and run them with the project's package manager (`packageManager` field). Map the project's actual script names to the phases below — do not assume fixed names.
