@@ -389,7 +389,3 @@ A capability probe passes when it uses the consumer's boundary and asserts the e
 - Include actual vs expected values
 - Add context about what was being tested
 - Make debugging easier
-
-## References
-
-- `references/language-paradigms.md`: Language and programming-paradigm-specific test selection

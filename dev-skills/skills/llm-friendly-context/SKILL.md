@@ -39,6 +39,7 @@ The goal is stable downstream execution: the next agent should know what to read
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
    - Keep simple downstream tasks lightweight when the target action, context, and success criteria are already clear.
+   - Apply `minimal`, `a few lines`, and explicit line estimates to the completed diff as one total budget.
 
 ## Rewrite Patterns
 

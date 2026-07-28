@@ -149,7 +149,7 @@ Invoke quality-fixer routed by task filename pattern:
 - `*-backend-task-*` → `subagent_type`: "dev-workflows:quality-fixer"
 - `*-frontend-task-*` → `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Final quality assurance"
-- Pass Step 4 `mutationEvidence` and `qualityCommand` from the caller or current task when available.
+- Pass Step 4 `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
 **Expected output**: `status` (approved/stub_detected/blocked)

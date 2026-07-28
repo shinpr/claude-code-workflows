@@ -96,7 +96,7 @@ For EACH task in the Consumed Task Set, YOU MUST:
      - `approved` → Proceed to step 3
      - `blocked` → STOP and escalate to user
    - `readyForQualityCheck: true` → Proceed to step 3
-3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or current task when available
+3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
    - `approved` → Proceed to step 4

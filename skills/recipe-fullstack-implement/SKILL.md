@@ -111,7 +111,7 @@ Escalate when the required fix or investigation falls outside that scope.
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check)
-3. Run quality-fixer after each executor with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or task when available
+3. Run quality-fixer after each executor with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
@@ -126,8 +126,6 @@ Emit one code-verifier call per resolved document plus one security-reviewer cal
 - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
 
 Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
-
-For a failed verifier, split actionable findings into `*-backend-task-review-fixes-*` and `*-frontend-task-review-fixes-*` files and run each non-empty file through its routed executor and quality-fixer.
 
 ### Final Cleanup
 

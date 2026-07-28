@@ -288,6 +288,8 @@ graph TD
 | code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
+**Fix-cycle handoff**: Consolidate failed verifier findings into one ephemeral task per required executor and pass each exact path as `task_file` through its executor and quality-fixer. Use `review-fixes-{plan-name}-task-*` for single-layer work and `review-fixes-{plan-name}-{backend|frontend}-task-*` for fullstack routing; delete the files after all verifiers pass.
+
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
 ### Conditions for Stopping Autonomous Execution
@@ -320,7 +322,7 @@ Stop autonomous execution and escalate to user in the following cases:
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
-3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or task when available
+3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4

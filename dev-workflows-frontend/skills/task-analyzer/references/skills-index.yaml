@@ -32,8 +32,8 @@ skills:
 
   testing-principles:
     skill: "testing-principles"
-    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd, test-quality-criteria]
-    typical-use: "Universal testing principles, TDD practice, test quality criteria, test creation and quality assurance for all programming languages"
+    tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, ci-cd, test-quality-criteria, capability-probe, consumer-postcondition]
+    typical-use: "Universal testing principles, TDD practice, test quality criteria, capability probe validation, and quality assurance for all programming languages"
     size: large
     key-references:
       - "Test-Driven Development - Kent Beck"
@@ -58,7 +58,6 @@ skills:
       - "Test Design Guardrails"
       - "Regression Testing"
       - "Documentation and Communication"
-      - "References"
 
   ai-development-guide:
     skill: "ai-development-guide"
@@ -85,8 +84,8 @@ skills:
 
   documentation-criteria:
     skill: "documentation-criteria"
-    tags: [documentation, decision-making, adr, prd, design-doc, planning, process, scale-assessment]
-    typical-use: "Scale assessment at implementation start, document creation criteria, ADR/PRD/Design Doc/Work Plan creation standards"
+    tags: [documentation, decision-making, adr, prd, design-doc, planning, process, scale-assessment, mvp-convergence, scope-boundaries]
+    typical-use: "Scale assessment, document creation criteria, PRD MVP convergence, and ADR/PRD/Design Doc/Work Plan creation standards"
     size: medium
     key-references:
       - "ADR Method - Michael Nygard"
@@ -122,8 +121,8 @@ skills:
 
   integration-e2e-testing:
     skill: "integration-e2e-testing"
-    tags: [testing, integration-testing, e2e-testing, fixture-e2e, service-integration-e2e, lane-selection, test-design, behavior-first, roi, test-skeleton, ears-format]
-    typical-use: "Integration and E2E test design principles, two-lane E2E split (fixture-e2e and service-integration-e2e) with lane-specific ROI thresholds, behavior-first approach, test skeleton specification"
+    tags: [testing, integration-testing, e2e-testing, fixture-e2e, service-integration-e2e, lane-selection, test-design, behavior-first, roi, test-skeleton, ears-format, route-parity, shared-mutation]
+    typical-use: "Integration and E2E test design, lane-specific ROI selection, test skeleton specification, and route parity review for shared mutations"
     size: medium
     key-references:
       - "Test Pyramid - Mike Cohn"
@@ -142,8 +141,8 @@ skills:
 
   subagents-orchestration-guide:
     skill: "subagents-orchestration-guide"
-    tags: [orchestration, workflow, subagents, autonomous-execution, planning, design-flow, implementation-flow]
-    typical-use: "Orchestrating subagents through implementation workflows, scale determination, stop points, autonomous execution mode"
+    tags: [orchestration, workflow, subagents, autonomous-execution, planning, design-flow, implementation-flow, handoff-contracts, post-implementation-verification]
+    typical-use: "Orchestrating subagents through implementation workflows, structured handoffs, stop points, autonomous execution, and post-implementation verifier/fix cycles"
     size: large
     key-references:
       - "Orchestrator Pattern"
@@ -218,8 +217,8 @@ skills:
   # Cross-Cutting Skills
   llm-friendly-context:
     skill: "llm-friendly-context"
-    tags: [cross-cutting, llm-facing, prompt-writing, handoff, subagent-prompt, documentation, planning, task-decomposition, test-skeleton, generated-instructions, ambiguity-reduction, output-format, success-criteria]
-    typical-use: "Writing or revising LLM-facing prompts, subagent handoffs, design/planning artifacts, review findings, completion reports, and generated instructions so downstream agents can execute without guessing"
+    tags: [cross-cutting, llm-facing, prompt-writing, handoff, subagent-prompt, documentation, planning, task-decomposition, test-skeleton, generated-instructions, ambiguity-reduction, output-format, success-criteria, scope-control, size-budget]
+    typical-use: "Writing or revising LLM-facing prompts, handoffs, planning artifacts, reviews, and generated instructions with explicit execution boundaries and total change budgets"
     size: small
     key-references:
       - "Ambiguity rewrite patterns"

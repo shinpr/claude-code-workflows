@@ -103,7 +103,7 @@ Escalate when the required fix or investigation falls outside that scope.
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
-3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or current task when available; run quality checks and fixes
+3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); run quality checks and fixes
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4

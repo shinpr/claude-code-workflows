@@ -79,6 +79,7 @@ Follow frontend-ai-guide skill "Quality Check Workflow" section:
 - Tests (unit, integration, React Testing Library)
 - Final gate (all must pass)
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
+- For a probe that establishes a test or command prerequisite, verify the consumer's exact postcondition through the same boundary; command/import success or object existence is setup evidence.
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors

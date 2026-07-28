@@ -152,7 +152,7 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows:quality-fixer"
 - `description`: "Quality gate check"
-- Pass Step 7 `mutationEvidence` and `qualityCommand` from the caller or current task when available.
+- Pass Step 7 `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 9: Re-validate code-reviewer
