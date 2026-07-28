@@ -141,9 +141,10 @@ description: "Review updated document"
 prompt: |
   Review the following updated document.
 
-  doc_type: [Design Doc / PRD / ADR]
+  doc_type: [DesignDoc / PRD / ADR]
   target: [path from Step 1]
-  mode: standard
+  mode: composite
+  review_context: update (Design Doc only; omit for PRD/ADR)
   code_verification: $CODE_VERIFICATION_OUTPUT (Design Doc only, omit for PRD/ADR)
 
   Focus on:

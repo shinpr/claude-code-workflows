@@ -135,6 +135,7 @@ Invoke integration-test-reviewer using Agent tool:
 Check Step 5 result:
 - `status: approved` → Mark complete, proceed to Step 7
 - `status: needs_revision` → Invoke task-executor with requiredFixes, then return to Step 5
+- `status: blocked` → Escalate to user
 
 Invoke task-executor routed by task filename pattern:
 - `*-backend-task-*` → `subagent_type`: "dev-workflows:task-executor"

@@ -48,23 +48,18 @@ C4Context
 
 ## Functional Requirements
 
-### Must Have (P1 - MVP)
+### MVP Requirements
 - [ ] Requirement 1: [Detailed description]
   - AC-001: [Acceptance criteria - Given/When/Then format or measurable standard]
   - AC-002: [Acceptance criteria]
 - [ ] Requirement 2: [Detailed description]
   - AC-003: [Acceptance criteria]
 
-### Should Have (P2)
-- [ ] Requirement 1: [Detailed description]
-  - AC-004: [Acceptance criteria]
+### Future / Out of Scope
 
-### Could Have (P3)
-- [ ] Requirement 1: [Detailed description]
-
-### Won't Have (this release)
-- Item 1: [Description and reason for exclusion]
-- Item 2: [Description and reason for exclusion]
+| Capability | Disposition | Reason |
+|---|---|---|
+| [Capability excluded during MVP convergence] | future / out-of-scope | [Why it is not required for the current value or obligations] |
 
 ## Non-Functional Requirements
 

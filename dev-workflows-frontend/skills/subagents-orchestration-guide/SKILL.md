@@ -165,7 +165,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status, `reviewBasis`, requiredFixes
+- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status (`approved`/`needs_revision`/`blocked`), `reviewBasis`, requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
@@ -254,6 +254,7 @@ graph TD
     ESCJUDGE -->|No issues| QF
     ITR -->|needs_revision| TE
     ITR -->|approved| QF
+    ITR -->|blocked| USERESC
     QF[quality-fixer: Quality check and fixes] --> QFJUDGE{quality-fixer result}
     QFJUDGE -->|stub_detected| TE
     QFJUDGE -->|approved| COMMIT[Orchestrator: Execute git commit]
@@ -317,6 +318,7 @@ Stop autonomous execution and escalate to user in the following cases:
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
+     - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
 3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or task when available
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -354,7 +356,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    - Do not pass `code_paths`; code-verifier discovers scope from the document
 
    #### HC-04: code-verifier + codebase-analyzer → document-reviewer
-   - Pass: `code_verification` JSON and the same `codebase_analysis` JSON previously given to the designer; for a DesignDoc creation review, also pass the original user requirements as `requirements_verbatim` and confirmed scope and user decisions as `confirmed_decisions`
+   - Pass: `review_context: creation`, `code_verification` JSON, the same `codebase_analysis` JSON previously given to the designer, original user requirements as `requirements_verbatim`, and confirmed scope and user decisions as `confirmed_decisions`
    - Purpose: reviewer validates discrepancy integration, Fact Disposition coverage against `focusAreas`, and Design Convergence against the effective requirements
 
    #### HC-05: code-verifier → next-layer technical-designer (fullstack only)

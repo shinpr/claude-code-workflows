@@ -101,6 +101,7 @@ Escalate when the required fix or investigation falls outside that scope.
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
+     - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
 3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or current task when available; run quality checks and fixes
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details

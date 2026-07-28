@@ -94,6 +94,7 @@ For EACH task in the Consumed Task Set, YOU MUST:
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
+     - `blocked` → STOP and escalate to user
    - `readyForQualityCheck: true` → Proceed to step 3
 3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` from the caller or current task when available
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details

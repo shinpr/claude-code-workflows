@@ -48,7 +48,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:security-reviewer"
 - `description`: "Security review"
-- `prompt`: "Design Doc: [path]. Implementation files: [git diff file list]. Review security compliance."
+- `prompt`: "governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [git diff file list]. Review security compliance."
 
 **Store output as**: `$STEP_3_OUTPUT`
 
@@ -123,7 +123,7 @@ Run this step only when the user routed at least one finding to `d`. When all ro
 2. Invoke document-reviewer to verify the updated Design Doc:
    - `subagent_type`: "dev-workflows-frontend:document-reviewer"
    - `description`: "Document review of updated Design Doc"
-   - `prompt`: "Review updated Design Doc at [path] for consistency and completeness."
+   - `prompt`: "Review updated Design Doc at [path] for consistency and completeness. doc_type: DesignDoc. review_context: update."
 
 3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
    - `subagent_type`: "dev-workflows-frontend:design-sync"
@@ -167,7 +167,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool (only if security fixes were applied):
 - `subagent_type`: "dev-workflows-frontend:security-reviewer"
 - `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. Prior findings: $STEP_3_OUTPUT. Design Doc: [path]. Implementation files: [file list]."
+- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. Prior findings: $STEP_3_OUTPUT."
 
 ### Step 11: Final Cleanup and Report
 

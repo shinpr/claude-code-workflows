@@ -24,7 +24,7 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
 - **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
-- **qualityCommand** (optional): Authoritative quality command supplied by the caller or recorded in the task. Use it as the primary command.
+- **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
 
 ## Initial Required Tasks
@@ -63,16 +63,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 
 ### Step 2: Detect Quality Check Commands
 
-**When `qualityCommand` is provided**: Use it as the primary quality command.
-
-**When `qualityCommand` is absent**:
-```bash
-# Auto-detect from project manifest files
-# Identify project structure and extract quality commands:
-# - Package manifest (package.json) → extract test/lint/build/type-check scripts
-# - Dependency manifest → identify language toolchain (TypeScript, ESLint, Biome, etc.)
-# - Build configuration → extract build/check commands
-```
+Run `qualityCommand` first when provided. Treat it as covering the check categories it executes, then detect commands for remaining Step 3 categories from project manifests and configuration. When absent, detect all applicable commands this way.
 
 **Supplementary detection** (when task_file provided):
 - Read the task file's "Quality Assurance Mechanisms" section
@@ -149,6 +140,7 @@ Before setting status to blocked, confirm specifications in this order:
 | Cannot identify expected values from external systems | External API supports multiple response formats | Cannot determine even after all verification methods |
 | Multiple implementation methods with different UX values | Form validation "on blur" vs "on submit" | Cannot determine correct UX design |
 | Execution prerequisites not met | Missing test database, seed data, required libraries, environment variables, external service access | Cannot run tests without prerequisites — not a code fix |
+
 **Determination Logic**: Treat a failure as in scope when evidence ties it to the current change or confirmed task scope; fix it and re-run the check. Return `blocked` with the command, file, and classification basis for verified pre-existing or out-of-scope failures. When classification is uncertain, preserve the current scope and name the evidence or decision required.
 
 **Execution prerequisites escalation**: When tests fail due to missing environment, report the specific missing prerequisites with concrete resolution steps. Include:

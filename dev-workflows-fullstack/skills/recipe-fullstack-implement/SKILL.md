@@ -127,6 +127,8 @@ Emit one code-verifier call per resolved document plus one security-reviewer cal
 
 Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
 
+For a failed verifier, split actionable findings into `*-backend-task-review-fixes-*` and `*-frontend-task-review-fixes-*` files and run each non-empty file through its routed executor and quality-fixer.
+
 ### Final Cleanup
 
 Before the completion report, delete the implementation task files this recipe consumed. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
