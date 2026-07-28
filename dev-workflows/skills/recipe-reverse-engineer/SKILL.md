@@ -345,6 +345,7 @@ prompt: |
   doc_type: DesignDoc
   target: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
   mode: composite
+  review_context: as-is
   code_verification: $STEP_8_OUTPUT
 
   ## Parent PRD
@@ -409,4 +410,3 @@ Output summary including:
 | Generation fails | Log failure, continue with other units, report in summary |
 | consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
 | Review rejects after 2 revisions | Stop loop, flag for human intervention |
-

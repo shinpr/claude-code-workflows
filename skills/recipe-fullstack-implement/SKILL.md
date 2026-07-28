@@ -60,11 +60,7 @@ Key points to enforce as the orchestrator runs the flow:
 
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-**After scale determination, register all steps of the monorepo-flow.md using TaskCreate**:
-- First task: "Map preloaded skills to applicable concrete rules"
-- Register each step as individual task
-- Set currently executing step to `in_progress` using TaskUpdate
-- **Complete task registration before invoking subagents**
+After scale determination, use TaskCreate to register `"Select and map applicable rules"`, each design/planning step, and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
 
 ## After requirement-analyzer [Stop]
 
@@ -115,7 +111,7 @@ Escalate when the required fix or investigation falls outside that scope.
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check)
-3. Quality-fixer MUST run after each executor before proceeding to commit. **Always pass** the current task file path as `task_file`
+3. Run quality-fixer after each executor with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
@@ -123,24 +119,13 @@ Escalate when the required fix or investigation falls outside that scope.
 
 ### Post-Implementation Verification (After All Tasks Complete)
 
-After all task cycles finish, run verification agents **in parallel** before the completion report:
+Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
 
-1. **Invoke both in parallel** using Agent tool:
-   - code-verifier (subagent_type: "dev-workflows:code-verifier") → invoke **once per Design Doc** (`doc_type: design-doc`, single `document_path`, `code_paths`: implementation file list from `git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → Design Doc path(s), implementation file list
+Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
+- code-verifier (subagent_type: "dev-workflows:code-verifier") → each resolved `doc_type`, single `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
+- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
 
-2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
-   - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
-   - Present unified verification report to user
-
-3. **Fix cycle** (when any verifier failed):
-   - Consolidate all actionable findings into a single task file
-   - Execute layer-appropriate task-executor with consolidated fixes → quality-fixer
-   - Re-run both code-verifier and security-reviewer
-   - Repeat until all pass or `blocked` → Escalate to user
-
-4. **All passed** → Proceed to Final Cleanup
+Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
 
 ### Final Cleanup
 

@@ -176,6 +176,10 @@ The test runner or framework in the project determines the appropriate file exte
 | Reproducibility | Date/random dependency, varying results |
 | Readability | Test name doesn't match verification content |
 
+### Route Parity for Shared Mutations
+
+When multiple routes reach the same mutation, compare validation, classification, resource bounds, and read/parse/mutation/reporting order. Each difference requires an authoritative requirement, design contract, or explicit test claim; otherwise require a test exposing the bypass or inconsistent outcome.
+
 ## Quality Standards
 
 ### Required

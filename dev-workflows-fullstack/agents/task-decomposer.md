@@ -49,6 +49,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    - Document concrete executable procedures
    - **Always include operation verification methods**
    - Define clear completion criteria within the task scope
+   - Populate task-template Hard Constraints with an allowed action and authoritative source; omit the section when none applies
 
 ## Task Size Criteria
 - **Small (Recommended)**: 1-2 files
@@ -97,6 +98,7 @@ Decompose tasks based on implementation strategy patterns determined in implemen
    Include the following in each task file:
    - Task overview
    - Target files
+   - Conditional **Hard Constraints** per task-template
    - **Investigation Targets** (required pre-implementation reading)
    - **Change Category** (when the task is a bug fix / regression / state-change / boundary-change — see Change Category Classification below)
    - Concrete implementation steps

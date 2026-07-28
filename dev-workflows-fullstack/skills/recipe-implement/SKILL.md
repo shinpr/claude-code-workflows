@@ -60,11 +60,7 @@ When user responds to questions:
 
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-**After scale determination, register all steps of the applicable flow using TaskCreate**:
-- First task: "Map preloaded skills to applicable concrete rules"
-- Register each step as individual task
-- Set currently executing step to `in_progress` using TaskUpdate
-- **Complete task registration before invoking subagents**
+After scale determination, use TaskCreate to register `"Select and map applicable rules"`, each design/planning step, and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
 
 ## Subagents Orchestration Guide Compliance Execution
 
@@ -99,14 +95,15 @@ Escalate when the required fix or investigation falls outside that scope.
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
-1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Pass task file path in prompt, receive structured response
+1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
+     - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
-3. quality-fixer → Quality check and fixes. **Always pass** the current task file path as `task_file`
+3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); run quality checks and fixes
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
@@ -114,24 +111,13 @@ Escalate when the required fix or investigation falls outside that scope.
 
 ### Post-Implementation Verification (After All Tasks Complete)
 
-After all task cycles finish, run verification agents **in parallel** before the completion report:
+Resolve the Work Plan's readable Design Doc, or the Work Plan itself when no Design Doc exists; missing input blocks verification.
 
-1. **Invoke both in parallel** using Agent tool:
-   - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → `doc_type: design-doc`, Design Doc path, `code_paths`: implementation file list (`git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → Design Doc path, implementation file list
+Emit these Agent calls in one assistant message, then await both:
+- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → resolved `doc_type`, `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
+- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the same typed `governingDocuments` and `implementationFiles`
 
-2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
-   - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
-   - Present unified verification report to user
-
-3. **Fix cycle** (when any verifier failed):
-   - Consolidate all actionable findings into a single task file
-   - Execute task-executor with consolidated fixes → quality-fixer
-   - Re-run both code-verifier and security-reviewer
-   - Repeat until all pass or `blocked` → Escalate to user
-
-4. **All passed** → Proceed to Final Cleanup
+Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules. Present the unified report; proceed to Final Cleanup after both pass.
 
 ### Final Cleanup
 

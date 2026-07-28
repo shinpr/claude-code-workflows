@@ -1,6 +1,11 @@
 {
   "$schema-note": "Per-plugin sync-time hooks applied by scripts/sync-plugins.mjs. Kept here (not under .claude-plugin/) because that directory is reserved for official Claude Code plugin manifests, and `claude plugin validate` rejects unknown keys in marketplace.json.",
   "plugins": {
+    "dev-workflows-frontend": {
+      "namespace_rewrites": [
+        { "from": "dev-workflows:", "to": "dev-workflows-frontend:" }
+      ]
+    },
     "dev-workflows-fullstack": {
       "namespace_rewrites": [
         { "from": "dev-workflows-frontend:", "to": "dev-workflows-fullstack:" },

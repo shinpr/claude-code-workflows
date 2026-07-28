@@ -126,6 +126,7 @@ When the project-tier file declares no automated verification mechanism for an a
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
+  - Pass `qualityCommand` when available (caller first, otherwise current task).
   - Build the prompt by branch. Scope is always `filesModified`; `task_file` (when passed) is a supplementary hint that quality-fixer-frontend may use to read the document's "Quality Assurance Mechanisms" section.
     - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]`.
     - **Branch B (3-5 files)**: pass `task_file: <work plan path>` (supplementary hint) AND `filesModified: [list of files edited in this adjustment unit]` (primary scope).

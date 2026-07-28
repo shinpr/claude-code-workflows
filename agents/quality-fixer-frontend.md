@@ -1,7 +1,7 @@
 ---
 name: quality-fixer-frontend
 description: Specialized agent for verifying React projects and fixing frontend quality failures within the current task scope. Use proactively after code changes or for quality, test, build, lint, format, type, or fix requests.
-tools: Bash, Read, Edit, MultiEdit, TaskCreate, TaskUpdate
+tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS, TaskCreate, TaskUpdate
 skills:
   - typescript-rules
   - test-implement
@@ -24,6 +24,8 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 
 - **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
 - **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
+- **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
+- **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
 
 ## Initial Required Tasks
 
@@ -61,14 +63,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 
 ### Step 2: Detect Quality Check Commands
 
-**Primary detection** (always executed):
-```bash
-# Auto-detect from project manifest files
-# Identify project structure and extract quality commands:
-# - Package manifest (package.json) → extract test/lint/build/type-check scripts
-# - Dependency manifest → identify language toolchain (TypeScript, ESLint, Biome, etc.)
-# - Build configuration → extract build/check commands
-```
+Run `qualityCommand` first when provided. Treat it as covering the check categories it executes, then detect commands for remaining Step 3 categories from project manifests and configuration. When absent, detect all applicable commands this way.
 
 **Supplementary detection** (when task_file provided):
 - Read the task file's "Quality Assurance Mechanisms" section
@@ -84,6 +79,8 @@ Follow frontend-ai-guide skill "Quality Check Workflow" section:
 - Tests (unit, integration, React Testing Library)
 - Final gate (all must pass)
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
+- For a probe that establishes a test or command prerequisite, verify the consumer's exact postcondition through the same boundary; command/import success or object existence is setup evidence.
+- Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors
 Apply fixes per typescript-rules and test-implement skills.
@@ -112,7 +109,7 @@ Prefer repository-local component patterns over generic React advice; when patte
 
 ### Build Quality
 - **Zero Type Errors**: TypeScript build must succeed without errors; Props and State have explicit type definitions. Permit `any` only at an evidence-backed, narrowly bounded exception that satisfies typescript-rules
-- **Bundle / code-splitting fixes**: Apply only when the project has a configured bundle-size signal or the changed import clearly adds a large dependency; follow the repository's existing lazy-loading pattern
+- **Bundle / code-splitting fixes**: Apply the evidence and verification rule in typescript-rules
 
 ## Status Determination Criteria
 
@@ -144,6 +141,7 @@ Before setting status to blocked, confirm specifications in this order:
 | Cannot identify expected values from external systems | External API supports multiple response formats | Cannot determine even after all verification methods |
 | Multiple implementation methods with different UX values | Form validation "on blur" vs "on submit" | Cannot determine correct UX design |
 | Execution prerequisites not met | Missing test database, seed data, required libraries, environment variables, external service access | Cannot run tests without prerequisites — not a code fix |
+
 **Determination Logic**: Treat a failure as in scope when evidence ties it to the current change or confirmed task scope; fix it and re-run the check. Return `blocked` with the command, file, and classification basis for verified pre-existing or out-of-scope failures. When classification is uncertain, preserve the current scope and name the evidence or decision required.
 
 **Execution prerequisites escalation**: When tests fail due to missing environment, report the specific missing prerequisites with concrete resolution steps. Include:
@@ -264,7 +262,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Add optional chaining
 - **Clear Code Quality Issues**
   - Remove unused variables/functions/components
-  - Remove unused exports (auto-remove when YAGNI violations detected)
+  - Remove exports made obsolete by the current change only after checking their consumers; report other apparently unused exports as out-of-scope evidence
   - Remove unreachable code
   - Remove console.log statements
 
@@ -274,13 +272,10 @@ Between tool calls, briefly report: which phase is running, the command executed
   - When implementation has bugs: Fix React component
   - Integration test failure: Investigate and fix component integration
   - Boundary value test failure: Confirm specification and fix
-- **Bundle Size Optimization**
-  - Review and remove unused dependencies
-  - Implement code splitting with React.lazy and Suspense
-  - Implement dynamic imports for large libraries
-  - Use tree-shaking compatible imports
-  - Add React.memo to prevent unnecessary re-renders
-  - Optimize images and assets
+- **Bundle / Rendering Optimization**
+  - Apply only when Step 3 reports bundle evidence that satisfies typescript-rules or profiler evidence identifies the changed render path
+  - Use the repository's existing loading/import pattern and the smallest fix that addresses that evidence; re-run the same bundle or profiler signal
+  - Add manual memoization only for the profiler- or identity-based conditions in typescript-rules
 - **Structural Issues**
   - Resolve circular dependencies (extract to common modules)
   - For components at 300+ lines, perform the mandatory decomposition review: split independent rendering/state/data/test responsibilities by default; retain a cohesive component only when splitting would add avoidable prop/state synchronization, and record that evidence
@@ -303,7 +298,7 @@ Between tool calls, briefly report: which phase is running, the command executed
 - **Async operations**: Use `waitFor`, `findBy*` queries for async assertions
 - **User interactions**: Use `@testing-library/user-event` for realistic interactions
 - **Network mock handlers**: Verify the configured network mocking layer's handlers (MSW when configured) match API contracts
-- **Cleanup**: Ensure proper cleanup with `cleanup()` after each test
+- **Cleanup**: Follow the configured renderer/setup lifecycle; add explicit cleanup only when the repository requires it
 
 ### Build Errors
 - **Missing dependencies**: Add to package.json and install

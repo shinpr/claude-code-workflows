@@ -22,28 +22,6 @@ When receiving a new task, pass user requirements directly to requirement-analyz
 
 **When any signal is detected → Re-run requirement-analyzer with integrated requirements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate. Preserve earlier outputs that remain valid.**
 
-## Available Subagents
-
-Implementation support:
-1. **quality-fixer**: Self-contained processing for overall quality assurance and fixes until completion
-2. **task-decomposer**: Appropriate task decomposition of work plans
-3. **task-executor**: Individual task execution and structured response
-4. **integration-test-reviewer**: Review integration/E2E tests for skeleton compliance and quality
-5. **security-reviewer**: Security compliance review against Design Doc and coding-principles after all tasks complete
-
-Document creation:
-6. **requirement-analyzer**: Requirement analysis and work scale determination
-7. **codebase-analyzer**: Analyze existing codebase to produce focused guidance for technical design (data, contracts, dependencies, quality assurance mechanisms)
-8. **ui-analyzer**: Read the project's external-resources file, fetch external UI sources (design origin, design system, guidelines) via MCP/URL/file, and analyze existing UI code. Frontend/fullstack features; runs in parallel with codebase-analyzer. Uses `disallowedTools` to inherit MCP access
-9. **prd-creator**: Product Requirements Document creation
-10. **ui-spec-designer**: UI Specification creation from PRD and optional prototype code (frontend/fullstack features)
-11. **technical-designer**: ADR/Design Doc creation
-12. **work-planner**: Work plan creation from Design Doc and test skeletons
-13. **document-reviewer**: Single document quality and rule compliance check
-14. **code-verifier**: Verify document-code consistency. Pre-implementation: Design Doc claims against existing codebase. Post-implementation: implementation against Design Doc
-15. **design-sync**: Design Doc consistency verification across multiple documents
-16. **acceptance-test-generator**: Generate integration and E2E test skeletons from Design Doc ACs
-
 ## Orchestration Principles
 
 ### Delegation Boundary: What vs How
@@ -182,13 +160,13 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
 - **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
-- **code-verifier**: status (consistent/mostly_consistent/needs_review/inconsistent), consistencyScore, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against Design Doc (pass `code_paths` scoped to changed files)
+- **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), testsAdded, requiresTestReview
 - **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: status (approved/needs_revision/blocked), requiredFixes
-- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings, notes, requiredFixes
+- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status (`approved`/`needs_revision`/`blocked`), `reviewBasis`, requiredFixes
+- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]
 - **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
 
 ## Handling Requirement Changes
@@ -276,6 +254,7 @@ graph TD
     ESCJUDGE -->|No issues| QF
     ITR -->|needs_revision| TE
     ITR -->|approved| QF
+    ITR -->|blocked| USERESC
     QF[quality-fixer: Quality check and fixes] --> QFJUDGE{quality-fixer result}
     QFJUDGE -->|stub_detected| TE
     QFJUDGE -->|approved| COMMIT[Orchestrator: Execute git commit]
@@ -283,7 +262,7 @@ graph TD
     COMMIT --> CHECK{Any remaining tasks?}
     CHECK -->|Yes| LOOP
     CHECK -->|No| VERIFY[Post-implementation verification]
-    VERIFY --> CV[code-verifier: DD consistency check]
+    VERIFY --> CV[code-verifier: Governing document consistency check]
     VERIFY --> SEC[security-reviewer: Security review]
     CV --> VRESULT{Verification results}
     SEC --> VRESULT
@@ -306,8 +285,10 @@ graph TD
 
 | Verifier | Pass | Fail | Blocked |
 |----------|------|------|---------|
-| code-verifier | `status` is `consistent` or `mostly_consistent` | `status` is `needs_review` or `inconsistent` | — |
+| code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
+
+**Fix-cycle handoff**: Consolidate failed verifier findings into one ephemeral task per required executor and pass each exact path as `task_file` through its executor and quality-fixer. Use `review-fixes-{plan-name}-task-*` for single-layer work and `review-fixes-{plan-name}-{backend|frontend}-task-*` for fullstack routing; delete the files after all verifiers pass.
 
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
@@ -333,18 +314,19 @@ Stop autonomous execution and escalate to user in the following cases:
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-1. **Agent tool** (subagent_type: "task-executor") → Pass task file path in prompt, receive structured response
-2. Check task-executor response:
+1. **Execute**: invoke Agent tool (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
+     - `blocked` → Escalate to user
    - Otherwise → Proceed to step 3
-3. quality-fixer → Quality check and fixes. **Always pass** the current task file path as `task_file`
+3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
-4. git commit → Execute with Bash (on `approved`)
+4. **Commit**: execute git commit with Bash after quality-fixer returns `approved`
 
 ### Progress Tracking
 
@@ -376,7 +358,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    - Do not pass `code_paths`; code-verifier discovers scope from the document
 
    #### HC-04: code-verifier + codebase-analyzer → document-reviewer
-   - Pass: `code_verification` JSON and the same `codebase_analysis` JSON previously given to the designer; for a DesignDoc creation review, also pass the original user requirements as `requirements_verbatim` and confirmed scope and user decisions as `confirmed_decisions`
+   - Pass: `review_context: creation`, `code_verification` JSON, the same `codebase_analysis` JSON previously given to the designer, original user requirements as `requirements_verbatim`, and confirmed scope and user decisions as `confirmed_decisions`
    - Purpose: reviewer validates discrepancy integration, Fact Disposition coverage against `focusAreas`, and Design Convergence against the effective requirements
 
    #### HC-05: code-verifier → next-layer technical-designer (fullstack only)

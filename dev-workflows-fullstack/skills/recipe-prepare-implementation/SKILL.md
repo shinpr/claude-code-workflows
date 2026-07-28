@@ -112,6 +112,7 @@ For each resolution task, run the standard 4-step cycle (see subagents-orchestra
 3. **quality-fixer** — route by the same filename layer segment:
    - `*-backend-task-prep-*` → `"dev-workflows-fullstack:quality-fixer"`
    - `*-frontend-task-prep-*` → `"dev-workflows-fullstack:quality-fixer-frontend"`
+   - Pass upstream `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
 4. **Commit** when quality-fixer returns `approved`
 
 Append the Scope Boundary block (below) to every subagent prompt.

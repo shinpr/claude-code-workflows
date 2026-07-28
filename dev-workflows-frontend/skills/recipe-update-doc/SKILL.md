@@ -98,6 +98,8 @@ Use AskUserQuestion to clarify what changes are needed:
 
 Confirm understanding of changes with user before proceeding.
 
+Pass approved items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update; request a scope decision for unmapped or over-budget changes.
+
 ### Step 4: Document Update
 
 Invoke the update agent determined in Step 2:
@@ -139,9 +141,10 @@ description: "Review updated document"
 prompt: |
   Review the following updated document.
 
-  doc_type: [Design Doc / PRD / ADR]
+  doc_type: [DesignDoc / PRD / ADR]
   target: [path from Step 1]
-  mode: standard
+  mode: composite
+  review_context: update (Design Doc only; omit for PRD/ADR)
   code_verification: $CODE_VERIFICATION_OUTPUT (Design Doc only, omit for PRD/ADR)
 
   Focus on:
@@ -214,4 +217,3 @@ prompt: |
 Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
-

@@ -1,6 +1,6 @@
 ---
 name: code-verifier
-description: Validates consistency between PRD/Design Doc and code implementation. Use PROACTIVELY after implementation completes, or when "document consistency/implementation gap/as specified" is mentioned. Uses multi-source evidence matching to identify discrepancies.
+description: Validates consistency between PRD, Design Doc, or Work Plan and code implementation. Use PROACTIVELY after implementation completes, or when "document consistency/implementation gap/as specified" is mentioned. Uses multi-source evidence matching to identify discrepancies.
 tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate
 skills:
   - documentation-criteria
@@ -19,6 +19,7 @@ You are an AI assistant specializing in document-code consistency verification.
 - **doc_type**: Document type to verify (required)
   - `prd`: Verify PRD against code
   - `design-doc`: Verify Design Doc against code
+  - `work-plan`: Verify Work Plan against code
 
 - **document_path**: Path to the document to verify (required)
 
@@ -34,6 +35,10 @@ This agent outputs **verification results and discrepancy findings only**.
 Document modification and solution proposals are out of scope for this agent.
 
 ## Verification Framework
+
+### Input Gate
+
+Proceed with verification when `doc_type` is one of the documented values and `document_path` identifies a readable authoritative document. Return `summary.status: "blocked"` with `blockingReason` when the type is unsupported, the path is missing or unreadable, or no authoritative document was supplied.
 
 ### Claim Categories
 
@@ -77,6 +82,8 @@ For each claim, classify as one of:
 3. Categorize each claim (Functional / Behavioral / Data / Integration / Constraint)
 4. Note ambiguous claims that cannot be verified
 5. **Minimum claim threshold**: If total `verifiableClaimCount < 20`, re-read the document and extract additional claims from sections with low coverage.
+
+For `doc_type: work-plan`, treat the following as the authoritative verification surface: Binding Contracts, Reference Contracts, task Completion Criteria, Proof Obligations, and scoped implementation claims. Extract each item from those sections as a separate claim and retain its task or section origin.
 
 ### Step 2: Code Scope Identification
 
@@ -144,12 +151,13 @@ This step discovers what exists in code but is MISSING from the document. Perfor
 Schema (types):
 
 ```
-summary.docType:                string ("prd" | "design-doc")
+summary.docType:                string ("prd" | "design-doc" | "work-plan")
 summary.documentPath:           string (file path)
 summary.verifiableClaimCount:   number (integer >= 0)
 summary.matchCount:             number (integer >= 0)
 summary.consistencyScore:       number (integer 0-100)
-summary.status:                 string ("consistent" | "mostly_consistent" | "needs_review" | "inconsistent")
+summary.status:                 string ("consistent" | "mostly_consistent" | "needs_review" | "inconsistent" | "blocked")
+blockingReason:                 string | null
 
 claimCoverage.sectionsAnalyzed: number (integer >= 0)
 claimCoverage.sectionsWithClaims: number (integer >= 0)
@@ -196,6 +204,7 @@ Minimal shape example:
     "consistencyScore": 78,
     "status": "mostly_consistent"
   },
+  "blockingReason": null,
   "claimCoverage": { "sectionsAnalyzed": 9, "sectionsWithClaims": 8, "sectionsWithZeroClaims": ["Future Work"] },
   "discrepancies": [
     {

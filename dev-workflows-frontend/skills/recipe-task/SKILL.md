@@ -15,7 +15,7 @@ Task: $ARGUMENTS
 **Step 1: Rule Selection via rule-advisor (REQUIRED)**
 
 Invoke rule-advisor using Agent tool:
-- `subagent_type`: "dev-workflows:rule-advisor"
+- `subagent_type`: "dev-workflows-frontend:rule-advisor"
 - `description`: "Rule selection"
 - `prompt`: "Task: $ARGUMENTS. Select appropriate rules and perform metacognitive analysis."
 
@@ -41,13 +41,14 @@ After receiving rule-advisor's JSON response, proceed with:
 
 **Step 3: Create Task List with TaskCreate**
 
-Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON".
+Register work steps using TaskCreate. Use "Select and map applicable rules" as the first task and "Verify selected rules and report completion" as the final task.
 
 Break down the task based on rule-advisor's guidance:
 - Reflect `taskAnalysis.essence` in task descriptions
 - Apply `metaCognitiveGuidance.firstStep` to first task
 - Restructure tasks considering `warningPatterns`
 - Set priorities based on dependency order and warningPatterns severity
+- Update each task with TaskUpdate as execution progresses
 
 **Step 4: Execute Implementation**
 
@@ -58,4 +59,3 @@ Proceed with task execution following:
 - Task structure (managed via TaskCreate/TaskUpdate)
 - Quality standards defined in the selectedRules output from rule-advisor
 - Monitor warningPatterns flags throughout execution and adjust approach when triggered
-

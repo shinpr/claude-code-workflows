@@ -13,6 +13,14 @@ Metadata:
 - [ ] [Implementation file path]
 - [ ] [Test file path]
 
+## Hard Constraints
+
+| Allowed action | Source |
+|---|---|
+| [What the implementation may do while preserving the protected boundary] | [User request / approved governing document path (§ section) / named task dependency] |
+
+Include this section only for constraints with a listed source. Before escalation, record and use the smallest in-scope option satisfying both the outcome and every constraint; escalate only the unmet item.
+
 ## Investigation Targets
 Files to read before starting implementation (file path, with optional search hint):
 - [e.g., src/orders/checkout (processOrder function) — determined during task decomposition based on task nature]

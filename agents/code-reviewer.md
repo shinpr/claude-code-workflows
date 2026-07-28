@@ -41,6 +41,8 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Verification Process
 
+Limit reference traversal to links that can change an in-scope finding, action, or verification result.
+
 ### 1. Load Baseline
 
 Read the Design Doc **in full** and extract:

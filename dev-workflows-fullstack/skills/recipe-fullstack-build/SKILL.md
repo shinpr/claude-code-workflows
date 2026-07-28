@@ -20,7 +20,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 2. **Route agents by task filename pattern** (see monorepo-flow.md reference):
    - `*-backend-task-*` → task-executor + quality-fixer
    - `*-frontend-task-*` → task-executor-frontend + quality-fixer-frontend
-3. **Follow the 4-step task cycle exactly**: executor → escalation check → quality-fixer → commit
+3. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
 4. **Enter autonomous mode** when user provides execution instruction with existing task files — this IS the batch approval
 5. **Scope**: Complete when all tasks are committed or escalation occurs
 
@@ -98,25 +98,27 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 |-----------------|----------|---------------|
 | `*-backend-task-*` | dev-workflows-fullstack:task-executor | dev-workflows-fullstack:quality-fixer |
 | `*-frontend-task-*` | dev-workflows-fullstack:task-executor-frontend | dev-workflows-fullstack:quality-fixer-frontend |
-| `*-task-*` (no layer prefix) | dev-workflows-fullstack:task-executor | dev-workflows-fullstack:quality-fixer (default) |
 
 ### Task Execution (4-Step Cycle)
 
+**MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
+
+Before the loop, register `"Execute consumed task set"`, `"Run post-implementation verification"`, `"Clean up consumed task files"`, and `"Report completion"` once with TaskCreate; mark and advance the active phase with TaskUpdate.
+
 For EACH task, YOU MUST:
-1. **Register tasks using TaskCreate**: Register work steps. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON"
-2. **Agent tool** (subagent_type per routing table) → Pass task file path in prompt, receive structured response
-3. **CHECK executor response**:
+1. **EXECUTE**: invoke Agent tool (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Execute **integration-test-reviewer**
-     - `needs_revision` → Return to step 2 with `requiredFixes`
-     - `approved` → Proceed to step 4
-   - `readyForQualityCheck: true` → Proceed to step 4
-4. **INVOKE quality-fixer**: Execute all quality checks and fixes (layer-appropriate per routing table). **Always pass** the current task file path as `task_file`
-5. **CHECK quality-fixer response**:
-   - `stub_detected` → Return to step 2 with `incompleteImplementations[]` details
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
+     - `needs_revision` → Return to step 1 with `requiredFixes`
+     - `approved` → Proceed to step 3
+     - `blocked` → STOP and escalate to user
+   - `readyForQualityCheck: true` → Proceed to step 3
+3. **QUALITY-FIX**: Invoke the layer-appropriate quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+   - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
-   - `approved` → Proceed to step 6
-6. **COMMIT on approval**: Execute git commit
+   - `approved` → Proceed to step 4
+4. **COMMIT**: Execute git commit after the layer-appropriate quality-fixer returns `approved`
 
 **CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after layer-appropriate quality-fixer returns `approved`.
 
@@ -135,24 +137,13 @@ Verify task files exist per Pre-execution Checklist, then enter autonomous execu
 
 ## Post-Implementation Verification (After All Tasks Complete)
 
-After all task cycles finish, run verification agents **in parallel** before the completion report:
+Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
 
-1. **Invoke both in parallel** using Agent tool:
-   - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → invoke **once per Design Doc** (`doc_type: design-doc`, single `document_path`, `code_paths`: implementation file list from `git diff --name-only main...HEAD`)
-   - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → Design Doc path(s), implementation file list
+Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
+- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → each resolved `doc_type`, single `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
+- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
 
-2. **Consolidate results** — check pass/fail for each:
-   - code-verifier: **pass** when `status` is `consistent` or `mostly_consistent`. **fail** when `needs_review` or `inconsistent`. Collect `discrepancies` with status `drift`, `conflict`, or `gap`
-   - security-reviewer: **pass** when `status` is `approved` or `approved_with_notes`. **fail** when `needs_revision`. **blocked** → Escalate to user
-   - Present unified verification report to user
-
-3. **Fix cycle** (when any verifier failed):
-   - Consolidate all actionable findings into a single task file
-   - Execute layer-appropriate task-executor with consolidated fixes → quality-fixer
-   - Re-run both code-verifier and security-reviewer
-   - Repeat until all pass or `blocked` → Escalate to user
-
-4. **All passed** → Proceed to Final Cleanup
+Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
 
 ## Final Cleanup
 

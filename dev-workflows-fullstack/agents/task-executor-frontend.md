@@ -18,7 +18,6 @@ Operates in an independent context, executing autonomously until task completion
 
 Pre-conditions that must hold before any agent step runs. Mid-execution checks live at Step Completion Gates below.
 
-☐ [VERIFIED] All required skills from frontmatter are LOADED
 ☐ [VERIFIED] Task file path is provided in the prompt OR fallback discovery via glob is acceptable for this invocation
 
 **ENFORCEMENT**: When any gate item is unchecked, skip every step in the remainder of this agent body and immediately produce the final response in the JSON format defined in Structured Response Specification with `status: "escalation_needed"`.
@@ -39,6 +38,10 @@ Use the appropriate run command based on the `packageManager` field in package.j
 ### Applying to Implementation
 Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
+## Direct MVP Check (Before Mandatory Judgment)
+
+Apply implementation-approach Design Convergence to the current Target Files. Use its `Failed Items` as input to Mandatory Judgment Criteria, and map every added mechanism or expanded target to one Failed Item.
+
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
@@ -48,11 +51,15 @@ Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules durin
 □ New external library/API addition needed?
 □ Need to ignore type definitions in Design Doc?
 
-### Step2: Quality Standard Violation Check (Any YES → Immediate Escalation)
+### Step2: Quality Standard Violation Check
+
+Any YES below requires immediate escalation:
+
 □ Type system bypass needed? (type casting, forced dynamic typing, type validation disable)
 □ Error handling bypass needed? (exception ignore, error suppression, empty catch blocks)
 □ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
-□ Existing test modification/deletion needed?
+
+Existing-test changes proceed only when updating an expectation for an accepted task/Design Doc/Work Plan/UI Spec contract; record that source. Escalate test weakening or behavior changes without an accepted source.
 
 ### Step3: Similar Component Duplication Check
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
@@ -112,7 +119,7 @@ Fallback (only when no path is passed): glob `docs/plans/tasks/*-task-*.md` and 
 #### Investigation Targets (Required when present)
 1. Extract file paths from task file "Investigation Targets" section
 2. Read each file with Read tool **before any implementation**. When a search hint is provided (e.g., `(§ Auth Flow)` or `(authenticateUser function)`), locate and focus on that section
-3. Append a brief note to the task file's "Investigation Notes" section (use Edit/MultiEdit on the task file). Record the key interfaces or function signatures, control/data flow, state transitions, and side effects observed in each Investigation Target. These notes guide the implementation in Step 3 and are referenced by the Exit Gate's consistency check.
+3. Append brief Investigation Notes identified by symbol, function, contract, or section, covering key interfaces, flow, state transitions, and side effects. Reserve file:line for post-edit evidence that requires it.
 4. If an Investigation Target file does not exist or the path is stale, escalate with `reason: "investigation_target_not_found"` (see Escalation Response 2-3)
 
 #### Dependency Deliverables
@@ -161,8 +168,8 @@ Applies when Pre-implementation Verification finds a dependency this task requir
 Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task decomposition wrote — read the field value and treat it as authoritative for whether the sweep applies.
 
 1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
-2. Check each for the same class of defect this task corrects.
-3. Fold adjacent residuals within the Target Files scope into the applicable Proof Obligation's selected Verification mode, Evidence requirement, and implementation; for `red-test`, include them in the failing tests. Record any residual outside scope in the task file's Investigation Notes.
+2. Check the same defect class and record each case as `incorporated`, `unchanged` with evidence, or `out-of-scope` with the required scope decision; when none exist, record the searched surface.
+3. Fold in-scope residuals into the applicable Proof Obligation and implementation; for `red-test`, include them in the failing tests.
 
 #### Binding Decision Check (Required when the task file has a Binding Decisions section)
 
@@ -234,6 +241,8 @@ Return the final response per Structured Response Specification. For research/an
 
 **runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
 
+**mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
+
 ### 1. Task Completion Response
 Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):
 
@@ -248,6 +257,7 @@ Report in the following JSON format upon task completion (**without executing qu
   "newTestsPassed": true,
   "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
+  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
   "readyForQualityCheck": true,
   "nextActions": "Overall quality verification by quality assurance process"
 }
@@ -377,6 +387,7 @@ This gate runs immediately before producing the final JSON response.
 
 ☐ All task checkboxes completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
+☐ Adjacent Case Sweep evidence is non-empty and records each inspected case and disposition, or the searched surface and no-case result (when Change Category triggers the sweep)
 ☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Binding Decisions section). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
 ☐ Every Reference Contracts Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the task file has a Reference Contracts section). Re-evaluate here even when the pre-implementation check passed
 ☐ A test exercises the roundtrip — the value the producer emits parses to the value the consumer expects (when the task has a Boundary Context with a roundtrip check from the work plan's Connection Map)

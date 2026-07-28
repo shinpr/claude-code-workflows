@@ -48,7 +48,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:security-reviewer"
 - `description`: "Security review"
-- `prompt`: "Design Doc: [path]. Implementation files: [git diff file list]. Review security compliance."
+- `prompt`: "governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [git diff file list]. Review security compliance."
 
 **Store output as**: `$STEP_3_OUTPUT`
 
@@ -105,6 +105,8 @@ Resolve discrepancies — confirm or override the recommended route per finding:
 
 Use AskUserQuestion. The default offer is **"accept all recommended routes"** — a single confirmation for the typical case where the orchestrator's recommendations are correct. When the user wants to override, collect per-finding c/d/s decisions instead. If the user selects `s` for everything: skip Steps 5-10, proceed to Step 11.
 
+Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update; request a scope decision for unmapped or over-budget changes.
+
 ### Step 5: Execute Skill
 
 Execute Skill: documentation-criteria (for task file template)
@@ -121,7 +123,7 @@ Run this step only when the user routed at least one finding to `d`. When all ro
 2. Invoke document-reviewer to verify the updated Design Doc:
    - `subagent_type`: "dev-workflows-frontend:document-reviewer"
    - `description`: "Document review of updated Design Doc"
-   - `prompt`: "Review updated Design Doc at [path] for consistency and completeness."
+   - `prompt`: "Review updated Design Doc at [path] for consistency and completeness. doc_type: DesignDoc. review_context: update."
 
 3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
    - `subagent_type`: "dev-workflows-frontend:design-sync"
@@ -150,6 +152,7 @@ Invoke task-executor-frontend using Agent tool:
 Invoke quality-fixer-frontend using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Quality gate check"
+- Pass Step 7 `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 9: Re-validate code-reviewer
@@ -164,7 +167,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool (only if security fixes were applied):
 - `subagent_type`: "dev-workflows-frontend:security-reviewer"
 - `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. Prior findings: $STEP_3_OUTPUT. Design Doc: [path]. Implementation files: [file list]."
+- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. Prior findings: $STEP_3_OUTPUT."
 
 ### Step 11: Final Cleanup and Report
 
