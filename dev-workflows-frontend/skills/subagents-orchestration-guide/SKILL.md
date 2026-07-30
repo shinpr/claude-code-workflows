@@ -245,7 +245,7 @@ After "batch approval for entire implementation phase" with work-planner, autono
 ```mermaid
 graph TD
     START[Batch approval for entire implementation phase] --> AUTO[Start autonomous execution mode]
-    AUTO --> TD[task-decomposer: Task decomposition]
+    AUTO --> TD[task-decomposer: Task materialization]
     TD --> LOOP[Task execution loop]
     LOOP --> TE[task-executor: Implementation]
     TE --> ESCJUDGE{Escalation judgment}

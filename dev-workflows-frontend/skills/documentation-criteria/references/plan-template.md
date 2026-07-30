@@ -140,6 +140,15 @@ For a serialized boundary, fill Serialized Format and Consumer Parse Rule. Set t
 
 Select ONE phase structure based on implementation approach from Design Doc. Phase Division Criteria are defined alongside this template. Per-phase quality checks run lint, typecheck, tests, build, and any adopted QA mechanisms from the Design Doc.
 
+Each `Phase X Task Y` checkbox entry in a non-QA phase's `Tasks` section is one Work Plan implementation item. The ID is the stable key used by every `Covered By Task(s)` column.
+
+- [ ] Phase X Task Y: [Observable behavior, contract, migration, or downstream-consumable deliverable completed by this item]
+  - **Target Files**: [Concrete planned paths or path prefixes]
+  - **Rollback boundary**: [Behavior, contract, migration, or persisted state reverted together]
+  - **Executor lane**: [backend | frontend]
+
+Add one entry per implementation outcome. Create separate entries whenever the implementation outcome, rollback boundary, or executor lane differs. Select exactly one executor lane. Keep wiring or registration, tests, generated artifacts, and user documentation in the entry whose outcome they complete or prove. Record staged checks outside the `Tasks` section; they are phase checks rather than implementation items.
+
 ### Option A: Vertical Slice Phase Structure
 
 Use when implementation approach is Vertical Slice. Each phase = one value unit with verification.
@@ -149,8 +158,12 @@ Use when implementation approach is Vertical Slice. Each phase = one value unit 
 **Verification**: [From Verification Strategy: early verification point]
 
 #### Tasks
-- [ ] Task 1: Implementation
-- [ ] Task 2: Verification per Verification Strategy
+- [ ] Phase 1 Task 1: [First value unit, including its wiring and verification]
+  - **Target Files**: [path(s)]
+  - **Rollback boundary**: [changes reverted together]
+  - **Executor lane**: [backend | frontend]
+
+#### Phase Checks
 - [ ] Quality check (staged)
 
 #### Phase Completion Criteria
@@ -162,8 +175,12 @@ Use when implementation approach is Vertical Slice. Each phase = one value unit 
 **Verification**: [From Verification Strategy]
 
 #### Tasks
-- [ ] Task 1: Implementation
-- [ ] Task 2: Verification per Verification Strategy
+- [ ] Phase 2 Task 1: [Subsequent value unit, including its wiring and verification]
+  - **Target Files**: [path(s)]
+  - **Rollback boundary**: [changes reverted together]
+  - **Executor lane**: [backend | frontend]
+
+#### Phase Checks
 - [ ] Quality check
 
 #### Phase Completion Criteria
@@ -178,44 +195,56 @@ Use when implementation approach is Horizontal Slice. Phases follow Foundation â
 **Purpose**: Contract definitions, interfaces, test preparation
 
 #### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
+- [ ] Phase 1 Task 1: [Foundation outcome and its verification]
+  - **Target Files**: [path(s)]
+  - **Rollback boundary**: [changes reverted together]
+  - **Executor lane**: [backend | frontend]
+
+#### Phase Checks
 - [ ] Quality check (staged)
-- [ ] Unit tests: All related tests pass
 
 #### Phase Completion Criteria
 - [ ] [Functional completion criteria]
+- [ ] All related unit tests pass
 - [ ] [Quality completion criteria]
 
 ### Phase 2: [Core Feature] (Estimated commits: X)
 **Purpose**: Business logic, unit tests
 
 #### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
+- [ ] Phase 2 Task 1: [Core feature outcome and its verification]
+  - **Target Files**: [path(s)]
+  - **Rollback boundary**: [changes reverted together]
+  - **Executor lane**: [backend | frontend]
+
+#### Phase Checks
 - [ ] Quality check (staged)
-- [ ] Integration tests: Verify overall feature functionality
 
 #### Phase Completion Criteria
 - [ ] [Functional completion criteria]
+- [ ] Integration tests verify overall feature functionality
 - [ ] [Quality completion criteria]
 
 ### Phase 3: [Integration] (Estimated commits: X)
 **Purpose**: External connections, presentation layer
 
 #### Tasks
-- [ ] Task 1: Specific work content
-- [ ] Task 2: Specific work content
+- [ ] Phase 3 Task 1: [Integration outcome and its verification]
+  - **Target Files**: [path(s)]
+  - **Rollback boundary**: [changes reverted together]
+  - **Executor lane**: [backend | frontend]
+
+#### Phase Checks
 - [ ] Quality check
-- [ ] Integration tests: Verify component coordination
 
 #### Phase Completion Criteria
 - [ ] [Functional completion criteria]
+- [ ] Integration tests verify component coordination
 - [ ] [Quality completion criteria]
 
 ### Option C: Hybrid Phase Structure
 
-Use when implementation approach is Hybrid. Combine vertical and horizontal phases as defined in Design Doc implementation approach. Structure phases per Design Doc specification, ensuring each phase has Tasks, Verification, and Phase Completion Criteria sections matching the format above.
+Use when implementation approach is Hybrid. Combine vertical and horizontal phases as defined in Design Doc implementation approach. Use the same per-phase section structure as Option A/B.
 
 ### Final Phase: Quality Assurance (Required) (Estimated commits: 1)
 
@@ -229,7 +258,7 @@ This phase is required for ALL implementation approaches.
 - [ ] Quality checks (types, lint, format)
 - [ ] Execute all tests (including integration/E2E from test skeletons, when provided)
 - [ ] Project-configured coverage threshold passes; when none is configured, review the coverage report and add tests for uncovered changed behavior or record why another verification method is sufficient
-- [ ] Document updates
+- [ ] Documentation updates required by implementation outcomes are complete
 
 ### Quality Assurance
 - [ ] Quality check (staged)
