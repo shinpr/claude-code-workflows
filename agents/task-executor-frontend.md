@@ -165,9 +165,9 @@ Applies when Pre-implementation Verification finds a dependency this task requir
 
 #### Adjacent Case Sweep (Required when the task file has a `Change Category` field set to one or more of `bug-fix`, `regression`, `state-change`, `boundary-change`)
 
-Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task decomposition wrote — read the field value and treat it as authoritative for whether the sweep applies.
+Runs after Pre-implementation Verification, before the Binding Decision Check. This step fires on the field value the task materialization wrote — read the field value and treat it as authoritative for whether the sweep applies.
 
-1. From the Investigation Targets (the decomposition already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
+1. From the Investigation Targets (the materialization already extended them with the adjacent files), identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
 2. Check the same defect class and record each case as `incorporated`, `unchanged` with evidence, or `out-of-scope` with the required scope decision; when none exist, record the searched surface.
 3. Fold in-scope residuals into the applicable Proof Obligation and implementation; for `red-test`, include them in the failing tests.
 

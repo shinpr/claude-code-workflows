@@ -1,9 +1,12 @@
 # Task: [Task Name]
 
 Metadata:
+- Source Work Plan Task: [Phase X Task Y]
 - Dependencies: task-01 → Deliverable: docs/plans/analysis/research-results.md
 - Provides: docs/plans/analysis/api-spec.md (for research/design tasks)
-- Size: Small (1-2 files)
+- Implementation outcome: [Observable behavior, contract, migration, or downstream-consumable deliverable completed by this task]
+- Rollback boundary: [Behavior, contract, migration, or persisted state reverted together]
+- Executor lane: [backend | frontend]
 
 ## Implementation Content
 [What this task will achieve]
@@ -23,10 +26,10 @@ Include this section only for constraints with a listed source. Before escalatio
 
 ## Investigation Targets
 Files to read before starting implementation (file path, with optional search hint):
-- [e.g., src/orders/checkout (processOrder function) — determined during task decomposition based on task nature]
+- [e.g., src/orders/checkout (processOrder function) — determined during task materialization based on task nature]
 
 ## Change Category
-(Include this field only when the task is a bug fix, regression, state-change, or boundary-change — populated during task decomposition. Omit otherwise.)
+(Include this field only when the task is a bug fix, regression, state-change, or boundary-change — populated during task materialization. Omit otherwise.)
 
 `Change Category: <one or more of bug-fix, regression, state-change, boundary-change — comma-separated>`
 

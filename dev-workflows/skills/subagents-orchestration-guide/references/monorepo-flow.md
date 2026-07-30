@@ -119,16 +119,16 @@ work-planner's existing Integration Complete criteria naturally covers cross-lay
 
 For Medium and Large flows, pass the resulting Work Plan to document-reviewer with `doc_type: WorkPlan`. On `needs_revision`, route the findings to work-planner in update mode and re-review. If the same blocking finding repeats and the update supplies no new evidence or contract change, stop and escalate instead of repeating the loop. Request batch approval only after the review is `approved` or `approved_with_conditions`; escalate `rejected` to the user.
 
-## Task Decomposition Phase
+## Task Materialization Phase
 
-task-decomposer follows standard decomposition from the work plan. The key addition is the **layer-aware naming convention**:
+task-decomposer materializes each approved Work Plan implementation item as one task file. The key addition is the **layer-aware naming convention**:
 
 | Filename Pattern | Meaning | Executor | Quality Fixer |
 |-----------------|---------|----------|---------------|
 | `{plan}-backend-task-{n}.md` | Backend only | task-executor | quality-fixer |
 | `{plan}-frontend-task-{n}.md` | Frontend only | task-executor-frontend | quality-fixer-frontend |
 
-Layer is determined from the task's **Target files** paths — this is a factual determination, not inference.
+Layer is selected from the Work Plan item's **Executor lane**. Target Files and the filename segment must agree with that copied value.
 
 ## Task Cycle
 

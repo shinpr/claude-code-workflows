@@ -41,9 +41,9 @@ Choose Strategy A (TDD) if test skeletons are provided, Strategy B (implementati
 - **Include a Proof Strategy in the work plan header** (see plan template) — name the proof source for each applicable verification mode and state that every task with a claim or verifiable deliverable records Proof Obligations for downstream review
 - **Record the Review Scope in the work plan header** — for a fresh pre-implementation plan, the planned-files scope derived from the Design Doc and task target files; for a revision plan over existing work, the base branch and diff range — so the work plan review and downstream verification share one scope
 - **Include a Failure Mode Checklist in the work plan** (see plan template) — enumerate all nine domain-independent failure categories (same-value, no-op, empty input, invalid option, missing config, unavailable boundary, shared-state dependency, rollback-only visibility, missing-sort-key ordering), mark which apply, and map each applicable one to its covering task(s), keeping entries free of project-specific names
-- Include verification tasks in the phase corresponding to Verification Strategy's verification timing
-- When test skeletons are provided, place integration test implementation in corresponding phases and E2E test execution in the final phase
-- When test skeletons are not provided, include test implementation tasks based on Design Doc acceptance criteria
+- Place verification work in the implementation task whose outcome it proves and in the phase required by Verification Strategy's timing
+- When test skeletons are provided, include integration test implementation with the corresponding implementation outcome and E2E test execution in the final phase
+- When test skeletons are not provided, include test implementation with the Design Doc acceptance criteria outcome it proves
 - Final phase is always Quality Assurance
 
 **E2E Gap Check (all strategies)**:
@@ -91,9 +91,9 @@ Read the Design Doc template from documentation-criteria skill to identify all s
 | Category | What to Look For | Task Requirement |
 |---|---|---|
 | Implementation target | Components, functions, or data structures to create or modify | Implementation task |
-| Connection/switching/registration | Integration points, dependency wiring, switching methods | Setup/wiring task |
-| Contract change and propagation | Interface changes, data contract changes, field propagation across boundaries | Update task for each affected consumer |
-| Verification requirement | Verification methods, test boundaries, integration verification points | Verification/test task |
+| Connection/switching/registration | Integration points, dependency wiring, switching methods | Include in the implementation outcome it completes |
+| Contract change and propagation | Interface changes, data contract changes, field propagation across boundaries | Keep affected consumers in the same contract-change outcome when rollback boundary and executor lane match; otherwise separate them |
+| Verification requirement | Verification methods, test boundaries, integration verification points | Include in the implementation outcome it proves; use a dedicated task only for an independently consumable test artifact or setup outcome |
 | Prerequisite work | Migration steps, security measures, environment setup | Prerequisite task |
 
 Additionally, create Traceability rows for Design Convergence when it contains one or more Adopted Additions. For these other design-attention sections, create rows when the section is present and not N/A: State Transitions and Invariants, Field Propagation Map, Security Considerations, Logging and Monitoring sensitive-data rules, Error Handling matrix. Map each to the most relevant existing category (commonly `verification`, `contract-change`, or `prerequisite`).
@@ -158,7 +158,7 @@ For each referenced ADR:
 Omit the table when no referenced ADR contains implementation-binding decisions.
 
 ### 6. Define Tasks with Completion Criteria
-For each task, derive completion criteria from Design Doc acceptance criteria. Apply the 3-element completion definition (Implementation Complete, Quality Complete, Integration Complete).
+For each task, derive completion criteria from Design Doc acceptance criteria and apply the 3-element completion definition (Implementation Complete, Quality Complete, Integration Complete). Populate the plan template's task-entry fields: stable `Phase X Task Y` ID, one Implementation outcome, concrete Target Files, one Rollback boundary, and one Executor lane (`backend` or `frontend`). Create separate task entries whenever the Implementation outcome, Rollback boundary, or Executor lane differs. Keep wiring or registration, tests, generated artifacts, and user documentation in the task whose outcome they complete or prove.
 
 ### 7. Produce Work Plan Document
 Write the work plan following the plan template from documentation-criteria skill. Include Phase Structure Diagram and Task Dependency Diagram (mermaid).
@@ -189,7 +189,7 @@ Execute file output immediately (considered approved at execution).
 
 ## Important Task Design Principles
 
-1. **Executable Granularity**: Each task as logical 1-commit unit, clear completion criteria, explicit dependencies
+1. **Executable Granularity**: The plan template's task-entry format is the source of truth for single-commit boundaries.
 2. **Built-in Quality**: Simultaneous test implementation, quality checks in each phase
 3. **Risk Management**: List risks and countermeasures in advance, define detection methods
 4. **Ensure Flexibility**: Prioritize essential purpose, include only information required for task execution and verification
@@ -201,7 +201,7 @@ Execute file output immediately (considered approved at execution).
 2. **Quality Complete**: Tests, static checking, linting pass
 3. **Integration Complete**: Coordination with other components verified
 
-Include completion conditions in task names (e.g., "Service implementation and unit test creation")
+Phrase each Implementation outcome as the condition completed by that task (e.g., "Service behavior implemented and verified by unit tests")
 
 ## Implementation Strategy Selection
 
@@ -280,14 +280,14 @@ Place all environment setup tasks in Phase 0 (before any implementation tasks). 
 **Test Classification**:
 - Setup items (Mock preparation, measurement tools, Helpers, etc.) → Prioritize in Phase 1
 - Unit tests (individual functions) → Use Red-Green-Refactor for new/changed behavior, or Baseline-Refactor-Verify for behavior-preserving refactors
-- Integration tests → Place as create/execute tasks when relevant feature implementation is complete
-- fixture-e2e tests → Place as create/execute tasks alongside the relevant UI feature implementation
+- Integration tests → Include creation and execution in the relevant implementation outcome
+- fixture-e2e tests → Include creation and execution in the relevant UI implementation outcome
 - service-integration-e2e tests → Place as execute-only tasks in final phase
 - Non-functional requirement tests (performance, UX, etc.) → Place in quality assurance phase
 - Risk levels ("high risk", "required", etc.) → Move to earlier phases
 
 **Task Generation Principles**:
-- Always decompose 5+ test cases into subtasks (setup/high risk/normal/low risk)
+- Group test cases with the implementation outcome they prove; use a separate task only for an independently consumable test artifact or setup outcome
 - Specify "X test implementations" in each task (quantify progress)
 - Specify traceability: Show correspondence with acceptance criteria in "AC1 support (3 items)" format
 
@@ -306,9 +306,9 @@ Decompose tasks based on implementation approach and technical dependencies deci
 
 ### Task Dependencies
 - Dependencies up to 2 levels maximum (A→B→C acceptable, A→B→C→D requires redesign)
-- Each task provides value independently as much as possible
+- Use stable `Phase X Task Y` IDs from the task entries when declaring dependencies
 - Clearly define dependencies and explicitly identify tasks that can run in parallel
-- Include integration points in task names
+- Include integration points in the Implementation outcome text
 
 ### Phase Composition
 Compose phases based on technical dependencies and implementation approach from Design Doc.

@@ -1,6 +1,6 @@
 ---
 name: recipe-fullstack-build
-description: Execute decomposed fullstack tasks with layer-aware agent routing
+description: Execute materialized fullstack task files with layer-aware agent routing
 disable-model-invocation: true
 ---
 
@@ -34,7 +34,7 @@ Work plan: $ARGUMENTS
 
 Before any task processing, locate the work plan. Resolution rule:
 1. List task files in `docs/plans/tasks/` matching the layer-aware patterns `{plan-name}-backend-task-*.md` and `{plan-name}-frontend-task-*.md` only. Single-layer tasks (`{plan-name}-task-*.md`) are excluded here so a stale single-layer run does not redirect this recipe to the wrong work plan
-2. From the matched files, also exclude every file matching any of these patterns — they originate from other workflow phases and are not implementation tasks for this run's plan: `*-task-prep-*.md` (readiness preflight tasks), `_overview-*.md` (decomposition overview file), `*-phase*-completion.md` (per-phase completion files), `review-fixes-*.md` (post-implementation review fixes), `integration-tests-*-task-*.md` (integration-test add-on scaffolding)
+2. From the matched files, also exclude every file matching any of these patterns — they originate from other workflow phases and are not implementation tasks for this run's plan: `*-task-prep-*.md` (readiness preflight tasks), `_overview-*.md` (materialization overview file), `*-phase*-completion.md` (per-phase completion files), `review-fixes-*.md` (post-implementation review fixes), `integration-tests-*-task-*.md` (integration-test add-on scaffolding)
 3. For each remaining file, extract the `{plan-name}` prefix as the segment that appears before `-backend-task-` or `-frontend-task-`
 4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
 5. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
@@ -56,10 +56,10 @@ Analyze the Consumed Task Set and determine the action required:
 |-------|----------|-------------|
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
 | No tasks + plan exists | Consumed Task Set is empty but the resolved work plan exists | Confirm with user → run task-decomposer |
-| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create work plan from Design Doc(s), then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan); branch on the reviewer's `verdict.decision` — on `needs_revision`, re-invoke work-planner (update) and re-review until `approved`/`approved_with_conditions`; if the same blocking finding repeats without new evidence or a contract change, stop and escalate it; then present the reviewed plan for batch approval before task decomposition; on `rejected`, stop before task decomposition and escalate to the user |
+| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create work plan from Design Doc(s), then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan); branch on the reviewer's `verdict.decision` — on `needs_revision`, re-invoke work-planner (update) and re-review until `approved`/`approved_with_conditions`; if the same blocking finding repeats without new evidence or a contract change, stop and escalate it; then present the reviewed plan for batch approval before task materialization; on `rejected`, stop before task materialization and escalate to the user |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
-## Task Decomposition Phase (Conditional)
+## Task Materialization Phase (Conditional)
 
 When the Consumed Task Set is empty:
 
@@ -71,11 +71,11 @@ Work plan: docs/plans/[plan-name].md
 Generate tasks from the work plan? (y/n):
 ```
 
-### 2. Task Decomposition (if approved)
+### 2. Task Materialization (if approved)
 Invoke task-decomposer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:task-decomposer"
-- `description`: "Decompose work plan"
-- `prompt`: "Read work plan at docs/plans/[plan-name].md and decompose into atomic tasks. Output: Individual task files in docs/plans/tasks/. Granularity: 1 task = 1 commit = independently executable. Use layer-aware naming: {plan}-backend-task-{n}.md, {plan}-frontend-task-{n}.md based on Target files paths."
+- `description`: "Materialize work plan tasks"
+- `prompt`: "Read work plan at docs/plans/[plan-name].md and output individual single-commit task files in docs/plans/tasks/. Use layer-aware naming: {plan}-backend-task-{n}.md, {plan}-frontend-task-{n}.md from each Work Plan task's Executor lane."
 
 ### 3. Verify Generation
 Recompute the Consumed Task Set using the same restricted pattern from the Consumed Task Set section above. Confirm it is now non-empty. If it is still empty, escalate to the user — task-decomposer either failed silently or produced files that don't match the expected pattern.
@@ -159,7 +159,7 @@ If task files cannot be deleted (filesystem error), report the failure but do no
 ## Completion Report Contract
 
 Final report must include:
-- Task decomposition status
+- Task materialization status
 - Implemented task count, including backend/frontend counts
 - Quality check result
 - Commit count
