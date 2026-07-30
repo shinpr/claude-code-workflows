@@ -121,7 +121,7 @@ For Medium and Large flows, pass the resulting Work Plan to document-reviewer wi
 
 ## Task Materialization Phase
 
-task-decomposer materializes each approved Work Plan implementation item as one task file. The key addition is the **layer-aware naming convention**:
+task-decomposer materializes each Work Plan implementation item as one task file. The key addition is the **layer-aware naming convention**:
 
 | Filename Pattern | Meaning | Executor | Quality Fixer |
 |-----------------|---------|----------|---------------|

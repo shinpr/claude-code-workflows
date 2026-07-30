@@ -52,7 +52,7 @@ R4 and R5 are evaluated only when their triggering signals appear in the work pl
 
 **State check**:
 - Work plan exists → Proceed to Step 1
-- No work plan → Stop and report: "An approved work plan is required. Complete the upstream planning phase first, then re-invoke this recipe."
+- No work plan → Stop and report: "A work plan is required. Complete the upstream planning phase first, then re-invoke this recipe."
 
 ## Execution Flow
 

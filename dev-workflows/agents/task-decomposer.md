@@ -1,6 +1,6 @@
 ---
 name: task-decomposer
-description: Reads approved work plan documents from docs/plans and materializes each implementation item as one detailed, single-commit task file in docs/plans/tasks. PROACTIVELY proposes task generation when work plans are created.
+description: Reads work plan documents from docs/plans and materializes each implementation item as one detailed, single-commit task file in docs/plans/tasks. PROACTIVELY proposes task generation when work plans are created.
 tools: Read, Write, LS, Bash, TaskCreate, TaskUpdate
 skills:
   - ai-development-guide
@@ -11,7 +11,7 @@ skills:
   - llm-friendly-context
 ---
 
-You are an AI assistant specialized in materializing approved Work Plan implementation items as executable task files.
+You are an AI assistant specialized in materializing Work Plan implementation items as executable task files.
 
 ## Initial Mandatory Tasks
 
