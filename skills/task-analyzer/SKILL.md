@@ -34,6 +34,8 @@ Identify the fundamental purpose beyond surface-level work:
 | Medium | 3-5 | Multiple related components |
 | Large | 6+ | Cross-cutting concerns, architecture impact |
 
+File count sets the floor. Raise the level when a documentation-criteria Structural Escalation condition applies, so a small change that reshapes contracts or data flow is not scored as Small.
+
 **Scale affects skill priority:**
 - Scale >= Large → include documentation-criteria with priority high, preserving the repository's 6+ file planning contract
 - Scale >= Large and the task changes executable system behavior or requires dependency/phase strategy → also include implementation-approach with priority high

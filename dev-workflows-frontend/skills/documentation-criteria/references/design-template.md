@@ -41,6 +41,15 @@ Lists each external resource this feature depends on with its feature-specific i
 |-------------------------------|-----------------------------|-------|
 | [Resource label] | [e.g., specific endpoint path, schema source path, IaC module] | [feature-specific scope] |
 
+### Requirement Convergence
+
+Records the converged requirement per the requirement-convergence skill. Mark `N/A — covered by PRD [path]` when a PRD holds it, or `N/A — reverse-engineer/as-is document`.
+
+- **Outcome**: [one observable result this change must produce]
+- **Non-Goals**: [capability the user excluded | None — user confirmed there are none]
+- **Deferred (speculative)**: [idea -> deferral reason | None]
+- **Open questions**: [field recorded as weak-but-explicit | None]
+
 ### Agreement Checklist
 
 #### Scope

@@ -73,6 +73,7 @@
         "./skills/recipe-review",
         "./skills/recipe-task",
         "./skills/recipe-update-doc",
+        "./skills/requirement-convergence",
         "./skills/subagents-orchestration-guide",
         "./skills/task-analyzer",
         "./skills/testing-principles"
@@ -143,6 +144,7 @@
         "./skills/recipe-front-review",
         "./skills/recipe-task",
         "./skills/recipe-update-doc",
+        "./skills/requirement-convergence",
         "./skills/subagents-orchestration-guide",
         "./skills/task-analyzer",
         "./skills/test-implement",
@@ -232,6 +234,7 @@
         "./skills/recipe-review",
         "./skills/recipe-task",
         "./skills/recipe-update-doc",
+        "./skills/requirement-convergence",
         "./skills/subagents-orchestration-guide",
         "./skills/task-analyzer",
         "./skills/test-implement",

@@ -25,6 +25,10 @@ description: Documentation creation criteria including PRD, ADR, Design Doc, and
 | 3-5 Files | Design Doc → Work Plan (Required) | Start immediately |
 | 1-2 Files | None | Direct implementation |
 
+### Structural Escalation
+
+File count measures size, not structural impact, so a small change can still reshape contracts or data flow. When any ADR Creation Condition below applies, the change requires Design Doc + Work Plan regardless of file count.
+
 ## ADR Creation Conditions (Required if Any Apply)
 
 ### 1. Contract System Changes

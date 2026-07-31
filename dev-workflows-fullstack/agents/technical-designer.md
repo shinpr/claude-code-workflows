@@ -256,6 +256,7 @@ When conversion is required, clearly specify adapter implementation or migration
   - `reverse-engineer`: Document existing architecture as-is (see Reverse-Engineer Mode section)
 
 - **Requirements Analysis Results**: Requirements analysis results (scale determination, technical requirements, etc.)
+- **Convergence Result**: Convergence fields from requirement analysis or the recipe's hearing → populate the Requirement Convergence section. Treat `nonGoals` and `speculative` requirements as excluded from this design
 - **Codebase Analysis** (optional, from codebase analysis phase):
   - When provided, use as the primary source for the "Existing Codebase Analysis" section
   - `focusAreas` → produce the Fact Disposition Table (one row per focusArea, with fact_id + disposition + rationale + evidence)

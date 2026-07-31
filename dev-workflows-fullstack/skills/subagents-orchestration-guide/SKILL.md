@@ -11,7 +11,9 @@ All investigation, analysis, and implementation work flows through specialized s
 
 ### First Action Rule
 
-When receiving a new task, pass user requirements directly to requirement-analyzer. Determine the workflow based on its scale assessment result.
+When receiving a new task, run the requirement-convergence hearing protocol, then pass the user requirements and the hearing result to requirement-analyzer. Determine the workflow based on its scale assessment result.
+
+The hearing runs in the orchestrator because it requires AskUserQuestion. The skill defines the convergence fields, the free-form questioning technique, and where results persist.
 
 ### Requirement Change Detection During Flow
 
@@ -75,7 +77,7 @@ Assign work based on each subagent's responsibilities:
 ## Explicit Stop Points
 
 Autonomous execution MUST stop and wait for user input at these points.
-**Use AskUserQuestion to present confirmations and questions.**
+**Use AskUserQuestion to present confirmations and questions**, except where the requirement-convergence skill calls for free-form questions.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
@@ -94,6 +96,8 @@ Autonomous execution MUST stop and wait for user input at these points.
 | Small | 1-2 | Update※1 | Not needed | Not needed | Simplified |
 | Medium | 3-5 | Update※1 | Conditional※2 | **Required** | **Required** |
 | Large | 6+ | **Required**※3 | Conditional※2 | **Required** | **Required** |
+
+File count sets the floor; documentation-criteria Structural Escalation raises it when a change reshapes contracts or data flow.
 
 ※1: Update if PRD exists for the relevant feature
 ※2: When there are architecture changes, new technology introduction, or data flow changes
@@ -135,7 +139,7 @@ Two additional rules:
 ### Call Example (requirement-analyzer)
 - subagent_type: "requirement-analyzer"
 - description: "Requirement analysis"
-- prompt: "Requirements: [user requirements]. Context: [any relevant context]. Perform requirement analysis and scale determination."
+- prompt: "Requirements: [user requirements]. Context: [any relevant context]. Convergence hearing result: [outcome, requirement layers, non-goals, and cost answers from the hearing]. Perform requirement analysis and scale determination."
 
 ### Call Example (codebase-analyzer)
 - subagent_type: "codebase-analyzer"
@@ -157,7 +161,7 @@ When invoked alongside codebase-analyzer for frontend or fullstack-frontend work
 ## Structured Response Specification
 
 Subagents respond in JSON format. Key fields for orchestrator decisions:
-- **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions
+- **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions, convergence (fields with readiness labels; a field below `ready` returns as a `convergence` question)
 - **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
 - **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
 - **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
@@ -192,7 +196,7 @@ Criteria for timing when to call each agent:
 
 ## Basic Flow: Planning and Implementation
 
-Always start with requirement-analyzer, then select the minimum planning flow required by scale and affected layers.
+Always start with the requirement-convergence hearing, then requirement-analyzer, then select the minimum planning flow required by scale and affected layers.
 
 ### Planning flow (per scale)
 
@@ -202,7 +206,7 @@ Always start with requirement-analyzer, then select the minimum planning flow re
 | Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
 | Small | requirement-analyzer → work-planner |
 
-External resource hearing runs in the orchestrator (it requires AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
+The requirement-convergence hearing precedes requirement-analyzer in every flow. Both it and the external resource hearing run in the orchestrator (they require AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
 
 After the planning flow completes and the user grants batch approval, implementation proceeds. Verifying the plan is implementable end-to-end (verification lanes, fixtures, E2E environment) is an optional preflight the user runs at their discretion via the recipe-prepare-implementation recipe; this guide does not invoke any orchestrator above the agent layer.
 
@@ -345,7 +349,8 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    ### Handoff Contracts
 
    #### HC-01: requirement-analyzer → codebase-analyzer
-   - Pass: `requirement_analysis`, `prd_path` (if exists), original user requirements
+   - Pass: `requirement_analysis` (including `convergence`), `prd_path` (if exists), original user requirements
+   - Carry `convergence` unchanged through every downstream handoff. prd-creator persists it to the PRD's `Future / Out of Scope`; technical-designer persists it to the Design Doc's `Requirement Convergence` when no PRD exists
 
    #### HC-02: codebase-analyzer → technical-designer
    - Pass: full codebase-analyzer JSON as additional context
