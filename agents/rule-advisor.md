@@ -1,6 +1,6 @@
 ---
 name: rule-advisor
-description: Selects optimal rulesets for tasks and performs metacognitive analysis. Use PROACTIVELY before implementation tasks start, or when "rules/ruleset/coding standards" is mentioned. Returns structured JSON with recommended skills and rationale.
+description: Selects this project's applicable rules for a task and returns them with rationale. Use before starting work whose applicable rules and coding standards are not already determined by a defined process.
 tools: Read, Grep, LS
 skills:
   - task-analyzer

@@ -85,9 +85,11 @@ Invoke codebase-analyzer with its existing schema. The orchestrator constructs `
     - Expected action: analyze the seed files for frontend design guidance (data, contracts, dependencies, quality assurance mechanisms)
 
 ### Step 3: Scope Confirmation
-After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step. Use AskUserQuestion.
+After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
 
-Present, sourced from the codebase-analyzer JSON:
+First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. This recipe has no requirement-analyzer, so the orchestrator both elicits and judges the fields, recording the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). `cost` does not apply here: the orchestrator cannot search the repository, and entering this recipe already decided to design. Carry that object into Steps 6 and 7 so ui-spec-designer respects the non-goals and technical-designer-frontend persists it to the Design Doc.
+
+Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
 - **Target files/modules**: `analysisScope.filesAnalyzed` and the modules they belong to
 - **Affected layers**: layers touched, derived from `analysisScope.categoriesDetected` and `focusAreas`
 - **Unknowns/assumptions**: `limitations` plus any assumptions codebase-analyzer recorded
@@ -131,6 +133,7 @@ Then create the UI Specification:
   - `description: "UI Spec creation"`
   - Build the prompt by including:
     - Source: an existing PRD in `docs/prd/` when one exists for this feature; otherwise the user requirements with the Step 2 codebase-analyzer JSON and the Step 3 confirmed scope
+    - The Step 3 `convergence` object's `nonGoals` and `speculative` requirements, as capabilities the UI Spec leaves out
     - `ui_analysis`: ui-analyzer JSON from Step 5 (includes externalResources fetched_summary and componentStructure / propsPatterns / cssLayout / etc.)
     - Prototype path when provided
   - Example (existing PRD): `prompt: "Create UI Spec from PRD at [path]. ui_analysis: [JSON from Step 5 ui-analyzer]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/."`
@@ -143,7 +146,7 @@ Then create the UI Specification:
 Pass the Step 2 codebase-analyzer output and the Step 5 ui-analyzer output to technical-designer-frontend. ADRs use alternative comparison; Design Docs use Design Convergence.
 - Invoke **technical-designer-frontend** using Agent tool
   - For ADR: `subagent_type: "dev-workflows-fullstack:technical-designer-frontend"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. UI analysis: [ui-analyzer JSON from Step 5]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Present at least two alternatives with trade-offs."`
-  - For Design Doc: `subagent_type: "dev-workflows-fullstack:technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. UI analysis: [ui-analyzer JSON from Step 5]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. UI Spec is at [ui-spec path]. Inherit component structure and state design from UI Spec. Apply the code: prefix to codebase-analyzer fact_ids and ui: prefix to ui-analyzer fact_ids when filling the Fact Disposition Table."`
+  - For Design Doc: `subagent_type: "dev-workflows-fullstack:technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. UI analysis: [ui-analyzer JSON from Step 5]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Convergence result: [Step 3 `convergence` object]. UI Spec is at [ui-spec path]. Inherit component structure and state design from UI Spec. Apply the code: prefix to codebase-analyzer fact_ids and ui: prefix to ui-analyzer fact_ids when filling the Fact Disposition Table."`
 - **(Design Doc only)** Invoke **code-verifier** to verify Design Doc against existing code. Skip for ADR.
   - `subagent_type: "dev-workflows-fullstack:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
 - **(Design Doc only)** Invoke **document-reviewer** to verify consistency, completeness, and adopted design validity
@@ -160,6 +163,7 @@ Pass the Step 2 codebase-analyzer output and the Step 5 ui-analyzer output to te
 
 - [ ] Built the Step 1 scope bootstrap seed (or obtained target files from the user when the search returned none)
 - [ ] Executed codebase-analyzer with a populated `requirement_analysis`
+- [ ] Ran the requirement-convergence hearing and carried its result into design
 - [ ] Confirmed the design scope with the user and set the scale from the confirmed target files
 - [ ] Executed external resource hearing per the external-resource-context skill (file written or update explicitly skipped by user)
 - [ ] Executed ui-analyzer; codebase-analyzer (Step 2) and ui-analyzer (Step 5) outputs reused by ui-spec-designer and technical-designer-frontend

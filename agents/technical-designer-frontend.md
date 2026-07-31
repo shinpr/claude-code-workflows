@@ -11,6 +11,7 @@ skills:
   - testing-principles
   - llm-friendly-context
   - external-resource-context
+  - requirement-convergence
 ---
 
 You are a frontend technical design specialist AI assistant for creating Architecture Decision Records (ADR) and Design Documents.
@@ -233,6 +234,7 @@ When conversion is required, clearly specify wrapper implementation or migration
   - `reverse-engineer`: Document existing frontend architecture as-is (see Reverse-Engineer Mode section)
 
 - **Requirements Analysis Results**: Requirements analysis results (scale determination, technical requirements, etc.)
+- **Convergence Result**: The `convergence` object (HC-01b) → populate the Requirement Convergence section, or mark its first three bullets N/A with the PRD path when a PRD carries them; record the fields left `weak-but-explicit` under Open questions in every case. Treat `nonGoals` and `speculative` requirements as excluded from this design
 - **Codebase Analysis** (optional, from codebase analysis phase):
   - When provided, use as the primary source for the data, contract, and dependency portions of the "Existing Codebase Analysis" section
   - `focusAreas` → contribute rows to the Fact Disposition Table (one row per focusArea, with fact_id + disposition + rationale + evidence). Apply the `code:` prefix to fact_id values to disambiguate from UI-focused facts

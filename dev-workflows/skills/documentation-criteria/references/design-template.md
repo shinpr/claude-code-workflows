@@ -41,6 +41,15 @@ Lists each external resource this feature depends on with its feature-specific i
 |-------------------------------|-----------------------------|-------|
 | [Resource label] | [e.g., specific endpoint path, schema source path, IaC module] | [feature-specific scope] |
 
+### Requirement Convergence
+
+Records exclusions **the user decided** at requirement time. Exclusions this design decided belong in `Future Extensibility`. Mark the first three bullets `N/A — covered by PRD [path]` when a PRD holds them, or the whole section `N/A — reverse-engineer/as-is document`. Open questions stay here in every case, because design readiness depends on them.
+
+- **Outcome**: [one observable result this change must produce]
+- **Non-Goals**: [capability the user excluded | None — user confirmed there are none]
+- **Speculative**: [idea the user raised without deciding on -> deferral reason | None]
+- **Open questions**: [field the user left as weak-but-explicit | None]
+
 ### Agreement Checklist
 
 #### Scope
@@ -363,7 +372,7 @@ Mark as N/A with brief rationale when the design introduces entirely new behavio
 
 ## Future Extensibility
 
-This section records what was **excluded** from the current design surface. Speculative inclusions belong in a separate proposal.
+This section records what **this design** excluded from the current design surface. Exclusions the user decided at requirement time belong in `Requirement Convergence`. Speculative inclusions belong in a separate proposal.
 
 - **Deferred possibilities**: [Capabilities considered during design and explicitly excluded from the current design surface. Each entry names either the current requirement it would have served, or marks itself as speculative]
 - **Intentional limitations**: [What was deliberately kept small and why]

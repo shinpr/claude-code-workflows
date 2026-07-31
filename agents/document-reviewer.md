@@ -77,6 +77,10 @@ For DesignDoc, additionally verify:
 - [ ] Verification Strategy section present with: correctness definition, verification method, verification timing, early verification point
 - [ ] Fact Disposition Table present and covers every `codebase_analysis.focusAreas` entry (when `codebase_analysis` is provided)
 - [ ] Design Convergence section present: future-state documents contain Direct MVP, Failed Items, Adopted Additions, and Rejected Additions; reverse-engineer/as-is documents mark the section N/A
+- [ ] Requirement Convergence section present: Open questions filled in every future-state document; Outcome, Non-Goals, and Speculative filled, or marked N/A with the PRD path that carries them; whole section N/A for reverse-engineer/as-is documents
+
+For PRD, additionally verify:
+- [ ] `Future / Out of Scope` records each user-authored non-goal with origin `user`, or states the user confirmed there are none
 
 For WorkPlan, additionally verify:
 - [ ] Review Scope recorded (planned-files scope, or base branch + diff range for a revision plan)
