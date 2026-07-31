@@ -43,7 +43,7 @@ Lists each external resource this feature depends on with its feature-specific i
 
 ### Requirement Convergence
 
-Records exclusions **the user decided** at requirement time, per the requirement-convergence skill. Exclusions this design decided belong in `Future Extensibility`. Mark the first three bullets `N/A — covered by PRD [path]` when a PRD holds them, or the whole section `N/A — reverse-engineer/as-is document`. Open questions stay here in every case, because design readiness depends on them.
+Records exclusions **the user decided** at requirement time. Exclusions this design decided belong in `Future Extensibility`. Mark the first three bullets `N/A — covered by PRD [path]` when a PRD holds them, or the whole section `N/A — reverse-engineer/as-is document`. Open questions stay here in every case, because design readiness depends on them.
 
 - **Outcome**: [one observable result this change must produce]
 - **Non-Goals**: [capability the user excluded | None — user confirmed there are none]

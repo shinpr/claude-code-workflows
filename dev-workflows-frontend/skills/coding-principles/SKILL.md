@@ -9,7 +9,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 1. **Maintainability over Speed**: Prioritize long-term code health over initial development velocity
 2. **Simplicity First**: Choose the simplest solution that meets requirements (YAGNI principle)
-3. **Design Convergence**: Deliver the current required outcome with the least new design surface. Use implementation-approach when selecting persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits.
+3. **Design Convergence**: Deliver the current required outcome with the least new design surface. Selecting persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits carries enough surface to justify the full convergence process first.
 4. **Explicit over Implicit**: Make intentions clear through code structure and naming
 5. **Delete over Comment**: Remove unused code instead of commenting it out
 

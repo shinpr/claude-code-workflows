@@ -9,7 +9,7 @@ description: Separates the outcome a change must produce from the requirements p
 
 Requirements arrive bloated, ambiguous, or aimed at the wrong outcome. A capable model reconciles all three into a coherent plan and builds it faithfully — delivering exactly what was asked for when what was asked for was wrong.
 
-This skill converges **what to build**. Converging **how** belongs to `implementation-approach`; scale and document requirements belong to `documentation-criteria`.
+This skill converges **what to build**. How to build it, and which documents the change requires, are settled after the what is.
 
 ## Convergence Fields
 
