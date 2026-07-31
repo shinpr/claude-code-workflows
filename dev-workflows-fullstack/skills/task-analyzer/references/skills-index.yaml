@@ -234,15 +234,13 @@ skills:
 
   requirement-convergence:
     skill: "requirement-convergence"
-    tags: [cross-cutting, requirements, scope, non-goals, outcome, effort, trade-off, hearing-protocol, convergence]
-    typical-use: "Converges what to build before design by separating outcome from requirement layers, recording user-authored non-goals, and grounding effort in inspected code"
+    tags: [cross-cutting, requirements, scope, non-goals, outcome, rough-estimate, trade-off, hearing-protocol, convergence]
+    typical-use: "Converges what to build before design by separating outcome from requirement layers, recording user-authored non-goals, and banding cost from structure rather than behavior"
     size: small
     key-references:
       - "references/criteria.md"
-      - "references/dialogue.md"
     sections:
       - "Purpose"
-      - "Scope Boundaries"
       - "Convergence Fields"
       - "Hearing Protocol"
       - "Storage Protocol"

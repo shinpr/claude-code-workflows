@@ -14,7 +14,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
-| 1 | (orchestrator) → requirement-analyzer | Requirement-convergence hearing, then requirement analysis + scale determination **[Stop]** | Convergence fields + requirements + scale |
+| 1 | requirement-analyzer → (orchestrator) | Requirement analysis + scale determination, then the requirement-convergence hearing on its `convergence` output, re-invoking the analyzer with the answers **[Stop]** | Converged requirements + scale |
 | 2 | prd-creator | PRD covering entire feature (all layers) | Single PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
 | 4 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend domain primary; backend / api / infra domains as applicable for the layer scope). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
@@ -36,7 +36,7 @@ This reference defines the orchestration flow for projects spanning multiple lay
 
 | Step | Agent | Purpose | Output |
 |------|-------|---------|--------|
-| 1 | (orchestrator) → requirement-analyzer | Requirement-convergence hearing, then requirement analysis + scale determination **[Stop]** | Convergence fields + requirements + scale |
+| 1 | requirement-analyzer → (orchestrator) | Requirement analysis + scale determination, then the requirement-convergence hearing on its `convergence` output, re-invoking the analyzer with the answers **[Stop]** | Converged requirements + scale |
 | 2 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend / backend / api / infra domains as applicable). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
 | 3 | codebase-analyzer ×2 + ui-analyzer | Codebase analysis per layer + UI fact gathering (parallel; ui-analyzer reads external-resources.md and fetches external UI sources via inherited MCP/URL access) | Codebase guidance per layer + UI fact JSON |
 | 4 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |

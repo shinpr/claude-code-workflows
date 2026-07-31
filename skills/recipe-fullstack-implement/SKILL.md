@@ -34,7 +34,7 @@ Assess the current situation:
 
 | Situation Pattern | Decision Criteria | Next Action |
 |------------------|------------------|-------------|
-| New Requirements | No existing work, new feature/fix request | Run the requirement-convergence hearing, then requirement-analyzer |
+| New Requirements | No existing work, new feature/fix request | Start with requirement-analyzer |
 | Flow Continuation | Existing docs/tasks present, continuation directive | Identify next step in monorepo-flow.md |
 | Quality Errors | Error detection, test failures, build errors | Execute quality-fixer (layer-appropriate) |
 | Ambiguous | Intent unclear, multiple interpretations possible | Confirm with user |
@@ -60,12 +60,14 @@ Key points to enforce as the orchestrator runs the flow:
 
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
-After scale determination, use TaskCreate to register `"Select and map applicable rules"`, each design/planning step, and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
+After scale determination, use TaskCreate to register each design/planning step and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
 
 ## After requirement-analyzer [Stop]
 
+Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
+
 When user responds to questions:
-- If a `convergence` question remains unresolved → Continue the hearing until the field is `ready` or the user accepts `weak-but-explicit`
+- If any `convergence` field is below `ready` → Re-execute requirement-analyzer with the hearing answers so the record is re-judged. Repeat until every field is `ready` or `weak-but-explicit`
 - If response matches any `scopeDependencies.question` → Check `impact` for scale change
 - If scale changes → Re-execute requirement-analyzer with updated context
 - If `confidence: "confirmed"` or no scale change → Proceed to next step

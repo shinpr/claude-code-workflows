@@ -57,9 +57,11 @@ C4Context
 
 ### Future / Out of Scope
 
-| Capability | Disposition | Reason |
-|---|---|---|
-| [Capability excluded during MVP convergence] | future / out-of-scope | [Why it is not required for the current value or obligations] |
+`Origin` distinguishes a non-goal the user authored (`user`) from an exclusion the requirement analysis judged (`analysis`). Record `None — user confirmed there are none` when the user considered exclusions and found none.
+
+| Capability | Disposition | Origin | Reason |
+|---|---|---|---|
+| [Capability excluded during MVP convergence] | future / out-of-scope | user / analysis | [Why it is not required for the current value or obligations] |
 
 ## Non-Functional Requirements
 

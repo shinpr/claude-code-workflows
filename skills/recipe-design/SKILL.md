@@ -78,7 +78,7 @@ Invoke codebase-analyzer with its existing schema. The orchestrator constructs `
 ### Step 3: Scope Confirmation
 After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
 
-First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as its codebase facts. This recipe has no requirement-analyzer, so the orchestrator both elicits and judges the convergence fields here. Carry the result into Step 4 so technical-designer persists it to the Design Doc.
+First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. This recipe has no requirement-analyzer, so the orchestrator both elicits and judges the fields, recording the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). `cost` does not apply here: the orchestrator cannot search the repository, and entering this recipe already decided to design. Carry that object into Step 4 so technical-designer persists it to the Design Doc.
 
 Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
 - **Target files/modules**: `analysisScope.filesAnalyzed` and the modules they belong to
@@ -100,7 +100,7 @@ After the user confirms the scope, count the confirmed target files and set the 
 Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-02). ADRs use alternative comparison; Design Docs use Design Convergence.
 
 - Invoke **technical-designer** using Agent tool
-  - For Design Doc: `subagent_type: "dev-workflows:technical-designer"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Convergence result: [Step 3 convergence fields]. Apply the code: prefix to codebase-analyzer fact_ids when filling the Fact Disposition Table."`
+  - For Design Doc: `subagent_type: "dev-workflows:technical-designer"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Convergence result: [Step 3 `convergence` object]. Apply the code: prefix to codebase-analyzer fact_ids when filling the Fact Disposition Table."`
   - For ADR: `subagent_type: "dev-workflows:technical-designer"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Present at least two alternatives with trade-offs."`
 - **(Design Doc only)** Invoke **code-verifier** to verify the Design Doc against existing code. Skip for ADR.
   - `subagent_type: "dev-workflows:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
