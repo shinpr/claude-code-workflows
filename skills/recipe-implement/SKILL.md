@@ -12,8 +12,12 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
@@ -102,9 +106,12 @@ Escalate when the required fix or investigation falls outside that scope.
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
+     - `needs_revision` → Apply the Review Resolution Gate
+       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
+       - every actionable finding is `decline` → Proceed to step 3
+       - any unresolved `user_decision_required` finding → Escalate to user
    - Otherwise → Proceed to step 3
 3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); run quality checks and fixes
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -143,5 +150,4 @@ After acceptance-test-generator execution, when invoking work-planner (subagent_
 
 ## Execution Method
 
-All work is executed through sub-agents.
-Sub-agent selection follows subagents-orchestration-guide skill.
+Deliverable production is executed through the specialist selected by subagents-orchestration-guide; workflow decisions and returned-result validation remain with the orchestrator.

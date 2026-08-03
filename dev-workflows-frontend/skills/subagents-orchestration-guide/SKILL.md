@@ -7,13 +7,13 @@ description: Guides subagent coordination through implementation workflows. Use 
 
 ## Role: The Orchestrator
 
-All investigation, analysis, and implementation work flows through specialized subagents.
+The orchestrator owns workflow decisions, validation, routing, read-only coordination, progress management, user interaction, and explicitly assigned mechanical operations. Named specialists own assigned investigation, analysis, and deliverable creation or modification; invoke them before producing or changing code, tests, configuration, documents, task files, or other artifacts.
 
 ### First Action Rule
 
 When receiving a new task, pass user requirements directly to requirement-analyzer. Determine the workflow based on its scale assessment result.
 
-requirement-analyzer returns a `convergence` object. Run the requirement-convergence hearing protocol at the requirements stop point on that output, recording each step's evidence, then re-invoke requirement-analyzer with the answers so the record is re-judged. The hearing runs in the orchestrator because it requires user interaction, and runs after the analysis because the orchestrator investigates nothing itself.
+requirement-analyzer returns a `convergence` object. Run the requirement-convergence hearing protocol at the requirements stop point on that output, recording each step's evidence, then re-invoke requirement-analyzer with the answers so the record is re-judged. The hearing runs in the orchestrator because it requires user interaction; repository investigation remains assigned to the specialist.
 
 ### Requirement Change Detection During Flow
 
@@ -54,6 +54,10 @@ The orchestrator passes **what to accomplish** and **where to work**. Each speci
 When specialist output contradicts orchestrator expectations, verify against objective repo state (item 3). If repo state confirms the specialist, follow the specialist. Override specialist output only when it conflicts with items 1 or 2.
 
 When a specialist cannot determine execution method from repo state and artifacts, the specialist escalates as blocked instead of guessing. The orchestrator then escalates to the user with the specialist's blocked details.
+
+### Review Resolution
+
+Apply `references/review-resolution.md` to actionable deliverable-review findings. The orchestrator decides dispositions, validates results, and routes work; the named specialist produces or changes deliverables.
 
 ### Task Assignment with Responsibility Separation
 
@@ -123,7 +127,7 @@ The orchestrator coordinates work using only the following tools:
 | Bash | Shell operations (git commit, ls, verification commands) |
 | Read | Deliverable documents for information bridging between subagents |
 
-All implementation work (Edit, Write, MultiEdit) is performed by subagents, not the orchestrator.
+Semantic deliverable production (including Edit, Write, and MultiEdit of code, tests, configuration, documents, and task files) is performed by the named specialist, not the orchestrator. The orchestrator makes the workflow decisions around that work.
 
 ### Prompt Construction Rule
 Every subagent prompt must include:
@@ -167,7 +171,7 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
 - **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
 - **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), testsAdded, requiresTestReview
-- **quality-fixer**: Input: `task_file` (path to current task file — always pass this in orchestrated flows). Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
+- **quality-fixer**: Input: optional `task_file`, plus the executor's `filesModified` and `mutationEvidence`; pass `qualityCommand` only when the caller or task supplies one. Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
 - **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status (`approved`/`needs_revision`/`blocked`), `reviewBasis`, requiredFixes
@@ -209,7 +213,7 @@ Always start with requirement-analyzer, hold the requirement-convergence hearing
 
 The requirement-convergence hearing follows requirement-analyzer in every flow. Both it and the external resource hearing run in the orchestrator (they require AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
 
-After the planning flow completes and the user grants batch approval, implementation proceeds. Verifying the plan is implementable end-to-end (verification lanes, fixtures, E2E environment) is an optional preflight the user runs at their discretion via the recipe-prepare-implementation recipe; this guide does not invoke any orchestrator above the agent layer.
+After the planning flow completes and the user grants batch approval, implementation proceeds. An optional readiness preflight may verify verification lanes, fixtures, and the E2E environment before execution; its caller initiates that preflight separately from this guide.
 
 Then execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
 
@@ -221,7 +225,7 @@ Rules:
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
-- Work plan review self-heals: on `verdict.decision` `needs_revision`, route back to work-planner (update) and re-review until `approved`/`approved_with_conditions`; `rejected` escalates to the user. If re-review returns the same blocking finding and the update adds no new evidence or contract change, stop the loop and escalate that finding. The work plan is a derivation of the Design Doc, so plan-fidelity findings need no user adjudication while the loop is making observable progress
+- Work plan review applies Review Resolution: revise and re-review with `prior_feedback` for `apply`; proceed when all actionable findings are `decline`; escalate unresolved `user_decision_required` or unusable inputs
 
 ## Autonomous Execution Mode
 
@@ -257,7 +261,10 @@ graph TD
     ESCJUDGE -->|escalation_needed/blocked| USERESC[Escalate to user]
     ESCJUDGE -->|requiresTestReview: true| ITR[integration-test-reviewer]
     ESCJUDGE -->|No issues| QF
-    ITR -->|needs_revision| TE
+    ITR -->|needs_revision| ITRR[Orchestrator: Review Resolution]
+    ITRR -->|apply findings| TE
+    ITRR -->|resolved without apply| QF
+    ITRR -->|user decision required| USERESC
     ITR -->|approved| QF
     ITR -->|blocked| USERESC
     QF[quality-fixer: Quality check and fixes] --> QFJUDGE{quality-fixer result}
@@ -272,7 +279,10 @@ graph TD
     CV --> VRESULT{Verification results}
     SEC --> VRESULT
     VRESULT -->|All passed| REPORT[Completion report]
-    VRESULT -->|Any failed| VFIX[task-executor: Verification fixes]
+    VRESULT -->|Any failed| VRR[Orchestrator: Review Resolution]
+    VRR -->|apply findings| VFIX[task-executor: Verification fixes]
+    VRR -->|resolved without apply| REPORT
+    VRR -->|user decision required| USERESC
     VFIX --> QF2[quality-fixer: Quality check]
     QF2 --> REVERIFY[Re-run both verifiers]
     REVERIFY --> VRESULT
@@ -293,7 +303,7 @@ graph TD
 | code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
-**Fix-cycle handoff**: Consolidate failed verifier findings into one ephemeral task per required executor and pass each exact path as `task_file` through its executor and quality-fixer. Use `review-fixes-{plan-name}-task-*` for single-layer work and `review-fixes-{plan-name}-{backend|frontend}-task-*` for fullstack routing; delete the files after all verifiers pass.
+**Fix-cycle handoff**: Apply Review Resolution, then pass each required executor the `apply` findings, affected paths, governing evidence, and verification condition directly. Carry `prior_feedback` to reviewer inputs that support reconciliation.
 
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
@@ -323,9 +333,12 @@ Stop autonomous execution and escalate to user in the following cases:
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
+     - `needs_revision` → Apply Review Resolution
+       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
+       - every actionable finding is `decline` → Proceed to step 3
+       - any unresolved `user_decision_required` finding → Escalate to user
    - Otherwise → Proceed to step 3
 3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -366,7 +379,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
 
    #### HC-03: technical-designer → code-verifier
    - Pass: Design Doc path (`doc_type: design-doc`)
-   - Do not pass `code_paths`; code-verifier discovers scope from the document
+   - Leave `code_paths` unspecified so code-verifier discovers scope from the document
 
    #### HC-04: code-verifier + codebase-analyzer → document-reviewer
    - Pass: `review_context: creation`, `code_verification` JSON, the same `codebase_analysis` JSON previously given to the designer, original user requirements as `requirements_verbatim`, and confirmed scope and user decisions as `confirmed_decisions`
@@ -375,7 +388,7 @@ Register overall phases using TaskCreate. Update each phase with TaskUpdate as i
    #### HC-05: code-verifier → next-layer technical-designer (fullstack only)
    - Defined only for multi-layer fullstack flow in `references/monorepo-flow.md`
    - Pass: prior-layer Design Doc path plus `prior_layer_verification`
-   - Use only `discrepancies[]` as known issues to address or escalate. Do not infer verified claims that are not explicitly present in the verifier output.
+   - Treat `discrepancies[]` as the known issues to address or escalate. Keep every claim absent from the verifier output classified as unverified.
 
    #### technical-designer → work-planner
 
@@ -408,3 +421,4 @@ Recap (defined above): quality-fixer approval before commit; inter-agent communi
 ## References
 
 - `references/monorepo-flow.md`: Fullstack (monorepo) orchestration flow
+- `references/review-resolution.md`: Finding adjudication and correction-loop contract

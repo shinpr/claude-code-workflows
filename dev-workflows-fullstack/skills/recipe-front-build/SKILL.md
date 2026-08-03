@@ -10,8 +10,12 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
 2. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
 3. **Enter autonomous mode** when user provides execution instruction with existing task files — this IS the batch approval
 4. **Scope**: Complete when all tasks are committed or escalation occurs
@@ -26,7 +30,7 @@ Work plan: $ARGUMENTS
 
 Before any task processing, locate the work plan. Resolution rule:
 1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md`. Layer-aware fullstack tasks (`{plan-name}-backend-task-*.md` / `{plan-name}-frontend-task-*.md`) are excluded here so a stale fullstack run does not redirect this recipe to the wrong work plan
-2. From the matched files, also exclude every file matching any of these patterns — they originate from other workflow phases and are not implementation tasks for this run's plan: `*-task-prep-*.md` (readiness preflight tasks), `_overview-*.md` (materialization overview file), `*-phase*-completion.md` (per-phase completion files), `review-fixes-*.md` (post-implementation review fixes), `integration-tests-*-task-*.md` (integration-test add-on scaffolding)
+2. From the matched files, also exclude `_overview-*.md` (materialization overview files) and `*-phase*-completion.md` (per-phase completion files).
 3. For each remaining file, extract the `{plan-name}` prefix as the segment that appears before `-task-`
 4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
 5. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
@@ -36,7 +40,7 @@ Before any task processing, locate the work plan. Resolution rule:
 Compute the **Consumed Task Set** for this run — the exact files this recipe owns, executes, and later deletes. Use the same restricted pattern as Work Plan Resolution:
 
 1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md` for the `{plan-name}` resolved by Work Plan Resolution. Layer-aware fullstack tasks are excluded
-2. Exclude every file matching: `*-task-prep-*.md`, `_overview-*.md`, `*-phase*-completion.md`, `review-fixes-*.md`, `integration-tests-*-task-*.md` (these originate from other workflow phases)
+2. Exclude every file matching `_overview-*.md` or `*-phase*-completion.md`.
 
 Every subsequent reference to "task files" in this recipe — Task Generation Decision Flow, Task Execution Cycle iteration, and Final Cleanup — uses this set, not the unrestricted `docs/plans/tasks/*.md` glob.
 
@@ -48,7 +52,7 @@ Analyze the Consumed Task Set and determine the action required:
 |-------|----------|-------------|
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
 | No tasks + plan exists | Consumed Task Set is empty but the resolved work plan exists | Confirm with user → run task-decomposer |
-| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create work plan from Design Doc, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan); branch on the reviewer's `verdict.decision` — on `needs_revision`, re-invoke work-planner (update) and re-review until `approved`/`approved_with_conditions`; if the same blocking finding repeats without new evidence or a contract change, stop and escalate it; then present the reviewed plan for batch approval before task materialization; on `rejected`, stop before task materialization and escalate to the user |
+| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan). Apply the Review Resolution Gate: update for `apply`, re-review with `prior_feedback`, progress when all actionable findings are `decline`, and escalate unresolved `user_decision_required`; then present the resolved plan for batch approval before task materialization |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
 ## Task Materialization Phase (Conditional)
@@ -92,9 +96,12 @@ For EACH task in the Consumed Task Set, YOU MUST:
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
      - `blocked` → STOP and escalate to user
+     - `needs_revision` → Apply the Review Resolution Gate
+       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
+       - every actionable finding is `decline` → Proceed to step 3
+       - any unresolved `user_decision_required` finding → STOP and escalate to user
    - `readyForQualityCheck: true` → Proceed to step 3
 3. **QUALITY-FIX**: Invoke quality-fixer-frontend with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -146,4 +153,5 @@ Final report must include:
 - Quality check result
 - Commit count
 - Cleanup result
+- Declined actionable findings with ID, governing reason, and evidence
 - Escalation or blocking summary, if any

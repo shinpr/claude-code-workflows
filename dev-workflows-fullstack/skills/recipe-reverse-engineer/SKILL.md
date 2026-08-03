@@ -14,10 +14,14 @@ Target: $ARGUMENTS
 
 **Core Identity**: "I am an orchestrator."
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
 2. **Process one step at a time**: Execute steps sequentially within each unit (2 → 3 → 4 → 5). Each step's output is the required input for the next step. Complete all steps for one unit before starting the next
-3. **Pass `$STEP_N_OUTPUT` as-is** to sub-agents — the orchestrator bridges data without processing or filtering it
+3. **Preserve evidence while bridging outputs** — extract and transform the fields required by the next specialist without changing supported meaning; apply Review Resolution before routing any correction
 
 **Task Registration**: Register phases first using TaskCreate, then steps within each phase as you enter it. Update status using TaskUpdate.
 
@@ -163,10 +167,7 @@ prompt: |
 
 #### Step 5: Revision (conditional)
 
-**Trigger Conditions** (any one of the following):
-- Review status is "Needs Revision" or "Rejected"
-- Critical discrepancies exist in `$STEP_3_OUTPUT`
-- consistencyScore < 70
+Pass `$STEP_3_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_4_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review, and unresolved `user_decision_required` stops for user input.
 
 **Agent tool invocation**:
 ```
@@ -178,21 +179,17 @@ prompt: |
   Operation Mode: update
   Existing PRD: $STEP_2_OUTPUT
 
-  ## Review Feedback
-  $STEP_4_OUTPUT
+  ## Adjudicated Findings
+  [apply findings with IDs, governing basis, smallest correction, and affected sections]
 
-  ## Code Verification Results
-  $STEP_3_OUTPUT
-
-  Address discrepancies by severity. Critical and major items require correction.
-  Minor items: correct if straightforward, otherwise leave as-is with rationale.
+  Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
+**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `code_verification` and `prior_feedback`.
 
 #### Unit Completion
 
-- [ ] Review status is "Approved" or "Approved with Conditions"
+- [ ] No `apply` findings remain; every other review finding has a disposition and every `user_decision_required` item has a recorded user decision
 - [ ] Human review passed (if enabled in Step 0)
 
 **Next**: Proceed to next unit. After all units → Phase 2.
@@ -361,10 +358,7 @@ prompt: |
 
 #### Step 10: Revision (conditional)
 
-**Trigger Conditions** (same as Step 5):
-- Review status is "Needs Revision" or "Rejected"
-- Critical discrepancies exist in `$STEP_8_OUTPUT`
-- consistencyScore < 70
+Pass `$STEP_8_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_9_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review, and unresolved `user_decision_required` stops for user input.
 
 **Agent tool invocation (per Design Doc)**:
 ```
@@ -376,21 +370,17 @@ prompt: |
   Operation Mode: update
   Existing Design Doc: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
 
-  ## Review Feedback
-  $STEP_9_OUTPUT
+  ## Adjudicated Findings
+  [apply findings with IDs, governing basis, smallest correction, and affected sections]
 
-  ## Code Verification Results
-  $STEP_8_OUTPUT
-
-  Address discrepancies by severity. Critical and major items require correction.
-  Minor items: correct if straightforward, otherwise leave as-is with rationale.
+  Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Loop Control**: Maximum 2 revision cycles. After 2 cycles, flag for human review regardless of status.
+**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `code_verification` and `prior_feedback`.
 
 #### Unit Completion
 
-- [ ] Review status is "Approved" or "Approved with Conditions"
+- [ ] No `apply` findings remain; every other review finding has a disposition and every `user_decision_required` item has a recorded user decision
 - [ ] Human review passed (if enabled in Step 0)
 
 **Next**: Proceed to next unit. After all units → Final Report.
@@ -409,4 +399,3 @@ Output summary including:
 | Discovery finds nothing | Ask user for project structure hints |
 | Generation fails | Log failure, continue with other units, report in summary |
 | consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
-| Review rejects after 2 revisions | Stop loop, flag for human intervention |

@@ -12,8 +12,12 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results
+1. **Invoke named specialists for deliverable production** — pass data between them and validate their results
 2. **Follow subagents-orchestration-guide skill planning flow**:
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion
@@ -71,7 +75,7 @@ Invoke document-reviewer to review the work plan:
 - `subagent_type`: "dev-workflows-frontend:document-reviewer"
 - `description`: "Work plan review"
 - `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review semantic traceability to the Design Doc, early verification placement, real-boundary verification coverage, Failure Mode Checklist, and Review Scope."
-- The work plan is a derivation of the Design Doc, so plan-fidelity findings are resolved without user input while the revision loop makes observable progress. Branch on the reviewer's `verdict.decision`: on `needs_revision`, re-invoke work-planner in update mode with the findings and re-review, repeating until `approved` or `approved_with_conditions`; if the same blocking finding repeats without new evidence or a contract change, stop and escalate it. On `rejected`, escalate to the user.
+- Apply the Review Resolution Gate before branching. On `needs_revision`, re-invoke work-planner in update mode with the `apply` findings and re-review with `prior_feedback`. A result whose actionable findings are all `decline` is eligible for approval; escalate unresolved `user_decision_required` or unusable inputs.
 
 ### Step 5: Present for Approval
 - Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with revised parameters and re-run Step 4.

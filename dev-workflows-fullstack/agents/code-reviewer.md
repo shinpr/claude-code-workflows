@@ -38,6 +38,7 @@ Operates in an independent context, executing autonomously until task completion
 - **designDoc**: Path to the Design Doc (or multiple paths for fullstack features)
 - **implementationFiles**: List of files to review (or git diff range)
 - **reviewMode**: `full` (default) | `acceptance` | `architecture`
+- **prior_feedback** (optional): Array of `{ id, disposition, correction?, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Verification Process
 
@@ -138,6 +139,14 @@ Each finding must include a `rationale` field:
 | **coverage_gap** | Which AC or Proof Obligation is untested and why test coverage matters for this specific case |
 | **adjacent_residual** | Which adjacent case shares the path/contract/state/boundary and how it still exhibits the defect class |
 
+#### Finding Identity and Prior Feedback
+
+Assign a stable ID to every actionable AC gap, identifier mismatch, and quality finding. When `prior_feedback` is present, review the current implementation normally, then emit one `prior_feedback_reconciliation` entry for every received item:
+
+- `resolved`: an applied correction now satisfies the reviewed condition;
+- `withdrawn`: a declined finding is unsupported by the current evidence and governing sources;
+- `maintained`: the finding remains supported, with current evidence.
+
 ### 4. Check Architecture Compliance
 
 Verify against the Design Doc architecture:
@@ -176,6 +185,7 @@ identifierMatchRate:  number (integer 0-100, percentage)
 verdict:              string ("pass" | "needs-improvement" | "needs-redesign")
 
 acceptanceCriteria[].item:        string
+acceptanceCriteria[].id:          string (required only when status is not fulfilled; stable within this review chain)
 acceptanceCriteria[].status:      string ("fulfilled" | "partially_fulfilled" | "unfulfilled")
 acceptanceCriteria[].confidence:  string ("high" | "medium" | "low")
 acceptanceCriteria[].location:    string (file:line; null if unimplemented)
@@ -184,16 +194,23 @@ acceptanceCriteria[].gap:         string (null when fully fulfilled)
 acceptanceCriteria[].suggestion:  string (null when fully fulfilled)
 
 identifierVerification[].identifier:    string
+identifierVerification[].id:            string (required only when match is false; stable within this review chain)
 identifierVerification[].designDocValue: string
 identifierVerification[].codeValue:     string (or "not found")
 identifierVerification[].location:      string (file:line; null if not found)
 identifierVerification[].match:         boolean
 
 qualityFindings[].category:    string ("dd_violation" | "maintainability" | "reliability" | "coverage_gap" | "adjacent_residual")
+qualityFindings[].id:          string (stable within this review chain)
 qualityFindings[].location:    string (file:line or file:function)
 qualityFindings[].description: string
 qualityFindings[].rationale:   string (category-specific)
 qualityFindings[].suggestion:  string
+
+prior_feedback_reconciliation[].id:                string (present only when prior_feedback was received; matches one received ID)
+prior_feedback_reconciliation[].prior_disposition: string ("apply" | "decline")
+prior_feedback_reconciliation[].status:            string ("resolved" | "withdrawn" | "maintained")
+prior_feedback_reconciliation[].evidence:          string
 
 summary.{acsTotal, acsFulfilled, acsPartial, acsUnfulfilled, identifiersTotal, identifiersMatched, lowConfidenceItems}: number (integer >= 0)
 summary.findingsByCategory.{dd_violation, maintainability, reliability, coverage_gap, adjacent_residual}: number (integer >= 0)
@@ -209,8 +226,8 @@ summary.findingsByCategory.{dd_violation, maintainability, reliability, coverage
   "acceptanceCriteria": [
     {"item": "User can log in with valid credentials", "status": "fulfilled", "confidence": "high", "location": "src/auth/login.ts:42", "evidence": ["impl: src/auth/login.ts:42", "test: src/auth/login.test.ts:18"], "gap": null, "suggestion": null}
   ],
-  "identifierVerification": [{"identifier": "AUTH_TOKEN_TTL", "designDocValue": "3600", "codeValue": "1800", "location": "src/auth/config.ts:8", "match": false}],
-  "qualityFindings": [{"category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}],
+  "identifierVerification": [{"id": "ID001", "identifier": "AUTH_TOKEN_TTL", "designDocValue": "3600", "codeValue": "1800", "location": "src/auth/config.ts:8", "match": false}],
+  "qualityFindings": [{"id": "Q001", "category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}],
   "summary": {
     "acsTotal": 12, "acsFulfilled": 10, "acsPartial": 1, "acsUnfulfilled": 1,
     "identifiersTotal": 20, "identifiersMatched": 19, "lowConfidenceItems": 2,
@@ -231,7 +248,7 @@ Identifier mismatches automatically lower the verdict by one level (e.g., pass â
 
 - [ ] All acceptance criteria individually evaluated with confidence levels
 - [ ] All identifier specifications verified against implementation code
-- [ ] Quality findings classified with category and rationale
+- [ ] Every actionable item has a stable ID
 - [ ] Compliance rate and identifier match rate calculated
 - [ ] Verdict determined
 
@@ -243,6 +260,7 @@ Run each item below before producing the final JSON. When any item is unsatisfie
 - [ ] Identifier comparisons use exact strings from Design Doc and code (character-for-character match)
 - [ ] Each low-confidence item is explicitly noted in the output
 - [ ] Each quality finding includes category-specific rationale
+- [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`
 - [ ] Every finding includes a file:line location reference
 
 ## Escalation Criteria

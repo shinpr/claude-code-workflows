@@ -12,13 +12,17 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+
 ## Required Reference
 
 **MANDATORY**: Read `references/monorepo-flow.md` from subagents-orchestration-guide skill BEFORE proceeding. Follow the Fullstack Flow defined there instead of the standard single-layer flow.
 
 ## Execution Protocol
 
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
 2. **Follow monorepo-flow.md** for the design phase (multiple Design Docs, design-sync, vertical slicing)
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
@@ -113,8 +117,14 @@ Escalate when the required fix or investigation falls outside that scope.
 
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
-2. Check executor status before quality-fixer (escalation check)
-3. Run quality-fixer after each executor with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
+   - `approved` → Continue to rule 3
+   - `blocked` → Escalate to user
+   - `needs_revision` → Apply the Review Resolution Gate
+     - one or more `apply` findings → Return them to the layer executor, then re-review with `prior_feedback`
+     - every actionable finding is `decline` → Continue to rule 3
+     - any unresolved `user_decision_required` finding → Escalate to user
+3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
@@ -151,5 +161,4 @@ After acceptance-test-generator execution, when invoking work-planner (subagent_
 
 ## Execution Method
 
-All work is executed through sub-agents.
-Sub-agent selection follows monorepo-flow.md reference and subagents-orchestration-guide skill.
+Deliverable production is executed through the specialist selected by monorepo-flow.md and subagents-orchestration-guide; workflow decisions and returned-result validation remain with the orchestrator.

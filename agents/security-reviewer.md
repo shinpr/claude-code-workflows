@@ -26,6 +26,7 @@ Operates in an independent context, executing autonomously until task completion
 
 - **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
 - **implementationFiles**: List of implementation files to review (or git diff range)
+- **prior_feedback** (optional): Array of `{ id, disposition, correction?, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Review Criteria
 
@@ -90,6 +91,8 @@ Evaluate every finding against the project's runtime environment, framework prot
 - Reserve `confirmed_risk` for findings where the attack surface is exploitable as-is with high confidence. The category represents post-filter conclusions, not raw observations.
 - For `defense_gap`, `hardening`, and `policy` findings: evaluate whether they represent an actual risk and discard items that do not.
 - Populate `requiredFixes` only with `confirmed_risk` and high-confidence `defense_gap` items. Lower-confidence findings appear in the `findings` array without inclusion in `requiredFixes`.
+- Give every finding a stable ID.
+- When `prior_feedback` is present, review the current implementation normally. Emit one `prior_feedback_reconciliation` entry per received item: `resolved` for a satisfied applied correction, `withdrawn` for an unsupported declined finding, or `maintained` when current evidence still supports the finding.
 
 ### Category-Specific Rationale (required per finding)
 
@@ -124,6 +127,7 @@ Before returning the final JSON:
   "filesReviewed": 5,
   "findings": [
     {
+      "id": "S001",
       "category": "confirmed_risk|suspected_risk|defense_gap|hardening|policy",
       "confidence": "high|medium|low",
       "location": "[file:line]",
@@ -138,6 +142,8 @@ Before returning the final JSON:
   ]
 }
 ```
+
+When `prior_feedback` is present, also include `prior_feedback_reconciliation` with one `{ id, prior_disposition, status, evidence }` entry per received item.
 
 ## Status Determination
 
@@ -174,3 +180,5 @@ Before returning the final JSON:
 - [ ] suspected_risk findings routed to status per Status Determination (high-confidence on primary boundary → needs_revision; otherwise → approved_with_notes)
 - [ ] False positives excluded considering runtime environment and existing mitigations
 - [ ] Committed secrets checked (blocked status if found)
+- [ ] Every finding has a stable ID
+- [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`
