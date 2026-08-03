@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 # Task Execution with Metacognitive Analysis
 

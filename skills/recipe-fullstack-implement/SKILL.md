@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Full-cycle fullstack implementation management (Requirements Analysis → Design (backend + frontend) → Planning → Implementation → Quality Assurance)
 
@@ -15,6 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Required Reference
 
@@ -22,7 +24,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 ## Execution Protocol
 
-1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Follow monorepo-flow.md** for the design phase (multiple Design Docs, design-sync, vertical slicing)
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
@@ -52,6 +54,8 @@ When continuing existing flow, verify:
 
 ### 3. Design through Planning Phase
 
+Execute Skill: external-resource-context before running the external resource hearing in monorepo-flow.md.
+
 **Follow monorepo-flow.md** for the complete design-through-planning flow (Steps 1-17 for Large scale, Steps 1-15 for Medium scale). The flow table in that reference defines every step, agent invocation, parallelization rule, and stop point.
 
 Key points to enforce as the orchestrator runs the flow:
@@ -67,6 +71,8 @@ Key points to enforce as the orchestrator runs the flow:
 After scale determination, use TaskCreate to register each design/planning step and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
 
 ## After requirement-analyzer [Stop]
+
+Execute Skill: requirement-convergence before running the hearing protocol.
 
 Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
 

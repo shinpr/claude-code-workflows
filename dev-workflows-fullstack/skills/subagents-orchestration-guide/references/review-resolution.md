@@ -6,12 +6,14 @@ The orchestrator treats the review result as evidence and makes the workflow dec
 
 ## 1. Assess Every Finding
 
+Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources, treating reviewer assertions as evidence to verify.
+
 The orchestrator records one disposition for every actionable finding:
 
 | Disposition | Use when |
 |---|---|
-| `apply` | The finding proves a contradiction with an approved requirement, design, repository rule, observed fact, or required verification; or the current deliverable is incorrect, non-executable, or non-verifiable. |
-| `decline` | The finding adds scope, reverses an exclusion, requests optional hardening or generic cleanup, duplicates existing proof, or adds cost without changing the approved outcome or required verification. |
+| `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, or leave required correctness or verification unsupported. |
+| `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, or other work outside that boundary. |
 | `user_decision_required` | Resolving the finding would change a confirmed product outcome, exclusion, major approved design decision, or requires authority held only by the user. |
 
 A confirmed security risk or governing-source contradiction receives `apply` or `user_decision_required`; cost alone leaves that classification unchanged.

@@ -7,13 +7,13 @@ description: Guides subagent coordination through implementation workflows. Use 
 
 ## Role: The Orchestrator
 
-The orchestrator owns workflow decisions, validation, routing, read-only coordination, progress management, user interaction, and explicitly assigned mechanical operations. Named specialists own assigned investigation, analysis, and deliverable creation or modification; invoke them before producing or changing code, tests, configuration, documents, task files, or other artifacts.
+The orchestrator owns workflow decisions, routing, progress management, user interaction, the investigation and validation needed for those decisions, and explicitly assigned mechanical operations, using any available tool. Named specialists own explicitly assigned investigation and semantic deliverable creation or modification; invoke them before producing or changing code, tests, configuration, documents, task files, or other artifacts.
 
 ### First Action Rule
 
 When receiving a new task, pass user requirements directly to requirement-analyzer. Determine the workflow based on its scale assessment result.
 
-requirement-analyzer returns a `convergence` object. Run the requirement-convergence hearing protocol at the requirements stop point on that output, recording each step's evidence, then re-invoke requirement-analyzer with the answers so the record is re-judged. The hearing runs in the orchestrator because it requires user interaction; repository investigation remains assigned to the specialist.
+requirement-analyzer returns a `convergence` object. Run the requirement-convergence hearing protocol at the requirements stop point on that output, recording each step's evidence, then re-invoke requirement-analyzer with the answers so the record is re-judged. The hearing runs in the orchestrator because it requires user interaction; requirement-analyzer owns re-judging the convergence record.
 
 ### Requirement Change Detection During Flow
 
@@ -21,7 +21,13 @@ Treat new or changed behaviors, constraints, or technical requirements as requir
 
 ## Orchestration Principles
 
+### Outcome Stewardship
+
+The orchestrator steers the workflow toward the smallest sufficient set of deliverables and changes that achieves the confirmed outcome while satisfying binding constraints and required verification. Evaluate specialist proposals against that boundary before routing work.
+
 ### Delegation Boundary: What vs How
+
+Before assigning repository work, inspect the current state needed to identify **what to accomplish** and **where to work**; pass unresolved questions as explicit investigation scope.
 
 The orchestrator passes **what to accomplish** and **where to work**. Each specialist determines **how to execute** autonomously.
 
@@ -35,13 +41,13 @@ The orchestrator passes **what to accomplish** and **where to work**. Each speci
 - Execution order and tool flags
 - Which files to inspect or modify within the given scope
 
-**Decision precedence when outputs conflict**:
+**Decision precedence for routing**:
 1. User instructions (explicit requests or constraints)
 2. Task files and design artifacts (Design Doc, PRD, work plan)
 3. Objective repo state (git status, file system, project configuration)
 4. Specialist judgment
 
-When specialist output contradicts orchestrator expectations, verify against objective repo state (item 3). If repo state confirms the specialist, follow the specialist. Override specialist output only when it conflicts with items 1 or 2.
+Before routing specialist output, validate each claim that controls the next workflow decision against the highest applicable source above. Route according to that source; specialist judgment governs only when items 1-3 do not decide.
 
 When a specialist cannot determine execution method from repo state and artifacts, the specialist escalates as blocked instead of guessing. The orchestrator then escalates to the user with the specialist's blocked details.
 
@@ -66,6 +72,8 @@ For frontend work, substitute task-executor-frontend and quality-fixer-frontend;
 
 Autonomous execution MUST stop and wait for user input at these points.
 **Use AskUserQuestion to present confirmations and questions.**
+
+Before presenting an artifact at an approval stop, read its current version and base the presentation on that content.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
@@ -99,19 +107,9 @@ Each subagent invocation is a **fresh Agent tool** call, isolating each phase's 
 - `description`: Concise task description (3-5 words)
 - `prompt`: Specific instructions including deliverable paths
 
-### Orchestrator's Permitted Tools
+### Orchestrator Execution Boundary
 
-The orchestrator coordinates work using only the following tools:
-
-| Tool | Purpose |
-|------|---------|
-| Agent | Invoke subagents |
-| AskUserQuestion | User confirmations and questions |
-| TaskCreate / TaskUpdate | Progress tracking |
-| Bash | Shell operations (git commit, ls, verification commands) |
-| Read | Deliverable documents for information bridging between subagents |
-
-Semantic deliverable production (including Edit, Write, and MultiEdit of code, tests, configuration, documents, and task files) is performed by the named specialist, not the orchestrator. The orchestrator makes the workflow decisions around that work.
+Tool choice does not define responsibility: the orchestrator may use any available tool for its owned work, while named specialists perform semantic deliverable creation or modification; the orchestrator writes only for mechanical operations explicitly assigned by the active workflow.
 
 ### Prompt Construction Rule
 Every subagent prompt must include:

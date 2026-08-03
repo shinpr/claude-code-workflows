@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 ## Orchestrator Definition
 
@@ -13,6 +14,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Required Reference
 
@@ -20,7 +22,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 ## Execution Protocol
 
-1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Route agents by task filename pattern** (see monorepo-flow.md reference):
    - `*-backend-task-*` → task-executor + quality-fixer
    - `*-frontend-task-*` → task-executor-frontend + quality-fixer-frontend

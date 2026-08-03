@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Post-implementation quality assurance
 
@@ -15,6 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **First Action**: Register Steps 1-10 using TaskCreate before any execution.
 

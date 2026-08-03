@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
 
@@ -63,6 +64,8 @@ Adjustment request: $ARGUMENTS
 ## Execution Flow
 
 ### Step 1: External Resource Hearing
+Execute Skill: external-resource-context before running the hearing protocol.
+
 Run the hearing protocol per the external-resource-context skill (frontend domain).
 
 ### Step 2: UI Fact Gathering
@@ -108,6 +111,11 @@ After work-planner returns:
 - **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with revised guidance.
 
 ### Step 5: Adjustment + Verification (parent session)
+
+Execute Skill: frontend-ai-guide before planning or applying adjustment edits.
+Execute Skill: typescript-rules before planning or applying adjustment edits.
+Execute Skill: implementation-approach before planning or applying adjustment edits.
+Execute Skill: test-implement before adding or changing tests.
 
 For each adjustment unit (per file in Branch A; per work plan phase in Branch B):
 1. **Plan the edit** based on ui-analyzer focusAreas and the relevant external resource (e.g., design origin's fetched_summary).

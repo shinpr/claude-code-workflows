@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Optional readiness phase between work-plan approval and recipe-*-build. Confirms the implementation will be observable from Phase 1 onward and resolves any gaps before build execution. Exits no-op when the readiness criteria already pass, so the recipe is safe to invoke unconditionally.
 
@@ -15,7 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
 **Execution Protocol**:
-1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Self-contained scope**: When gaps are found, this recipe defines resolution items and executes them through the standard 4-step cycle. Recipe completes only when readiness criteria pass or remaining gaps are escalated.
 3. **No-op exit**: When the readiness scan finds no failing criteria, generate no resolution items and exit immediately, presenting the Readiness Report to the user. No files are modified in this branch.
 

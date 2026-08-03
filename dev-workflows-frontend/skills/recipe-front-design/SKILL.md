@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Dedicated to the frontend design phase.
 
@@ -15,6 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist. The scope bootstrap locates seed files; the named specialists own semantic investigation and artifact authorship.
 
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **Execution Protocol**:
 1. **Invoke named specialists for deliverable production** — pass data between them and validate their results. Step 1 is a recipe-local read-only scope bootstrap limited to locating seed files.
@@ -24,7 +26,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when design documents receive approval
 
-**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, permitted tools), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
+**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, Execution Boundary), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
 
 **CRITICAL**: Execute document-reviewer, design-sync (for Design Docs), and all stopping points — each serves as a quality gate. Skipping any step risks undetected inconsistencies.
 
@@ -91,6 +93,8 @@ Invoke codebase-analyzer with its existing schema. The orchestrator constructs `
 ### Step 3: Scope Confirmation
 After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
 
+Execute Skill: requirement-convergence before running the hearing protocol.
+
 First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. In this flow, the orchestrator elicits and judges the fields and records the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). Treat `cost` as already resolved because semantic repository investigation is assigned to codebase-analyzer and ui-analyzer and entering this recipe decided to design. Carry that object into Steps 6 and 7 so ui-spec-designer respects the non-goals and technical-designer-frontend persists it to the Design Doc.
 
 Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
@@ -110,6 +114,8 @@ After the user confirms the scope, count the confirmed target files and set the 
 **[STOP]**: Wait for the user's choice before proceeding.
 
 ### Step 4: External Resource Hearing
+Execute Skill: external-resource-context before running the hearing protocol.
+
 Run the hearing protocol per the external-resource-context skill (frontend domain). The orchestrator owns this step because it requires AskUserQuestion. The skill defines file-existence branching, two-phase hearing (structured axes + self-declaration), and persistence to `docs/project-context/external-resources.md`.
 
 ### Step 5: UI Fact Gathering
