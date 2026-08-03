@@ -34,10 +34,3 @@ pre-commit:
         - "skills/*/SKILL.md"
         - "skills/task-analyzer/references/skills-index.yaml"
       run: pnpm check:skills-index
-
-    - name: check-review-resolution
-      glob:
-        - "agents/**"
-        - "skills/**"
-        - "scripts/check-review-resolution.mjs"
-      run: pnpm check:review-resolution

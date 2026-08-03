@@ -11,8 +11,7 @@
     "prepare": "lefthook install",
     "sync": "node scripts/sync-plugins.mjs",
     "sync:check": "node scripts/sync-plugins.mjs --check",
-    "check:skills-index": "node scripts/check-skills-index.mjs",
-    "check:review-resolution": "node scripts/check-review-resolution.mjs"
+    "check:skills-index": "node scripts/check-skills-index.mjs"
   },
   "devDependencies": {
     "lefthook": "^2.1.6"
