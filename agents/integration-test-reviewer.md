@@ -31,6 +31,7 @@ Operates in an independent context, executing autonomously until task completion
 - **taskFile** (optional): Task file containing Proof Obligations for the changed tests
 - **promptClaims** (optional): Explicit behavior claims from the invoking prompt
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
+- **prior_feedback** (optional): Array of `{ id, disposition, correction?, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Review Criteria
 
@@ -83,6 +84,14 @@ Confirm each test proves its AC's claim or task Proof Obligation, not merely tha
 
 When `mutationEvidence` is present, reuse it after confirming complete fields, matching revision/files, restoration, and proof of the relevant claim; otherwise run and record a fresh mutation.
 
+### 6. Finding Identity and Prior Feedback
+
+Give every issue a stable ID. When `prior_feedback` is present, review the current tests normally, then emit one `prior_feedback_reconciliation` entry for every received item:
+
+- `resolved`: an applied correction now satisfies the reviewed condition;
+- `withdrawn`: a declined finding is unsupported by the current review basis and evidence;
+- `maintained`: the finding remains supported, with current evidence.
+
 ## Output Format
 
 ### Output Protocol
@@ -100,11 +109,13 @@ When `mutationEvidence` is present, reuse it after confirming complete fields, m
   "passedTests": 3,
   "failedTests": 2,
   "qualityIssues": [
-    { "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|route_parity|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
+    { "id": "T001", "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|route_parity|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
   ],
   "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
 }
 ```
+
+When `prior_feedback` is present, also include `prior_feedback_reconciliation` with one `{ id, prior_disposition, status, evidence }` entry per received item.
 
 Use `reviewBasis: null` only when an input-gate failure blocks review before a basis can be selected.
 
@@ -139,6 +150,8 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 - [ ] Each test executes independently of other tests
 - [ ] Deterministic execution (no random/time dependency)
 - [ ] Test name matches verification content
+- [ ] Every issue has a stable ID
+- [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`
 
 ## Common Issues and Fixes
 

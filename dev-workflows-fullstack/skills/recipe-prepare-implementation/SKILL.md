@@ -5,17 +5,20 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
-**Context**: Optional readiness phase between work-plan approval and recipe-*-build. Confirms the implementation will be observable from Phase 1 onward and resolves any gaps via Phase 0 tasks. Exits no-op when the readiness criteria already pass, so the recipe is safe to invoke unconditionally.
+**Context**: Optional readiness phase between work-plan approval and recipe-*-build. Confirms the implementation will be observable from Phase 1 onward and resolves any gaps before build execution. Exits no-op when the readiness criteria already pass, so the recipe is safe to invoke unconditionally.
 
 ## Orchestrator Definition
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
-2. **Self-contained scope**: When gaps are found, this recipe BOTH generates resolution tasks AND executes them through the standard 4-step cycle. Recipe completes only when readiness criteria pass or remaining gaps are escalated.
-3. **No-op exit**: When the readiness scan finds no failing criteria, generate no resolution tasks and exit immediately, presenting the Readiness Report to the user. No files are modified in this branch.
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
+2. **Self-contained scope**: When gaps are found, this recipe defines resolution items and executes them through the standard 4-step cycle. Recipe completes only when readiness criteria pass or remaining gaps are escalated.
+3. **No-op exit**: When the readiness scan finds no failing criteria, generate no resolution items and exit immediately, presenting the Readiness Report to the user. No files are modified in this branch.
 
 Work plan: $ARGUMENTS
 
@@ -84,48 +87,44 @@ When every applicable criterion is `pass` (zero `fail`):
 
 When one or more criteria are `fail` → proceed to Step 4.
 
-### Step 4: Plan Resolution Tasks
+### Step 4: Plan Resolution Items
 
 For each `fail` criterion:
-1. Determine the smallest concrete task that closes the gap (examples: "Add fixture entry for ComponentX covering loading/empty/error states", "Add seed script for E2E user fixtures", "Document local startup commands in docs/run/local.md")
-2. Decide the task's **layer** by matching every target file path against the markers below:
+1. Determine the smallest concrete correction that closes the gap (examples: "Add fixture entry for ComponentX covering loading/empty/error states", "Add seed script for E2E user fixtures", "Document local startup commands in docs/run/local.md")
+2. Decide the resolution item's **layer** by matching every target file path against the markers below:
    - **backend** when every target file path matches one of: `**/api/**`, `**/server/**`, `**/services/**`, `**/backend/**`, `**/handlers/**`, `**/repositories/**`
    - **frontend** when every target file path matches one of: `**/components/**`, `**/pages/**`, `**/web/**`, `**/frontend/**`, `**/*.tsx`, `**/*.jsx`
-   - **mixed** (target files span both backend and frontend markers) → escalate to user; ask the user to split the gap into per-layer tasks
-   - **unrecognized** (any target file matches neither backend nor frontend markers — e.g., `docs/**`, `scripts/**`, root-level configs, fixture data files outside the markers above) → escalate to user; ask the user to either (a) decide which layer's executor / quality-fixer should run the task, or (b) update the markers if the project uses different paths
+   - **mixed** (target files span both backend and frontend markers) → escalate to user; ask the user to split the gap into per-layer items
+   - **unrecognized** (any target file matches neither backend nor frontend markers — e.g., `docs/**`, `scripts/**`, root-level configs, fixture data files outside the markers above) → escalate to user; ask the user to either (a) decide which layer's executor / quality-fixer should run the item, or (b) update the markers if the project uses different paths
 
    Apply the rules in the order above. The first matching rule wins; "unrecognized" is the final fallback rather than a catch-all that defaults to backend.
-3. Create a Phase 0 task file at `docs/plans/tasks/{plan-name}-backend-task-prep-{NN}.md` (backend) or `docs/plans/tasks/{plan-name}-frontend-task-prep-{NN}.md` (frontend) using the task template from documentation-criteria skill. The `-task-prep-` segment lets recipe-prepare-implementation distinguish prep tasks from implementation tasks while keeping the existing `{plan-name}-{layer}-task-*` matcher used by other recipes
-4. Update the work plan to insert these tasks as Phase 0 (before Phase 1)
 
-Present the proposed resolution task list to the user with AskUserQuestion. Proceed only after explicit approval — this is the single human gate inside this recipe.
+Present the proposed resolution item list to the user with AskUserQuestion. Proceed only after explicit approval — this is the single human gate inside this recipe.
 
-### Step 5: Execute Resolution Tasks
+### Step 5: Execute Resolution Items
 
-For each resolution task, run the standard 4-step cycle (see subagents-orchestration-guide "Task Management: 4-Step Cycle"):
+For each approved resolution item, run execute → branch → quality-fix → commit:
 
-1. **Agent tool** — route by filename layer segment:
-   - `*-backend-task-prep-*` → `subagent_type: "dev-workflows-fullstack:task-executor"`
-   - `*-frontend-task-prep-*` → `subagent_type: "dev-workflows-fullstack:task-executor-frontend"`
-   - Filename without a recognized layer segment → escalate (the file should not exist; Step 4 prevents this)
+1. **Agent tool** — route by the item's layer:
+   - `backend` → `subagent_type: "dev-workflows-fullstack:task-executor"`
+   - `frontend` → `subagent_type: "dev-workflows-fullstack:task-executor-frontend"`
+   - Pass the exact resolution item, governing documents, target paths, and verification condition directly
 2. Check escalation per orchestration-guide
-3. **quality-fixer** — route by the same filename layer segment:
-   - `*-backend-task-prep-*` → `"dev-workflows-fullstack:quality-fixer"`
-   - `*-frontend-task-prep-*` → `"dev-workflows-fullstack:quality-fixer-frontend"`
-   - Pass upstream `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
+3. **quality-fixer** — route by the same Executor lane:
+   - `backend` → `"dev-workflows-fullstack:quality-fixer"`
+   - `frontend` → `"dev-workflows-fullstack:quality-fixer-frontend"`
+   - Pass upstream `filesModified` and `mutationEvidence`.
 4. **Commit** when quality-fixer returns `approved`
 
 Append the Scope Boundary block (below) to every subagent prompt.
 
-### Step 6: Re-scan, Present Readiness Report, Cleanup, Exit
+### Step 6: Re-scan, Present Readiness Report, Exit
 
-1. **Re-scan**: Re-run the Step 2 readiness scan after all resolution tasks are committed.
+1. **Re-scan**: Re-run the Step 2 readiness scan after all resolution items are committed.
 
-2. **Present Readiness Report**: Present the Readiness Report (see Output Format below) to the user. The report is shown in-session and is not written into the work plan — the durable output of this recipe is the committed Phase 0 resolution tasks, not a persisted report.
+2. **Present Readiness Report**: Present the Readiness Report (see Output Format below) to the user. The report is shown in-session and is not written into the work plan — the durable output is the committed readiness fixes.
 
-3. **Final Cleanup**: Delete every prep task file this recipe created for the current `{plan-name}` (`docs/plans/tasks/{plan-name}-backend-task-prep-*.md` and `docs/plans/tasks/{plan-name}-frontend-task-prep-*.md`) AND the phase-completion file generated for prep phases (`docs/plans/tasks/{plan-name}-phase0-completion.md` when present, since prep tasks live in Phase 0). Prep task files for other plans are out of scope — this recipe deletes only what it created for the current run. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs. The work plan itself is preserved for the downstream recipe-*-build / recipe-*-implement.
-
-4. **Exit**:
+3. **Exit**:
 
    | Re-scan result | Action |
    |----------------|--------|
@@ -164,8 +163,8 @@ Gaps resolved: [N]
 | R4 | ... | ... |
 | R5 | ... | ... |
 
-### Resolution Tasks Executed (when gaps_resolved > 0)
-- [task file path] — [one-line summary] — committed
+### Resolution Items Executed (when gaps_resolved > 0)
+- [criterion ID] — [one-line summary] — committed
 - ...
 
 ### Remaining Gaps (when outcome is escalated)
@@ -176,7 +175,6 @@ Gaps resolved: [N]
 
 - [ ] Work plan loaded and Verification Strategy / E2E references / Phase structure extracted
 - [ ] Readiness scan run with per-criterion result and evidence recorded
-- [ ] No-op exit when all `pass`, OR resolution tasks generated, approved, and executed via the 4-step cycle
-- [ ] Re-scan run after the last resolution task commits
-- [ ] Prep task files (and Phase 0 phase-completion file when generated) deleted from `docs/plans/tasks/`
+- [ ] No-op exit when all `pass`, OR resolution items planned, approved, and executed via the 4-step cycle
+- [ ] Re-scan run after the last resolution item commits
 - [ ] Final report presented to the user

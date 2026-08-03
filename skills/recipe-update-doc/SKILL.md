@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Dedicated to updating existing design documents.
 
@@ -12,10 +13,15 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
+
 **First Action**: Register Steps 1-6 using TaskCreate before any execution.
 
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Execute update flow**:
    - Identify target → Clarify changes → Update document → Review → Consistency check
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
@@ -157,7 +163,7 @@ prompt: |
 
 **On review result**:
 - Approved → Proceed to Step 6
-- Needs revision → Return to Step 4 with the following prompt (max 2 iterations):
+- Needs revision → Apply the Review Resolution Gate. Return to Step 4 when `apply` findings exist, using the following prompt:
   ```
   subagent_type: [Update Agent from Step 2]
   description: "Revise [Type from Step 2]"
@@ -165,12 +171,13 @@ prompt: |
     Operation Mode: update
     Existing Document: [path from Step 1]
 
-    ## Review Feedback to Address
-    $STEP_5_OUTPUT
+    ## Adjudicated Review Findings
+    [apply findings with IDs, basis, smallest correction, and affected sections]
 
-    Address each issue raised in the review feedback.
+    Treat these findings as the complete revision scope and preserve adjacent content.
   ```
-- **After 2 rejections** → Flag for human review, present accumulated feedback to user and end
+- On re-review pass `prior_feedback` as `[{id, disposition, correction?, reason?, evidence}]`
+- All actionable findings are `decline` and every `user_decision_required` item is resolved → Proceed to Step 6
 
 Present review result to user for approval.
 
@@ -200,7 +207,6 @@ prompt: |
 |-------|--------|
 | Target document not found | Report and end (document creation is out of scope) |
 | Sub-agent update fails | Log failure, present error to user, retry once |
-| Review rejects after 2 revisions | Stop loop, flag for human intervention |
 | design-sync detects conflicts | Present to user for resolution decision |
 
 ## Completion Criteria

@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Post-implementation quality assurance
 
@@ -12,7 +13,12 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator."
 
-**First Action**: Register Steps 1-11 using TaskCreate before any execution.
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
+
+**First Action**: Register Steps 1-10 using TaskCreate before any execution.
 
 ## Execution Method
 
@@ -56,17 +62,9 @@ Invoke security-reviewer using Agent tool:
 
 **If security-reviewer returned `blocked`**: Stop immediately. Report the blocked finding and escalate to user. Do not proceed to fix steps.
 
-**Code compliance criteria (considering project stage)**:
-- Prototype: Pass at 70%+
-- Production: 90%+ recommended
+Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing; compliance percentages remain diagnostic.
 
-**Security criteria**:
-- `approved` or `approved_with_notes` → Pass
-- `needs_revision` → Fail
-
-**Report both results independently using subagent output fields only**:
-
-Before presenting to the user, the orchestrator computes a recommended route per finding using the rule below (this rule is internal — do not include it in the user-facing prompt):
+For each `apply` or `user_decision_required` finding, compute a proposed route using the rule below:
 
 | Finding pattern | Recommended route |
 |-----------------|-------------------|
@@ -74,7 +72,7 @@ Before presenting to the user, the orchestrator computes a recommended route per
 | `dd_violation` where the code drifted from a still-correct Design Doc | `c` (Code-side fix) |
 | `reliability` / `security` / `maintainability` findings | `c` (Code-side fix) |
 
-Then present to the user (label each finding with its recommended route, grouped by route):
+Then present the adjudicated result to the user. Group `apply` and `user_decision_required` findings by proposed route, and list declined IDs with their reasons separately:
 
 ```
 Code Compliance: [complianceRate from code-reviewer]
@@ -97,23 +95,19 @@ Security Review: [status from security-reviewer]
   - [policy] [location]: [description] — [rationale] [recommended: c]
   Notes: [notes from security-reviewer, if present]
 
-Resolve discrepancies — confirm or override the recommended route per finding:
+Approve the proposed changes or decide unresolved items:
   c) Code-side fix       — code violates Design Doc; modify code to match
   d) Design-side update  — code is correct; Design Doc is stale, revise it
-  s) Skip                — accept current state without changes
+  s) Decline             — record the governing reason and accept current state
 ```
 
-Use AskUserQuestion. The default offer is **"accept all recommended routes"** — a single confirmation for the typical case where the orchestrator's recommendations are correct. When the user wants to override, collect per-finding c/d/s decisions instead. If the user selects `s` for everything: skip Steps 5-10, proceed to Step 11.
+This review command authorizes analysis; use AskUserQuestion to obtain separate implementation authority. The batch option is **"approve all proposed `apply` routes"** and its scope consists exclusively of those routes. Collect an explicit decision for each `user_decision_required` item. When the approved change set is empty, proceed directly to Step 10.
 
 Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update; request a scope decision for unmapped or over-budget changes.
 
-### Step 5: Execute Skill
+### Step 5: Design-Side Update
 
-Execute Skill: documentation-criteria (for task file template)
-
-### Step 5d: Design-Side Update
-
-Run this step only when the user routed at least one finding to `d`. When all routes are `c` or `s`, skip directly to Step 6.
+Run this step only when the user routed at least one finding to `d`. When no `d` routes exist, skip it; continue to Step 6 only when approved `c` routes remain.
 
 1. Invoke technical-designer in update mode using Agent tool:
    - `subagent_type`: "dev-workflows:technical-designer"
@@ -124,6 +118,7 @@ Run this step only when the user routed at least one finding to `d`. When all ro
    - `subagent_type`: "dev-workflows:document-reviewer"
    - `description`: "Document review of updated Design Doc"
    - `prompt`: "Review updated Design Doc at [path] for consistency and completeness. doc_type: DesignDoc. review_context: update."
+   - Apply the Review Resolution Gate to this result. Route `apply` findings back to technical-designer and re-run document-reviewer with `prior_feedback`; stop for unresolved `user_decision_required`; proceed when the result is approved or every actionable finding is `decline`.
 
 3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
    - `subagent_type`: "dev-workflows:design-sync"
@@ -131,53 +126,44 @@ Run this step only when the user routed at least one finding to `d`. When all ro
    - `prompt`: "source_design: [updated DD path]. Detect conflicts across all Design Docs after the update."
    - When `sync_status: conflicts_found`: present conflicts to the user; resolution requires re-invoking technical-designer for affected DDs.
 
-4. After Step 5d completes:
-   - If the user selected `d` for all findings (no `c` routes) → skip Steps 6-8, proceed to Step 9 for re-validation
+4. After Step 5 completes:
+   - If the user selected `d` for all findings (no `c` routes) → skip Steps 6-7, proceed to Step 8 for re-validation
    - If the user selected both `d` and `c` → re-evaluate the `c`-routed findings against the updated DD and drop any that are now satisfied by the DD revision; then proceed to Step 6 with the remaining `c` findings
 
-### Step 6: Create Task File
-
-Create task file at `docs/plans/tasks/review-fixes-YYYYMMDD.md`
-Include both code compliance issues and security requiredFixes.
-
-### Step 7: Execute Fixes
+### Step 6: Execute Fixes
 
 Invoke task-executor using Agent tool:
 - `subagent_type`: "dev-workflows:task-executor"
 - `description`: "Execute review fixes"
-- `prompt`: "Task file: docs/plans/tasks/review-fixes-YYYYMMDD.md. Apply staged fixes (stops at 5 files)."
+- `prompt`: "Apply these approved code-side findings directly: [findings with IDs, governing sources, smallest correction, affected paths, and observable verification condition]. Keep the change within the approved routes and stated total size budget."
 
-### Step 8: Quality Check
+### Step 7: Quality Check
 
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows:quality-fixer"
 - `description`: "Quality gate check"
-- Pass Step 7 `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
+- Pass Step 6 `filesModified` and `mutationEvidence`.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
-### Step 9: Re-validate code-reviewer
+### Step 8: Re-validate code-reviewer
 
 Invoke code-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:code-reviewer"
 - `description`: "Re-validate compliance"
-- `prompt`: "Re-validate Design Doc compliance after fixes. Prior compliance issues: $STEP_2_OUTPUT. Verify each prior issue is resolved (whether resolved code-side or design-side)."
+- `prompt`: "Re-validate Design Doc compliance after fixes. Design Doc: [path]. Implementation files: [file list]. prior_feedback: [{id, disposition, correction?, reason?, evidence}]. Review the current state normally, then reconcile every prior item."
 
-### Step 10: Re-validate security-reviewer
+### Step 9: Re-validate security-reviewer
 
 Invoke security-reviewer using Agent tool (only if security fixes were applied):
 - `subagent_type`: "dev-workflows:security-reviewer"
 - `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. Prior findings: $STEP_3_OUTPUT."
+- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. prior_feedback: [{id, disposition, correction?, reason?, evidence}]. Review the current state normally, then reconcile every prior item."
 
-### Step 11: Final Cleanup and Report
+Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Route new `apply` findings through their approved design-side or code-side path and repeat the affected verification; stop for unresolved `user_decision_required`; proceed when each result is approved or every actionable finding is `decline`.
 
-Delete the review-fix task file this recipe created (if any). Its work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
+### Step 10: Final Report
 
-- Delete `docs/plans/tasks/review-fixes-YYYYMMDD.md` if it exists
-
-If the file cannot be deleted (filesystem error), report the failure but do not block the final report.
-
-Then present the final report:
+Present the final report:
 
 ```
 Code Compliance:
@@ -191,8 +177,6 @@ Security Review:
 
 Remaining issues:
 - [items requiring manual intervention]
-
-Cleanup: review-fixes task file removed
 ```
 
 ## Auto-fixable Items (code-side path)

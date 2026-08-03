@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Full-cycle implementation management (Requirements Analysis → Design → Planning → Implementation → Quality Assurance)
 
@@ -12,8 +13,13 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
+
 **Execution Protocol**:
-1. **Delegate all work through Agent tool** — invoke sub-agents, pass deliverable paths between them, and report results (permitted tools: see subagents-orchestration-guide "Orchestrator's Permitted Tools")
+1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
@@ -52,6 +58,8 @@ When continuing existing flow, verify:
 - Invoke next sub-agent defined in flow
 
 ### After requirement-analyzer [Stop]
+
+Execute Skill: requirement-convergence before running the hearing protocol.
 
 Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
 
@@ -102,9 +110,12 @@ Escalate when the required fix or investigation falls outside that scope.
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `needs_revision` → Return to step 1 with `requiredFixes`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
+     - `needs_revision` → Apply the Review Resolution Gate
+       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
+       - every actionable finding is `decline` → Proceed to step 3
+       - any unresolved `user_decision_required` finding → Escalate to user
    - Otherwise → Proceed to step 3
 3. quality-fixer → Pass `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); run quality checks and fixes
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -139,9 +150,7 @@ After acceptance-test-generator execution, when invoking work-planner (subagent_
 - Generated fixture-e2e test file path or null (from `generatedFiles.fixtureE2e`)
 - Generated service-integration-e2e test file path or null (from `generatedFiles.serviceE2e`)
 - Per-lane E2E absence reason (from `e2eAbsenceReason.fixtureE2e` and `e2eAbsenceReason.serviceE2e`, when each lane is null)
-- Explicit note: integration tests are created simultaneously with implementation, fixture-e2e tests are created alongside the UI feature phase, service-integration-e2e tests are executed only in the final phase
 
 ## Execution Method
 
-All work is executed through sub-agents.
-Sub-agent selection follows subagents-orchestration-guide skill.
+Deliverable production is executed through the specialist selected by subagents-orchestration-guide; workflow decisions and returned-result validation remain with the orchestrator.

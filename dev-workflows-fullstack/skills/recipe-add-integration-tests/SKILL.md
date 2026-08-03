@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Test addition workflow for existing implementations (backend, frontend, or fullstack)
 
@@ -12,13 +13,17 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator."
 
-**First Action**: Register Steps 0-8 using TaskCreate before any execution.
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Why Delegate**: Orchestrator's context is shared across all steps. Direct implementation consumes context needed for review and quality check phases. Task files create context boundaries. Subagents work in isolated context.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
+
+**First Action**: Register Steps 1-7 using TaskCreate before any execution.
+
+**Why Delegate**: Orchestrator's context is shared across all steps. Direct implementation consumes context needed for review and quality check phases. Subagents work in isolated context.
 
 **Execution Method**:
 - Skeleton generation → delegate to acceptance-test-generator
-- Task file creation → orchestrator creates directly (minimal context usage)
 - Test implementation → delegate to task-executor
 - Test review → delegate to integration-test-reviewer
 - Quality checks → delegate to quality-fixer
@@ -31,10 +36,6 @@ Document paths: $ARGUMENTS
 - Existing implementation to test
 
 ## Execution Flow
-
-### Step 0: Execute Skill
-
-Execute Skill: documentation-criteria (for task file template in Step 3)
 
 ### Step 1: Discover and Validate Documents
 
@@ -71,106 +72,66 @@ Invoke acceptance-test-generator using Agent tool:
 
 **Expected output**: `generatedFiles` containing integration and e2e paths
 
-### Step 3: Create Task Files [GATE]
+### Step 3: Test Implementation
 
-Create one task file per layer, using the monorepo-flow.md naming convention for deterministic agent routing:
-- Backend skeletons exist → `docs/plans/tasks/integration-tests-backend-task-YYYYMMDD.md`
-- Frontend skeletons exist → `docs/plans/tasks/integration-tests-frontend-task-YYYYMMDD.md`
-- Single-layer (no backend/frontend distinction) → `docs/plans/tasks/integration-tests-backend-task-YYYYMMDD.md`
-
-**Template** (per task file):
-```markdown
----
-name: Implement [layer] integration tests for [feature name]
-type: test-implementation
----
-
-## Objective
-
-Implement test cases defined in skeleton files.
-
-## Target Files
-
-- Skeleton: [layer-specific paths from Step 2 generatedFiles]
-- Design Doc: [layer-specific Design Doc from Step 1]
-
-## Tasks
-
-- [ ] Implement each test case in skeleton
-- [ ] Verify all tests pass
-- [ ] Ensure coverage meets requirements
-
-## Acceptance Criteria
-
-- All skeleton test cases implemented
-- All tests passing
-- quality-fixer reports approved
-```
-
-**Output**: "Task file(s) created at [path(s)]. Ready for Step 4."
-
-### Step 4: Test Implementation
-
-For each task file from Step 3, record the current HEAD as `diffBase`, then invoke task-executor routed by filename pattern (per monorepo-flow.md):
-- `*-backend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor"
-- `*-frontend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor-frontend"
+For each layer with generated skeletons, record the current HEAD as `diffBase`, then invoke the layer's task-executor:
+- Backend or single-layer → `subagent_type`: "dev-workflows-fullstack:task-executor"
+- Frontend → `subagent_type`: "dev-workflows-fullstack:task-executor-frontend"
 - `description`: "Implement integration tests"
-- `prompt`: "Task file: [task file path from Step 3]. Implement tests following the task file."
+- `prompt`: "Implement every test defined by these generated skeletons: [layer-specific Step 2 paths]. Governing documents: [layer-specific Design Doc and UI Spec when present]. Keep changes within the generated tests and the setup or fixture files they require. Verify the implemented tests against the skeleton claims."
 
-Execute one task file at a time through Steps 4→5→6→7 before starting the next.
+Execute one layer at a time through Steps 3→4→5→6→7 before starting the next.
 
-**Expected output**: `status`, `testsAdded`
+**Expected output**: `status`, `filesModified`, `testsAdded`, `mutationEvidence`
 
-### Step 5: Test Review
+Apply this response gate after every task-executor invocation in Steps 3 and 5:
+- `status: completed`, `filesModified` and `testsAdded` are present, and at least one changed integration/E2E path can be identified from the cumulative response paths against `diffBase` → Proceed to Step 4
+- `status: escalation_needed` → Escalate to the user
+- Any other status, or a response missing the required fields above → Stop and report the invalid or missing fields
+
+### Step 4: Test Review
 
 Invoke integration-test-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:integration-test-reviewer"
 - `description`: "Review test quality"
-- `prompt`: "Review test quality. changedTestFiles: [integration/E2E paths in Step 4 filesModified or testsAdded that differ from diffBase]. diffBase: [revision recorded before Step 4]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles matching current task's layer]. taskFile: [current task file]. mutationEvidence: [Step 4 mutationEvidence]."
+- `prompt`: "Review test quality. changedTestFiles: [integration/E2E paths in Step 3 filesModified or testsAdded that differ from diffBase]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
 
-**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `requiredFixes`
+**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`, `requiredFixes`
 
-### Step 6: Apply Review Fixes
+### Step 5: Apply Review Fixes
 
-Check Step 5 result:
-- `status: approved` → Mark complete, proceed to Step 7
-- `status: needs_revision` → Invoke task-executor with requiredFixes, then return to Step 5
+Check Step 4 result:
+- `status: approved` → Mark complete, proceed to Step 6
 - `status: blocked` → Escalate to user
+- `status: needs_revision` → Apply the Review Resolution Gate
+  - one or more `apply` findings → Invoke task-executor with those findings, apply the executor response gate above, then return to Step 4 with `prior_feedback`
+  - every actionable finding is `decline` → Mark review complete and proceed to Step 6
+  - any unresolved `user_decision_required` finding → Escalate to user
 
-Invoke task-executor routed by task filename pattern:
-- `*-backend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor"
-- `*-frontend-task-*` → `subagent_type`: "dev-workflows-fullstack:task-executor-frontend"
+Invoke the same layer's task-executor:
 - `description`: "Fix review findings"
-- `prompt`: "Fix the following issues in test files: [requiredFixes from Step 5]"
+- `prompt`: "Fix these adjudicated test-review findings directly: [apply findings with IDs, governing basis, smallest correction, affected paths, and observable verification condition]."
 
-### Step 7: Quality Check
+### Step 6: Quality Check
 
-Invoke quality-fixer routed by task filename pattern:
-- `*-backend-task-*` → `subagent_type`: "dev-workflows-fullstack:quality-fixer"
-- `*-frontend-task-*` → `subagent_type`: "dev-workflows-fullstack:quality-fixer-frontend"
+Invoke quality-fixer for the current layer:
+- Backend or single-layer → `subagent_type`: "dev-workflows-fullstack:quality-fixer"
+- Frontend → `subagent_type`: "dev-workflows-fullstack:quality-fixer-frontend"
 - `description`: "Final quality assurance"
-- Pass Step 4 `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task).
+- Pass the latest executor's `filesModified` and `mutationEvidence`.
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
 **Expected output**: `status` (approved/stub_detected/blocked)
 
 Check quality-fixer response:
-- `stub_detected` → Return to Step 4 with `incompleteImplementations[]` details, then re-execute Steps 4→5→6→7
+- `stub_detected` → Return to Step 3 with `incompleteImplementations[]` details, then re-execute Steps 3→4→5→6
 - `blocked` → Escalate to user
-- `approved` → Proceed to Step 8
+- `approved` → Proceed to Step 7
 
-### Step 8: Commit
+### Step 7: Commit
 
 On `approved` from quality-fixer:
 - Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
-
-### Step 9: Final Cleanup
-
-After all task files have been processed and committed, delete the task files this recipe created. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
-
-- Delete every file matching `docs/plans/tasks/integration-tests-backend-task-*.md` and `docs/plans/tasks/integration-tests-frontend-task-*.md` created during this run
-
-If task files cannot be deleted (filesystem error), report the failure but do not block completion.
 
 ## Scope Boundary for Subagents
 

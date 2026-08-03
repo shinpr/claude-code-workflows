@@ -28,7 +28,7 @@ Judgment rules per field: [references/criteria.md](references/criteria.md).
 
 ## Hearing Protocol
 
-Eliciting requires user interaction, so the orchestrator owns it. It runs after the analysis that produced the scope facts, because the orchestrator investigates nothing itself.
+Eliciting and judging the convergence fields require user interaction, so the orchestrator owns them. The hearing runs after the specialist analysis that produced the scope facts; production of that investigation output remains with the specialist.
 
 Register these steps before starting and record each step's evidence as it completes:
 

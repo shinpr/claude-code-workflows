@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Diagnosis flow to identify root cause and present solutions
 
@@ -12,7 +13,9 @@ Target problem: $ARGUMENTS
 
 ## Orchestrator Definition
 
-**Core Identity**: "I am not a worker. I am an orchestrator."
+**Core Identity**: "I am an orchestrator."
+
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
 **Execution Method**:
 - Investigation → performed by investigator
@@ -232,4 +235,3 @@ Rationale: [Selection rationale]
 - [ ] Executed solver
 - [ ] Achieved coverageAssessment=sufficient (or obtained user approval after 2 additional iterations)
 - [ ] Presented final report to user
-

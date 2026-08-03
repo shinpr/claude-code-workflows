@@ -5,6 +5,7 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
+Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: Dedicated to the frontend design phase.
 
@@ -12,15 +13,20 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
 
+**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist. The scope bootstrap locates seed files; the named specialists own semantic investigation and artifact authorship.
+
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
+
 **Execution Protocol**:
-1. **Delegate all work** to sub-agents — your role is to invoke sub-agents, pass data between them, and report results. The one exception is the Step 1 scope bootstrap, a recipe-local orchestrator task limited to locating seed files.
+1. **Invoke named specialists for deliverable production** — pass data between them and validate their results. Step 1 is a recipe-local read-only scope bootstrap limited to locating seed files.
 2. **Run the frontend design flow below in order** (this recipe covers medium/large frontend):
    - Execute: scope bootstrap → codebase-analyzer → [Stop: Scope confirmation] → external resource hearing → ui-analyzer → ui-spec-designer → technical-designer-frontend → code-verifier → document-reviewer → design-sync
    - ui-spec-designer, code-verifier, and design-sync apply when the design output is a Design Doc; all are skipped for ADR-only
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when design documents receive approval
 
-**subagents-orchestration-guide usage**: Reference the guide only for orchestration principles (Delegation Boundary, Decision precedence, permitted tools), the Scale Determination table, and handoff contracts HC-02 onward. This recipe defines its own start order and subagent prompts. The guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Call Examples do not apply to this recipe.
+**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, Execution Boundary), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
 
 **CRITICAL**: Execute document-reviewer, design-sync (for Design Docs), and all stopping points — each serves as a quality gate. Skipping any step risks undetected inconsistencies.
 
@@ -87,7 +93,9 @@ Invoke codebase-analyzer with its existing schema. The orchestrator constructs `
 ### Step 3: Scope Confirmation
 After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
 
-First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. This recipe has no requirement-analyzer, so the orchestrator both elicits and judges the fields, recording the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). `cost` does not apply here: the orchestrator cannot search the repository, and entering this recipe already decided to design. Carry that object into Steps 6 and 7 so ui-spec-designer respects the non-goals and technical-designer-frontend persists it to the Design Doc.
+Execute Skill: requirement-convergence before running the hearing protocol.
+
+First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. In this flow, the orchestrator elicits and judges the fields and records the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). Treat `cost` as already resolved because semantic repository investigation is assigned to codebase-analyzer and ui-analyzer and entering this recipe decided to design. Carry that object into Steps 6 and 7 so ui-spec-designer respects the non-goals and technical-designer-frontend persists it to the Design Doc.
 
 Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
 - **Target files/modules**: `analysisScope.filesAnalyzed` and the modules they belong to
@@ -106,6 +114,8 @@ After the user confirms the scope, count the confirmed target files and set the 
 **[STOP]**: Wait for the user's choice before proceeding.
 
 ### Step 4: External Resource Hearing
+Execute Skill: external-resource-context before running the hearing protocol.
+
 Run the hearing protocol per the external-resource-context skill (frontend domain). The orchestrator owns this step because it requires AskUserQuestion. The skill defines file-existence branching, two-phase hearing (structured axes + self-declaration), and persistence to `docs/project-context/external-resources.md`.
 
 ### Step 5: UI Fact Gathering
@@ -140,6 +150,7 @@ Then create the UI Specification:
   - Example (no PRD): `prompt: "Create UI Spec from these requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope: [Step 3 confirmed scope]. ui_analysis: [JSON from Step 5 ui-analyzer]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/."`
 - Invoke **document-reviewer** to verify UI Spec
   - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "UI Spec review"`, `prompt: "doc_type: UISpec target: [ui-spec path] Review for consistency and completeness"`
+- Apply the Review Resolution Gate before presenting the UI Spec. If corrections are applied, re-run document-reviewer with `prior_feedback`.
 - **[STOP]**: Present UI Spec for user approval
 
 ### Step 7: Design Document Creation Phase
@@ -150,14 +161,21 @@ Pass the Step 2 codebase-analyzer output and the Step 5 ui-analyzer output to te
 - **(Design Doc only)** Invoke **code-verifier** to verify Design Doc against existing code. Skip for ADR.
   - `subagent_type: "dev-workflows-frontend:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
 - **(Design Doc only)** Invoke **document-reviewer** to verify consistency, completeness, and adopted design validity
+  - Treat the preceding code-verifier result as `code_verification` evidence; the document-reviewer result controls correction routing.
   - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "Design Doc review"`, `prompt: "Review [Design Doc path] for consistency, completeness, and adopted design validity. doc_type: DesignDoc. review_context: creation. requirements_verbatim: [user requirements verbatim]. confirmed_decisions: [Step 3 confirmed scope and user answers]. codebase_analysis: [codebase-analyzer JSON from Step 2]. ui_analysis: [ui-analyzer JSON from Step 5]. code_verification: [code verification output from this step]"`
+  - Apply the Review Resolution Gate. When `apply` findings change the Design Doc, invoke technical-designer-frontend in update mode, then re-run code-verifier and document-reviewer with `prior_feedback`.
 - **(ADR only)** Invoke **document-reviewer** to verify consistency and completeness
   - `subagent_type: "dev-workflows-frontend:document-reviewer"`, `description: "ADR review"`, `prompt: "Review [ADR path] for consistency and completeness. doc_type: ADR. codebase_analysis: [codebase-analyzer JSON from Step 2]. ui_analysis: [ui-analyzer JSON from Step 5]"`
+  - Apply the Review Resolution Gate. When `apply` findings change the ADR, invoke technical-designer-frontend in update mode and re-run document-reviewer with `prior_feedback`.
 
 ### Step 8: Design Consistency Verification
 - **(Design Doc only)** Invoke **design-sync** using Agent tool. Skip for ADR-only.
   - `subagent_type: "dev-workflows-frontend:design-sync"`, `description: "Design consistency check"`, `prompt: "Check consistency across all Design Docs in docs/design/. Report conflicts and overlaps."`
-- **[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval
+  - Apply the Review Resolution Gate to every reported conflict.
+    - One or more `apply` findings → invoke the named technical designer for each affected Design Doc; re-run code-verifier and document-reviewer for each modified document with the latest verification and `prior_feedback`, then re-run design-sync
+    - Every actionable conflict is `decline` → proceed to the approval stop
+    - Any unresolved `user_decision_required` conflict → stop for user input
+- **[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval. For an approved ADR, invoke technical-designer-frontend in update mode to set its status to `Accepted` and verify the update before completion
 
 ## Completion Criteria
 
@@ -172,10 +190,10 @@ Pass the Step 2 codebase-analyzer output and the Step 5 ui-analyzer output to te
 - [ ] Executed code-verifier on Design Doc and passed results to document-reviewer (skip for ADR-only)
 - [ ] Executed document-reviewer and addressed feedback
 - [ ] Executed design-sync for consistency verification (skip for ADR-only)
-- [ ] Obtained user approval for design document
+- [ ] Obtained user approval for the design document and verified an approved ADR has status `Accepted`
 
 ## Output Example
 Frontend design phase completed.
-- UI Specification: docs/ui-spec/[feature-name]-ui-spec.md
+- UI Specification: docs/ui-spec/[feature-name]-ui-spec.md or N/A — ADR-only
 - Design document: docs/design/[document-name].md or docs/adr/[document-name].md
 - Approval status: User approved
