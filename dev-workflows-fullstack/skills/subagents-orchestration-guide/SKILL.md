@@ -17,12 +17,7 @@ requirement-analyzer returns a `convergence` object. Run the requirement-converg
 
 ### Requirement Change Detection During Flow
 
-**During flow execution**, monitor user responses for scope-expanding signals:
-- Mentions of new features/behaviors (additional operation methods, display on different screens, etc.)
-- Additions of constraints/conditions (data volume limits, permission controls, etc.)
-- Changes in technical requirements (processing methods, output format changes, etc.)
-
-**When any signal is detected → Re-run requirement-analyzer with integrated requirements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate. Preserve earlier outputs that remain valid.**
+Treat new or changed behaviors, constraints, or technical requirements as requirement changes. Re-run requirement-analyzer with the initial and additional requirements as complete labeled statements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate while preserving outputs that remain valid.
 
 ## Orchestration Principles
 
@@ -40,11 +35,6 @@ The orchestrator passes **what to accomplish** and **where to work**. Each speci
 - Execution order and tool flags
 - Which files to inspect or modify within the given scope
 
-| | Bad (orchestrator prescribes how) | Good (orchestrator passes what) |
-|---|---|---|
-| quality-fixer | "Run these checks: 1. lint 2. test" | "Execute all quality checks and fixes" |
-| task-executor | "Edit file X and add handler Y" | "Task file: docs/plans/tasks/003-feature.md" |
-
 **Decision precedence when outputs conflict**:
 1. User instructions (explicit requests or constraints)
 2. Task files and design artifacts (Design Doc, PRD, work plan)
@@ -61,18 +51,12 @@ Apply `references/review-resolution.md` to actionable deliverable-review finding
 
 ### Task Assignment with Responsibility Separation
 
-Assign work based on each subagent's responsibilities:
+| Specialist | Responsibility |
+|---|---|
+| task-executor | Implement scoped work and tests, and confirm added tests pass; leave whole-repository quality assurance to the quality-fixer. |
+| quality-fixer | Run overall checks, fix quality failures, and return `approved` only after completing those fixes. |
 
-**What to delegate to task-executor**:
-- Implementation work and test addition
-- Confirmation of added tests passing (existing tests are not covered)
-- Delegate quality assurance exclusively to quality-fixer (or quality-fixer-frontend for frontend tasks)
-
-**What to delegate to quality-fixer**:
-- Overall quality assurance (static analysis, style check, all test execution, etc.)
-- Complete execution of quality error fixes
-- Self-contained processing until fix completion
-- Final approved judgment (only after fixes are complete)
+For frontend work, substitute task-executor-frontend and quality-fixer-frontend; in fullstack work, select them by task layer.
 
 ## Constraints Between Subagents
 
@@ -138,39 +122,25 @@ Construct the prompt from the agent's Input Parameters section and the deliverab
 
 Two additional rules:
 - Subagents see only the Agent prompt and files they read. Include required paths, prior JSON, parameters, and scope constraints explicitly.
-- Replace every `[placeholder]` in examples below with concrete values before invoking the Agent tool.
+- Resolve every placeholder in workflow prompt templates before invoking the Agent tool.
 
-### Call Example (requirement-analyzer)
-- subagent_type: "requirement-analyzer"
-- description: "Requirement analysis"
-- prompt: "Requirements: [user requirements]. Context: [any relevant context]. Perform requirement analysis and scale determination."
-- On re-invocation after the convergence hearing, append: "Hearing answers: [the user's answers per convergence field]. Re-judge the convergence record with these answers."
+### Agent-Specific Prompt Content
 
-### Call Example (codebase-analyzer)
-- subagent_type: "codebase-analyzer"
-- description: "Codebase analysis"
-- prompt: "requirement_analysis: [JSON from requirement-analyzer]. prd_path: [path if exists]. requirements: [original user requirements]. Analyze the existing codebase and produce design guidance."
-
-### Call Example (ui-analyzer)
-- subagent_type: "ui-analyzer"
-- description: "UI fact gathering"
-- prompt: "requirement_analysis: [JSON from requirement-analyzer]. requirements: [original user requirements]. ui_spec_path: [path if exists]. target_components: [list if focused]. Read docs/project-context/external-resources.md, fetch external UI sources via the declared access methods (MCP / URL / file), and analyze the existing UI codebase. Output the consolidated UI fact JSON."
-
-When invoked alongside codebase-analyzer for frontend or fullstack-frontend work, run both agents in parallel and pass both JSON outputs to consumers (ui-spec-designer for the design phase; technical-designer-frontend for the Design Doc phase).
-
-### Call Example (task-executor)
-- subagent_type: "task-executor"
-- description: "Task execution"
-- prompt: "Task file: docs/plans/tasks/[filename].md Please complete the implementation"
+| Specialist | Required prompt content |
+|---|---|
+| requirement-analyzer | User requirements and relevant context; on re-invocation, add the hearing answers per `convergence` field and request re-judgment. |
+| codebase-analyzer | `requirement_analysis`, optional `prd_path`, and original requirements. |
+| ui-analyzer | `requirement_analysis`, original requirements, optional UI Spec and target components, plus the external-resource context path and declared access methods. Run it in parallel with codebase-analyzer for frontend work; pass both outputs to ui-spec-designer for the UI Spec phase and technical-designer-frontend for the Design Doc phase. |
+| task-executor | The task file path when one exists; otherwise the direct scope, governing sources, target paths, and observable verification condition. |
 
 ## Structured Response Specification
 
 Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **requirement-analyzer**: scale, confidence, affectedLayers, adrRequired, scopeDependencies, questions, convergence (fields with readiness labels; a field below `ready` returns as a `convergence` question)
-- **codebase-analyzer**: analysisScope.categoriesDetected, dataModel.detected, qualityAssurance (mechanisms[], domainConstraints[]), focusAreas[], existingElements count, limitations
-- **ui-analyzer**: analysisScope.uiConventions, externalResources (designOrigin/designSystem/guidelines/visualVerification with fetch_status), componentStructure[], propsPatterns[], cssLayout[], stateDisplay[], displayConditions[], i18n, accessibility[], generatedArtifacts[], focusAreas[] (raw fact_id; consumers apply `ui:` prefix when merging with codebase analysis facts), candidateWriteSet[] (with confidence labels), limitations
+- **codebase-analyzer**: pass its full JSON unchanged; HC-02 defines the fields consumed downstream
+- **ui-analyzer**: pass its full JSON unchanged with raw `fact_id` values; the consumer applies the `ui:` prefix when merging with codebase facts
 - **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
-- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), testsAdded, requiresTestReview
+- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), changeSummary, testsAdded, requiresTestReview
 - **quality-fixer**: Input: optional `task_file`, plus the executor's `filesModified` and `mutationEvidence`; pass `qualityCommand` only when the caller or task supplies one. Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
 - **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
@@ -180,48 +150,28 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 
 ## Handling Requirement Changes
 
-### Handling Requirement Changes in requirement-analyzer
-requirement-analyzer follows the "completely self-contained" principle and processes requirement changes as new input.
+Use create mode for initial documents. For requirement-driven revisions, invoke the owning document specialist in `update` mode and add history:
 
-#### How to Integrate Requirements
-
-**Important**: To maximize accuracy, integrate requirements as complete sentences, including all contextual information communicated by the user. Result format: raw concatenation of all requirements, followed by a labeled summary (`Initial requirement: …` / `Additional requirement: …`).
-
-### Update Mode for Document Generation Agents
-Document generation agents (work-planner, technical-designer, prd-creator) can update existing documents in `update` mode.
-
-- **Initial creation**: Create new document in create (default) mode
-- **On requirement change**: Edit existing document and add history in update mode
-
-Criteria for timing when to call each agent:
-- **work-planner**: Request updates only before execution
-- **technical-designer**: Request updates according to design changes → Execute document-reviewer for consistency check
-- **prd-creator**: Request updates according to requirement changes → Execute document-reviewer for consistency check
-- **document-reviewer**: Always execute before user approval after PRD/ADR/Design Doc creation/update, and after Work Plan creation/update at Medium/Large scale (Small uses a simplified plan with no semantic review — no Design Doc to trace against)
+- **work-planner**: update only before execution
+- **technical-designer / prd-creator**: update affected documents, then invoke document-reviewer
+- **document-reviewer**: run before user approval after PRD/ADR/Design Doc changes and after Medium/Large Work Plan changes; Small plans require no semantic review
 
 ## Basic Flow: Planning and Implementation
-
-Always start with requirement-analyzer, hold the requirement-convergence hearing on its output, then select the minimum planning flow required by scale and affected layers.
 
 ### Planning flow (per scale)
 
 | Scale | Planning flow (ends at task-decomposer for Medium/Large; ends at work-planner for Small) |
 |-------|---------------|
-| Large | requirement-analyzer → PRD → PRD review → external resource hearing → optional ADR → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
+| Large | requirement-analyzer → PRD → PRD review → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
 | Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
 | Small | requirement-analyzer → work-planner |
 
-The requirement-convergence hearing follows requirement-analyzer in every flow. Both it and the external resource hearing run in the orchestrator (they require AskUserQuestion). ui-analyzer joins codebase-analyzer in parallel only when the work has a frontend surface; for backend-only work the planning flow uses codebase-analyzer alone.
+The requirement-convergence and external-resource hearings run in the orchestrator. Run ui-analyzer and codebase-analyzer in parallel only for frontend surfaces.
 
-After the planning flow completes and the user grants batch approval, implementation proceeds. An optional readiness preflight may verify verification lanes, fixtures, and the E2E environment before execution; its caller initiates that preflight separately from this guide.
-
-Then execute the task execution cycle: `task-executor → quality-fixer → commit` for each task. See "Autonomous Execution Mode" below for full per-task details. At Small scale this cycle still applies — implementation runs through `task-executor`, not orchestrator-direct edits.
-
-Each agent name in the chain is invoked via the Agent tool (per "Orchestrator's Permitted Tools" above).
+After batch approval, enter the autonomous cycle below. Small-scale implementation also runs through task-executor.
 
 Rules:
-- Large scale requires PRD before Design Doc creation
-- Frontend/fullstack flows add UI Spec before Design Doc creation
+- Frontend/fullstack flows that produce a Design Doc complete the UI Spec first; ADR-only flows skip the UI Spec
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
@@ -229,71 +179,28 @@ Rules:
 
 ## Autonomous Execution Mode
 
-### Pre-Execution Environment Check
+### Pre-Execution Gate
 
-**Principle**: Verify subagents can complete their responsibilities
+Verify commit capability before autonomous mode. Let task-executor and quality-fixer detect and escalate unavailable test or quality tooling; escalate a known critical missing prerequisite before entry.
 
-**Required environments**:
-- Commit capability (for per-task commit cycle)
-- Quality check tools (quality-fixer will detect and escalate if missing)
-- Test runner (task-executor will detect and escalate if missing)
+Batch approval authorizes task-executor implementation and quality-fixer corrections until completion or escalation.
 
-**If critical environment unavailable**: Escalate with specific missing component before entering autonomous mode
-**If detectable by subagent**: Proceed (subagent will escalate with detailed context)
-
-### Authority Delegation
-
-**After environment check passes**:
-- Batch approval for entire implementation phase delegates authority to subagents
-- task-executor: Implementation authority (can use Edit/Write)
-- quality-fixer: Fix authority (automatic quality error fixes)
-
-### Definition of Autonomous Execution Mode
+### Autonomous Execution Summary
 After "batch approval for entire implementation phase" with work-planner, autonomously execute the following processes without human approval:
 
 ```mermaid
 graph TD
-    START[Batch approval for entire implementation phase] --> AUTO[Start autonomous execution mode]
-    AUTO --> TD[task-decomposer: Task materialization]
-    TD --> LOOP[Task execution loop]
-    LOOP --> TE[task-executor: Implementation]
-    TE --> ESCJUDGE{Escalation judgment}
-    ESCJUDGE -->|escalation_needed/blocked| USERESC[Escalate to user]
-    ESCJUDGE -->|requiresTestReview: true| ITR[integration-test-reviewer]
-    ESCJUDGE -->|No issues| QF
-    ITR -->|needs_revision| ITRR[Orchestrator: Review Resolution]
-    ITRR -->|apply findings| TE
-    ITRR -->|resolved without apply| QF
-    ITRR -->|user decision required| USERESC
-    ITR -->|approved| QF
-    ITR -->|blocked| USERESC
-    QF[quality-fixer: Quality check and fixes] --> QFJUDGE{quality-fixer result}
-    QFJUDGE -->|stub_detected| TE
-    QFJUDGE -->|approved| COMMIT[Orchestrator: Execute git commit]
-    QFJUDGE -->|blocked| USERESC
-    COMMIT --> CHECK{Any remaining tasks?}
-    CHECK -->|Yes| LOOP
-    CHECK -->|No| VERIFY[Post-implementation verification]
-    VERIFY --> CV[code-verifier: Governing document consistency check]
-    VERIFY --> SEC[security-reviewer: Security review]
-    CV --> VRESULT{Verification results}
-    SEC --> VRESULT
-    VRESULT -->|All passed| REPORT[Completion report]
-    VRESULT -->|Any failed| VRR[Orchestrator: Review Resolution]
-    VRR -->|apply findings| VFIX[task-executor: Verification fixes]
-    VRR -->|resolved without apply| REPORT
-    VRR -->|user decision required| USERESC
-    VFIX --> QF2[quality-fixer: Quality check]
-    QF2 --> REVERIFY[Re-run both verifiers]
-    REVERIFY --> VRESULT
-    VRESULT -->|blocked| USERESC
-
-    LOOP --> INTERRUPT{User input?}
-    INTERRUPT -->|None| TE
-    INTERRUPT -->|Yes| REQCHECK{Requirement change check}
-    REQCHECK -->|No change| TE
-    REQCHECK -->|Change| STOP[Stop autonomous execution]
-    STOP --> RA[Re-analyze with requirement-analyzer]
+    START[Batch approval] --> TD[task-decomposer]
+    TD --> CYCLE[Per-task 4-step cycle, including commit]
+    CYCLE -->|remaining tasks| CYCLE
+    CYCLE -->|all tasks complete| VERIFY[code-verifier + security-reviewer]
+    CYCLE -->|blocked, escalation, or requirement change| USER[Escalate or re-analyze]
+    VERIFY -->|passed| REPORT[Completion report]
+    VERIFY -->|actionable findings| RR[Review Resolution]
+    RR -->|apply| FIX[task-executor + quality-fixer]
+    FIX --> VERIFY
+    RR -->|all decline| REPORT
+    RR -->|user decision required| USER
 ```
 
 ### Post-Implementation Verification Pass/Fail Criteria
@@ -308,31 +215,21 @@ graph TD
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
 ### Conditions for Stopping Autonomous Execution
-Stop autonomous execution and escalate to user in the following cases:
 
-1. **Escalation from subagent**
-   - When receiving response with `status: "escalation_needed"`
-   - When receiving response with `status: "blocked"`
-
-2. **When requirement change detected**
-   - Any match in requirement change detection checklist
-   - Stop autonomous execution and re-analyze with integrated requirements in requirement-analyzer
-   - Mark affected PRD/UI Spec/ADR/Design Doc/Work Plan/task outputs invalid and resume from the earliest invalidated approval gate; preserve outputs outside the changed requirement's impact
-
-3. **When work-planner update restriction is violated**
-   - Requirement changes after task-decomposer starts require requirement re-analysis and task invalidation
-   - Restart document design only when the re-analysis shows that an approved requirement, contract, data flow, verification strategy, or task boundary changed
-
-4. **When user explicitly stops**
-   - Direct stop instruction or interruption
+| Trigger | Action |
+|---|---|
+| A subagent returns `escalation_needed` or `blocked` | Escalate its concrete details to the user. |
+| Review Resolution returns `user_decision_required` | Stop at the current gate and request that decision. |
+| A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when re-analysis changes an approved requirement, contract, data flow, verification strategy, or task boundary. |
+| The user stops or interrupts | Stop autonomous execution. |
 
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-1. **Execute**: invoke Agent tool (subagent_type: "task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with the task file path when one exists or with the direct scope contract above
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
      - `needs_revision` → Apply Review Resolution
@@ -340,83 +237,54 @@ Stop autonomous execution and escalate to user in the following cases:
        - every actionable finding is `decline` → Proceed to step 3
        - any unresolved `user_decision_required` finding → Escalate to user
    - Otherwise → Proceed to step 3
-3. **Quality-fix**: invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+3. **Quality-fix**: invoke quality-fixer with upstream `filesModified` and `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
-4. **Commit**: execute git commit with Bash after quality-fixer returns `approved`
+4. **Commit**: after quality-fixer returns `approved`, compose the message from `changeSummary` and execute git commit with Bash
 
-### Progress Tracking
+Register overall phases using TaskCreate and update each phase with TaskUpdate as it completes.
 
-Register overall phases using TaskCreate. Update each phase with TaskUpdate as it completes.
+## Handoff Contracts
 
-## Main Orchestrator Roles
+### HC-01: requirement-analyzer → codebase-analyzer
+- Pass: `requirement_analysis` (including `convergence`), `prd_path` (if exists), original user requirements
 
-1. **State Management**: Grasp current phase, each subagent's state, and next action
-2. **Information Bridging**: Data conversion and transmission between subagents
-   - Convert each subagent's output to next subagent's input format
-   - **Always pass deliverables from previous process to next agent**
-   - Extract necessary information from structured responses
-   - Compose commit messages from changeSummary
-   - Explicitly integrate initial and additional requirements when requirements change
+### HC-01b: convergence record → document owner
+- Pass `convergence` from the last requirement-analyzer invocation (or, in flows without one, the orchestrator's own judged record) to whichever agent owns the persisting document
+- **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria`, and `nonGoals` plus `speculative` requirements to `Future / Out of Scope` with origin `user`
+- **technical-designer / technical-designer-frontend**: persists the same to the Design Doc's `Requirement Convergence` when no PRD exists, and always records the fields left `weak-but-explicit` there
+- Pass the record unchanged; a field's readiness label travels with it
 
-   ### Handoff Contracts
+### HC-02: codebase-analyzer → technical-designer
+- Pass: full codebase-analyzer JSON as additional context
+- Required downstream uses:
+  - `focusAreas` → canonical disposition-target list for the Fact Disposition Table
+  - `dataModel`, `dataTransformationPipelines`, `qualityAssurance` → Existing Codebase Analysis / Verification Strategy / Quality Assurance sections
 
-   #### HC-01: requirement-analyzer → codebase-analyzer
-   - Pass: `requirement_analysis` (including `convergence`), `prd_path` (if exists), original user requirements
+### HC-03: technical-designer → code-verifier
+- Pass: Design Doc path (`doc_type: design-doc`)
+- Leave `code_paths` unspecified so code-verifier discovers scope from the document
 
-   #### HC-01b: convergence record → document owner
-   - Pass `convergence` from the last requirement-analyzer invocation (or, in flows without one, the orchestrator's own judged record) to whichever agent owns the persisting document
-   - **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria`, and `nonGoals` plus `speculative` requirements to `Future / Out of Scope` with origin `user`
-   - **technical-designer / technical-designer-frontend**: persists the same to the Design Doc's `Requirement Convergence` when no PRD exists, and always records the fields left `weak-but-explicit` there
-   - Pass the record unchanged; a field's readiness label travels with it
+### HC-04: code-verifier + codebase-analyzer → document-reviewer
+- Pass: `review_context: creation`, `code_verification` JSON, the same `codebase_analysis` JSON previously given to the designer, original user requirements as `requirements_verbatim`, and confirmed scope and user decisions as `confirmed_decisions`
+- Purpose: reviewer validates discrepancy integration, Fact Disposition coverage against `focusAreas`, and Design Convergence against the effective requirements
 
-   #### HC-02: codebase-analyzer → technical-designer
-   - Pass: full codebase-analyzer JSON as additional context
-   - Required downstream uses:
-     - `focusAreas` → canonical disposition-target list for the Fact Disposition Table
-     - `dataModel`, `dataTransformationPipelines`, `qualityAssurance` → Existing Codebase Analysis / Verification Strategy / Quality Assurance sections
+### HC-05: code-verifier → next-layer technical-designer (fullstack only)
+- Defined only for multi-layer fullstack flow in `references/monorepo-flow.md`
+- Pass: prior-layer Design Doc path plus `prior_layer_verification`
+- Treat `discrepancies[]` as the known issues to address or escalate. Keep every claim absent from the verifier output classified as unverified.
 
-   #### HC-03: technical-designer → code-verifier
-   - Pass: Design Doc path (`doc_type: design-doc`)
-   - Leave `code_paths` unspecified so code-verifier discovers scope from the document
+### technical-designer → work-planner
 
-   #### HC-04: code-verifier + codebase-analyzer → document-reviewer
-   - Pass: `review_context: creation`, `code_verification` JSON, the same `codebase_analysis` JSON previously given to the designer, original user requirements as `requirements_verbatim`, and confirmed scope and user decisions as `confirmed_decisions`
-   - Purpose: reviewer validates discrepancy integration, Fact Disposition coverage against `focusAreas`, and Design Convergence against the effective requirements
+Pass the Design Doc path. Work-planner owns the documentation-criteria template scan and Design-to-Plan Traceability; unjustified coverage gaps are errors, and justified gaps require user confirmation before plan approval.
 
-   #### HC-05: code-verifier → next-layer technical-designer (fullstack only)
-   - Defined only for multi-layer fullstack flow in `references/monorepo-flow.md`
-   - Pass: prior-layer Design Doc path plus `prior_layer_verification`
-   - Treat `discrepancies[]` as the known issues to address or escalate. Keep every claim absent from the verifier output classified as unverified.
+### HC-06: acceptance-test-generator → work-planner
 
-   #### technical-designer → work-planner
-
-   **Pass to work-planner**: Design Doc path. Work-planner reads the DD template from documentation-criteria skill, scans all DD sections, and extracts technical requirements in these categories:
-   - **Verification Strategy**: Extracted to work plan header (Correctness Proof Method + Early Verification Point)
-   - **Implementation targets**: Components, functions, or data structures to create or modify
-   - **Connection/switching/registration**: Integration points, dependency wiring, switching methods
-   - **Contract changes and propagation**: Interface changes, data contracts, field propagation across boundaries
-   - **Verification requirements**: Verification methods, test boundaries, integration verification points
-   - **Prerequisite work**: Migration steps, security measures, environment setup
-
-   Work-planner produces a Design-to-Plan Traceability table mapping each extracted item to covering task(s). Items without a covering task must be marked as `gap` with justification. Unjustified gaps are errors. Justified gaps require user confirmation before plan approval.
-
-   #### HC-06: acceptance-test-generator → work-planner
-
-   **Pass to acceptance-test-generator**: Design Doc path; UI Spec path (if exists).
-
-   **Orchestrator verification**: Every non-null `generatedFiles.<lane>` path exists on disk. For each null lane, `e2eAbsenceReason.<lane>` is present (intentional absence, not an error).
-
-   **Pass to work-planner**: integration / fixture-e2e / service-integration-e2e file paths (or null per lane), per-lane absence reasons, plus timing guidance — integration tests are created alongside each phase implementation, fixture-e2e tests are created alongside the UI feature phase, service-integration-e2e tests are executed only in the final phase.
-
-   **On error**: Escalate to user when status != completed and integration file generation failed unexpectedly. A null E2E lane with a valid absence reason is not an error.
-
-3. **ADR Status Management**: Update ADR status after user decision (Accepted/Rejected)
-
-## Important Constraints
-
-Recap (defined above): quality-fixer approval before commit; inter-agent communication is JSON; document-reviewer + user approval before proceeding; check next step against work planning flow after approval; resolve conflicts via Decision precedence.
+- Pass the Design Doc and optional UI Spec paths to acceptance-test-generator.
+- Verify each non-null `generatedFiles.<lane>` path exists and each null lane has `e2eAbsenceReason.<lane>`.
+- Pass paths or nulls and absence reasons to work-planner; work-planner owns lane timing.
+- Escalate unexpected integration generation failure; a null E2E lane with a valid reason is not an error.
 
 ## References
 

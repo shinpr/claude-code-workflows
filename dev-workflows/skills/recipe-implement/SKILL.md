@@ -146,7 +146,6 @@ After acceptance-test-generator execution, when invoking work-planner (subagent_
 - Generated fixture-e2e test file path or null (from `generatedFiles.fixtureE2e`)
 - Generated service-integration-e2e test file path or null (from `generatedFiles.serviceE2e`)
 - Per-lane E2E absence reason (from `e2eAbsenceReason.fixtureE2e` and `e2eAbsenceReason.serviceE2e`, when each lane is null)
-- Explicit note: integration tests are created simultaneously with implementation, fixture-e2e tests are created alongside the UI feature phase, service-integration-e2e tests are executed only in the final phase
 
 ## Execution Method
 

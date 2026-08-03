@@ -24,7 +24,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when design documents receive approval
 
-**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, permitted tools), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Call Examples.
+**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, permitted tools), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
 
 **CRITICAL**: Execute document-reviewer, design-sync (for Design Docs), and all stopping points — each serves as a quality gate. Skipping any step risks undetected inconsistencies.
 
@@ -122,7 +122,7 @@ Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-
     - Every actionable conflict is `decline` → proceed to the approval stop
     - Any unresolved `user_decision_required` conflict → stop for user input
 
-**[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval.
+**[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval. For an approved ADR, invoke technical-designer in update mode to set its status to `Accepted` and verify the update before completion.
 
 ## Completion Criteria
 
@@ -134,7 +134,7 @@ Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-
 - [ ] Executed code-verifier on Design Doc and passed results to document-reviewer (skip for ADR-only)
 - [ ] Executed document-reviewer and addressed feedback
 - [ ] Executed design-sync for consistency verification (skip for ADR-only)
-- [ ] Obtained user approval for design document
+- [ ] Obtained user approval for the design document and verified an approved ADR has status `Accepted`
 
 ## Output Example
 Design phase completed.
