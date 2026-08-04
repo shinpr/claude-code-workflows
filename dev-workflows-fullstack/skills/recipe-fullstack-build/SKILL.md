@@ -40,17 +40,15 @@ Work plan: $ARGUMENTS
 
 Before any task processing, locate the work plan. Resolution rule:
 1. List task files in `docs/plans/tasks/` matching the layer-aware patterns `{plan-name}-backend-task-*.md` and `{plan-name}-frontend-task-*.md` only. Single-layer tasks (`{plan-name}-task-*.md`) are excluded here so a stale single-layer run does not redirect this recipe to the wrong work plan
-2. From the matched files, also exclude `_overview-*.md` (materialization overview files) and `*-phase*-completion.md` (per-phase completion files).
-3. For each remaining file, extract the `{plan-name}` prefix as the segment that appears before `-backend-task-` or `-frontend-task-`
-4. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
-5. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
+2. For each matched file, extract the `{plan-name}` prefix as the segment that appears before `-backend-task-` or `-frontend-task-`
+3. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
+4. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
 
 ### Consumed Task Set
 
 Compute the **Consumed Task Set** for this run — the exact files this recipe owns, executes, and later deletes. Use the same restricted pattern as Work Plan Resolution:
 
 1. List task files in `docs/plans/tasks/` matching the layer-aware patterns `{plan-name}-backend-task-*.md` and `{plan-name}-frontend-task-*.md` for the `{plan-name}` resolved by Work Plan Resolution. Single-layer tasks are excluded
-2. Exclude every file matching `_overview-*.md` or `*-phase*-completion.md`.
 
 Every subsequent reference to "task files" in this recipe — Task Generation Decision Flow, Task Execution Cycle iteration, and Final Cleanup — uses this set, not the unrestricted `docs/plans/tasks/*.md` glob.
 
@@ -62,7 +60,7 @@ Analyze the Consumed Task Set and determine the action required:
 |-------|----------|-------------|
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
 | No tasks + plan exists | Consumed Task Set is empty but the resolved work plan exists | Confirm with user → run task-decomposer |
-| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan). Apply the Review Resolution Gate: update for `apply`, re-review with `prior_feedback`, progress when all actionable findings are `decline`, and escalate unresolved `user_decision_required`; then present the resolved plan for batch approval before task materialization |
+| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan). Run Review Resolution through its correction re-review, escalation, and convergence transitions, using work-planner for rerouted corrections; then present the resolved plan for batch approval before task materialization |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
 ## Task Materialization Phase (Conditional)
@@ -118,10 +116,7 @@ For EACH task, YOU MUST:
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → STOP and escalate to user
-     - `needs_revision` → Apply the Review Resolution Gate
-       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
-       - every actionable finding is `decline` → Proceed to step 3
-       - any unresolved `user_decision_required` finding → STOP and escalate to user
+     - `needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - `readyForQualityCheck: true` → Proceed to step 3
 3. **QUALITY-FIX**: Invoke the layer-appropriate quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -159,8 +154,6 @@ Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail
 Before the completion report, delete the implementation task files this recipe consumed. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
 
 - Delete every file in the Consumed Task Set
-- Delete every file matching `docs/plans/tasks/{plan-name}-phase*-completion.md` (the per-phase completion files generated by task-decomposer for this `{plan-name}`)
-- Delete the corresponding `docs/plans/tasks/_overview-{plan-name}.md` if present
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
 If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.

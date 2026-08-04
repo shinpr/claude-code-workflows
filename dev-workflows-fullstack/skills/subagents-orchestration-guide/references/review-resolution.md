@@ -13,7 +13,7 @@ The orchestrator records one disposition for every actionable finding:
 | Disposition | Use when |
 |---|---|
 | `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, or leave required correctness or verification unsupported. |
-| `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, or other work outside that boundary. |
+| `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, depends on a property outside the reviewer's declared artifact boundary, or concerns other work outside that boundary. |
 | `user_decision_required` | Resolving the finding would change a confirmed product outcome, exclusion, major approved design decision, or requires authority held only by the user. |
 
 A confirmed security risk or governing-source contradiction receives `apply` or `user_decision_required`; cost alone leaves that classification unchanged.
@@ -23,31 +23,42 @@ For each finding record:
 - stable finding ID;
 - disposition;
 - governing basis and concrete evidence;
-- expected effect on the approved outcome or verification;
-- smallest correction when `apply`, or the reason when `decline`.
+- the reason when `decline`.
+
+The disposition controls routing. For `apply`, forward the complete reviewer finding object exactly as returned, preserving every field and value, and add only the `apply` disposition. This verbatim transfer preserves the reviewer's context. The orchestrator does not summarize, excerpt, paraphrase, reinterpret, supplement, or replace any part of the finding. The author or executor determines the correction from the governing sources. When those sources cannot determine a correction that requires user-held authority, assign `user_decision_required` and continue at section 3.
+
+Keep non-actionable reviewer recommendations in the final user report. Only findings with `apply`, and maintained `apply` findings under section 3, enter an author or executor handoff.
 
 ## 2. Revise and Reconsider
 
-Pass `apply` findings to the author or executor. On reviewer re-review, provide `prior_feedback` as an array of `{ id, disposition, correction?, reason?, evidence }`. Re-run factual verifiers against the current artifact and adjudicate their current evidence.
+Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. On reviewer re-review, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
 
-The reviewer reviews the current artifact normally, then reconciles prior feedback:
+The correction assessment covers exactly every received item. The reviewer completes that scope and then:
 
-- mark an applied correction `resolved` when the reviewed condition is satisfied;
-- mark a declined finding `withdrawn` when current evidence and governing sources no longer support it;
-- mark a finding `maintained` when current evidence still supports it, citing that evidence;
-- report optional improvements through the reviewer's existing recommendation or note fields.
+- mark an applied item `resolved` only when current evidence shows that the artifact satisfies the finding without a correction-caused regression in the changed boundary; otherwise mark that item `maintained`, citing current evidence;
+- mark a declined finding `withdrawn` when current evidence and governing sources no longer support it; otherwise mark that item `maintained`, citing current evidence;
+- emit exactly one `prior_feedback_reconciliation` entry for every received ID.
 
-An independent factual verifier may repeat an observed discrepancy. The orchestrator assigns its disposition from governing evidence; a maintained finding cites current or new evidence.
+Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
 ## 3. Converge or Escalate
 
-Escalate when the disposition is `user_decision_required`, user-held authority is needed, an irreversible action awaits authorization, or required inputs are genuinely unusable. Progress after no `apply` findings remain, every other actionable finding has a disposition, and every `user_decision_required` item has a recorded user decision.
+Resolve correction re-review entries by their recorded `prior_disposition`:
+
+- `resolved` and `withdrawn` are complete;
+- `maintained` with `prior_disposition: apply` returns the original finding and the complete reconciliation entry verbatim through the same author or executor path, followed by another correction re-review;
+- `maintained` with `prior_disposition: decline` retains that decline and does not reopen the correction cycle.
+
+Escalate when the same ID with `prior_disposition: apply` returns `maintained` in two consecutive correction re-reviews, the disposition is `user_decision_required`, user-held authority is needed, an irreversible action awaits authorization, or required inputs are genuinely unusable. Progress after no `maintained` entry with `prior_disposition: apply` remains, every other actionable finding has a disposition, and every `user_decision_required` item has a recorded user decision.
 
 Handoffs contain this exact set:
 
-- affected paths;
-- `apply` findings with basis and smallest correction;
-- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation;
-- the observable condition the next review must verify.
+- the original review target identifier;
+- initial reviewer inputs unchanged when re-reviewing;
+- complete `apply` finding objects verbatim, with only their orchestrator dispositions added;
+- the complete reconciliation entry when a maintained `apply` finding returns to its author or executor;
+- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation.
+
+An author handoff contains no other orchestrator-authored semantic content.
 
 The final user report lists every declined actionable finding with its ID, governing reason, and evidence.

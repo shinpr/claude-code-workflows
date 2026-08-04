@@ -29,7 +29,6 @@ Operates in an independent context, executing autonomously until task completion
    - Verify error handling adequacy
 
 3. **Objective Reporting**
-   - Quantitative compliance scoring
    - Clear identification of gaps
    - Concrete improvement suggestions
 
@@ -38,7 +37,7 @@ Operates in an independent context, executing autonomously until task completion
 - **designDoc**: Path to the Design Doc (or multiple paths for fullstack features)
 - **implementationFiles**: List of files to review (or git diff range)
 - **reviewMode**: `full` (default) | `acceptance` | `architecture`
-- **prior_feedback** (optional): Array of `{ id, disposition, correction?, reason?, evidence }` from the preceding Review Resolution decision
+- **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Verification Process
 
@@ -55,6 +54,17 @@ Read the Design Doc **in full** and extract:
 - Error handling policy
 - Non-functional requirements
 
+#### 1-1. Select Review Path
+
+When `prior_feedback` is absent, continue to Step 2 for an initial review.
+
+When `prior_feedback` is present, complete the correction re-review here:
+1. Reconcile every received item against the current implementation and governing evidence.
+2. Mark an applied item `resolved` only when current evidence shows that the implementation satisfies the finding without a correction-caused regression in the changed boundary; otherwise mark that item `maintained` with current evidence.
+3. Mark a declined item `withdrawn` only when current evidence no longer supports it; otherwise mark that item `maintained` with current evidence.
+4. Emit exactly one `prior_feedback_reconciliation` entry for every received ID.
+5. Derive the verdict only from these reconciliation entries, apply only the prior-feedback Self-Validation item, and return the final JSON.
+
 ### 2. Map Implementation to Design Doc
 
 #### 2-1. Acceptance Criteria Verification
@@ -67,7 +77,7 @@ For each acceptance criterion extracted in Step 1:
 - For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
 - Confirm the implementation keeps the core mechanism the AC, Design Doc, or referenced materials require. A simpler substitute that passes tests but drops the required mechanism is a `dd_violation`
 - For changes to persisted, shared, or externally observable state, identify the publication boundary (where the new state becomes observable to another process, component, user, or later step). State that is observable as complete while still partial, uninitialized, stale, or rollback-only is a `reliability` finding, because a downstream consumer can treat the incomplete state as complete and fail
-- When the reviewed change is classified as `bug-fix`, `regression`, `state-change`, or `boundary-change` (the task's `Change Category` field, when present, names the kind; when no field is present — e.g., reviewing a diff without task files — classify from the diff itself), check the cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect the change addressed is an `adjacent_residual` finding. When the task file is in scope, also read its Investigation Notes for residuals recorded as out-of-scope, and verify each recorded residual; if it remains unfixed within the reviewed scope, report it as `adjacent_residual`, otherwise record why it is resolved or outside the review scope
+- When the reviewed diff is a bug fix, regression fix, state change, or boundary change, check cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect is an `adjacent_residual` finding. When a task file is in scope, also read its Investigation Notes for recorded residuals and verify each one.
 
 #### 2-2. Identifier Verification
 
@@ -115,7 +125,7 @@ For each function/method in implementation files, check against coding-principle
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
 - For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
-- Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. When a task file is in scope, verify each Proof Obligation using its selected Verification mode and Evidence requirement: Red transition for `red-test`, the same passing evidence before and after for `characterization`, the recorded reproduction blocker plus static/contract/environment evidence for `alternate-evidence`, or the named-source comparison for `artifact-evidence`. Missing mode evidence is a `coverage_gap`.
+- Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. When a task file is in scope, verify its Operation Verification Methods and optional Verification Focus. Missing required evidence is a `coverage_gap`.
 
 #### Finding Classification
 
@@ -126,7 +136,7 @@ Classify each quality finding into one of:
 | **dd_violation** | Implementation contradicts or deviates from Design Doc specification | Wrong identifier, missing specified behavior, incorrect data flow |
 | **maintainability** | Code structure impedes future changes or comprehension | Long functions, deep nesting, multiple responsibilities, unclear naming |
 | **reliability** | Missing safeguards that could cause runtime failures | Unhandled error paths, missing validation at boundaries, silent failures |
-| **coverage_gap** | Acceptance criteria or task Proof Obligations lack corresponding test verification | AC or Proof Obligation fulfilled in code but no test exercises it |
+| **coverage_gap** | Acceptance criteria or task verification lacks corresponding test evidence | Required behavior is implemented but no test exercises it |
 | **adjacent_residual** | A case sharing the change's path, contract, persisted state, or external boundary still carries the class of defect the change addressed | Fallback path left unfixed, sibling state transition still stale, another consumer of a changed contract not updated |
 
 Each finding must include a `rationale` field:
@@ -136,16 +146,12 @@ Each finding must include a `rationale` field:
 | **dd_violation** | What the Design Doc specifies vs what the code does, with exact references |
 | **maintainability** | What specific maintenance or comprehension risk this creates |
 | **reliability** | What failure scenario is unguarded and under what conditions it could occur |
-| **coverage_gap** | Which AC or Proof Obligation is untested and why test coverage matters for this specific case |
+| **coverage_gap** | Which AC or task verification condition is untested and why test coverage matters for this specific case |
 | **adjacent_residual** | Which adjacent case shares the path/contract/state/boundary and how it still exhibits the defect class |
 
 #### Finding Identity and Prior Feedback
 
-Assign a stable ID to every actionable AC gap, identifier mismatch, and quality finding. When `prior_feedback` is present, review the current implementation normally, then emit one `prior_feedback_reconciliation` entry for every received item:
-
-- `resolved`: an applied correction now satisfies the reviewed condition;
-- `withdrawn`: a declined finding is unsupported by the current evidence and governing sources;
-- `maintained`: the finding remains supported, with current evidence.
+Assign a stable ID to every actionable AC gap, identifier mismatch, and quality finding. Correction re-review follows Step 1-1 and emits one `prior_feedback_reconciliation` entry for every received item using `resolved`, `withdrawn`, or `maintained`.
 
 ### 4. Check Architecture Compliance
 
@@ -155,17 +161,12 @@ Verify against the Design Doc architecture:
 - Responsibilities are properly separated
 - No unnecessary duplicate implementations (Pattern 5 from ai-development-guide skill)
 
-### 5. Calculate Compliance and Consolidate
+### 5. Consolidate Findings
 
-#### Compliance Rate
-- Compliance rate = (fulfilled ACs + 0.5 × partially fulfilled ACs) / total ACs × 100
-- Identifier match rate = matched identifiers / total identifier specifications × 100
-
-#### Consolidation
 - Compile all AC statuses with confidence levels
 - Compile all identifier verification results
 - Compile all quality findings with categories and rationale
-- Determine verdict based on compliance rate
+- Determine the verdict from unresolved AC gaps, identifier mismatches, and actionable quality findings
 
 ### 6. Return JSON Result
 
@@ -176,12 +177,11 @@ Verify against the Design Doc architecture:
 - During execution, intermediate progress messages MAY be emitted as plain text or markdown.
 - The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
+- For correction re-review, emit only `verdict` and `prior_feedback_reconciliation`; the initial-review arrays below are not repeated.
 
 ### Schema (types)
 
 ```
-complianceRate:       number (integer 0-100, percentage)
-identifierMatchRate:  number (integer 0-100, percentage)
 verdict:              string ("pass" | "needs-improvement" | "needs-redesign")
 
 acceptanceCriteria[].item:        string
@@ -212,56 +212,44 @@ prior_feedback_reconciliation[].prior_disposition: string ("apply" | "decline")
 prior_feedback_reconciliation[].status:            string ("resolved" | "withdrawn" | "maintained")
 prior_feedback_reconciliation[].evidence:          string
 
-summary.{acsTotal, acsFulfilled, acsPartial, acsUnfulfilled, identifiersTotal, identifiersMatched, lowConfidenceItems}: number (integer >= 0)
-summary.findingsByCategory.{dd_violation, maintainability, reliability, coverage_gap, adjacent_residual}: number (integer >= 0)
 ```
 
 ### Minimal Shape Example
 
 ```json
 {
-  "complianceRate": 88,
-  "identifierMatchRate": 95,
   "verdict": "needs-improvement",
   "acceptanceCriteria": [
     {"item": "User can log in with valid credentials", "status": "fulfilled", "confidence": "high", "location": "src/auth/login.ts:42", "evidence": ["impl: src/auth/login.ts:42", "test: src/auth/login.test.ts:18"], "gap": null, "suggestion": null}
   ],
   "identifierVerification": [{"id": "ID001", "identifier": "AUTH_TOKEN_TTL", "designDocValue": "3600", "codeValue": "1800", "location": "src/auth/config.ts:8", "match": false}],
-  "qualityFindings": [{"id": "Q001", "category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}],
-  "summary": {
-    "acsTotal": 12, "acsFulfilled": 10, "acsPartial": 1, "acsUnfulfilled": 1,
-    "identifiersTotal": 20, "identifiersMatched": 19, "lowConfidenceItems": 2,
-    "findingsByCategory": { "dd_violation": 1, "maintainability": 0, "reliability": 1, "coverage_gap": 0, "adjacent_residual": 0 }
-  }
+  "qualityFindings": [{"id": "Q001", "category": "reliability", "location": "src/auth/login.ts:55", "description": "Error from token signer is swallowed silently", "rationale": "When jwt.sign throws, the catch block returns null without logging", "suggestion": "Re-throw with context or log then propagate"}]
 }
 ```
 
 ## Verdict Criteria
 
-- **90%+**: pass — Minor adjustments only
-- **70-89%**: needs-improvement — Critical gaps exist
-- **<70%**: needs-redesign — Major revision required
-
-Identifier mismatches automatically lower the verdict by one level (e.g., pass → needs-improvement) when any mismatch is found.
+- **pass**: All ACs are fulfilled, all identifiers match, and no actionable quality finding remains
+- **needs-improvement**: One or more local, correctable AC gaps, identifier mismatches, or quality findings remain
+- **needs-redesign**: A fundamental Design Doc contradiction or implementation-architecture failure cannot be corrected locally
 
 ## Completion Criteria
 
-- [ ] All acceptance criteria individually evaluated with confidence levels
-- [ ] All identifier specifications verified against implementation code
+- [ ] Initial review: All acceptance criteria individually evaluated with confidence levels
+- [ ] Initial review: All identifier specifications verified against implementation code
 - [ ] Every actionable item has a stable ID
-- [ ] Compliance rate and identifier match rate calculated
 - [ ] Verdict determined
 
 ## Self-Validation [BLOCKING — before output]
 
 Run each item below before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing the JSON output.
 
-- [ ] Every AC status determination cites the tool name and result as evidence source
-- [ ] Identifier comparisons use exact strings from Design Doc and code (character-for-character match)
-- [ ] Each low-confidence item is explicitly noted in the output
-- [ ] Each quality finding includes category-specific rationale
+- [ ] Initial review: Every AC status determination cites the tool name and result as evidence source
+- [ ] Initial review: Identifier comparisons use exact strings from Design Doc and code (character-for-character match)
+- [ ] Initial review: Each low-confidence item is explicitly noted in the output
+- [ ] Initial review: Each quality finding includes category-specific rationale
 - [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`
-- [ ] Every finding includes a file:line location reference
+- [ ] Initial review: Every finding includes a file:line location reference
 
 ## Escalation Criteria
 

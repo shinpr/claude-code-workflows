@@ -182,7 +182,7 @@ prompt: |
   Existing PRD: $STEP_2_OUTPUT
 
   ## Adjudicated Findings
-  [apply findings with IDs, governing basis, smallest correction, and affected sections]
+  [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]
 
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
@@ -373,7 +373,7 @@ prompt: |
   Existing Design Doc: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
 
   ## Adjudicated Findings
-  [apply findings with IDs, governing basis, smallest correction, and affected sections]
+  [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]
 
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```

@@ -103,14 +103,11 @@ Invoke integration-test-reviewer using Agent tool:
 Check Step 4 result:
 - `status: approved` → Mark complete, proceed to Step 6
 - `status: blocked` → Escalate to user
-- `status: needs_revision` → Apply the Review Resolution Gate
-  - one or more `apply` findings → Invoke task-executor with those findings, apply the executor response gate above, then return to Step 4 with `prior_feedback`
-  - every actionable finding is `decline` → Mark review complete and proceed to Step 6
-  - any unresolved `user_decision_required` finding → Escalate to user
+- `status: needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; invoke task-executor for rerouted corrections, return to Step 4 for correction re-review, and proceed to Step 6 only at convergence
 
 Invoke the same layer's task-executor:
 - `description`: "Fix review findings"
-- `prompt`: "Fix these adjudicated test-review findings directly: [apply findings with IDs, governing basis, smallest correction, affected paths, and observable verification condition]."
+- `prompt`: "Fix these adjudicated test-review findings directly: [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]."
 
 ### Step 6: Quality Check
 

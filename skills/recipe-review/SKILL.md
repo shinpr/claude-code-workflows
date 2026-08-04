@@ -62,7 +62,7 @@ Invoke security-reviewer using Agent tool:
 
 **If security-reviewer returned `blocked`**: Stop immediately. Report the blocked finding and escalate to user. Do not proceed to fix steps.
 
-Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing; compliance percentages remain diagnostic.
+Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing.
 
 For each `apply` or `user_decision_required` finding, compute a proposed route using the rule below:
 
@@ -75,9 +75,7 @@ For each `apply` or `user_decision_required` finding, compute a proposed route u
 Then present the adjudicated result to the user. Group `apply` and `user_decision_required` findings by proposed route, and list declined IDs with their reasons separately:
 
 ```
-Code Compliance: [complianceRate from code-reviewer]
-  Verdict: [verdict from code-reviewer]
-  Identifier Match Rate: [identifierMatchRate from code-reviewer]
+Code Review: [verdict from code-reviewer]
   Acceptance Criteria:
   - [fulfilled] [item] (confidence: [high/medium/low])
   - [partially_fulfilled] [item]: [gap] — [suggestion] [recommended: c | d]
@@ -118,7 +116,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
    - `subagent_type`: "dev-workflows:document-reviewer"
    - `description`: "Document review of updated Design Doc"
    - `prompt`: "Review updated Design Doc at [path] for consistency and completeness. doc_type: DesignDoc. review_context: update."
-   - Apply the Review Resolution Gate to this result. Route `apply` findings back to technical-designer and re-run document-reviewer with `prior_feedback`; stop for unresolved `user_decision_required`; proceed when the result is approved or every actionable finding is `decline`.
+   - Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions, using technical-designer for rerouted corrections. Proceed only at its convergence condition.
 
 3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
    - `subagent_type`: "dev-workflows:design-sync"
@@ -135,7 +133,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 Invoke task-executor using Agent tool:
 - `subagent_type`: "dev-workflows:task-executor"
 - `description`: "Execute review fixes"
-- `prompt`: "Apply these approved code-side findings directly: [findings with IDs, governing sources, smallest correction, affected paths, and observable verification condition]. Keep the change within the approved routes and stated total size budget."
+- `prompt`: "Apply these approved code-side findings directly: [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]. Keep the change within the approved routes and stated total size budget."
 
 ### Step 7: Quality Check
 
@@ -150,29 +148,31 @@ Invoke quality-fixer using Agent tool:
 Invoke code-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:code-reviewer"
 - `description`: "Re-validate compliance"
-- `prompt`: "Re-validate Design Doc compliance after fixes. Design Doc: [path]. Implementation files: [file list]. prior_feedback: [{id, disposition, correction?, reason?, evidence}]. Review the current state normally, then reconcile every prior item."
+- `prompt`: "Re-validate Design Doc compliance after fixes. Design Doc: [path]. Implementation files: [file list]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every prior item under the reviewer's re-review scope."
 
 ### Step 9: Re-validate security-reviewer
 
 Invoke security-reviewer using Agent tool (only if security fixes were applied):
 - `subagent_type`: "dev-workflows:security-reviewer"
 - `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. prior_feedback: [{id, disposition, correction?, reason?, evidence}]. Review the current state normally, then reconcile every prior item."
+- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [file list]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every prior item under the reviewer's re-review scope."
 
-Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Route new `apply` findings through their approved design-side or code-side path and repeat the affected verification; stop for unresolved `user_decision_required`; proceed when each result is approved or every actionable finding is `decline`.
+Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Follow its `maintained` transitions and repeat the affected verification after a rerouted correction; stop at its escalation conditions; proceed at its convergence condition.
 
 ### Step 10: Final Report
 
 Present the final report:
 
 ```
-Code Compliance:
-  Initial: [X]%
-  Final: [Y]% (if fixes executed)
+Code Review:
+  Initial: [verdict from code-reviewer]
+  Correction review: [verdict for the re-review scope] (if fixes executed)
+  Reconciliation: [resolved / withdrawn / maintained by finding ID]
 
 Security Review:
   Initial: [status]
-  Final: [status] (if fixes executed)
+  Correction review: [status for the re-review scope] (if fixes executed)
+  Reconciliation: [resolved / withdrawn / maintained by finding ID]
   Notes: [notes from approved_with_notes, if any]
 
 Remaining issues:

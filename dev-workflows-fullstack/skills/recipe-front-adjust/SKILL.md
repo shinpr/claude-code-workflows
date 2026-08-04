@@ -14,7 +14,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 **Core Identity**: "I am a guided executor. I run the adjustment and the verification loop myself; subagents handle one-shot tasks."
 
 **Execution Protocol**:
-1. **Delegate to subagents** (one-shot calls): ui-analyzer, work-planner, quality-fixer-frontend.
+1. **Delegate to subagents** (one-shot calls): ui-analyzer, quality-fixer-frontend.
 2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set confirmation, scale judgment, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
@@ -33,11 +33,9 @@ Adjustment request → external resource hearing (parent session, AskUserQuestio
                                   ↓
                      scale judgment on confirmed write set (documentation-criteria matrix)
                                   ↓
-            ┌────────────────────┴────────────────────┐
-            ↓                                          ↓
-   (1-2 files: inline)                  (3-5 files: work-planner subagent → [Stop])
-            ↓                                          ↓
-            └─→ adjustment + verification (parent session) ←──┘
+                     1-2 files: adjustment context → [Stop]
+                                  ↓
+                     adjustment + verification (parent session)
                                   ↓
                      quality-fixer-frontend (subagent: typecheck/lint/test)
                                   ↓
@@ -50,7 +48,6 @@ Adjustment request → external resource hearing (parent session, AskUserQuestio
 - External resource hearing per the external-resource-context skill
 - UI fact gathering via ui-analyzer
 - Scale judgment via documentation-criteria's Creation Decision Matrix
-- Optional work plan creation via work-planner
 - Adjustment edits and verification against the design source (run in this session)
 - Quality verification via quality-fixer-frontend
 - Commit per adjustment unit
@@ -84,13 +81,10 @@ Execute Skill: documentation-criteria (loads the Creation Decision Matrix and AD
 3. Apply the Creation Decision Matrix from the documentation-criteria skill to the **confirmed write set count**:
    - **0 files**: The adjustment request did not map to any existing file. Escalate to the user with the message "No write target identified from the adjustment request. Please clarify which component(s) should change, or run the full frontend design phase if this is a new feature." Stop this recipe.
    - **1-2 files**: Direct adjustment, no work plan.
-   - **3-5 files**: Work plan required.
-   - **6+ files** OR any ADR Creation Condition triggered (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.): Adjustment scope exceeded. Escalate the user to the full frontend design phase. Stop this recipe.
+   - **3+ files** OR any ADR Creation Condition triggered (architecture changes, contract changes affecting 3+ locations, complex multi-state logic, etc.): Adjustment scope exceeded. Escalate the user to the full frontend design phase. Stop this recipe.
 
-### Step 4: Plan Creation (Conditional)
-Branch on the scale outcome.
+### Step 4: Adjustment Context
 
-#### Branch A — 1-2 files
 No work plan. Build a minimal adjustment context for the parent session:
 - Adjustment request (verbatim)
 - ui-analyzer focusAreas[] (raw fact_id; the `ui:` prefix is only applied when merging with codebase-analysis facts in a Fact Disposition Table, which Branch A does not do)
@@ -100,16 +94,6 @@ No work plan. Build a minimal adjustment context for the parent session:
 Present the adjustment context to the user for review.
 - **[STOP]**: User confirms the adjustment context covers the work.
 
-#### Branch B — 3-5 files
-Create a right-sized work plan. Invoke **work-planner** using Agent tool:
-- `subagent_type: "dev-workflows-fullstack:work-planner"`
-- `description: "Adjustment work plan"`
-- `prompt: "Create a work plan for this UI adjustment. Adjustment request: [verbatim]. ui_analysis: [ui-analyzer JSON]. External resources: docs/project-context/external-resources.md. Scale: 3-5 files (no Design Doc, no ADR). Each phase should be implementable as 1-3 commits. Include a quality checklist matched to the affected components: visual verification, accessibility, i18n parity, generated artifact regeneration when relevant. Output path: docs/plans/[YYYYMMDD]-adjust-[short-description].md."`
-
-After work-planner returns:
-- Present the work plan to the user.
-- **[STOP]**: Wait for plan approval or revision request. If the user requests changes, re-invoke work-planner with revised guidance.
-
 ### Step 5: Adjustment + Verification (parent session)
 
 Execute Skill: frontend-ai-guide before planning or applying adjustment edits.
@@ -117,7 +101,7 @@ Execute Skill: typescript-rules before planning or applying adjustment edits.
 Execute Skill: implementation-approach before planning or applying adjustment edits.
 Execute Skill: test-implement before adding or changing tests.
 
-For each adjustment unit (per file in Branch A; per work plan phase in Branch B):
+For each file in the confirmed adjustment context:
 1. **Plan the edit** based on ui-analyzer focusAreas and the relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
 3. **Verify against external sources** using whichever access method `docs/project-context/external-resources.md` declares for each axis:
@@ -135,11 +119,8 @@ When the project-tier file declares no automated verification mechanism for an a
   - `subagent_type: "dev-workflows-fullstack:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
   - Pass `qualityCommand` when available (caller first, otherwise current task).
-  - Build the prompt by branch. Scope is always `filesModified`; `task_file` (when passed) is a supplementary hint that quality-fixer-frontend may use to read the document's "Quality Assurance Mechanisms" section.
-    - **Branch A (1-2 files)**: omit `task_file`. Pass `filesModified: [list of files edited in this adjustment unit]`.
-    - **Branch B (3-5 files)**: pass `task_file: <work plan path>` (supplementary hint) AND `filesModified: [list of files edited in this adjustment unit]` (primary scope).
-  - Example (Branch A): `prompt: "filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
-  - Example (Branch B): `prompt: "task_file: docs/plans/[plan-name].md. filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
+  - Pass `filesModified: [list of files edited in this adjustment unit]` as the review scope.
+  - Example: `prompt: "filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
@@ -148,15 +129,15 @@ When the project-tier file declares no automated verification mechanism for an a
 ### Step 7: Commit (per adjustment unit)
 Commit the adjustment unit on quality approval. Include the affected files and any regenerated artifacts (CSS module typings, message catalog typings, etc.) flagged by ui-analyzer's `generatedArtifacts` section.
 
-Then loop back to Step 5 for the next unit (Branch B work plan phase, or next file in Branch A) until all units are committed.
+Then loop back to Step 5 for the next file until all units are committed.
 
 ## Completion Criteria
 
 - [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
 - [ ] ui-analyzer returned a JSON output, including externalResources fetch_status per axis and candidateWriteSet
 - [ ] Write set confirmed by the user before scale judgment
-- [ ] Scale judgment applied to the confirmed write set; 6+ files or ADR conditions escalated to the design phase
-- [ ] Branch A: adjustment context presented and confirmed; Branch B: work plan approved
+- [ ] Scale judgment applied to the confirmed write set; 3+ files or ADR conditions escalated to the design phase
+- [ ] Adjustment context presented and confirmed
 - [ ] All adjustment units edited and verified using the project's declared verification mechanism (manual confirmation when no automated mechanism is declared)
 - [ ] Each adjustment unit passed quality-fixer-frontend with explicit `filesModified` scoping
 - [ ] Each adjustment unit committed
@@ -167,8 +148,7 @@ Then loop back to Step 5 for the next unit (Branch B work plan phase, or next fi
 Frontend adjustment completed.
 - External resources: docs/project-context/external-resources.md (updated|unchanged)
 - UI fact gathering: ui-analyzer focused on [N] components, [M] focus areas, external sources [fetched|partial|not_recorded]
-- Scale: <1-2 files | 3-5 files>
-- Work plan: <path | not required>
+- Scale: 1-2 files
 - Adjustment units committed: [count]
 - Quality status: all passed
 ```

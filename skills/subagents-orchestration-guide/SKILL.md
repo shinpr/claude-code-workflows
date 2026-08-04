@@ -82,14 +82,14 @@ Before presenting an artifact at an approval stop, read its current version and 
 | UI Spec | After document-reviewer completes UI Spec review (frontend/fullstack) | Approve UI Spec |
 | ADR | After document-reviewer completes ADR review (if ADR created) | Approve ADR |
 | Design | After design-sync completes consistency verification | Approve Design Doc |
-| Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) or work-planner (Small) completes | Batch approval for implementation phase |
+| Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) completes | Batch approval for implementation phase |
 
 **After batch approval**: Autonomous execution proceeds without stops until completion or escalation.
 
 ## Scale Determination and Document Requirements
 | Scale | File Count | PRD | ADR | Design Doc | Work Plan |
 |-------|------------|-----|-----|------------|-----------|
-| Small | 1-2 | Update※1 | Not needed | Not needed | Simplified |
+| Small | 1-2 | Update※1 | Not needed | Not needed | Not needed |
 | Medium | 3-5 | Update※1 | Conditional※2 | **Required** | **Required** |
 | Large | 6+ | **Required**※3 | Conditional※2 | **Required** | **Required** |
 
@@ -138,9 +138,9 @@ Subagents respond in JSON format. Key fields for orchestrator decisions:
 - **codebase-analyzer**: pass its full JSON unchanged; HC-02 defines the fields consumed downstream
 - **ui-analyzer**: pass its full JSON unchanged with raw `fact_id` values; the consumer applies the `ui:` prefix when merging with codebase facts
 - **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), `summary.consistencyScore`, discrepancies[], reverseCoverage (including dataOperationsInCode, testBoundariesSectionPresent). Pre-implementation: verifies Design Doc claims against existing codebase. Post-implementation: verifies implementation consistency against the governing Design Doc or Work Plan (pass `code_paths` scoped to changed files)
-- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/binding_decision_violation/test_environment_not_ready), changeSummary, testsAdded, requiresTestReview
+- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/test_environment_not_ready), changeSummary, testsAdded, requiresTestReview
 - **quality-fixer**: Input: optional `task_file`, plus the executor's `filesModified` and `mutationEvidence`; pass `qualityCommand` only when the caller or task supplies one. Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
-- **document-reviewer**: `verdict.decision` (approved/approved_with_conditions/needs_revision/rejected)
+- **document-reviewer**: `verdict.decision` (approved/needs_revision/rejected)
 - **design-sync**: sync_status (synced/conflicts_found)
 - **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status (`approved`/`needs_revision`/`blocked`), `reviewBasis`, requiredFixes
 - **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]
@@ -152,17 +152,17 @@ Use create mode for initial documents. For requirement-driven revisions, invoke 
 
 - **work-planner**: update only before execution
 - **technical-designer / prd-creator**: update affected documents, then invoke document-reviewer
-- **document-reviewer**: run before user approval after PRD/ADR/Design Doc changes and after Medium/Large Work Plan changes; Small plans require no semantic review
+- **document-reviewer**: run before user approval after PRD/ADR/Design Doc changes and after Work Plan changes; Small changes have no Work Plan
 
 ## Basic Flow: Planning and Implementation
 
 ### Planning flow (per scale)
 
-| Scale | Planning flow (ends at task-decomposer for Medium/Large; ends at work-planner for Small) |
+| Scale | Planning flow |
 |-------|---------------|
 | Large | requirement-analyzer → PRD → PRD review → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
 | Medium | requirement-analyzer → external resource hearing → codebase-analyzer (+ ui-analyzer in parallel for frontend/fullstack) → optional UI Spec → optional ADR → Design Doc → code-verifier → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review (document-reviewer, doc_type WorkPlan) → task-decomposer |
-| Small | requirement-analyzer → work-planner |
+| Small | requirement-analyzer → direct task execution (no Work Plan) |
 
 The requirement-convergence and external-resource hearings run in the orchestrator. Run ui-analyzer and codebase-analyzer in parallel only for frontend surfaces.
 
@@ -173,7 +173,7 @@ Rules:
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
-- Work plan review applies Review Resolution: revise and re-review with `prior_feedback` for `apply`; proceed when all actionable findings are `decline`; escalate unresolved `user_decision_required` or unusable inputs
+- Work plan review runs Review Resolution through its correction re-review, escalation, and convergence transitions; batch approval is available only at its convergence condition
 
 ## Autonomous Execution Mode
 
@@ -208,7 +208,7 @@ graph TD
 | code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
 | security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
-**Fix-cycle handoff**: Apply Review Resolution, then pass each required executor the `apply` findings, affected paths, governing evidence, and verification condition directly. Carry `prior_feedback` to reviewer inputs that support reconciliation.
+**Fix-cycle handoff**: Apply Review Resolution, then pass each required executor the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` to reviewer inputs that support reconciliation.
 
 **Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
 
@@ -230,10 +230,7 @@ graph TD
    - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
-     - `needs_revision` → Apply Review Resolution
-       - one or more `apply` findings → Return to step 1 with those findings, then re-review with `prior_feedback`
-       - every actionable finding is `decline` → Proceed to step 3
-       - any unresolved `user_decision_required` finding → Escalate to user
+     - `needs_revision` → Run Review Resolution through its correction re-review, escalation, and convergence transitions; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - Otherwise → Proceed to step 3
 3. **Quality-fix**: invoke quality-fixer with upstream `filesModified` and `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
@@ -275,7 +272,7 @@ Register overall phases using TaskCreate and update each phase with TaskUpdate a
 
 ### technical-designer → work-planner
 
-Pass the Design Doc path. Work-planner owns the documentation-criteria template scan and Design-to-Plan Traceability; unjustified coverage gaps are errors, and justified gaps require user confirmation before plan approval.
+Pass the Design Doc path. Work-planner maps governing sections and ACs to implementation tasks. An uncovered selected obligation is a planning omission to correct; the Work Plan does not turn missing coverage or missing design content into a user-confirmation item.
 
 ### HC-06: acceptance-test-generator → work-planner
 

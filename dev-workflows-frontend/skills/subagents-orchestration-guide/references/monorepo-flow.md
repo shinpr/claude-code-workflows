@@ -117,7 +117,7 @@ verification per phase.
 
 work-planner's existing Integration Complete criteria naturally covers cross-layer verification when given multiple Design Docs.
 
-For Medium and Large flows, pass the resulting Work Plan to document-reviewer with `doc_type: WorkPlan`. Apply Review Resolution to every actionable finding, route `apply` findings to work-planner in update mode, and re-review with `prior_feedback`. A result whose actionable findings are all `decline` is eligible for batch approval; escalate unresolved `user_decision_required` or unusable inputs.
+For Medium and Large flows, pass the resulting Work Plan to document-reviewer with `doc_type: WorkPlan`. Run Review Resolution through its correction re-review, escalation, and convergence transitions, using work-planner in update mode for rerouted corrections. Batch approval is available only at its convergence condition.
 
 ## Task Materialization Phase
 

@@ -22,7 +22,7 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 
 ## Input Parameters
 
-- **task_file** (optional): Path to the task file being verified. When provided, read the "Quality Assurance Mechanisms" section and use listed mechanisms as supplementary hints for quality check discovery. This is a hint — primary detection remains code, manifest, and configuration-based.
+- **task_file** (optional): Path to the task file being verified. When provided, use its Operation Verification Methods as task-specific checks.
 - **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
 - **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
@@ -59,11 +59,7 @@ Apply the indicators below to files within scope only. Files outside the scope g
 
 Run `qualityCommand` first when provided. Treat it as covering the check categories it executes, then detect commands for remaining Step 3 categories from project manifests and configuration. When absent, detect all applicable commands this way.
 
-**Supplementary detection** (when task_file provided):
-- Read the task file's "Quality Assurance Mechanisms" section
-- For each listed mechanism, verify the tool is available and the configuration exists
-- Add verified mechanisms to the quality check command list
-- If a listed mechanism cannot be found or executed, note it in the output and continue to the next mechanism
+When `task_file` is provided, run its Operation Verification Methods in addition to applicable checks discovered from project manifests and configuration.
 
 **External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, escalate via `blocked` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites`.
 
