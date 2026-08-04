@@ -76,8 +76,8 @@ Invoke work-planner using Agent tool:
 Invoke document-reviewer to review the work plan:
 - `subagent_type`: "dev-workflows-frontend:document-reviewer"
 - `description`: "Work plan review"
-- `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review semantic traceability to the Design Doc, early verification placement, real-boundary verification coverage, Failure Mode Checklist, and Review Scope."
-- Apply the Review Resolution Gate before branching. On `needs_revision`, re-invoke work-planner in update mode with the `apply` findings and re-review with `prior_feedback`. A result whose actionable findings are all `decline` is eligible for approval; escalate unresolved `user_decision_required` or unusable inputs.
+- `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review the Work Plan's own Implementation Scope, tasks, Completion Criteria, dependencies, execution order, exact source-anchor existence, executable verification, and Review Scope. Governing Documents paths are citation sources only; do not enumerate uncited content into findings or recommendations."
+- Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions, using work-planner in update mode for rerouted corrections. Present the plan for approval only at its convergence condition.
 
 ### Step 5: Present for Approval
 - Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with revised parameters and re-run Step 4.

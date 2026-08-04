@@ -83,7 +83,7 @@ For each claim, classify as one of:
 4. Note ambiguous claims that cannot be verified
 5. **Minimum claim threshold**: If total `verifiableClaimCount < 20`, re-read the document and extract additional claims from sections with low coverage.
 
-For `doc_type: work-plan`, treat the following as the authoritative verification surface: Binding Contracts, Reference Contracts, task Completion Criteria, Proof Obligations, and scoped implementation claims. Extract each item from those sections as a separate claim and retain its task or section origin.
+For `doc_type: work-plan`, extract each task outcome, governing-source citation, verification condition, optional Verification Focus, and Completion Criterion as a separate claim and retain its task or section origin.
 
 ### Step 2: Code Scope Identification
 

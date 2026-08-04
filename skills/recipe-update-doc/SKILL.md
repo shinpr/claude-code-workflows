@@ -172,11 +172,11 @@ prompt: |
     Existing Document: [path from Step 1]
 
     ## Adjudicated Review Findings
-    [apply findings with IDs, basis, smallest correction, and affected sections]
+    [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]
 
     Treat these findings as the complete revision scope and preserve adjacent content.
   ```
-- On re-review pass `prior_feedback` as `[{id, disposition, correction?, reason?, evidence}]`
+- On re-review pass `prior_feedback` as `[{id, disposition, reason?, evidence}]`
 - All actionable findings are `decline` and every `user_decision_required` item is resolved → Proceed to Step 6
 
 Present review result to user for approval.

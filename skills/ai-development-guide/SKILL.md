@@ -163,7 +163,7 @@ Before executing quality checks, identify what quality mechanisms exist for the 
   - Check CI pipeline definitions for checks that cover the affected paths
   - Check for domain-specific linter or validator configurations (e.g., schema validators, API spec validators, configuration file linters)
   - Check for domain-specific constraints in project configuration (naming rules, length limits, format requirements)
-- Supplementary hint: IF task file specifies Quality Assurance Mechanisms → use them as additional hints for which domain-specific checks to look for
+- When a task file supplies Operation Verification Methods, run them as task-specific checks
 - Include discovered domain-specific checks alongside standard quality phases below
 
 ## Quality Check Workflow

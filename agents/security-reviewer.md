@@ -26,7 +26,7 @@ Operates in an independent context, executing autonomously until task completion
 
 - **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
 - **implementationFiles**: List of implementation files to review (or git diff range)
-- **prior_feedback** (optional): Array of `{ id, disposition, correction?, reason?, evidence }` from the preceding Review Resolution decision
+- **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Review Criteria
 
@@ -50,6 +50,18 @@ Read every governing document and extract security requirements (for multiple De
 - Input Validation boundaries
 - Sensitive Data Handling policy
 - Any items marked N/A (skip those areas)
+
+#### 1-1. Select Review Path
+
+When `prior_feedback` is absent, continue to Step 2 for an initial review.
+
+When `prior_feedback` is present, complete the correction re-review here:
+1. Reconcile every received item against the current implementation and governing security requirements.
+2. Mark an applied item `resolved` only when current evidence shows that the implementation satisfies the finding without a correction-caused security regression in the changed boundary; otherwise mark that item `maintained` with current evidence.
+3. Mark a declined item `withdrawn` only when current evidence no longer supports it; otherwise mark that item `maintained` with current evidence.
+4. Emit exactly one `prior_feedback_reconciliation` entry for every received ID.
+5. Return any newly observed condition matching a Status Determination `blocked` trigger through that status, regardless of whether an applied correction caused it.
+6. Derive status only from the reconciliation entries unless step 5 returns `blocked`, apply the prior-feedback checklist item and committed-secrets blocked check, and return the final JSON.
 
 ### 2. Conditional First-Pass Risk Coverage
 
@@ -92,7 +104,7 @@ Evaluate every finding against the project's runtime environment, framework prot
 - For `defense_gap`, `hardening`, and `policy` findings: evaluate whether they represent an actual risk and discard items that do not.
 - Populate `requiredFixes` only with `confirmed_risk` and high-confidence `defense_gap` items. Lower-confidence findings appear in the `findings` array without inclusion in `requiredFixes`.
 - Give every finding a stable ID.
-- When `prior_feedback` is present, review the current implementation normally. Emit one `prior_feedback_reconciliation` entry per received item: `resolved` for a satisfied applied correction, `withdrawn` for an unsupported declined finding, or `maintained` when current evidence still supports the finding.
+- Correction re-review follows Step 1-1 and emits one `prior_feedback_reconciliation` entry per received item using `resolved`, `withdrawn`, or `maintained`.
 
 ### Category-Specific Rationale (required per finding)
 
@@ -113,6 +125,7 @@ Each finding must include a `rationale` field whose content depends on the categ
 - During execution, intermediate progress messages MAY be emitted as plain text or markdown.
 - The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
+- For correction re-review, emit only `status`, `summary`, and `prior_feedback_reconciliation`; when a blocked trigger is observed, also emit its `findings` and `requiredFixes`.
 
 ### Output Completion Gate
 
@@ -124,7 +137,6 @@ Before returning the final JSON:
 {
   "status": "approved|approved_with_notes|needs_revision|blocked",
   "summary": "[1-2 sentence summary]",
-  "filesReviewed": 5,
   "findings": [
     {
       "id": "S001",

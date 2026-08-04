@@ -160,17 +160,9 @@ Interface Change Matrix:
 
 ### Work Plan
 
-**Purpose**: Implementation task management and progress tracking
+**Purpose**: Implementation task management and progress tracking.
 
-**Includes**:
-- Task breakdown and dependencies (maximum 2 levels)
-- Schedule and duration estimates
-- **Include test skeleton file paths produced for this work plan** (integration and E2E)
-- **Verification Strategy summary** (extracted from Design Doc)
-- **Final Quality Assurance Phase (required)**
-- Progress records (checkbox format)
-
-**Scope**: Task breakdown, dependencies, schedule, verification strategy summary, and progress tracking only. Technical rationale belongs in ADR, design details in Design Doc.
+**Scope**: Repository implementation outcomes from approved Design Docs, task dependencies, source section and acceptance-criteria references, executable verification, optional task-level false-green focus, and progress tracking only. The Work Plan references governing documents instead of reproducing their design details.
 
 **Phase Division Criteria** (adapt to implementation approach from Design Doc):
 
@@ -186,12 +178,7 @@ Interface Change Matrix:
 **When Hybrid selected**:
 - Combine vertical and horizontal as defined in Design Doc implementation approach
 
-**All approaches**: Final phase is always Quality Assurance (acceptance criteria achievement, all tests passing, quality checks). Each phase's verification method follows Verification Strategy from Design Doc.
-
-**Three Elements of Task Completion Definition**:
-1. **Implementation Complete**: Code is functional
-2. **Quality Complete**: Tests, static checks, linting pass
-3. **Integration Complete**: Verified connection with other components
+**All approaches**: Each phase ends at a repository-observable verification point. Whole-repository quality assurance remains a separate execution responsibility.
 
 ## Creation Process
 
@@ -233,7 +220,6 @@ Required diagrams for each document (using mermaid notation):
 | ADR | Option comparison diagram (when needed) | Visualize trade-offs |
 | UI Spec | Screen transition diagram, Component tree diagram | Clarify screen flow and component structure |
 | Design Doc | Architecture diagram, Data flow diagram | Understand technical structure |
-| Work Plan | Phase structure diagram, Task dependency diagram | Clarify implementation order |
 
 ## Common ADR Relationships
 1. **At creation**: Identify common technical areas (logging, error handling, async processing, etc.), reference existing common ADRs

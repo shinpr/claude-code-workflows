@@ -126,15 +126,13 @@ This gate triggers only when the Investigation Targets section lists at least on
 
 ### 3. Implementation Execution
 
-#### Verification Mode and Test Environment Check
-Read selected Verification modes from the execution instructions before mode-specific gates; treat explicit selections as authoritative.
-
-**When at least one mode is `red-test` or `characterization`**: Verify the project-configured test toolchain is available — test runner, fixtures/containers, and any mock servers or shared setup the tests rely on.
+#### Verification Environment Check
+Read the Operation Verification Methods from the execution instructions and treat them as authoritative. When they require executable tests, verify the project-configured test toolchain is available — test runner, fixtures/containers, and any mock servers or shared setup the tests rely on.
 
 **Check method**: Inspect project files/commands to confirm test execution capability (e.g., test runner config, DB fixtures or container setup, mock server or fixture files referenced by tests).
 **Available**: Proceed with the applicable testing flow from testing-principles skill
 **Unavailable**: Escalate with `status: "escalation_needed"`, `reason: "test_environment_not_ready"`, `escalation_type: "test_environment_not_ready"` (see Escalation Response 2-7)
-**When no selected mode requires executable tests**: Proceed to the applicable evidence flow without requiring the test toolchain at this gate.
+When no method requires executable tests, proceed without requiring the test toolchain at this gate.
 
 #### Pre-implementation Verification (Pattern 5 Compliant)
 Read relevant Design Doc sections (interface contracts, data structures, dependency constraints); investigate existing implementations in the same domain/responsibility; determine continue/escalation per "Mandatory Judgment Criteria" above.
@@ -148,37 +146,13 @@ Applies when Pre-implementation Verification finds a dependency this task requir
    - One local, reversible approach preserves the contract → proceed with it and record the integration handoff (what the real dependency must later provide, and where it connects) in Investigation Notes.
    - No local construct preserves the contract, or several valid constructs differ on an architectural trade-off (placement, dependency direction, contract shape) → stop and escalate with `escalation_type: "design_compliance_violation"` (see Design Doc Deviation Escalation in Structured Response Specification; populate every `details` field that schema requires). Map the Design Doc requirement for the dependency to `details.design_doc_expectation`, and the absent/unimplemented dependency with the exact undecided decision to `details.actual_situation`.
 
-#### Adjacent Case Sweep (Required when the execution instructions classify the work as one or more of `bug-fix`, `regression`, `state-change`, `boundary-change`)
+#### Adjacent Case Sweep (Required for a bug fix, regression fix, state change, or boundary change)
 
-Runs after Pre-implementation Verification, before the Binding Decision Check. Read the work classification from the execution instructions and treat it as authoritative for whether the sweep applies.
+Classify from the task outcome and changed boundary, then run after Pre-implementation Verification when applicable.
 
 1. From the target and investigation paths in the execution instructions, identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback behavior, stale state, retries, and external calls related to the change.
 2. Check the same defect class and record each case as `incorporated`, `unchanged` with evidence, or `out-of-scope` with the required scope decision; when none exist, record the searched surface.
-3. Fold in-scope residuals into the applicable Proof Obligation and implementation; for `red-test`, include them in the failing tests.
-
-#### Binding Decision Check (Required when the execution instructions include Binding Decisions)
-
-Runs after Pre-implementation Verification, before the TDD cycle.
-
-1. Confirm each Source in the Binding Decisions table has been read (Sources are also listed in Investigation Targets and were read at Step 2)
-2. Record the planned implementation approach in Investigation Notes — one sentence per distinct `Axis` value in the Binding Decisions supplied by the execution instructions. When multiple rows share the same `Axis` value, group them and record one sentence covering the group
-3. Evaluate each row's Compliance Check against the planned approach. Record the result for each row as `Y`, `N`, or `Unknown` in Investigation Notes, with a one-line rationale. Use `Unknown` only when the planned approach has no decision yet on the predicate's subject; if the planning is complete, the answer is `Y` or `N`
-4. Per row, branch on the evaluation:
-   - `Y`: proceed
-   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "binding_decision_violation"` with `phase: "pre_implementation"` (see Binding Decision Violation Escalation in Structured Response Specification). `N` represents a planned violation
-   - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every row (including Unknown rows deferred from this step) against the final implementation and escalates if any remains `N` or `Unknown` at that point
-
-#### Reference Contract Check (Required when the execution instructions include Reference Contracts)
-
-Runs after Pre-implementation Verification, alongside the Binding Decision Check.
-
-1. Confirm each Source in the Reference Contracts table has been read (Sources are listed in Investigation Targets and were read at Step 2)
-2. Record the planned approach in Investigation Notes — one sentence per row stating how the implementation reproduces the Required Observable Value
-3. Evaluate each row's Compliance Check against the planned approach. Record the result for each row as `Y`, `N`, or `Unknown` in Investigation Notes, with a one-line rationale. Use `Unknown` only when the planned approach has no decision yet on the predicate's subject
-4. Per row, branch on the evaluation:
-   - `Y`: proceed
-   - `N`: stop implementation and produce the final response with `status: "escalation_needed"` and `escalation_type: "design_compliance_violation"` (see Design Doc Deviation Escalation in Structured Response Specification; populate every `details` field that schema requires). Map the Reference Contract row's Required Observable Value to `details.design_doc_expectation` and the planned approach to `details.actual_situation`
-   - `Unknown`: mark the row as deferred in Investigation Notes and proceed to the TDD cycle. The Exit Gate re-evaluates every deferred row against the final implementation
+3. Fold in-scope residuals into the implementation and its focused verification.
 
 #### Reference Representativeness (Applied During Implementation)
 
@@ -192,11 +166,11 @@ When adopting a pattern or dependency from existing code, apply coding-principle
 
 **When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`**: Report "already completed" and end
 
-**For each implementation item, use the flow selected in the execution instructions** (see testing-principles skill):
-- **New/changed behavior or reproducible bug**: RED (write and confirm the failing test) → GREEN (minimal implementation) → REFACTOR → VERIFY
-- **Behavior-preserving refactor**: BASELINE (confirm existing tests pass or add passing characterization tests) → REFACTOR → VERIFY the same evidence
-- **Non-reproducible bug**: EVIDENCE BASELINE (confirm the recorded reproduction attempt, concrete blocker, and named alternate evidence) → FIX → VERIFY that evidence
-- **Non-executable deliverable**: SOURCE BASELINE (read the named source and acceptance evidence) → PRODUCE/UPDATE → VERIFY the deliverable against them
+**For each implementation item, apply the applicable testing-principles flow and the task's Operation Verification Methods**:
+- **New/changed behavior or reproducible bug**: RED → GREEN → REFACTOR → VERIFY
+- **Behavior-preserving refactor**: BASELINE → REFACTOR → VERIFY the same evidence
+- **Non-reproducible bug**: record the reproduction blocker and alternate evidence → FIX → VERIFY that evidence
+- **Non-executable deliverable**: read the named source → PRODUCE/UPDATE → VERIFY against it
 - **Progress Update**: Apply the Responsibility Boundaries progress rule after verification
 
 **Test types**: Unit tests — use the applicable flow above; Integration tests — create and execute with implementation; E2E tests — execute in final phase only.
@@ -329,27 +303,7 @@ Report in the following JSON format upon task completion (**without executing qu
 }
 ```
 
-#### 2-6. Binding Decision Violation Escalation
-
-Triggered by `N` at the pre-implementation check, or `N` or `Unknown` at the Exit Gate re-evaluation, on any Compliance Check row in the Binding Decisions supplied by the execution instructions.
-
-```json
-{
-  "status": "escalation_needed",
-  "reason": "Binding decision violation",
-  "taskName": "[Task name being executed]",
-  "escalation_type": "binding_decision_violation",
-  "phase": "pre_implementation | exit_gate",
-  "plannedApproach": "[1–2 sentence summary of the planned or actual implementation approach]",
-  "failures": [
-    {"source": "[ADR file path with section hint, copied from Source column]", "axis": "[Axis value copied from the Axis column]", "decision": "[Decision text, copied from Decision column]", "complianceCheck": "[Compliance Check predicate, copied from Compliance Check column]", "evaluation": "N | Unknown", "rationale": "[One line explaining why the implementation does not satisfy the check, or why it cannot be evaluated]"}
-  ],
-  "user_decision_required": true,
-  "suggested_options": ["Adjust the implementation plan to satisfy the binding decision", "Update the governing decision and corresponding execution instructions", "Provide additional context that resolves the Unknown evaluation"]
-}
-```
-
-#### 2-7. Test Environment Not Ready Escalation
+#### 2-6. Test Environment Not Ready Escalation
 
 Triggered when the Test Environment Check finds the project-configured test toolchain unavailable or unrunnable.
 
@@ -372,12 +326,9 @@ This gate runs immediately before producing the final JSON response.
 
 ☐ All implementation items completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
-☐ Adjacent Case Sweep evidence is non-empty and records each inspected case and disposition, or the searched surface and no-case result (when Change Category triggers the sweep)
-☐ Every Binding Decisions Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the execution instructions include Binding Decisions). Re-evaluate here even when the pre-implementation check passed, because the implementation may have diverged from the planned approach
-☐ Every Reference Contracts Compliance Check evaluates to `Y` against the final implementation, with evidence recorded in Investigation Notes (when the execution instructions include Reference Contracts). Re-evaluate here even when the pre-implementation check passed
-☐ A test exercises the roundtrip — the value the producer emits parses to the value the consumer expects (when the execution instructions include a Boundary Context roundtrip check)
-☐ Every Proof Obligation satisfies its selected Verification mode and Evidence requirement
+☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
+☐ Every Operation Verification Method succeeds and Verification Focus is satisfied when present
 ☐ When test runs are cited as `runnableCheck` evidence, they are substantive and executable per the runnableCheck.result field spec (skipped tests, placeholder/TODO-only bodies, always-passing assertions, and 0-match runner reports do not count); non-test verification (build/typecheck/CLI) is not subject to this check
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
-**ENFORCEMENT**: When any gate item is unchecked, return `escalation_needed`. Use `escalation_type: "binding_decision_violation"` with `phase: "exit_gate"` for Binding Decisions failures; use `escalation_type: "design_compliance_violation"` for other gate failures (incomplete work or divergence from Investigation Notes).
+**ENFORCEMENT**: When any gate item is unchecked, return `escalation_needed` with `escalation_type: "design_compliance_violation"` for incomplete work or divergence from governing sources and Investigation Notes.

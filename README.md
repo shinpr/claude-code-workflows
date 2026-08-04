@@ -230,7 +230,6 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | `/recipe-implement` | End-to-end feature development | New features, complete workflows |
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate a work plan from design | Planning phase |
-| `/recipe-prepare-implementation` | Find and resolve readiness gaps | Before building from a work plan |
 | `/recipe-build` | Execute an existing work plan | Resume implementation |
 | `/recipe-review` | Verify code against Design Docs | Post-implementation check |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
