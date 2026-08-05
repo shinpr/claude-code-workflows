@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **First Action**: Register Steps 1-7 using TaskCreate before any execution.
@@ -27,6 +27,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 - Test implementation → delegate to task-executor
 - Test review → delegate to integration-test-reviewer
 - Quality checks → delegate to quality-fixer
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 Document paths: $ARGUMENTS
 
@@ -82,10 +84,10 @@ For each layer with generated skeletons, record the current HEAD as `diffBase`, 
 
 Execute one layer at a time through Steps 3→4→5→6→7 before starting the next.
 
-**Expected output**: `status`, `filesModified`, `testsAdded`, `mutationEvidence`
+**Expected output**: `status`, `testsAdded`, `mutationEvidence`
 
 Apply this response gate after every task-executor invocation in Steps 3 and 5:
-- `status: completed`, `filesModified` and `testsAdded` are present, and at least one changed integration/E2E path can be identified from the cumulative response paths against `diffBase` → Proceed to Step 4
+- `status: completed`, `testsAdded` is present, and at least one changed integration/E2E test file is confirmed → Proceed to Step 4
 - `status: escalation_needed` → Escalate to the user
 - Any other status, or a response missing the required fields above → Stop and report the invalid or missing fields
 
@@ -94,16 +96,16 @@ Apply this response gate after every task-executor invocation in Steps 3 and 5:
 Invoke integration-test-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:integration-test-reviewer"
 - `description`: "Review test quality"
-- `prompt`: "Review test quality. changedTestFiles: [integration/E2E paths in Step 3 filesModified or testsAdded that differ from diffBase]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
+- `prompt`: "Review test quality. changedTestFiles: [confirmed changed integration/E2E test paths]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
 
-**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`, `requiredFixes`
+**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`; correction re-review also returns `prior_feedback_reconciliation`
 
 ### Step 5: Apply Review Fixes
 
 Check Step 4 result:
 - `status: approved` → Mark complete, proceed to Step 6
 - `status: blocked` → Escalate to user
-- `status: needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; invoke task-executor for rerouted corrections, return to Step 4 for correction re-review, and proceed to Step 6 only at convergence
+- `status: needs_revision` → Pass Step 4 `qualityIssues` unchanged into the Review Resolution Gate; invoke task-executor for rerouted corrections, return to Step 4, and derive convergence from `prior_feedback_reconciliation`
 
 Invoke the same layer's task-executor:
 - `description`: "Fix review findings"
@@ -115,7 +117,7 @@ Invoke quality-fixer for the current layer:
 - Backend or single-layer → `subagent_type`: "dev-workflows:quality-fixer"
 - Frontend → `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Final quality assurance"
-- Pass the latest executor's `filesModified` and `mutationEvidence`.
+- Pass the latest executor's `mutationEvidence`.
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
 **Expected output**: `status` (approved/stub_detected/blocked)
@@ -129,6 +131,8 @@ Check quality-fixer response:
 
 On `approved` from quality-fixer:
 - Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
+
+In the completion report, list each declined actionable finding with its ID, governing reason, and evidence when any occurred.
 
 ## Scope Boundary for Subagents
 

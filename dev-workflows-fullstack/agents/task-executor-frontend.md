@@ -120,9 +120,9 @@ Execute the scope supplied in the prompt. When it names a task file, read and us
 #### External Resources Consultation (When Relevant)
 When the execution instructions or any referenced Design Doc / UI Spec / Work Plan point to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Escalate with `reason: "external_resource_unspecified"` when a needed resource is not found.
 
-#### Step 2 Completion Gate [BLOCKING when the Investigation Targets section contains one or more concrete file paths]
+#### Step 2 Completion Gate [BLOCKING when the execution instructions contain one or more concrete Investigation Target paths]
 
-This gate triggers only when the Investigation Targets section lists at least one concrete file path.
+This gate triggers when the execution instructions provide at least one concrete Investigation Target path, whether they arrive from a task file or a direct-scope prompt.
 
 ☐ [VERIFIED] All listed Investigation Target files read in full (or escalated as `investigation_target_not_found` for missing paths)
 ☐ [VERIFIED] Investigation Notes recorded and appended to the task file when one is provided
@@ -215,14 +215,12 @@ Report in the following JSON format upon task completion (**without executing qu
   "status": "completed",
   "taskName": "[Exact name of executed task]",
   "changeSummary": "[Specific summary of React component implementation/changes]",
-  "filesModified": ["src/components/Button/Button.tsx", "src/components/Button/index.ts"],
   "testsAdded": ["src/components/Button/Button.test.tsx"],
   "requiresTestReview": false,
   "newTestsPassed": true,
   "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
   "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
-  "readyForQualityCheck": true,
   "nextActions": "Overall quality verification by quality assurance process"
 }
 ```

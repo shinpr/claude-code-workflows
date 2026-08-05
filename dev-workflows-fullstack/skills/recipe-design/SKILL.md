@@ -1,146 +1,137 @@
 ---
 name: recipe-design
-description: Execute from codebase analysis to design document creation
+description: Execute from codebase-scoped analysis through optional ADR decisions to complete Design Doc approval
 disable-model-invocation: true
 ---
 
+Execute Skill: documentation-criteria before document routing or creation.
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
-Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
+Execute Skill: subagents-orchestration-guide before invoking agents or resolving findings.
 
-**Context**: Dedicated to the design phase.
+## Outcome and Ownership
 
-## Orchestrator Definition
+Coordinate the design phase from repository evidence to an approved Design Doc. The orchestrator owns requirement convergence, Structural Scale, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifact authorship.
 
-**Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
-
-**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist. The scope bootstrap locates seed files; the named specialists own semantic investigation and artifact authorship.
-
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
-Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
-
-**Execution Protocol**:
-1. **Invoke named specialists for deliverable production** — pass data between them and validate their results. Step 1 is a recipe-local read-only scope bootstrap limited to locating seed files.
-2. **Run the design flow below in order**:
-   - Execute: scope bootstrap → codebase-analyzer → [Stop: Scope confirmation] → technical-designer → code-verifier → document-reviewer → design-sync
-   - code-verifier and design-sync apply when the design output is a Design Doc; both are skipped for ADR-only
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
-3. **Scope**: Complete when design documents receive approval
-
-**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, Execution Boundary), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
-
-**CRITICAL**: Execute document-reviewer, design-sync (for Design Docs), and all stopping points — each serves as a quality gate. Skipping any step risks undetected inconsistencies.
-
-## Workflow Overview
-
-```
-Requirements → scope bootstrap → codebase-analyzer → [Stop: Scope confirmation]
-                                                            ↓
-                                                    technical-designer
-                                                            ↓
-                                                    code-verifier → document-reviewer
-                                                            ↓
-                                                       design-sync → [Stop: Design approval]
-```
-
-## Scope Boundaries
-
-**Included in this skill**:
-- Scope bootstrap: locating seed files so codebase-analyzer receives a populated input
-- Codebase analysis with codebase-analyzer (entry point of the design phase)
-- Scope confirmation with the user, grounded in codebase-analyzer findings
-- ADR creation (if architecture changes, new technology, or data flow changes)
-- Design Doc creation with technical-designer
-- Design Doc verification with code-verifier (before document review)
-- Document review with document-reviewer
-- Design Doc consistency verification with design-sync
-
-**Responsibility Boundary**: This skill completes with design document (ADR/Design Doc) approval. Work planning and beyond are outside scope.
-
-## Execution Flow
+The Design Doc is always the complete implementation design for Medium/Large work. A qualifying ADR batch narrows technical choices before the Design Doc, which retains the complete flow and implementation boundary.
 
 Requirements: $ARGUMENTS
 
-### Step 1: Scope Bootstrap
-codebase-analyzer requires a populated `requirement_analysis.affectedFiles`. Build that seed with a lightweight, orchestrator-local pass — locating files only, with no deep reading and no design decisions:
+## Flow
 
-1. Extract candidate keywords from the user requirements (feature names, domain nouns, identifiers).
-2. Search the repository with Bash (`rg`, or `grep` when `rg` is unavailable) for files matching those keywords.
-3. Collect the matched file paths as the seed `affectedFiles`.
-4. **When the search returns no files**: ask the user which files or modules the design targets (AskUserQuestion), and use that answer as `affectedFiles` before invoking codebase-analyzer. If the user confirms no related code exists, report that codebase-grounded design does not apply and confirm with the user how to proceed.
-5. **When the search returns more than ~20 files**: the keywords are too broad for a focused design scope. Present the most relevant candidates to the user (AskUserQuestion) and confirm the seed `affectedFiles` before invoking codebase-analyzer.
+```text
+requirement source -> codebase-analyzer -> scope/decision confirmation [Stop]
+                                             |
+                               optional ADR batch -> batch review [Stop]
+                                             |
+                 Design Doc -> code-verifier -> Review Resolution
+                                             |
+                     document-reviewer -> design-sync -> approval [Stop]
+```
 
-This step locates seed files only. Reading files in full, tracing dependencies, and analysis remain codebase-analyzer's responsibility.
+Execute each dependent step after its prerequisite evidence exists. Use Review Resolution for every actionable verifier, reviewer, or design-sync finding. Wait at each `[Stop]` for explicit user confirmation.
 
-### Step 2: Codebase Analysis
-Invoke codebase-analyzer with its existing schema. The orchestrator constructs `requirement_analysis` from the Step 1 seed.
+At each `Invoke` below, build the Agent prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-- Invoke **codebase-analyzer** using Agent tool
-  - `subagent_type: "dev-workflows-fullstack:codebase-analyzer"`, `description: "Codebase analysis"`
-  - `prompt`: include
-    - `requirements`: the user requirements verbatim
-    - `requirement_analysis`: a JSON object with all four fields — `affectedFiles` (Step 1 seed), `purpose` (the user requirements), `scale` (provisional value from the Scale Determination table applied to the seed file count), `technicalConsiderations` (`{ constraints: [], risks: [], dependencies: [] }` — the bootstrap performs no analysis, so the object is present with empty lists)
-    - Expected action: analyze the seed files and produce design guidance
+## Step 1: Select the Governing Requirement Source
 
-### Step 3: Scope Confirmation
-After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
+Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.
 
-Execute Skill: requirement-convergence before running the hearing protocol.
+Set `confirmed_requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator-confirmed convergence record unchanged.
 
-First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. In this flow, the orchestrator elicits and judges the fields and records the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). Treat `cost` as already resolved because semantic repository investigation is assigned to codebase-analyzer and entering this recipe decided to design. Carry that object into Step 4 so technical-designer persists it to the Design Doc.
+## Step 2: Collect Decision Material
 
-Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
-- **Target files/modules**: `analysisScope.filesAnalyzed` and the modules they belong to
-- **Affected layers**: layers touched, derived from `analysisScope.categoriesDetected` and `focusAreas`
-- **Unknowns/assumptions**: `limitations` plus any assumptions codebase-analyzer recorded
-- **Questions before design**: open points that need a user answer before design proceeds
+Invoke `dev-workflows-fullstack:codebase-analyzer`:
 
-Ask the user to choose one:
-- **Proceed to design with this scope** — continue to Step 4 (Design Doc)
-- **Correct the scope and re-run** — return to Step 1 with the corrected scope; when the user names the corrected files or modules, use those directly as the Step 1 seed instead of re-deriving them by search
-- **Hold additional hearing, then proceed** — gather the missing answers, then continue to Step 4
-- **Produce an ADR** — when the confirmed scope involves architecture changes, new technology, or data flow changes, continue to Step 4 with technical-designer in ADR mode
+```text
+prd_path: [approved PRD path]
+```
 
-After the user confirms the scope, count the confirmed target files and set the scale from the subagents-orchestration-guide Scale Determination table. This confirmed scale supersedes the Step 2 provisional value and determines the design document.
+or, when no approved PRD exists:
 
-**[STOP]**: Wait for the user's choice before proceeding.
+```text
+requirements: [confirmed requirements verbatim]
+```
 
-### Step 4: Design Document Creation
-Pass the full codebase-analyzer JSON to technical-designer (handoff contract HC-02). ADRs use alternative comparison; Design Docs use Design Convergence.
+Invoke once for the complete confirmed scope. Require one valid JSON result and let the analyzer discover affected paths, responsibility boundaries, and cross-layer contracts. Treat its focus areas as existing-behavior safeguards, not as new requirements.
 
-- Invoke **technical-designer** using Agent tool
-  - For Design Doc: `subagent_type: "dev-workflows-fullstack:technical-designer"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Convergence result: [Step 3 `convergence` object]. Apply the code: prefix to codebase-analyzer fact_ids when filling the Fact Disposition Table."`
-  - For ADR: `subagent_type: "dev-workflows-fullstack:technical-designer"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Present at least two alternatives with trade-offs."`
-- **(Design Doc only)** Invoke **code-verifier** to verify the Design Doc against existing code. Skip for ADR.
-  - `subagent_type: "dev-workflows-fullstack:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
-- **(Design Doc only)** Invoke **document-reviewer** to verify consistency, completeness, and adopted design validity
-  - Treat the preceding code-verifier result as `code_verification` evidence; the document-reviewer result controls correction routing.
-  - `subagent_type: "dev-workflows-fullstack:document-reviewer"`, `description: "Design Doc review"`, `prompt: "Review [Design Doc path] for consistency, completeness, and adopted design validity. doc_type: DesignDoc. review_context: creation. requirements_verbatim: [user requirements verbatim]. confirmed_decisions: [Step 3 confirmed scope and user answers]. codebase_analysis: [codebase-analyzer JSON from Step 2]. code_verification: [code-verifier output from this step]"`
-  - Apply the Review Resolution Gate. When `apply` findings change the Design Doc, invoke technical-designer in update mode, then re-run code-verifier and document-reviewer with `prior_feedback`.
-- **(ADR only)** Invoke **document-reviewer** to verify consistency and completeness
-  - `subagent_type: "dev-workflows-fullstack:document-reviewer"`, `description: "ADR review"`, `prompt: "Review [ADR path] for consistency and completeness. doc_type: ADR. codebase_analysis: [codebase-analyzer JSON from Step 2]"`
-  - Apply the Review Resolution Gate. When `apply` findings change the ADR, invoke technical-designer in update mode and re-run document-reviewer with `prior_feedback`.
-- **(Design Doc only)** Invoke **design-sync** to verify consistency across design documents. Skip for ADR-only.
-  - `subagent_type: "dev-workflows-fullstack:design-sync"`, `description: "Design consistency check"`, `prompt: "Check consistency across all Design Docs in docs/design/. Report conflicts and overlaps."`
-  - Apply the Review Resolution Gate to every reported conflict.
-    - One or more `apply` findings → invoke the named technical designer for each affected Design Doc; re-run code-verifier and document-reviewer for each modified document with the latest verification and `prior_feedback`, then re-run design-sync
-    - Every actionable conflict is `decline` → proceed to the approval stop
-    - Any unresolved `user_decision_required` conflict → stop for user input
+This independent discovery keeps scope and option convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 
-**[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval. For an approved ADR, invoke technical-designer in update mode to set its status to `Accepted` and verify the update before completion.
+## Step 3: Confirm Scope and ADR Decisions
+
+Execute Skill: requirement-convergence. The orchestrator builds and judges the convergence record from the user request and Step 2 evidence.
+
+Judge all four convergence fields. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
+
+Determine Structural Scale from outcomes and responsibility boundaries. File count is supporting evidence only.
+
+Resolve `decisionMaterials.candidateDecisionPoints` against the governing requirement source, `reuse`, and `invalidations`. Remove a point when that evidence already converges on one sufficient approach. For each remaining item, apply documentation-criteria filters in order:
+
+1. Choice requires judgment between at least two credible, materially distinct options inside confirmed scope.
+2. The selection has durable material impact.
+
+Record every passing item as `adrDecisionPoints`; an empty list routes directly to the Design Doc. ADR creation is limited to items that pass both filters.
+
+Present:
+
+- confirmed outcome and requirements;
+- cost band, structural evidence, and remaining unknowns;
+- exclusions;
+- target responsibilities and strongest file evidence;
+- Structural Scale and its boundary rationale;
+- each qualifying ADR decision point with filter evidence, or `none`;
+- material unknowns whose answers change the confirmed outcome or scope.
+
+Offer proceed, or correct scope and re-run analysis. Ask a question only when its answer can change a convergence field, the confirmed outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
+
+## Step 4: Create and Approve an ADR Batch When Needed
+
+When `adrDecisionPoints` is non-empty:
+
+1. Invoke `dev-workflows-fullstack:technical-designer` once with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; `decision_points` as the ordered `adrDecisionPoints` confirmed in Step 3, unchanged; and `decision_materials` as the corresponding objects from Step 2 `decisionMaterials.candidateDecisionPoints`, copied unchanged in that order.
+2. Invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all returned paths]`, and `confirmed_requirement_context`.
+3. Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
+4. Present one batch decision only after an `approved` review. `[Stop: ADR batch approval]`.
+5. After user approval, update each ADR status to `Accepted` and verify the changed status.
+
+## Step 5: Create the Design Doc
+
+Create the complete MVP implementation design from reviewed artifacts and unchanged repository evidence; this keeps the Design Doc traceable to approved sources instead of an orchestrator-authored shadow design.
+
+Invoke `dev-workflows-fullstack:technical-designer` with exactly:
+
+- `document_to_create: DesignDoc`;
+- `confirmed_requirement_context`;
+- `structural_scale`;
+- `adr_paths: [accepted paths or []]`;
+- `codebase_analysis: [complete Step 2 JSON unchanged]`.
+
+The Design Doc owns the full end-to-end design and retains all applicable downstream safeguards in the documentation-criteria template.
+
+## Step 6: Verify and Resolve Repository Claims
+
+Keep verifier observations unchanged so corrections remain traceable to observed repository evidence instead of becoming orchestrator-authored design instructions.
+
+Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and the Design Doc path. Leave `code_paths` absent so future behavior remains intent and current premises and feasibility are verified.
+
+Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to technical-designer in update mode and rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result. Continue only when it contains no unresolved `apply` or `user_decision_required` item.
+
+## Step 7: Review and Approve
+
+Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `confirmed_requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
+
+- `approved`: continue.
+- `needs_revision`: apply Review Resolution, update through technical-designer, then rerun Steps 6-7 for the affected boundary.
+- `rejected`: resolve the governing-source conflict; ask the user only when it changes the product outcome or a major approved decision.
+
+Invoke `dev-workflows-fullstack:design-sync` for consistency with other Design Docs and apply Review Resolution to actionable conflicts. Report `SKIPPED` distinctly when only one Design Doc exists.
+
+Present the Design Doc, accepted ADR paths, resolved limitations/declines, and design-sync result. `[Stop: Design approval]`.
 
 ## Completion Criteria
 
-- [ ] Built the Step 1 scope bootstrap seed (or obtained target files from the user when the search returned none)
-- [ ] Executed codebase-analyzer with a populated `requirement_analysis`
-- [ ] Ran the requirement-convergence hearing and carried its result into design
-- [ ] Confirmed the design scope with the user and set the scale from the confirmed target files
-- [ ] Created appropriate design document (ADR or Design Doc) with technical-designer
-- [ ] Executed code-verifier on Design Doc and passed results to document-reviewer (skip for ADR-only)
-- [ ] Executed document-reviewer and addressed feedback
-- [ ] Executed design-sync for consistency verification (skip for ADR-only)
-- [ ] Obtained user approval for the design document and verified an approved ADR has status `Accepted`
-
-## Output Example
-Design phase completed.
-- Design document: docs/design/[document-name].md or docs/adr/[document-name].md
-- Approval status: User approved
+- Scope and Structural Scale were confirmed from outcomes and responsibility boundaries.
+- ADRs exist only for decision points passing both filters, and the complete batch received one review and approval.
+- A Design Doc exists regardless of whether ADRs were needed.
+- Applicable existing-behavior, contract, assumption, equivalence, and verification safeguards reached the Design Doc.
+- Review Resolution routed only `needs_revision` issues into correction work.
+- All stop points received explicit user confirmation.

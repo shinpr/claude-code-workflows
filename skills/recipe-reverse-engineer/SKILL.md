@@ -17,13 +17,15 @@ Target: $ARGUMENTS
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **Execution Protocol**:
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Process one step at a time**: Execute steps sequentially within each unit (2 → 3 → 4 → 5). Each step's output is the required input for the next step. Complete all steps for one unit before starting the next
-3. **Preserve evidence while bridging outputs** — extract and transform the fields required by the next specialist without changing supported meaning; apply Review Resolution before routing any correction
+3. **Preserve evidence while bridging outputs** — copy the fields required by the next specialist in their declared form; apply Review Resolution before routing any correction
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 **Task Registration**: Register phases first using TaskCreate, then steps within each phase as you enter it. Update status using TaskUpdate.
 
@@ -76,7 +78,7 @@ prompt: |
 
   target_path: $USER_TARGET_PATH
   reference_architecture: $USER_RA_CHOICE
-  focus_area: $USER_FOCUS_AREA (if specified)
+  focus_area: [user-confirmed focus area verbatim, if specified]
 ```
 
 **Store output as**: `$STEP_1_OUTPUT`
@@ -106,8 +108,8 @@ prompt: |
   Operation Mode: reverse-engineer
   External Scope Provided: true
 
-  Feature: $PRD_UNIT_NAME (from $STEP_1_OUTPUT)
-  Description: $PRD_UNIT_DESCRIPTION
+  Feature: $PRD_UNIT_NAME (current Step 1 PRD unit name unchanged)
+  Description: $PRD_UNIT_DESCRIPTION (current Step 1 PRD unit description unchanged)
   Related Files: $PRD_UNIT_COMBINED_RELATED_FILES
   Entry Points: $PRD_UNIT_COMBINED_ENTRY_POINTS
 
@@ -131,17 +133,17 @@ prompt: |
 
   doc_type: prd
   document_path: $STEP_2_OUTPUT
+  unit_inventory: [the current unit's Step 1 unitInventory]
   verbose: false
 ```
 
-Note: Omit `code_paths` — the verifier independently discovers code scope from the document, ensuring independent verification not constrained by scope-discoverer's output.
+Leave `code_paths` absent so the verifier independently locates implementation evidence. `unit_inventory` supplies the completeness baseline while repository evidence supplies the search scope.
 
 **Store output as**: `$STEP_3_OUTPUT`
 
 **Quality Gate**:
-- consistencyScore >= 70 AND verifiableClaimCount >= 20 → proceed to review
-- consistencyScore >= 70 BUT verifiableClaimCount < 20 → re-run verifier (investigation too shallow)
-- consistencyScore < 70 → flag for detailed review
+- `summary.status` is `blocked`, inventory coverage is missing, or counts do not balance → re-run or escalate with the exact unusable input or evidence
+- Any balanced non-blocked result → proceed to review with the complete verifier output; `needs_review` / `inconsistent` and any unaccounted items become explicit review evidence
 
 #### Step 4: Review
 
@@ -156,13 +158,8 @@ prompt: |
 
   doc_type: PRD
   target: $STEP_2_OUTPUT
-  mode: composite
-  code_verification: $STEP_3_OUTPUT
-
-  ## Additional Review Focus
-  - Alignment between PRD claims and verification evidence
-  - Resolution recommendations for each discrepancy
-  - Completeness of undocumented feature coverage
+  review_context: reverse-engineer
+  verification_evidence: $STEP_3_OUTPUT
 ```
 
 **Store output as**: `$STEP_4_OUTPUT`
@@ -187,7 +184,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `code_verification` and `prior_feedback`.
+**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
 
 #### Unit Completion
 
@@ -219,6 +216,8 @@ Map `$STEP_1_OUTPUT` units to Design Doc generation targets, carrying forward:
 - `relatedFiles` → Scope boundary
 - `unitInventory` → Unit Inventory (routes, test files, public exports)
 
+In fullstack mode, partition each unit inventory by the owning path into backend and frontend target inventories. Assign a shared entry to each Design Doc whose public contract must account for it and record that shared reason; otherwise assign it once. Each Step 7 and Step 8 invocation receives its target's inventory, not the unpartitioned combined unit.
+
 **Store output as**: `$STEP_6_OUTPUT`
 
 ### Step 7-10: Per-Unit Processing
@@ -240,12 +239,12 @@ prompt: |
 
   Operation Mode: reverse-engineer
 
-  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
-  Description: $UNIT_DESCRIPTION
+  Feature: $UNIT_NAME (current Step 6 target name unchanged)
+  Description: $UNIT_DESCRIPTION (current Step 6 target description unchanged)
   Primary Files: $UNIT_PRIMARY_MODULES
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
-  Unit Inventory: $UNIT_INVENTORY (routes, test files, public exports from scope discovery)
+  Unit Inventory: $DESIGN_DOC_UNIT_INVENTORY
 
   Parent PRD: $APPROVED_PRD_PATH
 
@@ -267,12 +266,12 @@ prompt: |
 
   Operation Mode: reverse-engineer
 
-  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
-  Description: $UNIT_DESCRIPTION
+  Feature: $UNIT_NAME (current Step 6 target name unchanged)
+  Description: $UNIT_DESCRIPTION (current Step 6 target description unchanged)
   Primary Files: $UNIT_PRIMARY_MODULES
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
-  Unit Inventory: $UNIT_INVENTORY
+  Unit Inventory: $BACKEND_UNIT_INVENTORY
 
   Parent PRD: $APPROVED_PRD_PATH
 
@@ -291,12 +290,12 @@ prompt: |
 
   Operation Mode: reverse-engineer
 
-  Feature: $UNIT_NAME (from $STEP_6_OUTPUT)
-  Description: $UNIT_DESCRIPTION
+  Feature: $UNIT_NAME (current Step 6 target name unchanged)
+  Description: $UNIT_DESCRIPTION (current Step 6 target description unchanged)
   Primary Files: $UNIT_PRIMARY_MODULES
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
-  Unit Inventory: $UNIT_INVENTORY
+  Unit Inventory: $FRONTEND_UNIT_INVENTORY
 
   Parent PRD: $APPROVED_PRD_PATH
   Backend Design Doc: $STEP_7a_OUTPUT
@@ -323,12 +322,17 @@ prompt: |
 
   doc_type: design-doc
   document_path: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
+  unit_inventory: [the current Design Doc target's Step 6 unitInventory]
   verbose: false
 ```
 
-Note: Omit `code_paths` — the verifier independently discovers code scope from the document.
+Leave `code_paths` absent so the verifier independently discovers code scope from the document.
 
 **Store output as**: `$STEP_8_OUTPUT`
+
+**Verification gate (per Design Doc)**:
+- `blocked`, missing `inventoryCoverage`, or unbalanced category counts → correct the invocation/input and rerun; stop for the user only when repository evidence cannot resolve the input defect.
+- Any balanced non-blocked result proceeds to document review. Carry `needs_review`, `inconsistent`, and every unaccounted item as explicit verifier evidence.
 
 #### Step 9: Review
 
@@ -343,9 +347,8 @@ prompt: |
 
   doc_type: DesignDoc
   target: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
-  mode: composite
-  review_context: as-is
-  code_verification: $STEP_8_OUTPUT
+  review_context: reverse-engineer
+  verification_evidence: $STEP_8_OUTPUT
 
   ## Parent PRD
   $APPROVED_PRD_PATH
@@ -378,7 +381,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `code_verification` and `prior_feedback`.
+**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
 
 #### Unit Completion
 
@@ -390,8 +393,9 @@ prompt: |
 ## Final Report
 
 Output summary including:
-- Generated documents table (Type, Name, Consistency Score, Review Status)
+- Generated documents table (Type, Name, Verification Status, Review Status)
 - Action items (critical discrepancies, undocumented features, flagged items)
+- Declined actionable findings with ID, governing reason, and evidence, when any occurred
 - Next steps checklist
 
 ## Error Handling
@@ -400,4 +404,4 @@ Output summary including:
 |-------|--------|
 | Discovery finds nothing | Ask user for project structure hints |
 | Generation fails | Log failure, continue with other units, report in summary |
-| consistencyScore < 50 | Flag for mandatory human review — require explicit human approval |
+| Verification is `inconsistent` or inventory remains unaccounted after correction | Flag for mandatory human review — require explicit human approval |

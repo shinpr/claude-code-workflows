@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **First Action**: Register Steps 1-6 using TaskCreate before any execution.
@@ -26,6 +26,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - Identify target → Clarify changes → Update document → Review → Consistency check
    - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
 3. **Scope**: Complete when updated document receives approval
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 **CRITICAL**: Execute document-reviewer and all stopping points — each serves as a quality gate for document accuracy.
 
@@ -117,7 +119,7 @@ prompt: |
   Existing Document: [path from Step 1]
 
   ## Changes Required
-  [Changes clarified in Step 3]
+  [user-approved Step 3 statements for the sections to update, reason, and expected outcome, copied verbatim]
 
   Update the document to reflect the specified changes.
   Add change history entry.
@@ -140,24 +142,13 @@ prompt: |
 
 **Store output as**: `$CODE_VERIFICATION_OUTPUT`
 
-Invoke document-reviewer:
-```
-subagent_type: document-reviewer
-description: "Review updated document"
-prompt: |
-  Review the following updated document.
+Invoke document-reviewer with the applicable exact shape:
 
-  doc_type: [DesignDoc / PRD / ADR]
-  target: [path from Step 1]
-  mode: composite
-  review_context: update (Design Doc only; omit for PRD/ADR)
-  code_verification: $CODE_VERIFICATION_OUTPUT (Design Doc only, omit for PRD/ADR)
+- Design Doc: `doc_type: DesignDoc`, `target: [path from Step 1]`, `review_context: update`, and `verification_evidence: $CODE_VERIFICATION_OUTPUT`.
+- PRD: `doc_type: PRD` and `target: [path from Step 1]`.
+- ADR: `doc_type: ADRBatch`, `targets: [path from Step 1]`, and `review_context: update`.
 
-  Focus on:
-  - Consistency of updated sections with rest of document
-  - No contradictions introduced by changes
-  - Completeness of change history
-```
+For each type, review consistency of the changed sections and their dependent statements, governing requirements, and change history.
 
 **Store output as**: `$STEP_5_OUTPUT`
 
@@ -223,3 +214,5 @@ prompt: |
 Document update completed.
 - Updated document: docs/design/[document-name].md
 - Approval status: User approved
+
+When findings were declined during review, append their IDs, governing reasons, and evidence to this completion response.

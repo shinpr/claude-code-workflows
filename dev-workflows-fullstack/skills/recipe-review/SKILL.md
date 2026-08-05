@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **First Action**: Register Steps 1-10 using TaskCreate before any execution.
@@ -28,6 +28,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 - **Design-side update path**: DD revision → technical-designer (update mode); DD review → document-reviewer; cross-DD consistency → design-sync (when multiple DDs exist); Re-validation → code-reviewer
 
 Orchestrator invokes sub-agents and passes structured JSON between them. The design-side path applies when the discrepancy reflects code that was correct but the Design Doc became stale, rather than code that violated the Design Doc.
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 Design Doc (uses most recent if omitted): $ARGUMENTS
 
@@ -110,7 +112,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 1. Invoke technical-designer in update mode using Agent tool:
    - `subagent_type`: "dev-workflows-fullstack:technical-designer"
    - `description`: "Design Doc update from review findings"
-   - `prompt`: "Update Design Doc at [path] in update mode. The implementation has diverged in the following ways that the team has decided to ratify in the design rather than in the code: [list of `d`-routed findings with codeLocation and designDocValue from $STEP_2_OUTPUT]. Reflect the current code behavior in the relevant sections and add a history entry."
+   - `prompt`: "Update Design Doc at [path] in update mode. Ratify these findings in the design rather than the code: [complete `d`-routed finding objects from $STEP_2_OUTPUT, unchanged except for their approved routes]. Reflect the current code behavior in the relevant sections and add a history entry."
 
 2. Invoke document-reviewer to verify the updated Design Doc:
    - `subagent_type`: "dev-workflows-fullstack:document-reviewer"
@@ -140,7 +142,7 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:quality-fixer"
 - `description`: "Quality gate check"
-- Pass Step 6 `filesModified` and `mutationEvidence`.
+- Pass Step 6 `mutationEvidence`.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 8: Re-validate code-reviewer
@@ -174,6 +176,9 @@ Security Review:
   Correction review: [status for the re-review scope] (if fixes executed)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
   Notes: [notes from approved_with_notes, if any]
+
+Declined actionable findings:
+- [ID: governing reason — evidence] (only when any were declined)
 
 Remaining issues:
 - [items requiring manual intervention]

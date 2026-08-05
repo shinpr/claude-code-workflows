@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **Execution Protocol**:
@@ -24,6 +24,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - Execute steps defined below
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: See Scope Boundaries below
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 **CRITICAL**: When the user requests test generation, always execute acceptance-test-generator first — it provides the test skeleton that work-planner depends on.
 
@@ -71,11 +73,11 @@ Invoke work-planner using Agent tool:
 Invoke document-reviewer to review the work plan:
 - `subagent_type`: "dev-workflows:document-reviewer"
 - `description`: "Work plan review"
-- `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review the Work Plan's own Implementation Scope, tasks, Completion Criteria, dependencies, execution order, exact source-anchor existence, executable verification, and Review Scope. Governing Documents paths are citation sources only; do not enumerate uncited content into findings or recommendations."
+- `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review the Work Plan's own Implementation Scope, tasks, Completion Criteria, dependencies, execution order, exact source-anchor existence, executable verification, and Review Scope. Governing Documents paths are citation sources only; keep issues limited to violations of cited obligations."
 - Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions, using work-planner in update mode for rerouted corrections. Present the plan for approval only at its convergence condition.
 
 ### Step 5: Present for Approval
-- Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with revised parameters and re-run Step 4.
+- Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with the user's requested changes verbatim and re-run Step 4.
 - Highlight steps with unclear scope or external dependencies and ask the user to confirm
 
 ## Response at Completion
@@ -89,3 +91,5 @@ Planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
+
+When findings were declined during Work Plan review, append their IDs, governing reasons, and evidence to this completion response.

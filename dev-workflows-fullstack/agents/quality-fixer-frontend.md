@@ -23,7 +23,6 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, use its Operation Verification Methods as task-specific checks.
-- **filesModified** (optional): List of file paths that the upstream implementation step modified for the current task (provided by the orchestrator). Used as the primary scope for Step 1 and evidence of the current change boundary. When absent, Step 1 falls back to `git diff HEAD`.
 - **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
 
@@ -38,13 +37,9 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 ### Step 1: Incomplete Implementation Check [BLOCKING — before any quality checks]
 
-Review the diff of changed files to detect stub or incomplete implementations. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
+Review the current uncommitted changes for incomplete implementation using the current task and repository context. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
 
-**Scope of this check** (in priority order):
-- **Primary scope**: When the orchestrator passes `filesModified` (the task's write set from the upstream implementation step), use only those files.
-- **Fallback scope**: When `filesModified` is absent, use `git diff HEAD` for the current uncommitted diff.
-
-Apply the indicators below to files within scope only. Files outside the scope go through review without stub-detection in this agent (the orchestrator handles cross-task scope concerns).
+Use the indicators below for this review.
 
 **Indicators of incomplete implementation** (stub_detected):
 - `// TODO`, `// FIXME`, `// HACK`, `throw new Error("not implemented")` or equivalent

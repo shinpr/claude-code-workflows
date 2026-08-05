@@ -24,6 +24,8 @@ Target problem: $ARGUMENTS
 
 Orchestrator invokes sub-agents and passes structured JSON between them.
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 **Task Registration**: Register execution steps using TaskCreate and proceed systematically. Update status using TaskUpdate.
 
 ## Step 0: Problem Structuring (Before investigator invocation)
@@ -50,25 +52,16 @@ If the following are unclear, **ask with AskUserQuestion** before proceeding:
 ```
 subagent_type: rule-advisor
 description: "Problem essence analysis"
-prompt: Identify the essence and required rules for this problem: [Problem reported by user]
+prompt: Identify the essence and required rules for this problem: [user-reported problem verbatim]
 ```
 
 Confirm from rule-advisor output:
-- `taskAnalysis.mainFocus`: Primary focus of the problem
-- `mandatoryChecks.taskEssence`: Root problem beyond surface symptoms
-- `selectedRules`: Applicable rule sections
+- `taskAnalysis.essence`: Primary purpose of the diagnosis
+- `metaCognitiveGuidance.taskEssence`: Root problem beyond surface symptoms
+- `selectedRules`: Applicable skill and section names
 - `warningPatterns`: Patterns to avoid
 
-### 0.4 Reflecting in investigator Prompt
-
-**Include the following in investigator prompt**:
-1. Problem essence (taskEssence)
-2. Key applicable rules summary (from selectedRules)
-3. Investigation focus (investigationFocus): Convert warningPatterns to "points prone to confusion or oversight in this investigation"
-4. **For change failures, additionally include**:
-   - Detailed analysis of the change content
-   - Commonalities between cause change and affected area
-   - Determination of whether the change is a "correct fix" or "new bug" with comparison baseline selection
+Execute each selected skill by its `skill` name and apply the named sections in the context of the complete skill before constructing the investigator prompt.
 
 ## Diagnosis Flow Overview
 
@@ -96,15 +89,15 @@ description: "Investigate problem"
 prompt: |
   Comprehensively collect information related to the following phenomenon.
 
-  Phenomenon: [Problem reported by user]
-
-  Problem essence: [taskEssence from Step 0.3]
-  Investigation focus: [investigationFocus from Step 0.4]
+  Phenomenon: [Problem reported by user verbatim]
+  Problem essence: [exact `metaCognitiveGuidance.taskEssence` from Step 0.3]
+  Selected rules: [complete `selectedRules` from Step 0.3]
+  Warning patterns: [complete `warningPatterns` from Step 0.3]
 
   [For change failures, additionally include:]
-  Change details: [What was changed]
-  Affected area: [What broke]
-  Shared components: [Commonalities between cause and effect]
+  Change details: [user-confirmed change-details statement verbatim]
+  Affected area: [user-confirmed affected-area statement verbatim]
+  Stated relationship: [user-confirmed relationship statement verbatim]
 ```
 
 **Expected output**: pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
@@ -119,14 +112,14 @@ Review investigation output:
 - [ ] Each failure point has `comparisonAnalysis` (normalImplementation found or explicitly null)
 - [ ] `causeCategory` for each failure point is one of: typo / logic_error / missing_constraint / design_gap / external_factor
 - [ ] `investigationSources` covers at least 3 distinct source types (code, history, dependency, config, document, external)
-- [ ] Investigation covers `investigationFocus` items (when provided in Step 0.4)
+- [ ] Investigation accounts for each supplied `warningPatterns` item
 - [ ] All nodes on mapped paths have been checked (no path was abandoned after finding the first fault)
 
 **If quality insufficient**: Re-run investigator specifying missing items explicitly:
 ```
 prompt: |
   Re-investigate with focus on the following gaps:
-  - Missing: [list specific missing items from quality check]
+  - Missing: [unsatisfied Step 2 Quality Check items, copied as written]
 
   Previous investigation results (for context, do not re-investigate covered areas):
   [Previous investigation JSON]

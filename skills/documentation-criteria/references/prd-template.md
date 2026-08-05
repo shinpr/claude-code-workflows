@@ -25,7 +25,9 @@ So that [expected value/benefit]
 2. [Specific usage scenario 2]
 3. [Specific usage scenario 3]
 
-### User Journey Diagram
+### User Journey Diagram (When Needed)
+
+[Include when prose does not make the material user flow clear; otherwise remove this subsection.]
 ```mermaid
 journey
     title [Feature Name] User Journey
@@ -34,7 +36,9 @@ journey
 ```
 [Map the end-to-end user experience from trigger event to goal completion]
 
-### Scope Boundary Diagram
+### Scope Boundary Diagram (When Needed)
+
+[Include when prose does not make the material in-scope/out-of-scope relationship clear; otherwise remove this subsection.]
 ```mermaid
 C4Context
     Boundary(scope, "In Scope") {

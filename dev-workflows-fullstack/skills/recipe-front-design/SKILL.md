@@ -1,199 +1,155 @@
 ---
 name: recipe-front-design
-description: Execute from codebase analysis to frontend design document creation
+description: Execute from repository evidence through applicable UI Spec and optional ADR decisions to complete frontend Design Doc approval
 disable-model-invocation: true
 ---
 
+Execute Skill: documentation-criteria before document routing or creation.
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
-Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
+Execute Skill: subagents-orchestration-guide before invoking agents or resolving findings.
 
-**Context**: Dedicated to the frontend design phase.
+## Outcome and Ownership
 
-## Orchestrator Definition
+Coordinate a Medium/Large frontend design from evidence to an applicable UI Spec and approved Design Doc. The orchestrator owns requirement convergence, Structural Scale, document routing, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifacts.
 
-**Core Identity**: "I am an orchestrator." (see subagents-orchestration-guide skill)
-
-**Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist. The scope bootstrap locates seed files; the named specialists own semantic investigation and artifact authorship.
-
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
-Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
-
-**Execution Protocol**:
-1. **Invoke named specialists for deliverable production** — pass data between them and validate their results. Step 1 is a recipe-local read-only scope bootstrap limited to locating seed files.
-2. **Run the frontend design flow below in order** (this recipe covers medium/large frontend):
-   - Execute: scope bootstrap → codebase-analyzer → [Stop: Scope confirmation] → external resource hearing → ui-analyzer → ui-spec-designer → technical-designer-frontend → code-verifier → document-reviewer → design-sync
-   - ui-spec-designer, code-verifier, and design-sync apply when the design output is a Design Doc; all are skipped for ADR-only
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
-3. **Scope**: Complete when design documents receive approval
-
-**subagents-orchestration-guide usage**: Use the guide for orchestration principles (Delegation Boundary, Decision precedence, Execution Boundary), the Scale Determination table, and handoff contracts HC-02 onward. This recipe's start order and subagent prompts supersede the guide's requirement-analyzer-origin flow, First Action Rule, HC-01, and Agent-Specific Prompt Content.
-
-**CRITICAL**: Execute document-reviewer, design-sync (for Design Docs), and all stopping points — each serves as a quality gate. Skipping any step risks undetected inconsistencies.
-
-## Workflow Overview
-
-```
-Requirements → scope bootstrap → codebase-analyzer → [Stop: Scope confirmation]
-                                                            ↓
-                                          external resource hearing (frontend domain)
-                                                            ↓
-                                                       ui-analyzer
-                                                            ↓
-                                              ui-spec-designer → [Stop: UI Spec approval]
-                                                            ↓
-                                              technical-designer-frontend
-                                                            ↓
-                                              code-verifier → document-reviewer
-                                                            ↓
-                                                 design-sync → [Stop: Design approval]
-```
-
-## Scope Boundaries
-
-**Included in this skill**:
-- Scope bootstrap: locating seed files so codebase-analyzer receives a populated input
-- Codebase analysis with codebase-analyzer (entry point of the frontend design phase)
-- Scope confirmation with the user, grounded in codebase-analyzer findings
-- External resource hearing per the external-resource-context skill
-- UI fact gathering with ui-analyzer
-- UI Specification creation with ui-spec-designer (prototype code inquiry included)
-- ADR creation (if architecture changes, new technology, or data flow changes)
-- Design Doc creation with technical-designer-frontend
-- Design Doc verification with code-verifier (before document review)
-- Document review with document-reviewer
-- Design Doc consistency verification with design-sync
-
-**Responsibility Boundary**: This skill completes with frontend design document (UI Spec/ADR/Design Doc) approval. Work planning and beyond are outside scope.
-
-## Execution Flow
+The frontend Design Doc always carries the complete implementation design. An ADR batch narrows qualifying technical choices; an applicable UI Spec owns UI structure and behavior that remain to be designed.
 
 Requirements: $ARGUMENTS
 
-### Step 1: Scope Bootstrap
-codebase-analyzer requires a populated `requirement_analysis.affectedFiles`. Build that seed with a lightweight, orchestrator-local pass — locating files only, with no deep reading and no design decisions:
+## Flow
 
-1. Extract candidate keywords from the user requirements (feature names, domain nouns, identifiers).
-2. Search the repository with Bash (`rg`, or `grep` when `rg` is unavailable) for files matching those keywords.
-3. Collect the matched file paths as the seed `affectedFiles`.
-4. **When the search returns no files**: ask the user which files or modules the design targets (AskUserQuestion), and use that answer as `affectedFiles` before invoking codebase-analyzer. If the user confirms no related code exists, report that codebase-grounded design does not apply and confirm with the user how to proceed.
-5. **When the search returns more than ~20 files**: the keywords are too broad for a focused design scope. Present the most relevant candidates to the user (AskUserQuestion) and confirm the seed `affectedFiles` before invoking codebase-analyzer.
+```text
+requirement source -> codebase-analyzer -> scope/document routing confirmation [Stop]
+                                               |
+                             conditional UI analysis -> UI Spec review [Stop]
+                                               |
+                                   optional ADR batch/review [Stop]
+                                               |
+              Design Doc -> code-verifier/Resolution -> document-reviewer
+                                               |
+                               design-sync -> approval [Stop]
+```
 
-This step locates seed files only. Reading files in full, tracing dependencies, and analysis remain codebase-analyzer's responsibility.
+Use Review Resolution for every actionable finding. Wait at each `[Stop]` for explicit user confirmation.
 
-### Step 2: Codebase Analysis
-Invoke codebase-analyzer with its existing schema. The orchestrator constructs `requirement_analysis` from the Step 1 seed.
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-- Invoke **codebase-analyzer** using Agent tool
-  - `subagent_type: "dev-workflows-fullstack:codebase-analyzer"`, `description: "Codebase analysis"`
-  - `prompt`: include
-    - `requirements`: the user requirements verbatim
-    - `requirement_analysis`: a JSON object with all four fields — `affectedFiles` (Step 1 seed), `purpose` (the user requirements), `scale` (provisional value from the Scale Determination table applied to the seed file count), `technicalConsiderations` (`{ constraints: [], risks: [], dependencies: [] }` — the bootstrap performs no analysis, so the object is present with empty lists)
-    - Expected action: analyze the seed files for frontend design guidance (data, contracts, dependencies, quality assurance mechanisms)
+## Step 1: Select the Governing Requirement Source
 
-### Step 3: Scope Confirmation
-After codebase-analyzer returns, confirm the design scope with the user before any design work. This is a recipe-local confirmation step.
+Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.
 
-Execute Skill: requirement-convergence before running the hearing protocol.
+Set `confirmed_requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator-confirmed convergence record unchanged.
 
-First run the requirement-convergence hearing protocol, using the codebase-analyzer findings as the facts it presents. In this flow, the orchestrator elicits and judges the fields and records the result as the skill's `convergence` object (`outcome`, `requirements[]` with layer labels, `nonGoals[]`, plus a readiness label per field). Treat `cost` as already resolved because semantic repository investigation is assigned to codebase-analyzer and ui-analyzer and entering this recipe decided to design. Carry that object into Steps 6 and 7 so ui-spec-designer respects the non-goals and technical-designer-frontend persists it to the Design Doc.
+## Step 2: Collect Repository Decision Material
 
-Then present, sourced from the codebase-analyzer JSON, using AskUserQuestion:
-- **Target files/modules**: `analysisScope.filesAnalyzed` and the modules they belong to
-- **Affected layers**: layers touched, derived from `analysisScope.categoriesDetected` and `focusAreas`
-- **Unknowns/assumptions**: `limitations` plus any assumptions codebase-analyzer recorded
-- **Questions before design**: open points that need a user answer before design proceeds
+Invoke `dev-workflows-fullstack:codebase-analyzer` once for the complete confirmed scope with exactly `prd_path: [approved PRD path]`, or `requirements: [confirmed requirements verbatim]` when no approved PRD exists.
 
-Ask the user to choose one:
-- **Proceed to design with this scope** — continue to Step 4
-- **Correct the scope and re-run** — return to Step 1 with the corrected scope; when the user names the corrected files or modules, use those directly as the Step 1 seed instead of re-deriving them by search
-- **Hold additional hearing, then proceed** — gather the missing answers, then continue to Step 4
-- **Produce an ADR** — when the confirmed scope involves architecture changes, new technology, or data flow changes, continue through the flow with an ADR as the design document; Step 6 (UI Specification) is skipped for ADR
+Require one valid JSON result and let the analyzer discover affected paths, responsibility boundaries, and cross-layer contracts. Treat `focusAreas` as existing-behavior safeguards rather than requirements.
 
-After the user confirms the scope, count the confirmed target files and set the scale from the subagents-orchestration-guide Scale Determination table. This confirmed scale supersedes the Step 2 provisional value and determines the design document.
+This independent discovery keeps scope and option convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 
-**[STOP]**: Wait for the user's choice before proceeding.
+## Step 3: Determine UI Spec Applicability and Resolve UI Evidence
 
-### Step 4: External Resource Hearing
-Execute Skill: external-resource-context before running the hearing protocol.
+Apply the documentation-criteria UI Spec creation condition. When it does not apply, skip UI analysis and Step 5.
 
-Run the hearing protocol per the external-resource-context skill (frontend domain). The orchestrator owns this step because it requires AskUserQuestion. The skill defines file-existence branching, two-phase hearing (structured axes + self-declaration), and persistence to `docs/project-context/external-resources.md`.
+When a UI Spec applies, load and apply `external-resource-context` only when an external resource can change the current UI direction, component contract, or verification boundary. Otherwise use `external_resource_refs: []`.
 
-### Step 5: UI Fact Gathering
-Invoke ui-analyzer to gather UI facts. It reads the project-tier external-resources file, fetches external UI sources via the inherited MCP/URL access methods, then analyzes the UI codebase. Its output complements the codebase-analyzer output from Step 2 (data, contracts, dependencies, quality assurance mechanisms).
+Ask for prototype code only when it supplies an unresolved approved UI decision or the target cannot be determined from requirements, repository UI, and recorded resources. A missing optional prototype is not a stop condition.
 
-- Invoke **ui-analyzer** using Agent tool
-  - `subagent_type: "dev-workflows-fullstack:ui-analyzer"`, `description: "UI fact gathering"`
-  - `prompt`: include
-    - `requirements`: the user requirements
-    - `requirement_analysis`: a JSON object with all four fields — `affectedFiles` (`analysisScope.filesAnalyzed` from Step 2 codebase-analyzer), `purpose` (the user requirements), `scale` (the Step 3 confirmed scale), `technicalConsiderations` (`{ constraints: [], risks: [], dependencies: [] }`)
-    - Expected action: read `docs/project-context/external-resources.md`, fetch external UI sources via the declared access methods, and analyze the existing UI codebase
+Invoke `dev-workflows-fullstack:ui-analyzer` with exactly one governing source:
 
-Both outputs (codebase-analyzer JSON from Step 2 and ui-analyzer JSON from Step 5) are reused by ui-spec-designer in Step 6 and by technical-designer-frontend in Step 7.
+```text
+prd_path: [approved PRD path]
+```
 
-### Step 6: UI Specification Phase
-**When the design document is a Design Doc** (this step is skipped for ADR-only): after Step 5 output is received, ask the user about prototype code:
+or, when no approved PRD exists:
 
-**Ask the user**: "Do you have prototype code for this feature? If so, please provide the path to the code. The prototype will be placed in `docs/ui-spec/assets/` as reference material for the UI Spec."
+```text
+requirements: [confirmed requirements verbatim]
+```
 
-- **[STOP]**: Wait for user response about prototype code availability
+Add only an existing `ui_spec_path`, a decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`.
 
-Then create the UI Specification:
-- Invoke **ui-spec-designer** using Agent tool
-  - `subagent_type: "dev-workflows-fullstack:ui-spec-designer"`
-  - `description: "UI Spec creation"`
-  - Build the prompt by including:
-    - Source: an existing PRD in `docs/prd/` when one exists for this feature; otherwise the user requirements with the Step 2 codebase-analyzer JSON and the Step 3 confirmed scope
-    - The Step 3 `convergence` object's `nonGoals` and `speculative` requirements, as capabilities the UI Spec leaves out
-    - `ui_analysis`: ui-analyzer JSON from Step 5 (includes externalResources fetched_summary and componentStructure / propsPatterns / cssLayout / etc.)
-    - Prototype path when provided
-  - Example (existing PRD): `prompt: "Create UI Spec from PRD at [path]. ui_analysis: [JSON from Step 5 ui-analyzer]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/."`
-  - Example (no PRD): `prompt: "Create UI Spec from these requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. Confirmed scope: [Step 3 confirmed scope]. ui_analysis: [JSON from Step 5 ui-analyzer]. Prototype code is at [user-provided path]. Place prototype in docs/ui-spec/assets/{feature-name}/."`
-- Invoke **document-reviewer** to verify UI Spec
-  - `subagent_type: "dev-workflows-fullstack:document-reviewer"`, `description: "UI Spec review"`, `prompt: "doc_type: UISpec target: [ui-spec path] Review for consistency and completeness"`
-- Apply the Review Resolution Gate before presenting the UI Spec. If corrections are applied, re-run document-reviewer with `prior_feedback`.
-- **[STOP]**: Present UI Spec for user approval
+```text
+ui_spec_path: [existing UI Spec path]
+prototype_path: [decision-relevant path]
+external_resource_refs: [selected references or []]
+```
 
-### Step 7: Design Document Creation Phase
-Pass the Step 2 codebase-analyzer output and the Step 5 ui-analyzer output to technical-designer-frontend. ADRs use alternative comparison; Design Docs use Design Convergence.
-- Invoke **technical-designer-frontend** using Agent tool
-  - For ADR: `subagent_type: "dev-workflows-fullstack:technical-designer-frontend"`, `description: "ADR creation"`, `prompt: "Create ADR for [technical decision]. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. UI analysis: [ui-analyzer JSON from Step 5]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Present at least two alternatives with trade-offs."`
-  - For Design Doc: `subagent_type: "dev-workflows-fullstack:technical-designer-frontend"`, `description: "Design Doc creation"`, `prompt: "Create Design Doc based on the requirements. Requirements: [user requirements verbatim]. Codebase analysis: [codebase-analyzer JSON from Step 2]. UI analysis: [ui-analyzer JSON from Step 5]. Confirmed scope and user answers: [Step 3 confirmed scope and user answers]. Convergence result: [Step 3 `convergence` object]. UI Spec is at [ui-spec path]. Inherit component structure and state design from UI Spec. Apply the code: prefix to codebase-analyzer fact_ids and ui: prefix to ui-analyzer fact_ids when filling the Fact Disposition Table."`
-- **(Design Doc only)** Invoke **code-verifier** to verify Design Doc against existing code. Skip for ADR.
-  - `subagent_type: "dev-workflows-fullstack:code-verifier"`, `description: "Design Doc verification"`, `prompt: "doc_type: design-doc document_path: [Design Doc path] Verify Design Doc against existing code."`
-- **(Design Doc only)** Invoke **document-reviewer** to verify consistency, completeness, and adopted design validity
-  - Treat the preceding code-verifier result as `code_verification` evidence; the document-reviewer result controls correction routing.
-  - `subagent_type: "dev-workflows-fullstack:document-reviewer"`, `description: "Design Doc review"`, `prompt: "Review [Design Doc path] for consistency, completeness, and adopted design validity. doc_type: DesignDoc. review_context: creation. requirements_verbatim: [user requirements verbatim]. confirmed_decisions: [Step 3 confirmed scope and user answers]. codebase_analysis: [codebase-analyzer JSON from Step 2]. ui_analysis: [ui-analyzer JSON from Step 5]. code_verification: [code verification output from this step]"`
-  - Apply the Review Resolution Gate. When `apply` findings change the Design Doc, invoke technical-designer-frontend in update mode, then re-run code-verifier and document-reviewer with `prior_feedback`.
-- **(ADR only)** Invoke **document-reviewer** to verify consistency and completeness
-  - `subagent_type: "dev-workflows-fullstack:document-reviewer"`, `description: "ADR review"`, `prompt: "Review [ADR path] for consistency and completeness. doc_type: ADR. codebase_analysis: [codebase-analyzer JSON from Step 2]. ui_analysis: [ui-analyzer JSON from Step 5]"`
-  - Apply the Review Resolution Gate. When `apply` findings change the ADR, invoke technical-designer-frontend in update mode and re-run document-reviewer with `prior_feedback`.
+## Step 4: Confirm Scope and ADR Decisions
 
-### Step 8: Design Consistency Verification
-- **(Design Doc only)** Invoke **design-sync** using Agent tool. Skip for ADR-only.
-  - `subagent_type: "dev-workflows-fullstack:design-sync"`, `description: "Design consistency check"`, `prompt: "Check consistency across all Design Docs in docs/design/. Report conflicts and overlaps."`
-  - Apply the Review Resolution Gate to every reported conflict.
-    - One or more `apply` findings → invoke the named technical designer for each affected Design Doc; re-run code-verifier and document-reviewer for each modified document with the latest verification and `prior_feedback`, then re-run design-sync
-    - Every actionable conflict is `decline` → proceed to the approval stop
-    - Any unresolved `user_decision_required` conflict → stop for user input
-- **[STOP]**: Present the design document, plus design-sync results for a Design Doc, and obtain user approval. For an approved ADR, invoke technical-designer-frontend in update mode to set its status to `Accepted` and verify the update before completion
+Execute Skill: requirement-convergence. Build and judge the convergence record from the governing requirement source, repository analysis, and applicable UI analysis.
+
+Judge all four convergence fields. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
+
+Determine Structural Scale from outcomes and responsibility boundaries; file count is supporting evidence only. Resolve candidate decision points against the governing source, `reuse`, and `invalidations`; applicable UI facts may support or contradict the remaining options. Apply documentation-criteria Choice and Durability filters only after this convergence and record passing points as `adrDecisionPoints`; an empty list is valid.
+
+Present the confirmed outcome and requirements, cost band with its structural evidence and unknowns, exclusions, affected responsibilities, Structural Scale, UI Spec applicability, and qualifying ADR points or none. Offer proceed, or correct and re-run. Ask a question only when its answer can change a convergence field, the confirmed outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
+
+## Step 5: Create and Approve the UI Spec
+
+Run this step only when Step 3 determined that a UI Spec applies.
+
+Invoke `dev-workflows-fullstack:ui-spec-designer` with exact inputs:
+
+```text
+confirmed_requirement_context: [the value fixed in Step 1]
+ui_analysis: [complete Step 3 UI analyzer JSON unchanged]
+codebase_analysis: [complete Step 2 codebase-analyzer JSON unchanged]
+prototype_path: [decision-relevant path from Step 3 exactly, or absent]
+external_resource_refs: [selected Step 3 reference records unchanged, or []]
+```
+
+Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: UISpec` and `target` as the UI Spec path returned by ui-spec-designer, unchanged. `approved` presents the UI Spec with `issues: []`; `needs_revision` applies Review Resolution and re-reviews after correction; `rejected` resolves the governing-source conflict before another review. `[Stop: UI Spec approval]`.
+
+## Step 6: Create and Approve an ADR Batch When Needed
+
+When `adrDecisionPoints` is non-empty:
+
+1. Route shared/backend-owned points to technical-designer first, then frontend-owned points to technical-designer-frontend. Invoke each owner with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; its ordered `decision_points` confirmed in Step 4, unchanged; `decision_materials` as the corresponding Step 2 `decisionMaterials.candidateDecisionPoints` objects copied unchanged in that order; and `ui_spec_path` only when the approved UI Spec constrains that owner's decision. Run owner batches serially so each batch allocates ADR numbers after the preceding batch exists.
+2. Collect all returned paths and invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all paths]`, and `confirmed_requirement_context`. The reviewer follows the approved UI Spec cited by the ADRs when it can change the decision review.
+3. Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
+4. Present one batch decision only after an `approved` review. `[Stop: ADR batch approval]`.
+5. After user approval, set every ADR status to `Accepted` and verify the status update.
+
+## Step 7: Create the Frontend Design Doc
+
+Create the complete frontend MVP implementation design from reviewed artifacts and unchanged repository/UI evidence; this keeps the Design Doc traceable to approved sources instead of an orchestrator-authored shadow design.
+
+Invoke `dev-workflows-fullstack:technical-designer-frontend` with exactly:
+
+- `document_to_create: DesignDoc`;
+- `confirmed_requirement_context`;
+- `structural_scale`;
+- applicable approved `ui_spec_path` exactly and selected external-resource reference records unchanged;
+- `adr_paths: [accepted paths or []]`;
+- `codebase_analysis: [complete Step 2 JSON unchanged]`;
+- `ui_analysis: [complete Step 3 JSON unchanged; omit when absent]`.
+
+The Design Doc owns the full component-to-service implementation and retains all applicable downstream safeguards.
+
+## Step 8: Verify, Review, and Approve
+
+Keep verifier observations unchanged so corrections remain traceable to observed repository evidence instead of becoming orchestrator-authored design instructions.
+
+Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and `document_path` as the Design Doc path returned by technical-designer-frontend, unchanged, leaving `code_paths` absent so planned behavior remains intent while current premises and feasibility are verified. Apply Review Resolution before document review; update through technical-designer-frontend, rerun verification after an applied correction, and build one `verification_evidence` object from the latest result. Continue when every remaining discrepancy carries a resolved disposition.
+
+Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`; `target` as the returned Design Doc path unchanged; `review_context: creation`; original user requirements unchanged as `requirements_verbatim`; the Step 1 `confirmed_requirement_context` unchanged; the same unchanged `codebase_analysis` and optional `ui_analysis` supplied to the designer; and Step 8 `verification_evidence` unchanged. The reviewer follows an applicable UI Spec and accepted ADR paths cited by the Design Doc only when they can change an in-scope finding.
+
+- `approved`: continue.
+- `needs_revision`: apply Review Resolution, update through technical-designer-frontend, and rerun verification/review for the affected boundary.
+- `rejected`: resolve the governing-source conflict; ask the user only when product outcome or a major approved decision must change.
+
+Invoke `dev-workflows-fullstack:design-sync` with `source_design` as the returned Design Doc path unchanged, apply Review Resolution to actionable conflicts, and report `SKIPPED` distinctly when only one Design Doc exists.
+
+Present the applicable UI Spec, Design Doc, accepted ADR paths, resolved limitations/declines, and sync result. `[Stop: Design approval]`.
 
 ## Completion Criteria
 
-- [ ] Built the Step 1 scope bootstrap seed (or obtained target files from the user when the search returned none)
-- [ ] Executed codebase-analyzer with a populated `requirement_analysis`
-- [ ] Ran the requirement-convergence hearing and carried its result into design
-- [ ] Confirmed the design scope with the user and set the scale from the confirmed target files
-- [ ] Executed external resource hearing per the external-resource-context skill (file written or update explicitly skipped by user)
-- [ ] Executed ui-analyzer; codebase-analyzer (Step 2) and ui-analyzer (Step 5) outputs reused by ui-spec-designer and technical-designer-frontend
-- [ ] Created UI Specification with ui-spec-designer (when applicable) — its External Resources Used section is filled
-- [ ] Created appropriate design document (ADR or Design Doc) with technical-designer-frontend — its External Resources Used subsection is filled when present
-- [ ] Executed code-verifier on Design Doc and passed results to document-reviewer (skip for ADR-only)
-- [ ] Executed document-reviewer and addressed feedback
-- [ ] Executed design-sync for consistency verification (skip for ADR-only)
-- [ ] Obtained user approval for the design document and verified an approved ADR has status `Accepted`
-
-## Output Example
-Frontend design phase completed.
-- UI Specification: docs/ui-spec/[feature-name]-ui-spec.md or N/A — ADR-only
-- Design document: docs/design/[document-name].md or docs/adr/[document-name].md
-- Approval status: User approved
+- External and prototype evidence was requested only when it controlled a current decision.
+- Scope and Structural Scale were confirmed from outcomes and responsibility boundaries.
+- ADRs exist only for points passing both filters, and the batch received one review and approval.
+- An applicable UI Spec and a complete frontend Design Doc exist regardless of ADR need.
+- Applicable existing UI behavior, contracts, assumptions, states, equivalence, and verification safeguards reached the Design Doc.
+- Review Resolution routed only `needs_revision` issues into correction work.
+- All stop points received explicit user confirmation.

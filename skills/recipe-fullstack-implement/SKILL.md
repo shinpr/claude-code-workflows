@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Required Reference
@@ -28,6 +28,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 2. **Follow monorepo-flow.md** for the design phase (multiple Design Docs, design-sync, vertical slicing)
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
+
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 **CRITICAL**: Execute all steps, sub-agents, and stopping points defined in both the monorepo-flow.md reference and subagents-orchestration-guide skill.
 
@@ -56,11 +58,11 @@ When continuing existing flow, verify:
 
 Execute Skill: external-resource-context before running the external resource hearing in monorepo-flow.md.
 
-**Follow monorepo-flow.md** for the complete design-through-planning flow (Steps 1-17 for Large scale, Steps 1-15 for Medium scale). The flow table in that reference defines every step, agent invocation, parallelization rule, and stop point.
+**Follow monorepo-flow.md** for the current Large or Medium design-through-planning flow. Its Large table and Medium step range define the required steps, agent invocations, and stop points.
 
 Key points to enforce as the orchestrator runs the flow:
 - Create separate Design Docs per layer (see monorepo-flow.md "Layer Context in Design Doc Creation")
-- Frontend Design Doc references the approved UI Spec (pass UI Spec path to technical-designer-frontend) and reuses the ui-analyzer output produced earlier in the flow
+- Frontend Design Doc references an applicable approved UI Spec and reuses applicable ui-analyzer output produced earlier in the flow
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows:work-planner") with vertical slicing instruction
@@ -74,13 +76,12 @@ After scale determination, use TaskCreate to register each design/planning step 
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
+Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts. Determine Structural Scale from the confirmed outcome and responsibility boundaries, then run the requirement-convergence hearing protocol before presenting anything else.
 
 When user responds to questions:
-- If any `convergence` field is below `ready` → Re-execute requirement-analyzer with the hearing answers so the record is re-judged. Repeat until every field is `ready` or `weak-but-explicit`
-- If response matches any `scopeDependencies.question` → Check `impact` for scale change
-- If scale changes → Re-execute requirement-analyzer with updated context
-- If `confidence: "confirmed"` or no scale change → Proceed to next step
+- Update the orchestrator-owned convergence record and Structural Scale judgment from the answer.
+- Re-execute requirement-analyzer only when the answer changes the repository analysis target or scope evidence.
+- Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 
 ## Subagents Orchestration Guide Compliance Execution
 
@@ -90,7 +91,7 @@ When user responds to questions:
 - [ ] Identified current progress position
 - [ ] Clarified next step
 - [ ] Recognized stopping points
-- [ ] codebase-analyzer included before each Design Doc creation
+- [ ] one complete-scope codebase-analyzer result included before Design Doc creation
 - [ ] code-verifier included before document-reviewer for each Design Doc
 - [ ] **Environment check**: Can I execute per-task commit cycle?
   - If commit capability unavailable → Escalate before autonomous mode
@@ -123,10 +124,10 @@ Escalate when the required fix or investigation falls outside that scope.
 
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
-2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
+2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
    - `approved` → Continue to rule 3
    - `blocked` → Escalate to user
-   - `needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; return rerouted corrections to the layer executor and continue to rule 3 only at convergence
+   - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate, return rerouted corrections to the layer executor, and continue to rule 3 only when correction re-review `prior_feedback_reconciliation` establishes convergence
 3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
@@ -150,7 +151,9 @@ Before the completion report, delete the implementation task files this recipe c
 - Delete every file matching `docs/plans/tasks/{plan-name}-backend-task-*.md` and `docs/plans/tasks/{plan-name}-frontend-task-*.md` (the `{plan-name}` derived from the work plan path used in this run)
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
-If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.
+If task-file deletion fails, include the filesystem error in the completion report and finish the report with the implementation result.
+
+In the completion report, list each declined actionable finding with its ID, governing reason, and evidence when any occurred.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows:work-planner"), communicate:
