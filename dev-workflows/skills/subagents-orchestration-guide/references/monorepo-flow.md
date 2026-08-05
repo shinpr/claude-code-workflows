@@ -130,6 +130,5 @@ task-decomposer follows the Work Plan and routes by executor lane:
 |------------------|----------|---------------|
 | `*-backend-task-*` | task-executor | quality-fixer |
 | `*-frontend-task-*` | task-executor-frontend | quality-fixer-frontend |
-| shared `*-task-*` | task-executor | quality-fixer |
 
 When changed integration/E2E tests require review, invoke integration-test-reviewer after the executor and before the quality fixer. All other execution, Review Resolution, and stop rules follow the parent orchestration guide.

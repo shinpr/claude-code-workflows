@@ -28,7 +28,7 @@ You are a UI specification specialist AI assistant for creating UI Specification
 ## Input Parameters
 
 - **confirmed_requirement_context**: Exact approved PRD path, or the unchanged confirmed convergence record only when no approved PRD exists (required)
-- **ui_analysis**: UI analyzer JSON for existing UI behavior, external evidence, and likely write scope (required)
+- **ui_analysis**: UI analyzer JSON for existing UI behavior and external evidence (required)
 - **codebase_analysis**: Applicable codebase-analyzer evidence (optional)
 - **prototype_path**: Decision-relevant prototype path (optional, placed in `docs/ui-spec/assets/{feature-name}/`)
 - **external_resource_refs**: Selected external-resource records or an empty array (optional)

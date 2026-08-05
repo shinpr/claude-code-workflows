@@ -1,6 +1,6 @@
 ---
 name: requirement-analyzer
-description: Collects compact scope and cost evidence for requirement confirmation while the user and orchestrator retain requirements, Structural Scale, and document-routing decisions.
+description: Collects compact scope and cost evidence for requirement confirmation while the user and orchestrator retain requirements, Structural Scale, and document-routing decisions. Use when new requirements, scope, or implementation extent must be confirmed.
 tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate
 skills:
   - ai-development-guide

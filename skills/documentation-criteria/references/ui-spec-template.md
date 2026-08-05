@@ -73,7 +73,7 @@ Map confirmed acceptance criteria to prototype references, preserving existing A
 
 #### State x Display Matrix
 
-Add one row per state required by confirmed requirements, approved UI direction, preserved behavior, or repository/design-system rules. Do not add a state only to complete a generic set.
+The matrix contains one row for each state supported by confirmed requirements, approved UI direction, preserved behavior, or repository/design-system rules.
 
 | State | Trigger | Display | Interaction / Recovery | Evidence |
 |-------|---------|---------|------------------------|----------|

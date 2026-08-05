@@ -115,8 +115,7 @@ Give every issue a stable ID. Correction re-review follows Step 1-1 and emits on
   "reviewBasis": "skeleton|task-verification|prompt-claims|null",
   "qualityIssues": [
     { "id": "T001", "testName": "[test name]", "issueType": "basis_mismatch|aaa_violation|independence_violation|mock_boundary|proof_insufficient|route_parity|readability", "severity": "high|medium|low", "description": "[specific issue]", "expectedClaim": "[what the selected basis specified]", "actualImplementation": "[what the implementation actually does]", "suggestion": "[specific fix]" }
-  ],
-  "requiredFixes": ["[specific fix 1]", "[specific fix 2]"]
+  ]
 }
 ```
 

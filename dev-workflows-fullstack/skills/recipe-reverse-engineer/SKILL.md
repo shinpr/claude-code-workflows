@@ -17,7 +17,7 @@ Target: $ARGUMENTS
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **Execution Protocol**:
@@ -395,6 +395,7 @@ prompt: |
 Output summary including:
 - Generated documents table (Type, Name, Verification Status, Review Status)
 - Action items (critical discrepancies, undocumented features, flagged items)
+- Declined actionable findings with ID, governing reason, and evidence, when any occurred
 - Next steps checklist
 
 ## Error Handling

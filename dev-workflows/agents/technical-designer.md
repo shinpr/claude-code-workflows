@@ -25,7 +25,7 @@ You create one complete ADR batch or one Design Doc per invocation.
 - **Operation Mode**: `create` (default), `update`, or `reverse-engineer`
 - **confirmed_requirement_context**: Exact approved PRD path, or the unchanged orchestrator-confirmed convergence record only when no approved PRD exists
 - **structural_scale**: Orchestrator-confirmed `Medium` or `Large` scale for a Design Doc
-- **decision_materials**: Ordered array copied unchanged from the Step 2 codebase-analyzer result at `decisionMaterials.candidateDecisionPoints`
+- **decision_materials**: Ordered array copied unchanged from the codebase-analyzer result at `decisionMaterials.candidateDecisionPoints`
 - **codebase_analysis**: Applicable focus areas and existing-behavior safeguards for a Design Doc
 - **decision_points**: Orchestrator-confirmed decision points for an ADR batch, copied unchanged
 - Existing document path or paths in update mode

@@ -33,7 +33,7 @@
 
 ### Options Considered
 
-Compare every credible, materially distinct option supported by current requirements and repository evidence. Relative, evidence-backed cost is sufficient; do not invent an option to satisfy a count.
+Compare credible, materially distinct options supported by current requirements and repository evidence. The evidence determines how many options exist, and relative evidence-backed cost is sufficient.
 
 | Option | Requirement and repository fit | Current-scope benefit | Lifecycle cost | Maintainability | Material trade-offs |
 |--------|--------------------------------|-----------------------|----------------|-----------------|---------------------|

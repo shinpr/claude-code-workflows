@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Required Reference
@@ -124,11 +124,11 @@ Escalate when the required fix or investigation falls outside that scope.
 
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
-2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
+2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, derive `changedTestFiles` from the current `git status --short` write set and invoke integration-test-reviewer with it, `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
    - `approved` → Continue to rule 3
    - `blocked` → Escalate to user
-   - `needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; return rerouted corrections to the layer executor and continue to rule 3 only at convergence
-3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+   - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate, return rerouted corrections to the layer executor, and continue to rule 3 only when correction re-review `prior_feedback_reconciliation` establishes convergence
+3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); it derives the uncommitted write set from repository status
 4. Check quality-fixer response:
    - `stub_detected` → Return to executor with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
@@ -152,6 +152,8 @@ Before the completion report, delete the implementation task files this recipe c
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
 If task-file deletion fails, include the filesystem error in the completion report and finish the report with the implementation result.
+
+In the completion report, list each declined actionable finding with its ID, governing reason, and evidence when any occurred.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows:work-planner"), communicate:

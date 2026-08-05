@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **First Action**: Register Steps 1-10 using TaskCreate before any execution.
@@ -142,7 +142,7 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows:quality-fixer"
 - `description`: "Quality gate check"
-- Pass Step 6 `filesModified` and `mutationEvidence`.
+- Pass Step 6 `mutationEvidence`; quality-fixer derives the uncommitted correction write set from repository status.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 8: Re-validate code-reviewer
@@ -176,6 +176,9 @@ Security Review:
   Correction review: [status for the re-review scope] (if fixes executed)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
   Notes: [notes from approved_with_notes, if any]
+
+Declined actionable findings:
+- [ID: governing reason — evidence] (only when any were declined)
 
 Remaining issues:
 - [items requiring manual intervention]

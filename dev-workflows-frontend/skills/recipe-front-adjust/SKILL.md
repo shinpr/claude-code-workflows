@@ -5,7 +5,6 @@ disable-model-invocation: true
 ---
 
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
-Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
 **Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
 
@@ -116,8 +115,7 @@ When the project-tier file declares no automated verification mechanism for an a
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
   - Pass `qualityCommand` when available (caller first, otherwise current task).
-  - Pass `filesModified: [list of files edited in this adjustment unit]` as the review scope.
-  - Example: `prompt: "filesModified: [src/components/Card/Card.tsx, src/components/Card/Card.module.css]. Run quality checks across the listed files."`
+  - The agent derives the adjustment unit's uncommitted write set from repository status.
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
@@ -136,7 +134,7 @@ Then loop back to Step 5 for the next file until all units are committed.
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context presented and confirmed
 - [ ] All adjustment units edited and verified using the project's declared verification mechanism (manual confirmation when no automated mechanism is declared)
-- [ ] Each adjustment unit passed quality-fixer-frontend with explicit `filesModified` scoping
+- [ ] Each adjustment unit passed quality-fixer-frontend before commit
 - [ ] Each adjustment unit committed
 
 ## Output Example

@@ -15,7 +15,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 **Execution Protocol**:
@@ -94,3 +94,5 @@ Frontend planning phase completed.
 
 Please provide separate instructions for implementation.
 ```
+
+When findings were declined during Work Plan review, append their IDs, governing reasons, and evidence to this completion response.

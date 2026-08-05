@@ -78,7 +78,7 @@ Before presenting an artifact at an approval stop, read its current version and 
 | Design | After design-sync completes consistency verification | Approve Design Doc |
 | Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) completes | Batch approval for implementation phase |
 
-**After batch approval**: Autonomous execution continues until completion or an escalation condition is reached.
+**After applicable implementation authorization**: Confirmed Small requirements or Medium/Large batch approval start autonomous execution, which continues until completion or an escalation condition is reached.
 
 ## Scale Determination and Document Requirements
 
@@ -105,36 +105,6 @@ Tool choice does not define responsibility: the orchestrator may use any availab
 ### Prompt Construction Rule
 The active workflow's input contract is already optimized to provide the specialist with the context for its owned result. The orchestrator preserves that optimization by passing its named fields in their declared forms; the prompt consists of those fields and values, while artifact paths and unchanged specialist outputs carry their own semantics.
 
-### Agent Input Contracts
-
-The active workflow's mode-specific field list is exhaustive. This table summarizes those contracts.
-
-Whenever a contract names `confirmed_requirement_context`, use the approved PRD path exactly. Only when no approved PRD exists, use the confirmed convergence record unchanged.
-
-| Specialist | Input contract summary |
-|---|---|
-| requirement-analyzer | `requirements` and optional `context`; on re-invocation, `context` contains only answers that change the analysis target or scope evidence. |
-| codebase-analyzer | Exactly one governing source: approved `prd_path`, or confirmed `requirements` when no approved PRD exists. Invoke once for the complete confirmed scope; the analyzer discovers affected paths, responsibility boundaries, and cross-layer contracts. |
-| ui-analyzer | The same governing-source rule, plus an existing `ui_spec_path`, a decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`. Invoke only when documentation-criteria requires a UI Spec. |
-| ui-spec-designer | `confirmed_requirement_context`, complete `ui_analysis`, applicable `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`. |
-| technical-designer / technical-designer-frontend | For `ADRBatch`: `document_to_create`, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. For `DesignDoc`: `document_to_create`, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and `adr_paths`; frontend/fullstack workflows add only their named UI or layer artifact paths. |
-| task-executor | The task file path when one exists; otherwise the direct scope, governing sources, target paths, and observable verification condition. |
-
-## Structured Response Specification
-
-Subagents respond in JSON format. Key fields for orchestrator decisions:
-- **requirement-analyzer**: requestSignals, scopeEvidence, costEvidence, and questions. The orchestrator owns convergence, Structural Scale, and ADR need
-- **codebase-analyzer**: analysisScope, focusAreas, decisionMaterials, applicable data/transformation/quality evidence, unknowns, and limitations; HC-02 defines downstream use
-- **ui-analyzer**: pass its full JSON unchanged with raw `fact_id` values; the consumer applies the `ui:` prefix when merging with codebase facts
-- **code-verifier**: `summary.status` (consistent/mostly_consistent/needs_review/inconsistent/blocked), discrepancies[], limitations[], and optional inventoryCoverage. Pre-implementation verifies current premises and feasibility; post-implementation verifies changed code against the governing Design Doc or Work Plan
-- **task-executor**: status (escalation_needed/completed), escalation_type (design_compliance_violation/similar_function_found/investigation_target_not_found/out_of_scope_file/dependency_version_uncertain/test_environment_not_ready), changeSummary, testsAdded, requiresTestReview
-- **quality-fixer**: Input: optional `task_file`, plus the executor's `filesModified` and `mutationEvidence`; pass `qualityCommand` only when the caller or task supplies one. Status: approved/stub_detected/blocked. `stub_detected` → route back to task-executor with `incompleteImplementations[]` details for completion, then re-run quality-fixer. `blocked` → discriminate by `reason` field: `"Cannot determine due to unclear specification"` → read `blockingIssues[]` for specification details; `"Execution prerequisites not met"` → read `missingPrerequisites[]` with `resolutionSteps` — present these to the user as actionable next steps
-- **document-reviewer**: `verdict.decision` (approved/needs_revision/rejected)
-- **design-sync**: sync_status (synced/conflicts_found)
-- **integration-test-reviewer**: Input: `changedTestFiles[]`, `diffBase`, optional review-basis inputs, and `mutationEvidence`. Output: status (`approved`/`needs_revision`/`blocked`), `reviewBasis`, requiredFixes
-- **security-reviewer**: status (approved/approved_with_notes/needs_revision/blocked), findings[], notes, requiredFixes[]
-- **acceptance-test-generator**: status, generatedFiles.{integration,fixtureE2e,serviceE2e} (path|null per lane), budgetUsage per lane, e2eAbsenceReason per E2E lane (null when emitted; reason enum is owned by acceptance-test-generator and integration-e2e-testing skill)
-
 ## Handling Requirement Changes
 
 Use create mode for initial documents. For requirement-driven revisions, invoke the owning document specialist in `update` mode and add history:
@@ -153,14 +123,15 @@ Use create mode for initial documents. For requirement-driven revisions, invoke 
 | Medium | requirement-analyzer → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
 | Small | requirement-analyzer → direct task execution (no Work Plan) |
 
-The requirement-convergence and external-resource hearings run in the orchestrator.
-
-After batch approval, enter the autonomous cycle below. Small-scale implementation also runs through task-executor.
+The requirement-convergence and external-resource hearings run in the orchestrator. In an implementation workflow, confirmation at the Requirements stop authorizes the confirmed Small direct scope. Medium/Large implementation begins after Work Plan batch approval.
 
 Rules:
 - When documentation-criteria requires a UI Spec, complete it before ADR qualification and Design Doc creation
 - An ADR batch is optional; the Design Doc is mandatory for Medium/Large work even when ADRs exist
-- Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke owning technical-designer batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
+- After requirement confirmation for Medium/Large, invoke codebase-analyzer once with exactly one governing source: approved `prd_path`, or confirmed `requirements` when no approved PRD exists
+- When a UI Spec applies, invoke ui-analyzer with that same governing-source choice plus existing `ui_spec_path`, decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`; invoke ui-spec-designer with `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, plus the complete unchanged `ui_analysis`, applicable unchanged `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`
+- Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
+- Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add only their named UI or layer artifact paths
 - Resolve code-verifier discrepancies through Review Resolution before invoking document-reviewer; pass the exact HC-04 inputs rather than a narrative evidence bundle
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
@@ -173,10 +144,10 @@ Rules:
 
 Verify commit capability before autonomous mode. Let task-executor and quality-fixer detect and escalate unavailable test or quality tooling; escalate a known critical missing prerequisite before entry.
 
-Batch approval authorizes task-executor implementation and quality-fixer corrections until completion or escalation.
+Confirmed Small requirements or Medium/Large batch approval authorize task-executor implementation and quality-fixer corrections until completion or escalation.
 
 ### Autonomous Execution Summary
-After "batch approval for entire implementation phase" with work-planner, autonomously execute the following processes through completion or an escalation condition:
+For Medium/Large, after "batch approval for entire implementation phase" with work-planner, autonomously execute the following processes through completion or an escalation condition:
 
 ```mermaid
 graph TD
@@ -193,7 +164,9 @@ graph TD
     RR -->|user decision required| USER
 ```
 
-### Post-Implementation Verification Pass/Fail Criteria
+For Small, execute one direct-scope 4-step cycle and complete when quality-fixer is approved and the direct scope's observable verification condition is satisfied. Small has no task decomposition, document-dependent post-implementation verification, or task-file cleanup.
+
+### Post-Implementation Verification Pass/Fail Criteria (Medium/Large)
 
 | Verifier | Pass | Fail | Blocked |
 |----------|------|------|---------|
@@ -216,15 +189,15 @@ graph TD
 ### Task Management: 4-Step Cycle
 
 **Per-task cycle**:
-1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with the task file path when one exists or with the direct scope contract above
+1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with the task file path when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, optional `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Derive `changedTestFiles` from the current `git status --short` write set, filter it to integration/E2E paths, and invoke integration-test-reviewer with `changedTestFiles`, `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
-     - `needs_revision` → Run Review Resolution through its correction re-review, escalation, and convergence transitions; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
+     - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - Otherwise → Proceed to step 3
-3. **Quality-fix**: invoke quality-fixer with upstream `filesModified` and `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise
+3. **Quality-fix**: invoke quality-fixer with upstream `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise; quality-fixer derives the current uncommitted write set from repository status
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4
@@ -262,7 +235,7 @@ Register overall phases using TaskCreate and update each phase with TaskUpdate a
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.
 - Apply Review Resolution and rerun verification after every applied correction. Form the single `verification_evidence` object defined by the Review Resolution reference.
-- Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by Agent Input Contracts.
+- Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and the same `confirmed_requirement_context` supplied at the owning designer invocation.
 - Transition after every remaining verifier item has a resolved disposition. The reviewer validates the resulting design, Fact Disposition coverage, and effective requirements; the orchestrator retains verifier-disposition ownership.
 
 ### HC-05: code-verifier → next-layer technical-designer (fullstack only)

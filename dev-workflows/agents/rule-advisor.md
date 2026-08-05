@@ -1,6 +1,6 @@
 ---
 name: rule-advisor
-description: Selects this project's smallest task-execution skill set and task-specific safeguards for standalone task and diagnosis workflows.
+description: Selects this project's smallest task-execution skill set and task-specific safeguards for standalone task and diagnosis workflows. Use when recipe-task or recipe-diagnose needs repository rules for execution.
 tools: Read
 skills:
   - task-analyzer

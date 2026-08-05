@@ -13,7 +13,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 
 **Local authority gate**: Make this recipe's workflow decisions and validate each returned result directly; delegate semantic deliverable production to the named specialist.
 
-**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression; include declined IDs with governing reasons and evidence in the final user report.
+**Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Required Reference
@@ -113,12 +113,12 @@ For EACH task, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Invoke integration-test-reviewer with `diffBase`, changed integration/E2E paths, `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Derive changed integration/E2E paths from the current `git status --short` write set and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → STOP and escalate to user
-     - `needs_revision` → Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
-   - `readyForQualityCheck: true` → Proceed to step 3
-3. **QUALITY-FIX**: Invoke the layer-appropriate quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+     - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
+   - `status: completed` → Proceed to step 3
+3. **QUALITY-FIX**: Invoke the layer-appropriate quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); it derives the uncommitted write set from repository status
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
    - `approved` → Proceed to step 4
@@ -166,5 +166,5 @@ Final report must include:
 - Quality check result
 - Commit count
 - Cleanup result
-- Declined actionable findings with ID, governing reason, and evidence
+- Declined actionable findings with ID, governing reason, and evidence, when any occurred
 - Escalation or blocking summary, if any
