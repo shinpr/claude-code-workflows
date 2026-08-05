@@ -104,7 +104,7 @@ flowchart LR
     F -->|Passed| G[Complete]
 ```
 
-Small changes skip documents they do not need. Larger changes add codebase analysis, a Design Doc, and—when the scope calls for them—a PRD, UI Spec, ADR, acceptance tests, and work plan. The requirement and affected layers decide the route; the workflow does not create a full document set by default.
+Small changes skip documents they do not need. Larger changes add codebase analysis and a Design Doc, plus a PRD, UI Spec, ADR, acceptance tests, or work plan when required by the scope. The requirement and affected layers decide the route; the workflow does not create a full document set by default.
 
 Implementation proceeds through task files with explicit targets and checks. When all tasks are done, a separate review checks the result for design consistency and security issues. If the requirement changes along the way, the workflow identifies which decisions are no longer valid and returns there before continuing.
 
