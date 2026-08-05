@@ -4,9 +4,9 @@
 
 [Purpose and scope of this UI Specification in 2-3 sentences]
 
-### Target PRD
+### Confirmed Requirement Context
 - PRD path: [docs/prd/xxx-prd.md | "N/A — based on requirements analysis output"]
-- Feature scope: [Which PRD requirements this UI Spec covers | Summary of analyzed requirements]
+- Feature scope: [Which confirmed requirements this UI Spec covers]
 
 ### Design Source
 | Source | Path | Version |
@@ -34,9 +34,9 @@ Lists each external resource this feature depends on with its feature-specific i
 
 ## AC Traceability (Prototype)
 
-Map PRD acceptance criteria to prototype references. Skip this section if no prototype is provided.
+Map confirmed acceptance criteria to prototype references, preserving existing AC IDs when present. Skip this section if no prototype is provided.
 
-| AC ID | AC Summary | Screen / State | Prototype Reference (element ID / path) | Adoption Decision |
+| Criterion ID / Reference | Criterion Summary | Screen / State | Prototype Reference (element ID / path) | Adoption Decision |
 |-------|-----------|----------------|----------------------------------------|-------------------|
 | AC-001 | [EARS AC summary] | [Screen / state name] | [element or file reference] | Adopted / Not adopted / On hold |
 
@@ -73,19 +73,21 @@ Map PRD acceptance criteria to prototype references. Skip this section if no pro
 
 #### State x Display Matrix
 
-| State | Default | Loading | Empty | Error | Partial |
-|-------|---------|---------|-------|-------|---------|
-| Display | [Normal display] | [Specific pattern: e.g., Skeleton of `ExistingComponent` / Spinner from `ui/Spinner`] | [Empty state message + CTA: e.g., "No items yet" + `Button` "Create first item"] | [Error message + recovery: e.g., `Alert` variant="error" + `Button` "Retry"] | [Cached display + `Banner` "Connection lost, showing cached data"] |
+Add one row per state required by confirmed requirements, approved UI direction, preserved behavior, or repository/design-system rules. Do not add a state only to complete a generic set.
+
+| State | Trigger | Display | Interaction / Recovery | Evidence |
+|-------|---------|---------|------------------------|----------|
+| [Applicable state] | [Condition that activates it] | [Rendered outcome] | [Available action or N/A] | [Requirement, UI evidence, or repository rule] |
 
 #### Interaction Definition
 
-| AC ID | EARS Condition | User Action | System Response | State Transition | Error Handling |
+| Criterion ID / Reference | EARS Condition | User Action | System Response | State Transition | Error Handling |
 |-------|---------------|-------------|-----------------|-----------------|----------------|
 | AC-001 | When [trigger] | [Click / input / etc.] | [Expected behavior] | [From state -> To state] | [Retry / Reset / Fallback] |
 
 ### Component: [ComponentName2]
 
-[Repeat State x Display Matrix and Interaction Definition for each component]
+[Repeat the applicable State x Display Matrix and Interaction Definition for each in-scope interactive component]
 
 ## Design Tokens and Component Map
 
@@ -198,11 +200,11 @@ Define the key visual states that serve as acceptance benchmarks:
 
 ## Open Items
 
-| ID | Description | Owner | Deadline |
-|----|-------------|-------|----------|
-| TBD-01 | [Unresolved question or decision] | [Who resolves] | [Target date] |
+| ID | Description | Blocking Effect | Required Owner / Evidence |
+|----|-------------|-----------------|---------------------------|
+| TBD-01 | [Only a decision-blocking unresolved item] | [What cannot proceed] | [Who decides or what evidence resolves it] |
 
-*All TBDs must have an owner and deadline. Resolve before Design Doc creation.*
+Omit non-blocking unknowns from this table or state them in the relevant section. Resolve decision-blocking items before Design Doc creation.
 
 ## Update History
 

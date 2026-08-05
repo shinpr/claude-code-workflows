@@ -28,6 +28,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 - Test review → delegate to integration-test-reviewer
 - Quality checks → delegate to quality-fixer
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 Document paths: $ARGUMENTS
 
 ## Prerequisites

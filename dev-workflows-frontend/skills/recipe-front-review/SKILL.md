@@ -29,6 +29,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 The design-side path applies when the discrepancy reflects code that was correct but the Design Doc became stale, rather than code that violated the Design Doc.
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 Design Doc (uses most recent if omitted): $ARGUMENTS
 
 ## Execution Flow
@@ -110,7 +112,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 1. Invoke technical-designer-frontend in update mode using Agent tool:
    - `subagent_type`: "dev-workflows-frontend:technical-designer-frontend"
    - `description`: "Design Doc update from review findings"
-   - `prompt`: "Update Design Doc at [path] in update mode. The implementation has diverged in the following ways that the team has decided to ratify in the design rather than in the code: [list of `d`-routed findings with codeLocation and designDocValue from $STEP_2_OUTPUT]. Reflect the current code behavior in the relevant sections and add a history entry."
+   - `prompt`: "Update Design Doc at [path] in update mode. Ratify these findings in the design rather than the code: [complete `d`-routed finding objects from $STEP_2_OUTPUT, unchanged except for their approved routes]. Reflect the current code behavior in the relevant sections and add a history entry."
 
 2. Invoke document-reviewer to verify the updated Design Doc:
    - `subagent_type`: "dev-workflows-frontend:document-reviewer"

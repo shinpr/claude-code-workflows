@@ -29,6 +29,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 **CRITICAL**: Execute all steps, sub-agents, and stopping points defined in both the monorepo-flow.md reference and subagents-orchestration-guide skill.
 
 ## Execution Decision Flow
@@ -56,11 +58,11 @@ When continuing existing flow, verify:
 
 Execute Skill: external-resource-context before running the external resource hearing in monorepo-flow.md.
 
-**Follow monorepo-flow.md** for the complete design-through-planning flow (Steps 1-17 for Large scale, Steps 1-15 for Medium scale). The flow table in that reference defines every step, agent invocation, parallelization rule, and stop point.
+**Follow monorepo-flow.md** for the current Large or Medium design-through-planning flow. Its Large table and Medium step range define the required steps, agent invocations, and stop points.
 
 Key points to enforce as the orchestrator runs the flow:
 - Create separate Design Docs per layer (see monorepo-flow.md "Layer Context in Design Doc Creation")
-- Frontend Design Doc references the approved UI Spec (pass UI Spec path to technical-designer-frontend) and reuses the ui-analyzer output produced earlier in the flow
+- Frontend Design Doc references an applicable approved UI Spec and reuses applicable ui-analyzer output produced earlier in the flow
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows-fullstack:work-planner") with vertical slicing instruction
@@ -74,13 +76,12 @@ After scale determination, use TaskCreate to register each design/planning step 
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
+Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts. Determine Structural Scale from the confirmed outcome and responsibility boundaries, then run the requirement-convergence hearing protocol before presenting anything else.
 
 When user responds to questions:
-- If any `convergence` field is below `ready` → Re-execute requirement-analyzer with the hearing answers so the record is re-judged. Repeat until every field is `ready` or `weak-but-explicit`
-- If response matches any `scopeDependencies.question` → Check `impact` for scale change
-- If scale changes → Re-execute requirement-analyzer with updated context
-- If `confidence: "confirmed"` or no scale change → Proceed to next step
+- Update the orchestrator-owned convergence record and Structural Scale judgment from the answer.
+- Re-execute requirement-analyzer only when the answer changes the repository analysis target or scope evidence.
+- Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 
 ## Subagents Orchestration Guide Compliance Execution
 
@@ -90,7 +91,7 @@ When user responds to questions:
 - [ ] Identified current progress position
 - [ ] Clarified next step
 - [ ] Recognized stopping points
-- [ ] codebase-analyzer included before each Design Doc creation
+- [ ] one complete-scope codebase-analyzer result included before Design Doc creation
 - [ ] code-verifier included before document-reviewer for each Design Doc
 - [ ] **Environment check**: Can I execute per-task commit cycle?
   - If commit capability unavailable → Escalate before autonomous mode
@@ -150,7 +151,7 @@ Before the completion report, delete the implementation task files this recipe c
 - Delete every file matching `docs/plans/tasks/{plan-name}-backend-task-*.md` and `docs/plans/tasks/{plan-name}-frontend-task-*.md` (the `{plan-name}` derived from the work plan path used in this run)
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
-If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.
+If task-file deletion fails, include the filesystem error in the completion report and finish the report with the implementation result.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows-fullstack:work-planner"), communicate:

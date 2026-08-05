@@ -7,6 +7,8 @@ description: Clarifies inputs, outputs, success criteria, decisions, and unresol
 
 The goal is stable downstream execution: the next agent should know what to read, what to do, what counts as success, and when to stop or escalate.
 
+An active workflow's declared input contract is already optimized for its specialist. For that handoff, preserve the contract's named fields and declared value forms; the prompt consists of those fields and values. Apply the general prompt-composition rules below only when no input contract exists, and apply the generated-artifact rules to artifacts.
+
 ## Core Rules
 
 1. **Use positive, executable instructions**

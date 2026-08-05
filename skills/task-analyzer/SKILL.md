@@ -1,132 +1,73 @@
 ---
 name: task-analyzer
-description: Performs metacognitive task analysis and skill selection. Use when determining task complexity, selecting appropriate skills, or estimating work scale.
+description: Selects the smallest set of task-execution skills and metacognitive safeguards for standalone task and diagnosis workflows.
 ---
 
 # Task Analyzer
 
-Provides metacognitive task analysis and skill selection guidance.
+Use [skills-index.yaml](references/skills-index.yaml) as the available skill catalog. Documentation routing and workflow Structural Scale belong to `documentation-criteria`, not this skill.
 
-## Skills Index
+## Process
 
-See **[skills-index.yaml](references/skills-index.yaml)** for available skills metadata.
+### 1. Identify Task Essence
 
-## Task Analysis Process
+State the observable purpose beyond the surface operation. Preserve an explicitly invoked recipe or governing artifact as the entry point.
 
-### 1. Understand Task Essence
+### 2. Match Skills to Task Evidence
 
-Identify the fundamental purpose beyond surface-level work:
+Extract task-evidence tags and match them to the catalog. Add a skill only when its rules change the requested action, verification, or handling of a concrete risk.
 
-| Surface Work | Fundamental Purpose |
-|--------------|---------------------|
-| "Fix this bug" | Problem solving, root cause analysis |
-| "Implement this feature" | Feature addition, value delivery |
-| "Refactor this code" | Quality improvement, maintainability |
-| "Update this file" | Change management, consistency |
+| Task evidence | Consider |
+|---|---|
+| Observed defect or failure | `ai-development-guide`, `testing-principles` |
+| Code implementation or refactoring | `coding-principles`, `testing-principles` |
+| Requested design artifact | `documentation-criteria` |
+| Multiple credible implementation strategies requiring cost comparison | `implementation-approach` |
+| Observable cross-boundary behavior that cannot be proven more cheaply | `integration-e2e-testing` |
+| React or TypeScript frontend code | `typescript-rules` and applicable frontend testing rules |
 
-**Action**: Map the user request to one row in the Surface Work → Fundamental Purpose table above. If no row matches, state the fundamental purpose explicitly before proceeding.
+Select in this order:
 
-### 2. Estimate Task Scale
+1. `governing`: defines the requested output or selected workflow.
+2. `risk-control`: changes proof or handling of an activated failure mode.
+3. `supplementary`: resolves a concrete remaining risk.
 
-| Scale | File Count | Indicators |
-|-------|------------|------------|
-| Small | 1-2 | Single function/component change |
-| Medium | 3-5 | Multiple related components |
-| Large | 6+ | Cross-cutting concerns, architecture impact |
+### 3. Generate Execution Guidance
 
-**Scale affects skill priority:**
-- Scale >= Large → include documentation-criteria with priority high, preserving the repository's 6+ file planning contract
-- Scale >= Large and the task changes executable system behavior or requires dependency/phase strategy → also include implementation-approach with priority high
-- Scale >= Large but the task is research, documentation-only, or mechanical → include implementation-approach only when an implementation strategy decision is actually required
-- Scale = Small → select task-type essential skills only and target a maximum of 3; exceed 3 when another skill directly governs a named risk, language, or output contract
+Generate only warnings and questions that can change skill selection, verification, escalation, or the first action. Prefer the smallest evidence-gathering action that can establish the target or cause.
 
-### 3. Identify Task Type
+Task analysis does not own Structural Scale, file-count estimation, documentation requirements, approval gates, implementation phases, or subagent topology.
 
-| Type | Characteristics | Key Skills |
-|------|-----------------|------------|
-| Implementation | New code, features | coding-principles, testing-principles |
-| Fix | Bug resolution | ai-development-guide, testing-principles |
-| Refactoring | Structure improvement | coding-principles, ai-development-guide |
-| Design | Architecture decisions | documentation-criteria, implementation-approach |
-| Quality | Testing, review | testing-principles, integration-e2e-testing |
-
-### 4. Tag-Based Skill Matching
-
-Extract relevant tags from task description and match against skills-index.yaml:
-
-```yaml
-Task: "Implement user authentication with tests"
-Extracted tags: [implementation, testing, security]
-Matched skills:
-  - coding-principles (implementation, security)
-  - testing-principles (testing)
-  - ai-development-guide (implementation)
-```
-
-### 5. Implicit Relationships
-
-Consider hidden dependencies:
-
-| Task Involves | Also Include |
-|---------------|--------------|
-| Error handling | debugging, testing |
-| New features | design, implementation, documentation |
-| Performance | profiling, optimization, testing |
-| Frontend | typescript-rules, test-implement |
-| API/Integration | integration-e2e-testing |
-
-## Output Format
-
-Return structured analysis with skill metadata from skills-index.yaml:
+## Output
 
 ```yaml
 taskAnalysis:
-  essence: <string>  # Fundamental purpose identified
-  type: <implementation|fix|refactoring|design|quality>
-  scale: <small|medium|large>
-  estimatedFiles: <number>
-  tags: [<string>, ...]  # Extracted from task description
-
-selectedSkills:
-  - skill: <skill-name>  # From skills-index.yaml
-    priority: <high|medium|low>
-    reason: <string>  # Why this skill was selected
-    # Pass through metadata from skills-index.yaml
-    tags: [...]
-    typical-use: <string>
-    size: <small|medium|large>
-    sections: [...]  # All sections from yaml, unfiltered
+  essence: <fundamental purpose>
+  extractedTags: [<task evidence tag>]
+selectedRules:
+  - skill: <skill name from skills-index.yaml>
+    priority: <governing|risk-control|supplementary>
+    reason: <how it changes execution or verification>
+    sections: [<relevant section name>]
+metaCognitiveGuidance:
+  taskEssence: <fundamental purpose>
+  pastFailures: [<applicable known failure pattern>]
+  potentialPitfalls: [<task-specific risk>]
+  firstStep:
+    action: <smallest evidence-gathering or execution action>
+    rationale: <why it comes first>
+metaCognitiveQuestions: [<question that can change the approach>]
+warningPatterns:
+  - pattern: <applicable warning>
+    mitigation: <proportionate response>
 ```
 
-**Note**: Section selection (choosing which sections are relevant) is done after reading the actual SKILL.md files.
+Return skill names and relevant section names. The consumer loads the named skills; filesystem paths, catalog metadata, and skill bodies remain at their source.
 
-**Consumer mapping**: `rule-advisor` consumes this intermediate shape and owns the final schema transformation: `type` → `taskType` (`quality` → `quality-improvement`; other values unchanged), `tags` → `extractedTags`, and `selectedSkills` → `selectedRules` after it reads and extracts the selected skill sections. Preserve `metaCognitiveQuestions` as a separate final field generated from the question design below.
+## Completion Check
 
-## Skill Selection Priority
-
-1. **Essential** - Directly related to task type
-2. **Quality** - Testing and quality assurance
-3. **Process** - Workflow and documentation
-4. **Supplementary** - Reference and best practices
-
-## Metacognitive Question Design
-
-Generate up to 5 questions whose answers can change skill selection, verification, or escalation. Return no questions when none would change those decisions.
-
-| Task Type | Question Focus |
-|-----------|----------------|
-| Implementation | Design validity, edge cases, performance |
-| Fix | Root cause (5 Whys), impact scope, regression testing |
-| Refactoring | Current problems, target state, phased plan |
-| Design | Requirement clarity, future extensibility, trade-offs |
-
-## Warning Patterns
-
-Detect and flag these patterns:
-
-| Pattern | Warning | Mitigation |
-|---------|---------|------------|
-| Large change detected | Pair with implementation-approach | Split into phases per strategy |
-| Implementation task detected | Pair with testing-principles | Apply TDD from start |
-| Error fix requested | Pair with ai-development-guide | Apply 5 Whys before fixing |
-| Multi-file task without plan | Pair with documentation-criteria | Create work plan first |
+- Task essence, tags, and first action are tied to the current request.
+- Every selected skill changes execution, verification, or a concrete risk response.
+- The selected set is the smallest sufficient set.
+- Questions and warnings are task-specific and proportionate.
+- Structural Scale and workflow routing remain with their owning process.

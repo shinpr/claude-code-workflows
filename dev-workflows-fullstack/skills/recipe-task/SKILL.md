@@ -29,8 +29,8 @@ After receiving rule-advisor's JSON response, proceed with:
    - Distinguish between "quick fix" vs "proper solution"
 
 2. **Follow Selected Rules** (from `selectedRules`)
-   - Review each selected rule section
-   - Apply concrete procedures and guidelines
+   - Execute each selected skill by its `skill` name and read it completely
+   - Apply the named sections in the context of the complete skill
 
 3. **Recognize Past Failures** (from `metaCognitiveGuidance.pastFailures`)
    - Apply countermeasures for known failure patterns
@@ -58,5 +58,5 @@ Proceed with task execution following:
 - Update task structure with TaskUpdate to reflect rule-advisor insights
 - Selected rules from rule-advisor
 - Task structure (managed via TaskCreate/TaskUpdate)
-- Quality standards defined in the selectedRules output from rule-advisor
+- Quality standards from the selected skills and sections named by rule-advisor
 - Monitor warningPatterns flags throughout execution and adjust approach when triggered

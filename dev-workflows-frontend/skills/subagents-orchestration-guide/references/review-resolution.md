@@ -2,7 +2,19 @@
 
 Use this protocol when a deliverable reviewer or verifier returns findings that can route correction, progression, or escalation. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
 
-The orchestrator treats the review result as evidence and makes the workflow decision from the governing sources.
+Preserve reviewer/verifier evidence ownership so each gate converges on the governing sources; orchestrator reinterpretation would create unreviewed requirements and make approval or reconciliation non-terminal.
+
+## Verdict Gate
+
+Route a document-reviewer result before assessing issues:
+
+- `approved`: complete the review with `issues: []`; downstream consumers receive the approved artifact path and pre-existing governing evidence only.
+- `needs_revision`: continue to section 1 with the returned issues.
+- `rejected`: resolve the governing-source conflict or user-held decision before another review.
+
+Treat `approved` with non-empty `issues`, or `needs_revision` with empty `issues`, as an invalid reviewer result and re-invoke document-reviewer with the same inputs for a contract-correct result. An approved review creates no author correction or downstream semantic input.
+
+For verifier, design-sync, code-reviewer, security-reviewer, and integration-test-reviewer results, enter section 1 only for the status or findings that their caller contract routes to correction.
 
 ## 1. Assess Every Finding
 
@@ -25,9 +37,9 @@ For each finding record:
 - governing basis and concrete evidence;
 - the reason when `decline`.
 
-The disposition controls routing. For `apply`, forward the complete reviewer finding object exactly as returned, preserving every field and value, and add only the `apply` disposition. This verbatim transfer preserves the reviewer's context. The orchestrator does not summarize, excerpt, paraphrase, reinterpret, supplement, or replace any part of the finding. The author or executor determines the correction from the governing sources. When those sources cannot determine a correction that requires user-held authority, assign `user_decision_required` and continue at section 3.
+The disposition controls routing. For `apply`, forward the complete reviewer finding object exactly as returned, preserving every field and value, and add only the `apply` disposition. This verbatim transfer keeps correction grounded in reviewed evidence; an orchestrator-authored paraphrase or supplement would become an unreviewed requirement. The author or executor determines the correction from the governing sources. When those sources cannot determine a correction that requires user-held authority, assign `user_decision_required` and continue at section 3.
 
-Keep non-actionable reviewer recommendations in the final user report. Only findings with `apply`, and maintained `apply` findings under section 3, enter an author or executor handoff.
+Only findings with `apply`, and maintained `apply` findings under section 3, enter an author or executor handoff.
 
 ## 2. Revise and Reconsider
 
@@ -35,7 +47,7 @@ Pass complete `apply` finding objects verbatim with their dispositions to the au
 
 The correction assessment covers exactly every received item. The reviewer completes that scope and then:
 
-- mark an applied item `resolved` only when current evidence shows that the artifact satisfies the finding without a correction-caused regression in the changed boundary; otherwise mark that item `maintained`, citing current evidence;
+- mark an applied item `resolved` when current evidence shows that the artifact satisfies the finding and preserves the changed boundary; otherwise mark that item `maintained`, citing current evidence;
 - mark a declined finding `withdrawn` when current evidence and governing sources no longer support it; otherwise mark that item `maintained`, citing current evidence;
 - emit exactly one `prior_feedback_reconciliation` entry for every received ID.
 
@@ -62,3 +74,14 @@ Handoffs contain this exact set:
 An author handoff contains no other orchestrator-authored semantic content.
 
 The final user report lists every declined actionable finding with its ID, governing reason, and evidence.
+
+## Resolved Verification Evidence
+
+After Review Resolution completes for code-verifier output, pass one `verification_evidence` object to the next document reviewer:
+
+- start from the latest verifier result after every applied correction and rerun;
+- preserve its `summary`, `inventoryCoverage`, and `limitations` unchanged;
+- preserve each remaining discrepancy unchanged and add its `disposition`, plus `dispositionReason` and `dispositionEvidence` for a decline;
+- include remaining discrepancies only after each carries a resolved `decline` disposition; applied corrections are represented by the latest verifier result.
+
+The document reviewer consumes this resolved evidence but does not own verifier-disposition convergence. Update and reverse-engineer flows may pass the current verifier result as `verification_evidence` before correction resolution when that result is the evidence being reviewed.

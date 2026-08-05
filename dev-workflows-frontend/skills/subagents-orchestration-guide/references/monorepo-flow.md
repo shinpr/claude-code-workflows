@@ -1,148 +1,135 @@
 # Fullstack (Monorepo) Flow
 
-This reference defines the orchestration flow for projects spanning multiple layers (backend + frontend). It extends the standard orchestration guide without modifying it.
+This reference defines the orchestration flow for one feature spanning backend and frontend responsibilities.
 
 ## When This Flow Applies
 
-- Multiple Design Docs exist targeting different layers (backend, frontend)
-- A single feature requires implementation across both backend and frontend
-- The orchestrator is invoked via `fullstack-implement` or `fullstack-build` commands
+- The confirmed outcome requires backend and frontend implementation.
+- Separate Design Docs are needed for layer ownership and cross-layer verification.
+- The orchestrator is invoked through a fullstack implementation or build recipe.
 
 ## Design Phase
 
-### Large Scale Fullstack (6+ Files) - 17 Steps
+### Large Structural Scale Fullstack
 
-| Step | Agent | Purpose | Output |
+| Step | Owner | Purpose | Output |
 |------|-------|---------|--------|
-| 1 | requirement-analyzer → (orchestrator) | Requirement analysis + scale determination, then the requirement-convergence hearing on its `convergence` output, re-invoking the analyzer with the answers **[Stop]** | Converged requirements + scale |
-| 2 | prd-creator | PRD covering entire feature (all layers) | Single PRD |
+| 1 | requirement-analyzer + orchestrator | Scope/cost evidence followed by orchestrator convergence and Structural Scale judgment, then the requirements hearing **[Stop]** | Confirmed requirements + scale |
+| 2 | prd-creator | PRD for the complete feature | PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
-| 4 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend domain primary; backend / api / infra domains as applicable for the layer scope). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
-| 5 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
-| 6 | codebase-analyzer ×2 + ui-analyzer | Codebase analysis per layer + UI fact gathering (parallel; ui-analyzer reads external-resources.md and fetches external UI sources via inherited MCP/URL access) | Codebase guidance per layer + UI fact JSON |
-| 7 | ui-spec-designer | UI Spec from PRD + optional prototype + ui-analyzer output | UI Spec |
-| 8 | document-reviewer | UI Spec review **[Stop]** | Approval |
-| 9 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
-| 10 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 11 as `prior_layer_verification`) | Backend verification |
-| 11 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 10 + UI Spec) | Frontend Design Doc |
-| 12 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 13 | document-reviewer ×2 | Review each Design Doc using HC-04 | Reviews |
-| 14 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 15 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
-| 16 | work-planner | Work plan from all Design Docs | Work plan |
-| 17 | document-reviewer | Work Plan review (`doc_type: WorkPlan`); apply Review Resolution, return the `apply` findings to work-planner, and re-review with `prior_feedback` **[Stop: Batch approval after resolution]** | Resolved Work Plan review |
+| 4 | codebase-analyzer | Repository decision material for the complete feature, including layer boundaries and cross-layer contracts | Analysis JSON |
+| 5 | orchestrator + ui-analyzer | Determine UI Spec applicability; collect external, prototype, and UI evidence only when applicable | UI analysis or none |
+| 6 | ui-spec-designer | Applicable UI Spec from PRD and UI evidence | UI Spec or none |
+| 7 | document-reviewer | Applicable UI Spec review **[Stop]** | Approval or skipped |
+| 8 | orchestrator + technical-designer(s) | Apply ADR filters and create one ADR per qualifying decision point | ADR paths or `[]` |
+| 9 | document-reviewer | Review the complete ADR batch **[Stop when non-empty]** | Batch approval |
+| 10 | technical-designer | Backend Design Doc with accepted ADR constraints | Backend Design Doc |
+| 11 | technical-designer-frontend | Frontend Design Doc with backend contracts, applicable UI Spec, and accepted ADR constraints | Frontend Design Doc |
+| 12 | code-verifier ×2 + orchestrator | Verify each Design Doc and apply Review Resolution | Resolved verification evidence |
+| 13 | document-reviewer ×2 | Review each Design Doc with resolved verification evidence | Reviews |
+| 14 | design-sync | Cross-layer consistency verification **[Stop]** | Sync status |
+| 15 | acceptance-test-generator | Integration/E2E skeletons selected from cross-layer contracts | Test skeletons |
+| 16 | work-planner | Work plan from both Design Docs | Work Plan |
+| 17 | document-reviewer | Work Plan review **[Stop: Batch approval]** | Approval |
 
-### Medium Scale Fullstack (3-5 Files) - 15 Steps
+### Medium Structural Scale Fullstack
 
-| Step | Agent | Purpose | Output |
-|------|-------|---------|--------|
-| 1 | requirement-analyzer → (orchestrator) | Requirement analysis + scale determination, then the requirement-convergence hearing on its `convergence` output, re-invoking the analyzer with the answers **[Stop]** | Converged requirements + scale |
-| 2 | (orchestrator) | External resource hearing per the external-resource-context skill (frontend / backend / api / infra domains as applicable). File-existence branching as defined in the skill | `docs/project-context/external-resources.md` written or updated |
-| 3 | codebase-analyzer ×2 + ui-analyzer | Codebase analysis per layer + UI fact gathering (parallel; ui-analyzer reads external-resources.md and fetches external UI sources via inherited MCP/URL access) | Codebase guidance per layer + UI fact JSON |
-| 4 | (orchestrator) | Ask user for prototype code **[Stop]** | Prototype path or none |
-| 5 | ui-spec-designer | UI Spec from requirements + optional prototype + ui-analyzer output | UI Spec |
-| 6 | document-reviewer | UI Spec review **[Stop]** | Approval |
-| 7 | technical-designer | **Backend** Design Doc (with backend codebase-analyzer context) | Backend Design Doc |
-| 8 | code-verifier | Verify **Backend** Design Doc against existing code (its result JSON is passed to step 9 as `prior_layer_verification`) | Backend verification |
-| 9 | technical-designer-frontend | **Frontend** Design Doc (with frontend codebase-analyzer context + ui-analyzer output + backend Design Doc + `prior_layer_verification` from step 8 + UI Spec) | Frontend Design Doc |
-| 10 | code-verifier | Verify **Frontend** Design Doc against existing code | Frontend verification |
-| 11 | document-reviewer ×2 | Review each Design Doc using HC-04 | Reviews |
-| 12 | design-sync | Cross-layer consistency verification (source: frontend Design Doc) **[Stop]** | Sync status |
-| 13 | acceptance-test-generator | Integration + fixture-e2e + service-integration-e2e test skeletons from cross-layer contracts (per-lane) | Test skeletons |
-| 14 | work-planner | Work plan from all Design Docs | Work plan |
-| 15 | document-reviewer | Work Plan review (`doc_type: WorkPlan`); apply Review Resolution, return the `apply` findings to work-planner, and re-review with `prior_feedback` **[Stop: Batch approval after resolution]** | Resolved Work Plan review |
+For Medium scale, execute Large steps 4-17 and carry the confirmed convergence record in place of a PRD; retain the conditional stops at steps 7 and 9 and the approval stops at steps 14 and 17.
 
-### Parallelization in Multi-Agent Steps
+## Analysis and Evidence Rules
 
-Steps marked with ×2 (codebase-analyzer ×2, document-reviewer ×2) invoke the agent once per layer. The combined codebase-analyzer ×2 + ui-analyzer step invokes three subagents in parallel — the two codebase-analyzer calls (one per layer) and the single ui-analyzer call — when the orchestrator supports concurrent Agent tool calls. The two code-verifier invocations run sequentially: backend verification completes before frontend authoring begins so the frontend designer references verified backend contracts.
+At each Agent invocation in this flow, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-### Layer Context in Design Doc Creation
+Invoke codebase-analyzer once for the complete confirmed feature. It discovers backend/frontend responsibility boundaries and their cross-layer contracts; independent discovery keeps convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 
-Use the common handoff contracts in `../SKILL.md`:
-- Backend DD creation uses `HC-01` + `HC-02`
-- Frontend DD creation uses `HC-01` + `HC-02` + `HC-05`
-- Design Doc review uses `HC-03` + `HC-04`
+Apply the documentation-criteria UI Spec creation condition. Invoke ui-analyzer only when a UI Spec applies. External-resource and prototype inputs are then conditional: load external-resource-context when external evidence can change the current UI or verification decision, and ask for a prototype only when it resolves an approved UI decision or target ambiguity.
 
-Prompt templates:
+Use these prompt shapes:
 
-**Backend Design Doc**
 ```text
-Create a backend Design Doc from [PRD path or requirement_analysis].
-Codebase analysis: [JSON from codebase-analyzer for backend layer]
-Focus on: API contracts, data layer, business logic, service architecture.
+For either analyzer, pass exactly one governing source:
+prd_path: [approved PRD path]
+or
+requirements: [confirmed requirements verbatim]
+
+For UI analysis only, add an existing UI Spec, a decision-relevant prototype, and selected external references:
+ui_spec_path: [existing UI Spec path]
+prototype_path: [decision-relevant path]
+external_resource_refs: [selected references or []]
+
+UI Spec:
+confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+ui_analysis: [UI analyzer JSON]
+codebase_analysis: [applicable frontend codebase evidence]
+prototype_path: [decision-relevant path or absent]
+external_resource_refs: [selected references or []]
 ```
 
-**Frontend Design Doc**
+## ADR Qualification and Batch
+
+After scope and any applicable UI Spec approval, resolve candidate decision points from the codebase analysis against the governing source, `reuse`, and `invalidations`. Use applicable UI analysis as supporting or contradicting evidence, not as a source of technical options. Apply documentation-criteria Choice then Durability filters only to the remaining points.
+
+- Route layer-owned decision points to the matching technical designer.
+- Route cross-layer points to technical-designer.
+- Invoke each owner with `document_to_create: ADRBatch`, `confirmed_requirement_context`, its ordered confirmed `decision_points` unchanged, and the corresponding codebase-analysis `candidateDecisionPoints` objects unchanged as `decision_materials`; include an approved `ui_spec_path` only when it constrains a frontend decision.
+- Invoke technical-designer batches serially: cross-layer/backend first, frontend second. Each owner allocates numbers only after the preceding batch exists.
+- Collect every returned ADR path.
+- Invoke document-reviewer once with `doc_type: ADRBatch` and the complete `targets` array.
+- Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per owning-designer invocation serially, and repeats the complete batch review; `rejected` resolves the governing-source conflict before another review.
+- Obtain one user approval after an `approved` review, then set every approved ADR to `Accepted`.
+- An empty batch proceeds directly to both Design Docs.
+
+## Layer Design Context
+
+Create each complete layer design from reviewed artifacts and unchanged evidence; this keeps both Design Docs traceable to approved sources instead of orchestrator-authored shadow designs.
+
+**Backend Design Doc**:
+
 ```text
-Create a frontend Design Doc from [PRD path or requirement_analysis].
-Codebase analysis: [JSON from codebase-analyzer for frontend layer]
-UI analysis: [JSON from ui-analyzer]
-Backend Design Doc: [path]
-prior_layer_verification: [JSON from code-verifier on backend Design Doc]
-Reference UI Spec at [path] for component structure and state design.
-Use `prior_layer_verification.discrepancies[]` as known issues to address or escalate. Do not infer verified claims beyond what the verifier output states explicitly.
-Apply `code:` prefix to fact_ids from codebase-analyzer and `ui:` prefix to fact_ids from ui-analyzer when filling the Fact Disposition Table.
-Focus on: component hierarchy, state management, UI interactions, data fetching.
+document_to_create: DesignDoc
+confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+structural_scale: [confirmed scale]
+adr_paths: [accepted paths or []]
+codebase_analysis: [complete analysis JSON unchanged]
 ```
 
-### design-sync for Cross-Layer Verification
+**Frontend Design Doc**:
 
-Call design-sync with `source_design` = frontend Design Doc (created last, referencing backend's Integration Points). design-sync auto-discovers other Design Docs in `docs/design/` for comparison.
-
-## Test Skeleton Generation Phase
-
-Orchestrator passes all Design Docs and UI Spec to acceptance-test-generator:
-
-```
-Generate test skeletons from the following documents:
-- Design Doc (backend): [path]
-- Design Doc (frontend): [path]
-- UI Spec: [path] (if exists)
+```text
+document_to_create: DesignDoc
+confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+structural_scale: [confirmed scale]
+adr_paths: [accepted paths or []]
+ui_spec_path: [approved UI Spec; omit when absent]
+backend_design_doc: [path]
+codebase_analysis: [complete analysis JSON unchanged]
+ui_analysis: [complete UI analysis JSON unchanged; omit when absent]
 ```
 
-## Work Planning Phase
+Apply `code:` and `ui:` prefixes to respective Fact Disposition IDs. The frontend Design Doc references backend contracts but does not treat unverified backend claims as proof.
 
-Orchestrator passes all Design Docs to work-planner:
+## Verification Resolution
 
-```
-Create a work plan from the following documents:
-- PRD: [path] (Large Scale only)
-- Design Doc (backend): [path]
-- Design Doc (frontend): [path]
+Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc` and no `code_paths`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by the orchestration guide.
 
-Compose phases as vertical feature slices where possible — each phase should contain
-both backend and frontend work for the same feature area, enabling early integration
-verification per phase.
-```
+After both document reviews permit approval, invoke design-sync using the frontend Design Doc as the source because it consumes backend integration contracts. Apply Review Resolution to actionable conflicts before the design approval stop.
 
-work-planner's existing Integration Complete criteria naturally covers cross-layer verification when given multiple Design Docs.
+## Test Skeleton and Work Planning
 
-For Medium and Large flows, pass the resulting Work Plan to document-reviewer with `doc_type: WorkPlan`. Run Review Resolution through its correction re-review, escalation, and convergence transitions, using work-planner in update mode for rerouted corrections. Batch approval is available only at its convergence condition.
+Pass both Design Docs and the applicable UI Spec to acceptance-test-generator. Empty optional lanes are valid when the generator returns its defined absence reason.
 
-## Task Materialization Phase
+Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 
-task-decomposer materializes each Work Plan implementation item as one task file. The key addition is the **layer-aware naming convention**:
+Review the Work Plan with `doc_type: WorkPlan`, apply Review Resolution through work-planner, and stop for batch approval only after the review converges.
 
-| Filename Pattern | Meaning | Executor | Quality Fixer |
-|-----------------|---------|----------|---------------|
-| `{plan}-backend-task-{n}.md` | Backend only | task-executor | quality-fixer |
-| `{plan}-frontend-task-{n}.md` | Frontend only | task-executor-frontend | quality-fixer-frontend |
+## Task Materialization and Execution
 
-Layer is selected from the Work Plan item's **Executor lane**. Target Files and the filename segment must agree with that copied value.
+task-decomposer follows the Work Plan and routes by executor lane:
 
-## Task Cycle
+| Filename Pattern | Executor | Quality fixer |
+|------------------|----------|---------------|
+| `*-backend-task-*` | task-executor | quality-fixer |
+| `*-frontend-task-*` | task-executor-frontend | quality-fixer-frontend |
+| shared `*-task-*` | task-executor | quality-fixer |
 
-Each task follows the standard 4-step cycle from `../SKILL.md`. Only agent routing varies by layer:
-
-| Task pattern | Executor | Quality fixer |
-|-------------|----------|---------------|
-| `*-backend-task-*` | `task-executor` | `quality-fixer` |
-| `*-frontend-task-*` | `task-executor-frontend` | `quality-fixer-frontend` |
-
-### integration-test-reviewer Placement
-
-When `requiresTestReview` is `true`:
-- Standard flow (integration-test-reviewer after task-executor, before quality-fixer)
-- Apply Review Resolution before returning corrections: pass `apply` findings to the layer executor, re-review with `prior_feedback`, and continue after every `user_decision_required` item has a recorded user decision
-
-All other orchestration rules follow the standard subagents-orchestration-guide.
+When changed integration/E2E tests require review, invoke integration-test-reviewer after the executor and before the quality fixer. All other execution, Review Resolution, and stop rules follow the parent orchestration guide.

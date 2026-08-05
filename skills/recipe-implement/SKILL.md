@@ -26,6 +26,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - **Stop at every `[Stop: ...]` marker** → Use AskUserQuestion for confirmation and wait for approval before proceeding
 3. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 **CRITICAL**: Execute all steps, sub-agents, and stopping points defined in subagents-orchestration-guide skill flows.
 
 ## Execution Decision Flow
@@ -61,13 +63,12 @@ When continuing existing flow, verify:
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Run the requirement-convergence hearing protocol on the returned `convergence` object before presenting anything else, using the analyzer's scope facts and cost band as the facts it presents.
+Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts. Determine Structural Scale from the confirmed outcome and responsibility boundaries, then run the requirement-convergence hearing protocol before presenting anything else.
 
 When user responds to questions:
-- If any `convergence` field is below `ready` → Re-execute requirement-analyzer with the hearing answers so the record is re-judged. Repeat until every field is `ready` or `weak-but-explicit`
-- If response matches any `scopeDependencies.question` → Check `impact` for scale change
-- If scale changes → Re-execute requirement-analyzer with updated context
-- If `confidence: "confirmed"` or no scale change → Proceed to next step
+- Update the orchestrator-owned convergence record and Structural Scale judgment from the answer.
+- Re-execute requirement-analyzer only when the answer changes the repository analysis target or scope evidence.
+- Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 
 ### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
 
@@ -137,7 +138,7 @@ Before the completion report, delete the implementation task files this recipe c
 - Delete every file matching `docs/plans/tasks/{plan-name}-task-*.md` (the `{plan-name}` derived from the work plan path used in this run)
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
-If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.
+If task-file deletion fails, include the filesystem error in the completion report and finish the report with the implementation result.
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows:work-planner"), communicate:

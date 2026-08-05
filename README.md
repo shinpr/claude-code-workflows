@@ -73,7 +73,7 @@ claude
 
 Install only one workflow plugin. `dev-workflows-fullstack` already contains the backend and frontend workflows. If you previously used full-stack recipes from `dev-workflows`, migrate to `dev-workflows-fullstack`.
 
-`/recipe-front-design` stops after the UI Spec and Design Doc are reviewed and approved. Run `/recipe-front-plan` and `/recipe-front-build` when you are ready to continue. For a backend or general change, `/recipe-design`, `/recipe-plan`, and `/recipe-build` provide the same staged path.
+`/recipe-front-design` stops after the applicable UI Spec and Design Doc are reviewed and approved. Run `/recipe-front-plan` and `/recipe-front-build` when you are ready to continue. For a backend or general change, `/recipe-design`, `/recipe-plan`, and `/recipe-build` provide the same staged path.
 
 ### Team setup
 
@@ -163,7 +163,7 @@ The recipe scopes the change, inspects the current implementation, creates only 
 
 The design recipes inspect the existing code, confirm the scope, create the required documents, run an independent consistency review, and stop for approval. Planning and implementation can continue later, in a new context or by another contributor, from those approved artifacts.
 
-The frontend path adds UI analysis, component architecture, React Testing Library, and TypeScript checks. Its UI Spec records states that a visual prototype usually leaves open.
+The frontend path adds UI analysis and a UI Spec when UI structure or behavior remains to be designed, plus component architecture, React Testing Library, and TypeScript checks.
 
 For example, two dashboard components may each handle loading correctly while the combined screen has no defined behavior when one is loading and the other has failed. The UI Spec records that state combination and traces it into design and test work before integration.
 
@@ -243,11 +243,11 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 <details>
 <summary>View all frontend recipes</summary>
 
-The frontend plugin adds React-specific analysis, component architecture, React Testing Library, TypeScript checks, and UI Spec generation from optional prototype code.
+The frontend plugin adds React-specific analysis, component architecture, React Testing Library, TypeScript checks, and applicable UI Spec generation from optional prototype code.
 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
-| `/recipe-front-design` | Create a UI Spec and frontend Design Doc | React component architecture |
+| `/recipe-front-design` | Create an applicable UI Spec and frontend Design Doc | React component architecture |
 | `/recipe-front-plan` | Generate a frontend work plan | Component planning |
 | `/recipe-front-build` | Execute a frontend work plan | Resume React implementation |
 | `/recipe-front-adjust` | Adjust an implemented UI with external verification | Visual refinements |
@@ -273,7 +273,7 @@ These agents are shared by the backend, frontend, and full-stack workflow plugin
 
 | Agent | What It Does |
 |-------|--------------|
-| **requirement-analyzer** | Determines change size, affected layers, and the required workflow |
+| **requirement-analyzer** | Collects compact scope and cost evidence for orchestrator requirement and workflow decisions |
 | **prd-creator** | Defines product requirements for larger features |
 | **codebase-analyzer** | Inspects existing code and dependencies before design |
 | **code-verifier** | Compares documents with the implementation |

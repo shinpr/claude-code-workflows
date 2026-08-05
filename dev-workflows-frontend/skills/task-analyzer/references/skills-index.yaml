@@ -6,7 +6,6 @@ skills:
     skill: "coding-principles"
     tags: [implementation, code-quality, refactoring, clean-code, maintainability, function-design, error-handling, parameterized-dependencies, performance, security, reference-representativeness]
     typical-use: "Language-agnostic implementation and review rules with repository-wide reference checks, structural thresholds, scope-aware deletion, and security boundaries"
-    size: medium
     key-references:
       - "Design Convergence - implementation-approach"
       - "Reference Representativeness"
@@ -28,7 +27,6 @@ skills:
     skill: "testing-principles"
     tags: [testing, tdd, quality, unit-testing, integration-testing, e2e-testing, test-design, coverage, mocking, test-independence, test-quality-criteria, data-layer-testing, capability-probe, consumer-postcondition, regression-evidence]
     typical-use: "Repository-aware test design rules for independent oracles, mock boundaries, data-layer evidence, capability probes, and regression verification"
-    size: small
     key-references:
       - "Capability Probe Postconditions"
       - "Independent oracle and boundary rules"
@@ -47,7 +45,6 @@ skills:
     skill: "ai-development-guide"
     tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, fail-fast, error-handling, impact-analysis, scope-control]
     typical-use: "Technical decision criteria, anti-pattern gates, repository quality-check discovery, scope control, and impact analysis"
-    size: large
     key-references:
       - "Rule of Three - Martin Fowler"
       - "5 Whys - Toyota Production System"
@@ -68,8 +65,7 @@ skills:
   documentation-criteria:
     skill: "documentation-criteria"
     tags: [documentation, decision-making, adr, prd, design-doc, planning, process, scale-assessment, mvp-convergence, scope-boundaries]
-    typical-use: "Scale assessment, document creation criteria, PRD MVP convergence, and ADR/PRD/Design Doc/Work Plan creation standards"
-    size: medium
+    typical-use: "Structural scale, document routing, ADR decision filters, and PRD/Design Doc/Work Plan creation standards"
     key-references:
       - "ADR Method - Michael Nygard"
       - "Design Doc Culture - Google Engineering Practices"
@@ -77,7 +73,8 @@ skills:
     sections:
       - "Templates"
       - "Creation Decision Matrix"
-      - "ADR Creation Conditions (Required if Any Apply)"
+      - "Structural Scale"
+      - "ADR Decision Filters"
       - "Detailed Document Definitions"
       - "Creation Process"
       - "Storage Locations"
@@ -90,7 +87,6 @@ skills:
     skill: "implementation-approach"
     tags: [architecture, implementation, task-decomposition, strategy-patterns, strangler-pattern, facade-pattern, design, planning, verification-levels]
     typical-use: "Implementation strategy selection, task decomposition, design decisions, large-scale change planning"
-    size: medium
     key-references:
       - "Strangler Fig Pattern - Martin Fowler"
       - "Feature Slicing - Martin Fowler"
@@ -106,7 +102,6 @@ skills:
     skill: "integration-e2e-testing"
     tags: [testing, integration-testing, e2e-testing, fixture-e2e, service-integration-e2e, lane-selection, test-design, behavior-first, roi, test-skeleton, ears-format, route-parity, shared-mutation]
     typical-use: "Integration and E2E test design, lane-specific ROI selection, test skeleton specification, and route parity review for shared mutations"
-    size: medium
     key-references:
       - "Test Pyramid - Mike Cohn"
       - "Behavior-Driven Development"
@@ -126,7 +121,6 @@ skills:
     skill: "subagents-orchestration-guide"
     tags: [orchestration, workflow, subagents, autonomous-execution, planning, design-flow, implementation-flow, handoff-contracts, post-implementation-verification]
     typical-use: "Orchestrating subagents through implementation workflows, structured handoffs, stop points, autonomous execution, and post-implementation verifier/fix cycles"
-    size: large
     key-references:
       - "Orchestrator Pattern"
       - "Conductor Pattern"
@@ -149,7 +143,6 @@ skills:
     skill: "typescript-rules"
     tags: [frontend, react, typescript, function-components, props-driven, type-safety, environment-variables, security, state-management, state-ownership, server-client-boundary, performance-evidence]
     typical-use: "Repository-aware React and TypeScript boundaries for external data, component and state ownership, async errors, bundler configuration, and evidence-gated optimization"
-    size: small
     key-references:
       - "Repository-local component and state ownership"
       - "React Compiler memoization boundary"
@@ -166,7 +159,6 @@ skills:
     skill: "test-implement"
     tags: [testing, frontend, react, react-testing-library, msw, playwright, e2e, fixture-e2e, service-integration-e2e, coverage, tdd]
     typical-use: "Repository-aware frontend test implementation. Load references/frontend.md for component tests or references/e2e.md for fixture and service browser lanes"
-    size: medium
     key-references:
       - "references/frontend.md"
       - "references/e2e.md"
@@ -178,7 +170,6 @@ skills:
     skill: "frontend-ai-guide"
     tags: [frontend, react, anti-patterns, technical-judgment, component-design, testing, quality-commands]
     typical-use: "Frontend technical decision criteria, React anti-pattern detection, component quality check workflows"
-    size: large
     key-references:
       - "Rule of Three - Martin Fowler"
       - "React Best Practices"
@@ -198,7 +189,6 @@ skills:
     skill: "llm-friendly-context"
     tags: [cross-cutting, llm-facing, prompt-writing, handoff, subagent-prompt, documentation, planning, task-decomposition, test-skeleton, generated-instructions, ambiguity-reduction, output-format, success-criteria, scope-control, size-budget]
     typical-use: "Writing or revising LLM-facing prompts, handoffs, planning artifacts, reviews, and generated instructions with explicit execution boundaries and total change budgets"
-    size: small
     key-references:
       - "Ambiguity rewrite patterns"
       - "Handoff checklist"
@@ -213,7 +203,6 @@ skills:
     skill: "external-resource-context"
     tags: [cross-cutting, hearing-protocol, design-source, design-system, api-schema, iac-source, secrets, environment, two-tier-storage]
     typical-use: "Captures access methods for resources outside the repository (design origin, design system, API schema, IaC source, secrets, etc.) and persists them in a deterministic location for downstream agents"
-    size: medium
     key-references:
       - "references/frontend.md"
       - "references/backend.md"
@@ -235,7 +224,6 @@ skills:
     skill: "requirement-convergence"
     tags: [cross-cutting, requirements, scope, non-goals, outcome, rough-estimate, trade-off, hearing-protocol, convergence]
     typical-use: "Converges what to build before design by separating outcome from requirement layers, recording user-authored non-goals, and banding cost from structure rather than behavior"
-    size: small
     key-references:
       - "references/criteria.md"
     sections:

@@ -4,7 +4,7 @@
 
 [Explain the purpose and overview of this feature in 2-3 sentences]
 
-### Referenced UI Spec (when feature includes frontend)
+### Referenced UI Spec (when applicable)
 - UI Spec path: [docs/ui-spec/xxx-ui-spec.md]
 - Component structure and state design are inherited from UI Spec
 
@@ -117,6 +117,8 @@ Keywords determine test type and reduce ambiguity.
 **Format**: `[Keyword] <trigger/condition>, the system shall <expected behavior>`
 
 The rows below demonstrate EARS syntax only. Replace their domain, values, messages, and thresholds with requirements from the PRD or accepted requirement analysis; none is a default product requirement.
+
+Keep the smallest representative set of observable behaviors that has a stable repository-verifiable pass/fail condition. Use repository-controlled contract/interface proof instead of a live external connection unless the confirmed requirement needs that boundary. Include a performance threshold only with a sourced target and reproducible benchmark, and exact visual positioning only with an approved visual contract and deterministic comparison. Implementation details remain outside ACs.
 
 ### [Functional Requirement 1]
 
