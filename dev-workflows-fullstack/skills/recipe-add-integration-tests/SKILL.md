@@ -87,7 +87,7 @@ Execute one layer at a time through Steps 3→4→5→6→7 before starting the 
 **Expected output**: `status`, `testsAdded`, `mutationEvidence`
 
 Apply this response gate after every task-executor invocation in Steps 3 and 5:
-- `status: completed`, `testsAdded` is present, and at least one changed integration/E2E path is present in the current `git status --short` write set → Proceed to Step 4
+- `status: completed`, `testsAdded` is present, and at least one changed integration/E2E test file is confirmed → Proceed to Step 4
 - `status: escalation_needed` → Escalate to the user
 - Any other status, or a response missing the required fields above → Stop and report the invalid or missing fields
 
@@ -96,7 +96,7 @@ Apply this response gate after every task-executor invocation in Steps 3 and 5:
 Invoke integration-test-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:integration-test-reviewer"
 - `description`: "Review test quality"
-- `prompt`: "Review test quality. changedTestFiles: [integration/E2E paths from the current git status --short write set]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
+- `prompt`: "Review test quality. changedTestFiles: [confirmed changed integration/E2E test paths]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
 
 **Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`; correction re-review also returns `prior_feedback_reconciliation`
 

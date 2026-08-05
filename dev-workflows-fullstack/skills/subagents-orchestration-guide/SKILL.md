@@ -192,7 +192,7 @@ For Small, execute one direct-scope 4-step cycle and complete when quality-fixer
 1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with the task file path when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Derive `changedTestFiles` from the current `git status --short` write set, filter it to integration/E2E paths, and invoke integration-test-reviewer with `changedTestFiles`, `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
      - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence

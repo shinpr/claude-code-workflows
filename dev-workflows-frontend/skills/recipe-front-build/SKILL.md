@@ -95,7 +95,7 @@ For EACH task in the Consumed Task Set, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows-frontend:task-executor-frontend") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
-   - `requiresTestReview` is `true` → Derive changed integration/E2E paths from the current `git status --short` write set and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → STOP and escalate to user
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`

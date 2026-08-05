@@ -111,7 +111,7 @@ Escalate when the required fix or investigation falls outside that scope.
 1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`; pass the task file path when one exists, otherwise pass `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Escalate to user
-   - `requiresTestReview` is `true` → Derive `changedTestFiles` from the current `git status --short` write set and invoke integration-test-reviewer with it, `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
+   - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Escalate to user
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`

@@ -124,7 +124,7 @@ Escalate when the required fix or investigation falls outside that scope.
 
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
-2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, derive `changedTestFiles` from the current `git status --short` write set and invoke integration-test-reviewer with it, `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
+2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
    - `approved` → Continue to rule 3
    - `blocked` → Escalate to user
    - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate, return rerouted corrections to the layer executor, and continue to rule 3 only when correction re-review `prior_feedback_reconciliation` establishes convergence
