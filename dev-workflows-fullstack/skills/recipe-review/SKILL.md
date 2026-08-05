@@ -142,7 +142,7 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:quality-fixer"
 - `description`: "Quality gate check"
-- Pass Step 6 `mutationEvidence`; quality-fixer derives the uncommitted correction write set from repository status.
+- Pass Step 6 `mutationEvidence`.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 8: Re-validate code-reviewer

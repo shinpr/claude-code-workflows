@@ -115,7 +115,6 @@ When the project-tier file declares no automated verification mechanism for an a
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
   - Pass `qualityCommand` when available (caller first, otherwise current task).
-  - The agent derives the adjustment unit's uncommitted write set from repository status.
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend

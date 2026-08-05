@@ -116,7 +116,7 @@ Escalate when the required fix or investigation falls outside that scope.
      - `blocked` → Escalate to user
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - Otherwise → Proceed to step 3
-3. quality-fixer → Pass `task_file` when one exists, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); quality-fixer derives the uncommitted write set from repository status
+3. quality-fixer → Pass `task_file` when one exists, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → Escalate to user
    - `approved` → Proceed to step 4

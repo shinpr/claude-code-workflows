@@ -142,7 +142,7 @@ Invoke task-executor-frontend using Agent tool:
 Invoke quality-fixer-frontend using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Quality gate check"
-- Pass Step 6 `mutationEvidence`; quality-fixer-frontend derives the uncommitted correction write set from repository status.
+- Pass Step 6 `mutationEvidence`.
 - `prompt`: "Confirm quality gate passage for fixed files."
 
 ### Step 8: Re-validate code-reviewer

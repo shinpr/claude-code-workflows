@@ -117,7 +117,7 @@ Invoke quality-fixer for the current layer:
 - Backend or single-layer → `subagent_type`: "dev-workflows:quality-fixer"
 - Frontend → `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Final quality assurance"
-- Pass the latest executor's `mutationEvidence`; quality-fixer derives the current layer's uncommitted write set from repository status.
+- Pass the latest executor's `mutationEvidence`.
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
 **Expected output**: `status` (approved/stub_detected/blocked)

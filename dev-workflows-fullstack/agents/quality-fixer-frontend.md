@@ -37,11 +37,9 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 ### Step 1: Incomplete Implementation Check [BLOCKING — before any quality checks]
 
-Review the diff of changed files to detect stub or incomplete implementations. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
+Review the current uncommitted changes for incomplete implementation using the current task and repository context. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
 
-Derive the current uncommitted write set from `git status --short`. Inspect tracked changes with `git diff HEAD`, read untracked files directly, and account for deleted paths without attempting to read them. The workflow commits each completed unit before the next begins, so this repository state is the quality scope.
-
-Apply the indicators below to each existing file in this write set.
+Use the indicators below for this review.
 
 **Indicators of incomplete implementation** (stub_detected):
 - `// TODO`, `// FIXME`, `// HACK`, `throw new Error("not implemented")` or equivalent

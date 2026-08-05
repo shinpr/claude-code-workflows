@@ -100,7 +100,7 @@ For EACH task in the Consumed Task Set, YOU MUST:
      - `blocked` → STOP and escalate to user
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - `status: completed` → Proceed to step 3
-3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task); it derives the uncommitted write set from repository status
+3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
    - `blocked` → STOP and escalate to user
    - `approved` → Proceed to step 4
