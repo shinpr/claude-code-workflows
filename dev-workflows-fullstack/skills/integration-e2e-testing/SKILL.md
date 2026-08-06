@@ -43,7 +43,7 @@ One input Design Doc is one budget scope: apply each lane budget once across all
 
 ROI is used to **rank candidates within the same test type** (integration candidates against each other, E2E candidates against each other). Cross-type comparison is unnecessary because integration and E2E budgets are selected independently.
 
-Score every input before calculating ROI. For the three numeric inputs, use only `0`, `5`, or `10`; do not interpolate intermediate values. Legal Requirement remains boolean:
+Score every input before calculating ROI. For the three numeric inputs, use exactly `0`, `5`, or `10`. Legal Requirement remains boolean:
 
 | Input | Scale |
 |---|---|

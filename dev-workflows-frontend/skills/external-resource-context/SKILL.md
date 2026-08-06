@@ -55,7 +55,7 @@ Each domain reference defines the axes and the question template.
 
 ### Two-Phase Hearing
 
-1. **Structured hearing** — for each axis defined in every selected domain reference, present the user with AskUserQuestion using the choices listed there (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command). Domain references end after their axes; they do not add their own self-declaration question.
+1. **Structured hearing** — for each axis defined in every selected domain reference, present the user with AskUserQuestion using the choices listed there (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command). Each domain reference ends after its access-method follow-up; phase 2 owns the single self-declaration question.
 
 2. **Self-declaration** — after the structured axes for all selected domains are complete, present one integrated AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection.
 

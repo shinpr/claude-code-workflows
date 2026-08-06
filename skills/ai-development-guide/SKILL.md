@@ -280,7 +280,7 @@ Proceed when discovery and understanding cover the files and behaviors named by 
 When an artifact made obsolete by the requested change is detected:
 - Delete it in the same change when its callers and generated/operational uses are checked
 - Preserve and report it when obsolescence is uncertain or deletion would expand beyond the files and behaviors named by the user or current task/design artifact
-- Do not implement unrelated dormant code merely because it was discovered
+- Keep unrelated dormant code outside the implementation scope
 
 ### Existing Code Modification
 

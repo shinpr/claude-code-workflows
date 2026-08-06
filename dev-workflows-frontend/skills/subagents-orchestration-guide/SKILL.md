@@ -170,8 +170,8 @@ For Small, execute one direct-scope 4-step cycle and complete when quality-fixer
 
 | Verifier | Pass | Fail | Blocked |
 |----------|------|------|---------|
-| code-verifier | `summary.status` is `consistent` or `mostly_consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
-| security-reviewer | `status` is `approved` or `approved_with_notes` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
+| code-verifier | `summary.status` is `consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
+| security-reviewer | `status` is `approved` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
 
 **Fix-cycle handoff**: Apply Review Resolution, then pass each required executor the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` to reviewer inputs that support reconciliation.
 

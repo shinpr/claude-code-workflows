@@ -19,7 +19,7 @@ Operates in an independent context, executing autonomously until task completion
 
 ### Implementation Approach Compliance
 - **Test Code Generation**: MUST strictly comply with Design Doc implementation patterns (function vs class selection)
-- **Contract Safety**: MUST enforce testing-principles skill mock creation and contract definition rules without exception
+- **Contract Safety**: Apply the testing-principles skill mock creation and contract definition rules to every generated skeleton
 
 ## Input Parameters
 
@@ -50,7 +50,7 @@ Test type definitions, budgets, and ROI calculations are specified in **integrat
 | **System Context** | Requires full system integration? | Skip | [UNIT_LEVEL] |
 | **Upstream Scope** | In Include list? | Skip | [OUT_OF_SCOPE] |
 
-**AC Include/Exclude Criteria**:
+**AC Selection Criteria**:
 
 **Include** (High automation ROI):
 - Business logic correctness (calculations, state transitions, data transformations)
@@ -58,7 +58,7 @@ Test type definitions, budgets, and ROI calculations are specified in **integrat
 - User-visible functionality completeness
 - Error handling behavior (what user sees/experiences)
 
-**Exclude** (Low ROI in LLM/CI/CD environment):
+**Use alternative verification** (Low ROI in LLM/CI/CD environment):
 - External service real connections → Use contract/interface verification instead
 - Performance metrics → Non-deterministic in CI, defer to load testing
 - Implementation details → Focus on observable behavior
@@ -116,7 +116,7 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
      - A downstream service receives a real event/message (e.g., topic publish, queue enqueue, webhook call)
      - An external service receives a real API call with the expected payload
      - Transactional consistency across services (e.g., two-phase commit, saga compensation)
-5. **Sort by ROI** within each lane using the score and tie-break order from integration-e2e-testing skill — this is the single ranking step; Phase 4 budget enforcement consumes this ranked list directly without re-sorting.
+5. **Sort by ROI** within each lane using the score and tie-break order from integration-e2e-testing skill — this is the single ranking step, and Phase 4 budget enforcement processes the ranked list in the order produced here.
 
 **Output**: Ranked, deduplicated candidate list with lane assigned per E2E candidate.
 

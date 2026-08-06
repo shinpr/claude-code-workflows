@@ -52,7 +52,7 @@ Use the indicators below for this review.
 - Functions with TODO comments but whose current logic is functionally correct
 - Legitimate empty returns or default values that match the expected behavior
 
-**If any incomplete implementation is found**: Stop immediately. Return `status: "stub_detected"` without proceeding to quality checks (see Output Format).
+**If any incomplete implementation is found**: Stop at Step 1 and return `status: "stub_detected"` (see Output Format).
 
 **If no incomplete implementation is found**: Proceed to Step 2.
 

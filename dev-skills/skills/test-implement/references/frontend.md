@@ -13,7 +13,7 @@ Before writing a test, inspect package scripts, runner configuration, setup file
 
 - Concentrate rigor on shared components, hooks, and utilities with a wide blast radius. Use integration or E2E coverage for higher-composition surfaces when their boundary is the behavior under test.
 - For a behavior-preserving refactor, establish passing regression or characterization evidence before the change and rerun it afterward.
-- Configuration that changes runtime or build behavior requires executable validation. Documentation-only changes do not require test-first development.
+- Test-first scope covers executable behavior; configuration that changes runtime or build behavior requires executable validation.
 - Continuity tests cover existing feature behavior affected by the change; long-term performance and operational testing remain infrastructure concerns unless the accepted work includes them.
 
 ## Mock Boundary

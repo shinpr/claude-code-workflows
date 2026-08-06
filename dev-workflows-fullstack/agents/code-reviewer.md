@@ -71,7 +71,7 @@ When `prior_feedback` is present, complete the correction re-review here:
 
 For each acceptance criterion extracted in Step 1:
 - Search implementation files for the corresponding code
-- Determine status: fulfilled / partially fulfilled / unfulfilled
+- Mark it `fulfilled` only when evidence covers every governing boundary path; otherwise mark it `unfulfilled` and name each uncovered path in `gap`
 - Record the file path and relevant code location
 - Note any deviations from the Design Doc specification
 - For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
@@ -124,7 +124,7 @@ For each function/method in implementation files, check against coding-principle
 #### 3-3. Test Coverage for Acceptance Criteria
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
-- For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
+- For each test claimed as AC coverage, inspect the test body and count it as coverage only when at least one assertion exercises the AC's observable behavior. Record `skip`/`xit`-marked tests that should run, TODO/placeholder-only bodies, and always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as `coverage_gap` even when grep finds them, with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
 - Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. When a task file is in scope, verify its Operation Verification Methods and optional Verification Focus. Missing required evidence is a `coverage_gap`.
 
 #### Finding Classification
@@ -185,13 +185,13 @@ Verify against the Design Doc architecture:
 verdict:              string ("pass" | "needs-improvement" | "needs-redesign")
 
 acceptanceCriteria[].item:        string
-acceptanceCriteria[].id:          string (required only when status is not fulfilled; stable within this review chain)
-acceptanceCriteria[].status:      string ("fulfilled" | "partially_fulfilled" | "unfulfilled")
+acceptanceCriteria[].id:          string (required only when status is unfulfilled; stable within this review chain)
+acceptanceCriteria[].status:      string ("fulfilled" | "unfulfilled")
 acceptanceCriteria[].confidence:  string ("high" | "medium" | "low")
 acceptanceCriteria[].location:    string (file:line; null if unimplemented)
 acceptanceCriteria[].evidence:    string[] (each "source: file:line")
-acceptanceCriteria[].gap:         string (null when fully fulfilled)
-acceptanceCriteria[].suggestion:  string (null when fully fulfilled)
+acceptanceCriteria[].gap:         string (null when status is fulfilled)
+acceptanceCriteria[].suggestion:  string (null when status is fulfilled)
 
 identifierVerification[].identifier:    string
 identifierVerification[].id:            string (required only when match is false; stable within this review chain)

@@ -65,7 +65,7 @@ Before sending a prompt or artifact to another agent, verify:
 
 - [ ] The target action is explicit.
 - [ ] Required input paths and source artifacts are named.
-- [ ] Accepted decisions and constraints are stated once, without alternate wording.
+- [ ] Accepted decisions and constraints use one canonical wording.
 - [ ] Output format or expected status fields are specified.
 - [ ] Success criteria are observable.
 - [ ] Ambiguous expressions have been rewritten or marked as unresolved.

@@ -156,7 +156,7 @@ Before the completion report, delete the implementation task files this recipe c
 - Delete every file in the Consumed Task Set
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
 
-If task files cannot be deleted (filesystem error), report the failure but do not block the completion report.
+If task-file deletion fails with a filesystem error, report the failure and continue to the completion report.
 
 ## Completion Report Contract
 

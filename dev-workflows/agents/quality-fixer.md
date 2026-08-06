@@ -46,7 +46,7 @@ Use the indicators below for this review.
 
 **Legitimate patterns** (treat as complete; proceed to Step 2): intentionally minimal implementations, functions with TODO comments but functionally correct logic, and legitimate empty/default returns that match the expected behavior.
 
-**If any incomplete implementation is found**: Stop immediately. Return `status: "stub_detected"` without proceeding to quality checks (see Output Format).
+**If any incomplete implementation is found**: Stop at Step 1 and return `status: "stub_detected"` (see Output Format).
 
 **If no incomplete implementation is found**: Proceed to Step 2.
 

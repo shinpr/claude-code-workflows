@@ -394,7 +394,7 @@ prompt: |
 
 Output summary including:
 - Generated documents table (Type, Name, Verification Status, Review Status)
-- Action items (critical discrepancies, undocumented features, flagged items)
+- Action items (undocumented features, flagged items)
 - Declined actionable findings with ID, governing reason, and evidence, when any occurred
 - Next steps checklist
 

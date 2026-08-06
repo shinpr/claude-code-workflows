@@ -121,7 +121,7 @@ prompt: |
   Re-investigate with focus on the following gaps:
   - Missing: [unsatisfied Step 2 Quality Check items, copied as written]
 
-  Previous investigation results (for context, do not re-investigate covered areas):
+  Use these previous investigation results as context and investigate only the gaps listed above:
   [Previous investigation JSON]
 ```
 

@@ -126,7 +126,7 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 
 ## Quality Check Workflow
 
-Read `package.json` scripts and run them with the project's package manager (`packageManager` field). Map the project's actual script names to the phases below — do not assume fixed names.
+Read `package.json` scripts, map the project's actual commands to the phases below, and run them with the project's package manager (`packageManager` field).
 
 ### Phases (run in order)
 1. **Lint/format** — the project's formatter + linter (e.g., Biome, or ESLint + Prettier)
@@ -189,7 +189,7 @@ Proceed when the user-requested or task-defined scope, consumers, state flow, an
 
 ### Unused Code Deletion Rule
 
-When the requested change makes a component, hook, utility, document, or configuration entry obsolete, delete it after checking its consumers and generated/operational use. Preserve and report uncertain or out-of-scope cleanup; do not implement unrelated dormant code merely because it was discovered.
+When the requested change makes a component, hook, utility, document, or configuration entry obsolete, delete it after checking its consumers and generated/operational use. Preserve and report uncertain or out-of-scope cleanup, and keep unrelated dormant code outside the implementation scope.
 
 ### Existing Code Deletion Decision Flow
 

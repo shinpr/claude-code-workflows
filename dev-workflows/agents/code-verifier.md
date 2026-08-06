@@ -54,9 +54,9 @@ Stop expanding the search when additional evidence cannot change a discrepancy o
 - `conflict`: Observed behavior or a governing contract contradicts the document.
 - `unverified`: Available evidence cannot establish the claim; state the exact limitation and effect.
 
-Use `critical` only when the issue makes approved scope incorrect, non-executable, or non-verifiable. Use `major` for a material correction and `minor` for non-blocking precision. Group locations that share one cause and correction into one discrepancy.
+Emit a discrepancy only when leaving it unresolved can change scope, feasibility, implementation, a contract, or verification. Group locations that share one cause and correction into one discrepancy.
 
-Use `unverified` only for a specific material document claim whose unresolved truth can change scope, feasibility, implementation, a contract, or verification; assign it `critical` or `major`. Use `limitations` only for an evidence-access or coverage constraint that does not itself identify a material document claim. Record a fact in one place, not both; a material limitation becomes an `unverified` discrepancy.
+Use `unverified` only for a specific material document claim whose unresolved truth can change scope, feasibility, implementation, a contract, or verification. Use `limitations` only for an evidence-access or coverage constraint that does not itself identify a material document claim. Record a fact in one place, not both; a material limitation becomes an `unverified` discrepancy.
 
 ## Output
 
@@ -64,11 +64,11 @@ Return exactly one JSON object:
 
 ```json
 {
-  "summary": {"docType": "design-doc", "documentPath": "docs/design/example.md", "status": "consistent|mostly_consistent|needs_review|inconsistent|blocked"},
+  "summary": {"docType": "design-doc", "documentPath": "docs/design/example.md", "status": "consistent|needs_review|inconsistent|blocked"},
   "blockingReason": null,
   "inventoryCoverage": null,
   "discrepancies": [
-    {"id": "D001", "status": "drift|gap|conflict|unverified", "severity": "critical|major|minor", "claim": "document claim", "documentLocation": "section or line", "codeLocation": "file:line or null", "relatedLocations": ["other location with the same cause"], "evidence": "observed fact", "effect": "why this changes scope, feasibility, implementation, contract, or verification"}
+    {"id": "D001", "status": "drift|gap|conflict|unverified", "claim": "document claim", "documentLocation": "section or line", "codeLocation": "file:line or null", "relatedLocations": ["other location with the same cause"], "evidence": "observed fact", "effect": "why this changes scope, feasibility, implementation, contract, or verification"}
   ],
   "limitations": ["exact evidence-access or coverage constraint and its verification effect"]
 }
@@ -86,12 +86,11 @@ When `unit_inventory` is supplied, replace `inventoryCoverage: null` with this o
 
 For each inventory category, `accountedCount + excluded.length + unaccounted.length` equals `inputCount`. Report every unaccounted item as one cause-grouped `gap` discrepancy.
 
-An unaccounted inventory item makes `consistent` and `mostly_consistent` invalid; use at least `needs_review`. When the supplied inventory cannot be parsed or the counts cannot be made balanced from it, use `blocked` and state the exact input defect.
+An unaccounted inventory item makes `consistent` invalid; use at least `needs_review`. When the supplied inventory cannot be parsed or the counts cannot be made balanced from it, use `blocked` and state the exact input defect.
 
 Status rules:
 
-- `consistent`: no discrepancy or material limitation exists;
-- `mostly_consistent`: only minor precision issues or non-material coverage limitations remain, and inventory has no unaccounted item;
+- `consistent`: no discrepancy exists;
 - `needs_review`: a repairable material discrepancy, including any `unverified` discrepancy, exists;
 - `inconsistent`: governing evidence contradicts the selected outcome or contract;
 - `blocked`: required input or repository evidence is unusable for the requested verification.
