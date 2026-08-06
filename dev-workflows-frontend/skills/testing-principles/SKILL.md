@@ -39,7 +39,7 @@ RED: confirm the new test fails for the intended reason. GREEN: implement the sm
 
 Mock-based tests are sufficient when data access is only a dependency of the behavior under test. Verify against the project's real database engine or its accepted equivalent when the subject is a query, repository implementation, schema constraint, or migration compatibility. Resolve the test environment from repository configuration; when no representative environment exists and adding one is outside the approved work, report the missing verification decision.
 
-Cross-check data-access code against the schema source named in the Design Doc or repository configuration. Successful mocks do not prove table, column, type, constraint, or dialect compatibility.
+Cross-check data-access code against the schema source named in the Design Doc or repository configuration. Schema-source verification is required to prove table, column, type, constraint, or dialect compatibility; successful mocks prove behavior only at the mocked boundary.
 
 ## Verification Requirements
 

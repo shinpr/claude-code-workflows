@@ -62,7 +62,7 @@ Invoke security-reviewer using Agent tool:
 
 ### Step 4: Verdict and Response
 
-**If security-reviewer returned `blocked`**: Stop immediately. Report its blocking reason and any returned finding, then escalate to user. Do not proceed to fix steps.
+**If security-reviewer returned `blocked`**: Stop at this gate, report its blocking reason and any returned finding, then escalate to the user. The workflow remains at this gate pending the user's response.
 
 Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing.
 

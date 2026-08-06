@@ -38,7 +38,7 @@ Use the repository's existing seed and authentication mechanisms. Create per-tes
 ## Locator and Assertion Rules
 
 - Follow the repository's locator convention; otherwise prefer accessible role/name or label locators, then stable test IDs when no semantic locator exists.
-- Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Avoid assertions tied only to CSS classes or internal DOM structure.
+- Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Treat assertions tied only to CSS classes or internal DOM structure as insufficient proof.
 - When the UI specification defines responsive behavior, run the affected interaction at the specified viewport; otherwise use the repository's default browser matrix.
 - Each test starts from isolated state and remains independent of execution order.
 

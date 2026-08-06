@@ -124,7 +124,7 @@ For each function/method in implementation files, check against coding-principle
 #### 3-3. Test Coverage for Acceptance Criteria
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
-- For each test claimed as AC coverage, inspect the test body and confirm at least one assertion exercises the AC's observable behavior. Tests that are `skip`/`xit`-marked (on tests that should run), contain only TODO/placeholder bodies, or use always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) do not count as AC coverage even when grep finds them; record those as `coverage_gap` with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
+- For each test claimed as AC coverage, inspect the test body and count it as coverage only when at least one assertion exercises the AC's observable behavior. Record `skip`/`xit`-marked tests that should run, TODO/placeholder-only bodies, and always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as `coverage_gap` even when grep finds them, with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
 - Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. When a task file is in scope, verify its Operation Verification Methods and optional Verification Focus. Missing required evidence is a `coverage_gap`.
 
 #### Finding Classification

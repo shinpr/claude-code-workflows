@@ -58,7 +58,7 @@ Escalation thresholds:
 
 ### Step4: Core Mechanism Preservation Check (Any YES → Immediate Escalation)
 Preserve the core mechanism the task, AC, Design Doc, or referenced materials require. Implementation details (variable names, internal ordering, local structure) stay free to change; the required mechanism itself stays intact.
-□ Required core mechanism replaced by a simpler or weaker substitute? (passing tests do not make a substitute acceptable)
+□ Required core mechanism replaced by a simpler or weaker substitute, including one justified only by passing tests?
 □ Required core mechanism infeasible as specified?
 Any YES → stop and escalate with `escalation_type: "design_compliance_violation"`, recording the required mechanism, the proposed alternative, the resulting change in behavior, and the condition that would lift the block.
 
@@ -205,7 +205,7 @@ Return the final response per Structured Response Specification. For research/an
 **mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
 
 ### 1. Task Completion Response
-Report in the following JSON format upon task completion (**without executing quality checks or commits**, delegating to quality assurance process):
+Complete this agent's work by returning the following JSON; the quality assurance process performs quality checks and commits:
 
 ```json
 {
@@ -326,7 +326,7 @@ This gate runs immediately before producing the final JSON response.
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
 ☐ Every Operation Verification Method succeeds and Verification Focus is satisfied when present
-☐ When test runs are cited as `runnableCheck` evidence, they are substantive and executable per the runnableCheck.result field spec (skipped tests, placeholder/TODO-only bodies, always-passing assertions, and 0-match runner reports do not count); non-test verification (build/typecheck/CLI) is not subject to this check
+☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
 **ENFORCEMENT**: When any gate item is unchecked, return `escalation_needed` with `escalation_type: "design_compliance_violation"` for incomplete work or divergence from governing sources and Investigation Notes.

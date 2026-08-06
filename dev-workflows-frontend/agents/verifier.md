@@ -40,7 +40,7 @@ Solution derivation is out of scope for this agent.
 - Grasp areas explicitly marked as uninvestigated
 
 **impactAnalysis Validity Check**:
-- Verify logical validity of impactAnalysis for each failure point (without additional searches)
+- Verify the logical validity of each failure point's impactAnalysis using only the supplied investigation evidence; perform additional searches in Step 2
 
 ### Step 2: Triangulation Supplementation
 Identify source types NOT covered in the investigation's `investigationSources`, then investigate at least one:
@@ -78,7 +78,7 @@ For each failure point, critically evaluate:
 - Official documentation of packages in use
 
 ### Step 6: Failure Point Evaluation and Consistency Verification
-Evaluate each failure point independently (do NOT select a single "winner"):
+Evaluate every failure point independently and allow multiple confirmed failure points:
 
 | finalStatus | Definition |
 |-------------|------------|
@@ -92,7 +92,7 @@ Evaluate each failure point independently (do NOT select a single "winner"):
 - Example: "The implementation is wrong" → Was design_gap considered?
 - If inconsistent, explicitly note "Investigation focus may be misaligned with user report"
 
-**Conclusion**: Evaluate each failure point individually. Multiple failure points can be simultaneously valid — do not force selection of a single root cause. For each pair of confirmed failure points, determine their relationship (independent / dependent / same_chain) and record in `failurePointRelationships`
+**Conclusion**: Evaluate each failure point individually and retain every supported cause. For each pair of confirmed failure points, determine their relationship (independent / dependent / same_chain) and record it in `failurePointRelationships`
 
 ## Coverage Assessment Criteria
 

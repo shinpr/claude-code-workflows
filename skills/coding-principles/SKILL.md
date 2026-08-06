@@ -127,7 +127,7 @@ One comment per decision. If a comment restates what the names and control flow 
 - Delete commented-out code (retrieve from git history when needed)
 
 ### Comment Quality
-- Write comments that remain accurate regardless of future code changes; avoid references to dates, versions, or temporary state
+- Base comments on stable rationale, limits, and contracts rather than dates, versions, or temporary state
 - Update comments when changing code
 - Use proper grammar and formatting
 - Write for future maintainers
@@ -138,7 +138,7 @@ One comment per decision. If a comment restates what the names and control flow 
 - **Small steps**: Make one change at a time
 - **Maintain working state**: Keep tests passing
 - **Verify behavior**: Run tests after each change
-- **Incremental improvement**: Don't aim for perfection immediately
+- **Incremental improvement**: Make the smallest sufficient improvement in each increment
 
 ### Refactoring Triggers
 - Code duplication (DRY principle)

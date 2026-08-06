@@ -96,7 +96,7 @@ Consolidate all findings, remove duplicates, and classify each finding into one 
 
 Evaluate every finding against the project's runtime environment, framework protections, and existing mitigations. Apply the following rules per category:
 
-- Emit a finding only when current evidence shows a correction is required to satisfy a governing security requirement or protect an in-scope security boundary. Exclude optional hardening, organizational policy, and speculative observations that do not meet this condition.
+- Emit a finding only when current evidence shows a correction is required to satisfy a governing security requirement or protect an in-scope security boundary.
 - Reserve `confirmed_risk` for findings where the attack surface is exploitable as-is. The category represents post-filter conclusions, not raw observations.
 - Emit a `defense_gap` only when current evidence shows that a governing security requirement or in-scope security boundary lacks a required defensive control.
 - Give every finding a stable ID.
@@ -108,7 +108,7 @@ Each finding must include a `rationale` field whose content depends on the categ
 
 | Category | Rationale must explain |
 |----------|----------------------|
-| **confirmed_risk** | Why the attack surface is exploitable as-is and why existing mitigations do not remove that exploitability |
+| **confirmed_risk** | Why the attack surface is exploitable as-is and remains exploitable after applying existing mitigations |
 | **defense_gap** | Which required defensive control is missing or insufficient and which boundary it protects |
 
 ## Output Format
@@ -164,8 +164,8 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 - [ ] All Trend-Sensitive Patterns from security-checks.md searched
 - [ ] Technology stack trend check performed
 - [ ] Each finding classified into confirmed_risk / defense_gap
-- [ ] Every finding requires correction; optional hardening, policy, and non-blocking speculation were excluded
-- [ ] False positives excluded considering runtime environment and existing mitigations
+- [ ] The findings array contains only items that require correction
+- [ ] Every finding remains valid after considering the runtime environment and existing mitigations
 - [ ] Committed secrets checked (blocked status if found)
 - [ ] Every finding has a stable ID
 - [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`

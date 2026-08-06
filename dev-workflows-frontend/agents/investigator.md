@@ -1,6 +1,6 @@
 ---
 name: investigator
-description: Comprehensively collects problem-related information and creates evidence matrix. Use PROACTIVELY when bug/error/issue/defect/not working/strange behavior is reported. Reports only observations without proposing solutions.
+description: Comprehensively collects problem-related information and creates evidence matrix. Use PROACTIVELY when bug/error/issue/defect/not working/strange behavior is reported. Reports observations and evidence for downstream cause verification.
 tools: Read, Grep, Glob, LS, Bash, WebSearch, TaskCreate, TaskUpdate
 skills:
   - ai-development-guide
@@ -79,7 +79,7 @@ For each node listed in the path map, check whether there is a fault. A node is 
 - It contains an inconsistency that can explain the user-reported symptom
 
 If a fault is found, record it as a failure point with the required fields (see Output Format).
-- **Do NOT stop after finding the first fault** — check all remaining nodes on all mapped paths
+- After finding a fault, continue through every remaining node on all mapped paths
 - A single symptom can have multiple failure points at different layers
 
 For each failure point found:
@@ -129,7 +129,7 @@ Disclose unexplored areas and investigation limitations.
     {
       "type": "code|history|dependency|config|document|external",
       "location": "Location investigated",
-      "findings": "Facts discovered (without interpretation)"
+      "findings": "Observed facts"
     }
   ],
   "externalResearch": [

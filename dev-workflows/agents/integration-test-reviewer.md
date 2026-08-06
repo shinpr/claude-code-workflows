@@ -78,7 +78,7 @@ Evaluate each test for:
 - Clear Arrange section (setup)
 - Single Act (action)
 - Meaningful Assert (verification)
-- Substantive assertion: each test must execute at least one assertion that observes the AC's behavior. Always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), TODO-only bodies, or leftover `skip`/`xit` markers on tests that should run do not count as substantive evidence. Tests verifying intentional absence (e.g., `expect(queryAllBy*).toHaveLength(0)`) are substantive when the absence is the AC's expectation
+- Substantive assertion: classify a test as substantive only when it executes at least one assertion that observes the AC's behavior. Classify always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), TODO-only bodies, and leftover `skip`/`xit` markers on tests that should run as insufficient evidence. Tests verifying intentional absence (e.g., `expect(queryAllBy*).toHaveLength(0)`) are substantive when the absence is the AC's expectation
 - Isolated state per test (reset in beforeEach)
 - Deterministic execution (mock time/random sources when needed)
 

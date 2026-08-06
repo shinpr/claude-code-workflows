@@ -23,7 +23,7 @@ All tests follow **Arrange-Act-Assert**:
 ### Test Independence
 - Each test runs independently without depending on other tests
 - No shared mutable state between tests
-- Deterministic execution — no random or time dependencies without mocking
+- Deterministic execution — mock random and time dependencies
 
 ### Naming
 - Test names describe expected behavior from user perspective

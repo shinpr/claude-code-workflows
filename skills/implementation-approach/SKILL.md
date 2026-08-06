@@ -65,7 +65,7 @@ External Research: Official/current sources only when repository evidence cannot
 - Decorator Pattern: Phased enhancement of existing features
 - Bridge Pattern: Flexibility through abstraction
 
-Use these patterns only when their named migration or dependency problem exists. Start with the direct strategy. Compare an alternative when it would materially change risk, rollout, compatibility, or the early verification point; do not add a pattern or combination only to increase the option count.
+Use these patterns only when their named migration or dependency problem exists. Start with the direct strategy. Compare an alternative when it would materially change risk, rollout, compatibility, or the early verification point. Keep the option set limited to patterns that produce one of those material differences.
 
 ### Phase 4: Risk Assessment and Control
 

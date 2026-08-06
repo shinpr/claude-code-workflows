@@ -56,7 +56,7 @@ Qualifying durable choices include:
 - reversing or superseding an accepted architecture decision;
 - choosing an irreversible or high-cost-to-reverse data or compatibility strategy.
 
-A local contract, data-flow, state, or component change belongs in the Design Doc when it follows an accepted design, has one evident repository-supported implementation, or remains cheaply reversible. Counts of files, consumers, nesting levels, states, steps, and asynchronous operations are supporting evidence rather than ADR criteria. Generic technical concerns, operational possibilities, and rejected activities do not create ADRs by themselves.
+A local contract, data-flow, state, or component change belongs in the Design Doc when it follows an accepted design, has one evident repository-supported implementation, or remains cheaply reversible. Counts of files, consumers, nesting levels, states, steps, and asynchronous operations are supporting evidence rather than ADR criteria. Only the qualifying decisions above create ADRs; generic technical concerns, operational possibilities, and rejected activities can only support that determination.
 
 ## Detailed Document Definitions
 
@@ -114,7 +114,7 @@ Create a UI Spec when screen structure, transitions, component/state interaction
 
 **Prototype Code Handling**:
 - Prototype code provided by user is placed in `docs/ui-spec/assets/{feature-name}/`
-- Prototype is an attachment to UI Spec, never the source of truth
+- Prototype code supports the UI Spec as an attachment
 - UI Spec + Design Doc are the canonical specifications
 
 ### Design Document
