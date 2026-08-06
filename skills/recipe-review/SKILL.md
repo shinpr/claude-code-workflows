@@ -62,7 +62,7 @@ Invoke security-reviewer using Agent tool:
 
 ### Step 4: Verdict and Response
 
-**If security-reviewer returned `blocked`**: Stop immediately. Report the blocked finding and escalate to user. Do not proceed to fix steps.
+**If security-reviewer returned `blocked`**: Stop immediately. Report its blocking reason and any returned finding, then escalate to user. Do not proceed to fix steps.
 
 Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing.
 
@@ -80,7 +80,6 @@ Then present the adjudicated result to the user. Group `apply` and `user_decisio
 Code Review: [verdict from code-reviewer]
   Acceptance Criteria:
   - [fulfilled] [item] (confidence: [high/medium/low])
-  - [partially_fulfilled] [item]: [gap] — [suggestion] [recommended: c | d]
   - [unfulfilled] [item]: [gap] — [suggestion] [recommended: c | d]
   Identifier Mismatches:
   - [identifier]: DD=[designDocValue] Code=[codeValue] at [location] [recommended: c | d]
@@ -91,9 +90,6 @@ Security Review: [status from security-reviewer]
   Findings by category:
   - [confirmed_risk] [location]: [description] — [rationale] [recommended: c]
   - [defense_gap] [location]: [description] — [rationale] [recommended: c]
-  - [hardening] [location]: [description] — [rationale] [recommended: c]
-  - [policy] [location]: [description] — [rationale] [recommended: c]
-  Notes: [notes from security-reviewer, if present]
 
 Approve the proposed changes or decide unresolved items:
   c) Code-side fix       — code violates Design Doc; modify code to match
@@ -175,7 +171,6 @@ Security Review:
   Initial: [status]
   Correction review: [status for the re-review scope] (if fixes executed)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
-  Notes: [notes from approved_with_notes, if any]
 
 Declined actionable findings:
 - [ID: governing reason — evidence] (only when any were declined)

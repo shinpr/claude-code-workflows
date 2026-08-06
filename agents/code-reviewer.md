@@ -71,7 +71,7 @@ When `prior_feedback` is present, complete the correction re-review here:
 
 For each acceptance criterion extracted in Step 1:
 - Search implementation files for the corresponding code
-- Determine status: fulfilled / partially fulfilled / unfulfilled
+- Mark it `fulfilled` only when evidence covers every governing boundary path; otherwise mark it `unfulfilled` and name each uncovered path in `gap`
 - Record the file path and relevant code location
 - Note any deviations from the Design Doc specification
 - For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
@@ -185,13 +185,13 @@ Verify against the Design Doc architecture:
 verdict:              string ("pass" | "needs-improvement" | "needs-redesign")
 
 acceptanceCriteria[].item:        string
-acceptanceCriteria[].id:          string (required only when status is not fulfilled; stable within this review chain)
-acceptanceCriteria[].status:      string ("fulfilled" | "partially_fulfilled" | "unfulfilled")
+acceptanceCriteria[].id:          string (required only when status is unfulfilled; stable within this review chain)
+acceptanceCriteria[].status:      string ("fulfilled" | "unfulfilled")
 acceptanceCriteria[].confidence:  string ("high" | "medium" | "low")
 acceptanceCriteria[].location:    string (file:line; null if unimplemented)
 acceptanceCriteria[].evidence:    string[] (each "source: file:line")
-acceptanceCriteria[].gap:         string (null when fully fulfilled)
-acceptanceCriteria[].suggestion:  string (null when fully fulfilled)
+acceptanceCriteria[].gap:         string (null when status is fulfilled)
+acceptanceCriteria[].suggestion:  string (null when status is fulfilled)
 
 identifierVerification[].identifier:    string
 identifierVerification[].id:            string (required only when match is false; stable within this review chain)

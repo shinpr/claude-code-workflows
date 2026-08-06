@@ -91,18 +91,14 @@ Consolidate all findings, remove duplicates, and classify each finding into one 
 
 | Category | Definition | Examples |
 |----------|-----------|----------|
-| **confirmed_risk** | Attack surface is exploitable as-is, post-filter conclusion with high confidence | Missing authentication on endpoint, arbitrary file access, SQL injection via string concatenation |
-| **suspected_risk** | Attack surface plausible but exploitability uncertain or partially mitigated; downgrade target from confirmed_risk when confidence drops | Potential SSRF behind a network ACL of unknown coverage; auth bypass possible only under specific framework configuration |
-| **defense_gap** | Not immediately exploitable, but a defensive layer is thin or absent | Runtime type validation missing (framework may catch it), unnecessary capability enabled |
-| **hardening** | Improvement to reduce attack surface or exposure | Reducing log verbosity, tightening error response content |
-| **policy** | Organizational or operational practice concern | Dependency version pinning strategy, CI security scanning coverage |
+| **confirmed_risk** | Attack surface is exploitable as-is, post-filter conclusion | Missing authentication on endpoint, arbitrary file access, SQL injection via string concatenation |
+| **defense_gap** | A governing security requirement or in-scope security boundary lacks a required defensive control | Runtime type validation missing at an input boundary, unnecessary capability enabled |
 
 Evaluate every finding against the project's runtime environment, framework protections, and existing mitigations. Apply the following rules per category:
 
-- For findings initially judged as `confirmed_risk` whose exploitability becomes uncertain or partially mitigated by existing defenses: downgrade to `defense_gap` or `suspected_risk` instead of discarding. Attach a `confidence` field (`high` / `medium` / `low`) and a `rationale` explaining the downgrade.
-- Reserve `confirmed_risk` for findings where the attack surface is exploitable as-is with high confidence. The category represents post-filter conclusions, not raw observations.
-- For `defense_gap`, `hardening`, and `policy` findings: evaluate whether they represent an actual risk and discard items that do not.
-- Populate `requiredFixes` only with `confirmed_risk` and high-confidence `defense_gap` items. Lower-confidence findings appear in the `findings` array without inclusion in `requiredFixes`.
+- Emit a finding only when current evidence shows a correction is required to satisfy a governing security requirement or protect an in-scope security boundary. Exclude optional hardening, organizational policy, and speculative observations that do not meet this condition.
+- Reserve `confirmed_risk` for findings where the attack surface is exploitable as-is. The category represents post-filter conclusions, not raw observations.
+- Emit a `defense_gap` only when current evidence shows that a governing security requirement or in-scope security boundary lacks a required defensive control.
 - Give every finding a stable ID.
 - Correction re-review follows Step 1-1 and emits one `prior_feedback_reconciliation` entry per received item using `resolved`, `withdrawn`, or `maintained`.
 
@@ -112,11 +108,8 @@ Each finding must include a `rationale` field whose content depends on the categ
 
 | Category | Rationale must explain |
 |----------|----------------------|
-| **confirmed_risk** | Why the attack surface is exploitable as-is, and why filter/downgrade did not apply |
-| **suspected_risk** | What conditions make exploitability uncertain, what additional information would resolve the ambiguity |
-| **defense_gap** | What defensive layer is being relied upon, and why it may be insufficient |
-| **hardening** | Why the current state is acceptable, and what improvement would add |
-| **policy** | Why this is not a technical vulnerability (what mitigates the technical risk) |
+| **confirmed_risk** | Why the attack surface is exploitable as-is and why existing mitigations do not remove that exploitability |
+| **defense_gap** | Which required defensive control is missing or insufficient and which boundary it protects |
 
 ## Output Format
 
@@ -125,32 +118,25 @@ Each finding must include a `rationale` field whose content depends on the categ
 - During execution, intermediate progress messages MAY be emitted as plain text or markdown.
 - The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
-- For correction re-review, emit only `status`, `summary`, and `prior_feedback_reconciliation`; when a blocked trigger is observed, also emit its `findings` and `requiredFixes`.
+- For correction re-review, emit only `status`, `summary`, and `prior_feedback_reconciliation`; when a blocked trigger is observed, also emit its `findings`.
 
 ### Output Completion Gate
 
-Before returning the final JSON:
-1. Emit `findings` and `requiredFixes` for every status; each finding contains every field in the schema below.
-2. Derive both arrays and `status` from the consolidated findings and Status Determination.
+Before returning the final JSON, emit `findings` for every status with every field in the schema below, then derive `status` from the consolidated findings and blocked conditions.
 
 ```json
 {
-  "status": "approved|approved_with_notes|needs_revision|blocked",
+  "status": "approved|needs_revision|blocked",
   "summary": "[1-2 sentence summary]",
   "findings": [
     {
       "id": "S001",
-      "category": "confirmed_risk|suspected_risk|defense_gap|hardening|policy",
-      "confidence": "high|medium|low",
+      "category": "confirmed_risk|defense_gap",
       "location": "[file:line]",
       "description": "[specific issue found]",
       "rationale": "[category-specific, see Category-Specific Rationale]",
       "suggestion": "[specific fix]"
     }
-  ],
-  "notes": "[summary of hardening/policy findings for completion report, present when status is approved_with_notes]",
-  "requiredFixes": [
-    "[specific fix 1 — only confirmed_risk and qualifying defense_gap items]"
   ]
 }
 ```
@@ -160,25 +146,15 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 ## Status Determination
 
 ### blocked
+- Governing documents fail the Step 1 input gate
 - Credentials, API keys, or tokens found in committed code
-- High-confidence confirmed_risk that enables direct exploitation (missing authentication on public endpoint, arbitrary file access)
-- Escalate immediately with finding details — requires human intervention
+- Escalate immediately with the blocking reason and any finding details — requires human intervention
 
 ### needs_revision
-- One or more confirmed_risk findings
-- Multiple defense_gap findings that affect primary input boundaries
-- One or more high-confidence suspected_risk findings affecting primary input boundaries (auth, input boundaries, data persistence)
-- `requiredFixes` lists only confirmed_risk and qualifying defense_gap items
-
-### approved_with_notes
-- Findings are limited to hardening, policy, and/or suspected_risk (medium or low confidence) categories
-- Or defense_gap findings exist but are isolated and do not affect primary input boundaries
-- suspected_risk findings (medium/low confidence, or not on primary boundary) are listed in `notes` with the conditions that would resolve their ambiguity
-- Notes are included in the completion report for awareness
+- One or more findings require correction
 
 ### approved
-- No meaningful findings after consolidation
-- Any suspected_risk found has been resolved (downgraded to defense_gap then discarded, or upgraded to confirmed_risk and routed elsewhere)
+- No finding requires correction after consolidation
 
 ## Quality Checklist
 
@@ -187,9 +163,8 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 - [ ] All Stable Patterns from security-checks.md searched
 - [ ] All Trend-Sensitive Patterns from security-checks.md searched
 - [ ] Technology stack trend check performed
-- [ ] Each finding classified into confirmed_risk / suspected_risk / defense_gap / hardening / policy
-- [ ] suspected_risk findings have confidence (high/medium/low) and a rationale stating what would resolve the ambiguity
-- [ ] suspected_risk findings routed to status per Status Determination (high-confidence on primary boundary → needs_revision; otherwise → approved_with_notes)
+- [ ] Each finding classified into confirmed_risk / defense_gap
+- [ ] Every finding requires correction; optional hardening, policy, and non-blocking speculation were excluded
 - [ ] False positives excluded considering runtime environment and existing mitigations
 - [ ] Committed secrets checked (blocked status if found)
 - [ ] Every finding has a stable ID
