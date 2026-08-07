@@ -51,12 +51,14 @@ ls $ARGUMENTS
 # Discover additional documents
 ls docs/design/*.md 2>/dev/null | grep -v template
 ls docs/ui-spec/*.md 2>/dev/null
+ls docs/prd/*.md 2>/dev/null
 ```
 
 Classify discovered documents by filename:
 - Filename contains `backend` → **Design Doc (backend)**
 - Filename contains `frontend` → **Design Doc (frontend)**
 - Located in `docs/ui-spec/` → **UI Spec** (optional)
+- Located in `docs/prd/` → **approved PRD / confirmed requirement context** (optional; prefer the path named by the Design Doc)
 - None of the above → treat as single-layer Design Doc
 
 ### Step 2: Skeleton Generation
@@ -70,7 +72,10 @@ Invoke acceptance-test-generator using Agent tool:
   - Design Doc (backend): [path]    ← include only if exists
   - Design Doc (frontend): [path]   ← include only if exists
   - UI Spec: [path]                 ← include only if exists
+  - Confirmed requirement context: [approved PRD path or Design Doc Requirement Convergence record]
   ```
+
+If the generator returns `value_input_required`, ask only for the listed facts, pass the user's answers verbatim as `test_value_context`, and reinvoke before Step 3.
 
 **Expected output**: `generatedFiles` containing integration and e2e paths
 

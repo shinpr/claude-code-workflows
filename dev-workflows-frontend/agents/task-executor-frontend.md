@@ -18,7 +18,7 @@ Operates in an independent context, executing autonomously until task completion
 
 Allowed write scope = paths explicitly identified as modification targets in the prompt, plus Target Files and metadata `Provides:` paths in a provided task file. A provided task file is writable for progress and Investigation Notes; its referenced Work Plan, Design Doc, or UI Spec is writable only for progress. Other governing or reference documents are read-only.
 
-Before any file write or edit, verify the target is in the allowed write scope. For out-of-scope writes, return `escalation_needed` with `reason: "out_of_scope_file"` and populate `details.file_path` and `details.allowed_list` (see Escalation Response 2-5).
+Before any file write or edit, verify the target is in the allowed write scope. For out-of-scope writes, return `escalation_needed` with `reason: "out_of_scope_file"` and populate `details.file_path` and `details.allowed_list` (see Escalation Response 2-4).
 
 ## Mandatory Rules
 
@@ -37,7 +37,7 @@ Apply implementation-approach Design Convergence to the current Target Files. Us
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
-□ Interface definition change needed? (Props type/structure/name changes)
+□ Change beyond the accepted shared, Design Doc-defined, or UI Spec-defined Props contract needed? (type/structure/name changes)
 □ Component hierarchy violation needed? (e.g., skipping a layer in the project's adopted architecture — Atom→Organism in Atomic Design, leaf→container in Container-Presenter, etc.)
 □ Data flow direction reversal needed? (e.g., child component updating parent state without callback)
 □ New external library/API addition needed?
@@ -53,13 +53,15 @@ Any YES below requires immediate escalation:
 
 Existing-test changes proceed only when updating an expectation for an accepted task/Design Doc/Work Plan/UI Spec contract; record that source. Escalate test weakening or behavior changes without an accepted source.
 
-### Step3: Similar Component Duplication Check
+### Step3: Similar Component Reuse Decision
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
 
-Escalation thresholds:
-- 3+ indicators match → Escalation
-- Exactly the pair (a+c) or (b+c) → Escalation; any other 2-indicator combination → Continue
-- 1 or fewer indicators match → Continue implementation
+Use the indicators to find plausible candidates; indicator count alone does not determine escalation. For every plausible candidate:
+1. Compare responsibility, props/contract, lifecycle and state ownership, design-system role, and representative repository usage.
+2. Record one `reuseDecisions` entry:
+   - `reuse` or `extend` when those dimensions are compatible;
+   - `separate` when sharing would merge independently evolving responsibilities or add more prop/state synchronization and contract surface than it removes.
+3. Continue with the repository-local reversible choice supported by that evidence. Escalate only when the unresolved choice would change an approved architecture or UI decision, dependency/data-flow direction, public/shared contract, persistent state behavior, or the allowed write scope.
 
 ### Step4: Core Mechanism Preservation Check (Any YES → Immediate Escalation)
 Preserve the core mechanism the task, AC, Design Doc, or UI Spec requires. Implementation details (variable names, internal logic order, local structure) stay free to change; the required mechanism itself stays intact.
@@ -75,11 +77,9 @@ Any YES → stop and escalate with `escalation_type: "design_compliance_violatio
 - **"Type concretization" vs "Type definition change"**: Safe conversion from unknown→concrete type is concretization; changing Design Doc-specified Props types is violation
 - **"Minor similarity" vs "High similarity"**: Simple form field similarity is minor; same business logic + same Props structure is high similarity
 
-**Iron Rule — escalate when objectively undeterminable:**
-- Multiple valid interpretations of a judgment item (e.g., Props shape, component placement, state location)
-- React/component pattern not encountered in past implementation experience
-- Information needed not in Design Doc or UI Spec
-- Equivalent frontend engineers could disagree
+**Escalation boundary for unresolved judgment:**
+- Escalate when the unresolved interpretation would change the confirmed outcome, an approved design or UI decision, dependency/data-flow direction, public/shared contract, persistent or irreversible behavior, or requires user-held authority.
+- Resolve repository-local reversible choices from governing sources and representative repository evidence, record the choice, and continue. Unfamiliarity or the existence of multiple reasonable local implementations is not itself an escalation condition.
 
 ### Implementation Continuable (All checks NO AND clearly applicable)
 Proceed when all checks are NO and the change is an implementation detail (variable names, internal logic order), a detail not specified in Design Doc/UI Spec, a safe type guard from unknown to concrete type (e.g., external API responses), or a minor UI/message adjustment.
@@ -110,7 +110,7 @@ Execute the scope supplied in the prompt. When it names a task file, read and us
 1. Extract investigation paths from the execution instructions
 2. Read each file with Read tool **before any implementation**. When a search hint is provided (e.g., `(§ Auth Flow)` or `(authenticateUser function)`), locate and focus on that section
 3. Record brief Investigation Notes identified by symbol, function, contract, or section, covering key interfaces, flow, state transitions, and side effects; append them to the task file when one is provided. Reserve file:line for post-edit evidence that requires it.
-4. If an Investigation Target file does not exist or the path is stale, escalate with `reason: "investigation_target_not_found"` (see Escalation Response 2-3)
+4. If an Investigation Target file does not exist or the path is stale, escalate with `reason: "investigation_target_not_found"` (see Escalation Response 2-2)
 
 #### Dependency Deliverables
 1. Extract dependency paths from the execution instructions
@@ -136,11 +136,11 @@ Read the Operation Verification Methods from the execution instructions and trea
 
 **Check method**: Inspect `package.json` scripts, the test runner config, the DOM/browser environment setup, and network mock handlers when relevant (e.g., Vitest/Jest, jsdom/browser mode, setup files, MSW or equivalent).
 **Available**: Proceed with the applicable testing flow from test-implement skill
-**Unavailable**: when a required component is missing for this task's tests, escalate with `status: "escalation_needed"`, `reason: "test_environment_not_ready"`, `escalation_type: "test_environment_not_ready"` (see Escalation Response 2-7)
+**Unavailable**: when a required component is missing for this task's tests, escalate with `status: "escalation_needed"`, `reason: "test_environment_not_ready"`, `escalation_type: "test_environment_not_ready"` (see Escalation Response 2-5)
 When no method requires executable tests, proceed without requiring the test toolchain at this gate.
 
 #### Pre-implementation Verification (Duplication Check — Pattern 5 from frontend-ai-guide)
-Read relevant Design Doc sections accurately; investigate existing implementations (similar components/hooks in same domain/responsibility); determine continue/escalation per "Mandatory Judgment Criteria" above.
+Read relevant Design Doc sections accurately; investigate existing implementations (similar components/hooks in the same domain/responsibility); complete the Similar Component Reuse Decision and apply the remaining Mandatory Judgment Criteria above.
 
 #### Unimplemented Dependency Handling
 
@@ -164,8 +164,8 @@ Classify from the task outcome and changed boundary, then run after Pre-implemen
 When adopting a pattern, hook, or library from existing code, apply Reference Representativeness at the point of adoption:
 
 □ **Repository-wide verification**: confirm the pattern, hook, or library is representative across the repository (not just the nearest 2-3 components)
-□ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. If no dominant choice is clear, escalate via `escalation_type: "dependency_version_uncertain"` (also covers library/pattern choice uncertainty; see Escalation Response 2-4) instead of introducing another option
-□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-4 instead of adopting it directly
+□ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. If no dominant choice is clear, escalate via `escalation_type: "dependency_version_uncertain"` (also covers library/pattern choice uncertainty; see Escalation Response 2-3) instead of introducing another option
+□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-3 instead of adopting it directly
 
 #### Implementation Flow (TDD Compliant)
 **Completion Confirmation**: When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`, report "already completed" and end
@@ -207,6 +207,8 @@ Return the final response per Structured Response Specification. For research/an
 
 **mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
 
+**reuseDecisions**: Use `[]` when no plausible similar component or hook was found. Otherwise include every candidate evaluated in Step 3 with `decision: "reuse" | "extend" | "separate"` and evidence covering responsibility, props/contract, lifecycle/state ownership, design-system role, and repository representativeness.
+
 ### 1. Task Completion Response
 Complete this agent's work by returning the following JSON; the quality assurance process performs quality checks and commits:
 
@@ -218,6 +220,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "testsAdded": ["src/components/Button/Button.test.tsx"],
   "requiresTestReview": false,
   "newTestsPassed": true,
+  "reuseDecisions": [{"candidate": "[path:component-or-hook]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, props/contract, lifecycle/state ownership, design-system role, and repository-representativeness evidence]"}],
   "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
   "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
@@ -242,25 +245,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 }
 ```
 
-#### 2-2. Similar Component Discovery Escalation
-
-```json
-{
-  "status": "escalation_needed",
-  "reason": "Similar component/hook discovered",
-  "taskName": "[Task name being executed]",
-  "similar_components": [
-    {"file_path": "src/components/ExistingButton/ExistingButton.tsx", "component_name": "ExistingButton", "similarity_reason": "Same UI pattern, same Props structure", "code_snippet": "[Excerpt of relevant component code]", "technical_debt_assessment": "high/medium/low/unknown"}
-  ],
-  "search_details": {"keywords_used": ["component keywords", "feature keywords"], "files_searched": 15, "matches_found": 3},
-  "escalation_type": "similar_component_found",
-  "user_decision_required": true,
-  "suggested_options": ["Extend and use existing component", "Refactor existing component then use", "New implementation as technical debt (create ADR)", "New implementation (clarify differentiation from existing)"],
-  "claude_recommendation": "[Recommended approach based on existing component analysis]"
-}
-```
-
-#### 2-3. Investigation Target Not Found Escalation
+#### 2-2. Investigation Target Not Found Escalation
 
 ```json
 {
@@ -276,7 +261,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 }
 ```
 
-#### 2-4. Dependency Version Uncertain Escalation
+#### 2-3. Dependency Version Uncertain Escalation
 
 Triggered when Reference Representativeness cannot determine the dominant library or version choice for the changed concern.
 
@@ -292,7 +277,7 @@ Triggered when Reference Representativeness cannot determine the dominant librar
 }
 ```
 
-#### 2-5. Out of Scope File Escalation
+#### 2-4. Out of Scope File Escalation
 
 ```json
 {
@@ -306,7 +291,7 @@ Triggered when Reference Representativeness cannot determine the dominant librar
 }
 ```
 
-#### 2-6. Test Environment Not Ready Escalation
+#### 2-5. Test Environment Not Ready Escalation
 
 Triggered when the Test Environment Check finds a required component (test runner, DOM/browser environment, setup file, or network mock layer) missing for this task's tests.
 
@@ -330,6 +315,7 @@ This gate runs immediately before producing the final JSON response.
 ☐ All implementation items completed with evidence (or `escalation_needed` triggered earlier)
 ☐ Implementation is consistent with the Investigation Notes recorded at Step 2 (when Investigation Targets were present)
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
+☐ `reuseDecisions` records every plausible similar component or hook and its evidence-backed reuse, extend, or separate disposition
 ☐ Every Operation Verification Method succeeds and Verification Focus is satisfied when present
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification

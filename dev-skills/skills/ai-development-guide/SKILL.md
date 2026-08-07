@@ -10,6 +10,7 @@ description: Applies language-agnostic and backend technical decision criteria, 
 Explore broadly, then converge on the lowest-lifecycle-cost solution that delivers the required user, operator, or maintainer value while keeping the system correct and maintainable.
 - Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
 - Introduce capabilities, infrastructure, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
+- Treat behavior-preserving maintenance inside the confirmed responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
 
 ## Technical Anti-patterns (Red Flag Patterns)
 

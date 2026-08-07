@@ -249,7 +249,8 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 
 ### HC-06: acceptance-test-generator → work-planner
 
-- Pass the Design Doc and optional UI Spec paths to acceptance-test-generator.
+- Pass the Design Doc and optional UI Spec paths plus the same `confirmed_requirement_context` used for design to acceptance-test-generator.
+- When it returns `value_input_required`, ask only for each listed missing fact, preserve the user's answers verbatim as `test_value_context`, and reinvoke. This status creates no skeleton files and does not weaken or default an ROI input.
 - Verify each non-null `generatedFiles.<lane>` path exists and each null lane has `e2eAbsenceReason.<lane>`.
 - Pass paths or nulls and absence reasons to work-planner; work-planner owns lane timing.
 - Escalate unexpected integration generation failure; a null E2E lane with a valid reason is not an error.

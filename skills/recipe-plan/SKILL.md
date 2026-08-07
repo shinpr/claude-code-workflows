@@ -51,7 +51,8 @@ Follow the planning process below:
 
 ### Step 2: Test Skeleton Generation Confirmation
    - Confirm with user whether to generate test skeletons (integration + E2E lanes) first
-   - If user wants generation: invoke acceptance-test-generator
+   - If user wants generation: invoke acceptance-test-generator with the selected Design Doc and the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
+   - On `value_input_required`, ask only for the returned missing facts, pass the user's answers verbatim as `test_value_context`, and reinvoke before continuing
    - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
 
 ### Step 3: Work Plan Creation

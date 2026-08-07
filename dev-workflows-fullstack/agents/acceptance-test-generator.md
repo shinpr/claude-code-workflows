@@ -25,6 +25,8 @@ Operates in an independent context, executing autonomously until task completion
 
 - **Design Doc**: Required. Source of acceptance criteria for test skeleton generation. When the Design Doc contains a "Test Boundaries" section, use its mock boundary decisions to determine which dependencies to mock and which to test with real implementations.
 - **UI Spec**: Optional. When provided, use screen transitions, state x display matrix, and interaction definitions as additional E2E test candidate sources. See `references/e2e-design.md` in integration-e2e-testing skill for mapping methodology.
+- **confirmed_requirement_context**: Optional approved PRD path or unchanged confirmed convergence record. When absent, resolve the carrier from the Design Doc's Requirement Convergence section if possible.
+- **test_value_context**: Optional user-confirmed supplemental facts returned after `value_input_required`. Preserve the supplied wording and use it only for the named Business Value, User Frequency, or Legal Requirement inputs.
 
 ## Test Type Definition
 
@@ -88,7 +90,8 @@ For each valid AC from Phase 1:
    - E2E test candidate (complete user journey)
 
 3. **Annotate metadata**:
-   - Score Business Value, User Frequency, Legal Requirement, and Defect Detection using the exact input scales defined in the preloaded integration-e2e-testing skill
+   - Record one source for Business Value, User Frequency, Legal Requirement, and Defect Detection, then assign the exact value or `unknown` using the preloaded integration-e2e-testing skill
+   - Treat requirement/user/business evidence as the source for value and frequency, accepted obligations or a checked governing source with no accepted obligation as the source for Legal Requirement, and boundary plus existing-test evidence as the source for Defect Detection
 
 **Output**: Candidate pool with ROI metadata
 
@@ -98,25 +101,30 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 **Selection Algorithm**:
 
-1. **Calculate ROI** for each candidate
-2. **Deduplication Check**:
+1. **Deduplication Check**:
    ```
    Grep existing tests for same behavior pattern
    If covered by existing test → Remove candidate
    ```
-3. **Push-Down Analysis**:
+2. **Push-Down Analysis**:
    ```
    Can this be unit-tested? → Remove from integration/E2E pool
    Already integration-tested AND verifiable in-process? → Remove from E2E pool
    ```
-4. **Lane assignment** (E2E candidates only):
+3. **Lane assignment** (E2E candidates only):
    - Default to `fixture-e2e` for any UI journey verifiable with mocked backend / fixture-driven state
    - Promote to `service-integration-e2e` only when the verification depends on real cross-service behavior. A candidate qualifies for `service-integration-e2e` when ANY of the following must be asserted:
      - Data persists across a real DB write (e.g., row inserted/updated in the actual database under test)
      - A downstream service receives a real event/message (e.g., topic publish, queue enqueue, webhook call)
      - An external service receives a real API call with the expected payload
      - Transactional consistency across services (e.g., two-phase commit, saga compensation)
-5. **Sort by ROI** within each lane using the score and tie-break order from integration-e2e-testing skill — this is the single ranking step, and Phase 4 budget enforcement processes the ranked list in the order produced here.
+4. **Resolve decision-relevant ROI inputs**:
+   - On the surviving lane-assigned pool, determine whether each `unknown` can change ranking, a lane threshold, or budget selection
+   - Resolve Defect Detection from the Design Doc proof boundary and existing-test search; continue repository investigation when that evidence is incomplete
+   - When an unknown Business Value, User Frequency, or Legal Requirement can change selection, return `status: "value_input_required"` before writing skeletons, naming only the missing inputs and decision effects
+   - When it cannot, mark it `not_decision_relevant` and retain the invariant selection basis without fabricating a score
+5. **Calculate ROI** for each candidate whose resolved inputs control selection
+6. **Sort by ROI** within each lane using the score and tie-break order from integration-e2e-testing skill — this is the single ranking step, and Phase 4 budget enforcement processes the ranked list in the order produced here.
 
 **Output**: Ranked, deduplicated candidate list with lane assigned per E2E candidate.
 
@@ -144,7 +152,7 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
      - transactional consistency across services
    THEN reserve 1 service-integration-e2e slot for that journey
 
-3. Walk the candidate list (already sorted by ROI within each lane in Phase 3 step 5)
+3. Walk the candidate list (already sorted by ROI within each lane in Phase 3 step 6)
    and select within budget:
    - Integration: Pick top 3 highest-ROI
    - fixture-e2e (additional beyond reserved): Pick up to remaining budget IF ROI ≥ 20
@@ -164,7 +172,7 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
 
 ### Test Skeleton Shape
 
-Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown, lane, dependency, complexity, verification points, expected results, pass criteria, primary failure mode, and proof obligation. When selection exceeds a standard budget or threshold, add `Selection exception:` with the accepted requirement or distinct uncovered failure mode and the non-consolidation reason.
+Use the project's comment syntax (`//`, `#`, etc.). Preserve AC text (or user journey description for E2E), ROI breakdown or invariant selection basis, ROI evidence sources, lane, dependency, complexity, verification points, expected results, pass criteria, primary failure mode, and proof obligation. When selection exceeds a standard budget or threshold, add `Selection exception:` with the accepted requirement or distinct uncovered failure mode and the non-consolidation reason.
 
 A skeleton is committed before its implementation exists, so its committed form contains **only comments**: no import of a not-yet-existing module and no test-runner syntax (e.g. `describe`/`it`) that the project's static gates evaluate. This keeps a freshly committed skeleton green under the project's standard static gates (typecheck, lint, build), so they do not fail on a reference to not-yet-implemented code. The implementing task adds the executable imports, runner blocks, and assertions alongside the implementation, keeping the Red→Green transition within a single task/commit.
 
@@ -174,6 +182,7 @@ A skeleton is committed before its implementation exists, so its committed form 
 //
 // AC1: "After successful payment, order is created and persisted"
 // ROI: 120 (BV:10 × Freq:10 + Legal:true×10 + Defect:10)
+// ROI evidence: BV=PRD §Success Criteria; Freq=PRD §Primary User Journey; Legal=accepted payment contract; Defect=Design Doc §Test Boundaries + existing test search
 // Behavior: User completes payment → Order created in DB + Payment recorded
 // @category: core-functionality
 // @lane: integration
@@ -232,8 +241,21 @@ A skeleton is committed before its implementation exists, so its committed form 
 ```
 
 **Contract**:
-- `generatedFiles.integration`, `generatedFiles.fixtureE2e`, `generatedFiles.serviceE2e` are always present as keys. Value is a file path string when generated, `null` when not.
+- A `completed` result always contains `generatedFiles.integration`, `generatedFiles.fixtureE2e`, and `generatedFiles.serviceE2e`. Value is a file path string when generated, `null` when not.
 - `e2eAbsenceReason` is an object with `fixtureE2e` and `serviceE2e` keys. Each value is `null` when that lane emitted, otherwise one of: `no_multi_step_journey`, `below_threshold_user_confirmed`, `no_real_service_dependency` (service-integration-e2e only — meaning the journey is verifiable in fixture-e2e).
+
+**When a decision-relevant value input is missing:**
+```json
+{
+  "status": "value_input_required",
+  "missingValueInputs": [
+    {"candidate": "AC-002 payment retry", "input": "User Frequency", "evidenceChecked": ["PRD §User Stories", "Design Doc §Requirement Convergence"], "decisionEffect": "Determines whether fixture-e2e clears ROI 20"}
+  ],
+  "acceptedSources": ["approved PRD or confirmed requirement context", "accepted contractual/legal obligation", "verbatim user-confirmed test_value_context"]
+}
+```
+
+Return this status before creating or modifying skeleton files. The caller supplies only the missing facts as `test_value_context` and reinvokes the generator.
 
 ## Test Meta Information Assignment
 
@@ -255,6 +277,7 @@ These annotations drive test planning and prioritization. The `@lane` annotation
   Background: Skeletons are comment-based design information, not executable code.
 - Clearly state verification points, expected results, and pass criteria for each test
 - Preserve original AC statements in comments (ensure traceability)
+- Preserve the evidence source or `not_decision_relevant` basis for every ROI input; assign no numeric value to an unknown input
 - Stay within test budget; report if budget insufficient for critical tests
 
 **Quality Standards**:
@@ -271,6 +294,7 @@ These annotations drive test planning and prioritization. The `@lane` annotation
 - **No Integration Candidates**: Valid outcome - report "No Integration candidates remained after Phase 1 filtering, deduplication, and push-down analysis"
 - **No E2E Tests (no multi-step journey)**: Valid outcome - report "No multi-step user journey detected; E2E tests not applicable"
 - **Budget Exceeded by Critical Test**: Report to user
+- **Missing value that cannot change selection**: Record `not_decision_relevant` with the invariant selection basis and continue
 
 ### Escalation Required
 1. **Critical**: AC absent, Design Doc absent → Error termination
@@ -278,6 +302,7 @@ These annotations drive test planning and prioritization. The `@lane` annotation
 3. **High**: All ACs filtered out but feature is business-critical → User confirmation needed
 4. **Medium**: Budget insufficient for critical user journey (ROI > 90) → Present options
 5. **Low**: Multiple interpretations possible but minor impact → Adopt interpretation + note in report
+6. **Decision input**: An unknown Business Value, User Frequency, or Legal Requirement can change ranking, threshold, or budget selection → Return `value_input_required`; the caller obtains the missing fact and reinvokes
 
 ## Technical Specifications
 

@@ -55,8 +55,10 @@ Follow the planning process below:
      - Invoke acceptance-test-generator using Agent tool:
        - `subagent_type`: "dev-workflows-frontend:acceptance-test-generator"
        - `description`: "Test skeleton generation"
-       - If UI Spec exists: `prompt: "Generate test skeletons from Design Doc at [path]. UI Spec at [ui-spec path]."`
-       - If no UI Spec: `prompt: "Generate test skeletons from Design Doc at [path]."`
+       - Pass `confirmed_requirement_context` as the approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
+       - If UI Spec exists: `prompt: "Generate test skeletons from Design Doc at [path]. UI Spec at [ui-spec path]. Confirmed requirement context: [value]."`
+       - If no UI Spec: `prompt: "Generate test skeletons from Design Doc at [path]. Confirmed requirement context: [value]."`
+       - On `value_input_required`, ask only for the returned missing facts, pass the user's answers verbatim as `test_value_context`, and reinvoke before continuing
    - Pass integration test file path, fixture-e2e and service-integration-e2e file paths (or null per lane), and e2eAbsenceReason (per lane) to work-planner according to subagents-orchestration-guide "acceptance-test-generator → work-planner" section
 
 ### Step 3: Work Plan Creation

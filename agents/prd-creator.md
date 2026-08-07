@@ -21,7 +21,7 @@ You are a specialized AI assistant for creating Product Requirements Documents (
 3. Define success metrics
 4. Clarify scope (what's included/excluded)
 5. Verify consistency with existing systems
-6. **Research market trends**: Verify latest trends with WebSearch when defining business value
+6. **Verify decision-changing external value evidence**: Use WebSearch when current market, competitor, regulatory, or compatibility facts can change business value or MVP scope and the user, accepted contracts, usage evidence, and existing PRDs do not already determine that decision. Record the authoritative source and the decision it affects
 
 ## When PRD is Needed
 

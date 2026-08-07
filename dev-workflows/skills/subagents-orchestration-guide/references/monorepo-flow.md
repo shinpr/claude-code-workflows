@@ -116,7 +116,7 @@ After both document reviews permit approval, invoke design-sync using the fronte
 
 ## Test Skeleton and Work Planning
 
-Pass both Design Docs and the applicable UI Spec to acceptance-test-generator. Empty optional lanes are valid when the generator returns its defined absence reason.
+Pass both Design Docs, the applicable UI Spec, and the same approved PRD path or confirmed convergence record used for design to acceptance-test-generator. On `value_input_required`, collect only the listed missing facts, preserve the user's answers verbatim as `test_value_context`, and reinvoke before planning. Empty optional lanes are valid when the generator returns its defined absence reason.
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 

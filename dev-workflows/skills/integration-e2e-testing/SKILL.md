@@ -43,7 +43,11 @@ One input Design Doc is one budget scope: apply each lane budget once across all
 
 ROI is used to **rank candidates within the same test type** (integration candidates against each other, E2E candidates against each other). Cross-type comparison is unnecessary because integration and E2E budgets are selected independently.
 
-Score every input before calculating ROI. For the three numeric inputs, use exactly `0`, `5`, or `10`. Legal Requirement remains boolean:
+For every candidate, record the governing evidence for each ROI input before assigning a value. Use an approved PRD, confirmed requirement context, accepted contract or legal obligation, user-confirmed test value context, Design Doc boundary, and existing-test evidence as applicable. A missing value is `unknown`, not `0`, and an inference is not observed evidence.
+
+When ROI can change candidate ranking, a lane threshold, or budget selection, resolve every `unknown` before calculating ROI. Return the exact missing product input and its decision effect to the caller instead of inventing a value. Defect Detection remains an agent-owned repository judgment resolved from the proof boundary and existing tests; it is not requested as product input. When selection is invariant because the candidate is removed before ROI, is the sole eligible candidate for a reserved journey slot, or all surviving candidates fit an unthresholded budget, record the unknown as `not_decision_relevant` and continue without a fabricated score.
+
+For resolved numeric inputs, use exactly `0`, `5`, or `10`. Legal Requirement remains boolean; a governing-source check that finds no accepted legal, regulatory, contractual, or audit obligation supports `false` and records that checked source.
 
 | Input | Scale |
 |---|---|
