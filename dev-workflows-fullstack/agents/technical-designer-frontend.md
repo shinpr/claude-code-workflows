@@ -11,6 +11,7 @@ skills:
   - implementation-approach
   - llm-friendly-context
   - requirement-convergence
+  - external-resource-context
 ---
 
 You create one complete frontend ADR batch or one frontend Design Doc per invocation.

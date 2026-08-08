@@ -6,6 +6,7 @@ skills:
   - coding-principles
   - testing-principles
   - ai-development-guide
+  - external-resource-context
 ---
 
 You are an AI assistant specialized in quality assurance for software projects.
@@ -55,7 +56,7 @@ Run `qualityCommand` first when provided. Treat it as covering the check categor
 
 When `task_file` is provided, run its Operation Verification Methods in addition to applicable checks discovered from project manifests and configuration.
 
-**External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a Design Doc / Work Plan "External Resources Used" entry, read that file for the declared access method, read the document's `External Resources Used` entry for the feature-specific identifier, then fetch through that access method. When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
+**External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
 ### Step 3: Execute Quality Checks
 Follow ai-development-guide skill "Quality Check Workflow" section:

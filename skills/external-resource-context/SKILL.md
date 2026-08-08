@@ -1,6 +1,6 @@
 ---
 name: external-resource-context
-description: Captures access methods for resources outside the repository (design source, design system, API schema, IaC source, secret store) into a deterministic location so downstream work can reach them. Use when capturing or updating those access methods, or when the user mentions design source, design system, API schema, IaC source, secret store, or canonical source.
+description: Records where resources outside the repository live (design source, design system, API schema, IaC source, secret store) and how design, implementation, and verification reach them. Use when work depends on an external resource, or when the user mentions design source, design system, API schema, IaC source, secret store, or canonical source.
 ---
 
 # External Resource Context
@@ -32,17 +32,17 @@ Example feature-tier entry uses the table format defined in `references/template
 
 ## Reference Protocol (For Downstream Consumers)
 
-Consuming a recorded resource takes three reads and needs no part of this skill:
+Before investigating the repository for an external fact, check whether it is already recorded:
 
 1. Read `docs/project-context/external-resources.md` (if present) to learn what is available and how to access it.
 2. Read the target UI Spec or Design Doc's `## External Resources Used` section for feature-specific identifiers.
 3. Use the access method declared in the project tier (e.g., the named MCP, the URL, the file path) to fetch the actual resource content.
 
-A consumer that only reads these records executes the three steps directly. Load this skill when capturing or updating the records, which requires AskUserQuestion and therefore the session that can ask the user.
+When the file is absent or the resource is unreachable, continue from governing and repository evidence. Each consuming agent reports that limitation through its own output contract.
 
 ## Capturing and Updating Records
 
-Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
+Capturing a record requires AskUserQuestion, so it belongs to the session that can ask the user. Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
 
 ## Output Format
 

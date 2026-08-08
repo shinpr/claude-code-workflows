@@ -9,7 +9,7 @@ This file holds the routing decision: which documents a change requires and wher
 
 ## What Each Document Fixes
 
-Each document fixes one class of decision that the repository alone cannot supply. An unfilled section does not disappear — it becomes a guess made later by the consumer named below, with no record of what was assumed.
+Each document fixes one class of decision that the repository alone cannot supply. An unfilled section becomes a guess made later by the consumer named below, with no record of what was assumed.
 
 - **PRD** — Fixes the business outcome and the acceptance criteria later work traces to. Its AC IDs are the traceability keys that the Design Doc, UI Spec, and test selection reuse; without them each consumer re-derives requirements from prose and the link between a test and the value it protects is lost. Implementation details belong to the Design Doc, selection rationale to an ADR, phases and task breakdown to the Work Plan.
 

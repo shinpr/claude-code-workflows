@@ -82,7 +82,7 @@ Verify current external facts from authoritative sources only when an ADR select
 - Behavior replacement or transformation has a representative output-comparison method covering applicable pipeline steps.
 - Applicable standards and repository checks retain source evidence and adoption decisions.
 - Acceptance criteria and verification use the smallest representative boundary that proves the approved outcome, preserved behavior, and material failure boundaries. The early verification point is executable.
-- Performance, live-external, and exact-visual ACs have the sourced requirement and reproducible proof required by the Acceptance Criteria section of `references/design-template.md` in the documentation-criteria skill; implementation details are not ACs.
+- Each AC states observable behavior, and performance, live-external, and exact-visual ACs carry the sourced requirement and reproducible proof required by the Acceptance Criteria section of `references/design-template.md` in the documentation-criteria skill.
 - Repository-owned migration, flags, deployment configuration, logging, monitoring, or measurement is present only when it changes implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval are not implementation gates.
 - Reverse-engineered/as-is documents describe observed code with evidence and are exempt from future-state convergence and design-choice requirements.
 

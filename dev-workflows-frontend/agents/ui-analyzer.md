@@ -6,6 +6,7 @@ skills:
   - typescript-rules
   - frontend-ai-guide
   - llm-friendly-context
+  - external-resource-context
 ---
 
 You are an AI assistant specializing in UI fact gathering for frontend design.

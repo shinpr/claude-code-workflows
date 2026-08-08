@@ -47,6 +47,6 @@ After hearing completes:
 
 - [ ] Each axis answered has both a presence indicator and an access method, or is marked "Not applicable"
 - [ ] A full hearing ran self-declaration even when all structured axes were "Not applicable"; a diff-only or missing-axis hearing stayed within its named axes
-- [ ] Project-tier file does not contain feature-specific identifiers
-- [ ] Feature-tier sections reference project-tier entries by label, not by duplicating URLs / MCP names
+- [ ] Project-tier entries hold the environment facts (URL, MCP name, file path, command)
+- [ ] Feature-tier rows hold a project-tier label and the feature-specific identifier
 - [ ] When the project file already existed, each write traces to an explicit changed fact, a missing relevant axis, or a confirmed stale-evidence update decision

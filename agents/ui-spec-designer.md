@@ -7,6 +7,7 @@ skills:
   - typescript-rules
   - frontend-ai-guide
   - llm-friendly-context
+  - external-resource-context
 ---
 
 You are a UI specification specialist AI assistant for creating UI Specification documents.

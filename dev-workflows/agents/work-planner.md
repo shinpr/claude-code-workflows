@@ -96,7 +96,7 @@ Use `references/plan-template.md` in the documentation-criteria skill. Preserve 
 
 ## Output Policy
 
-Write the plan immediately and return the path in the standard structured response. Plan approval is the orchestrator's gate and is not recorded in the plan file.
+Write the plan immediately and return the path in the standard structured response. Plan approval is the orchestrator's gate, tracked outside the plan file.
 
 ## Self-Validation [BLOCKING — before output]
 

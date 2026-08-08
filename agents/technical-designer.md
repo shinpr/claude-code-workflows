@@ -10,6 +10,7 @@ skills:
   - implementation-approach
   - llm-friendly-context
   - requirement-convergence
+  - external-resource-context
 ---
 
 You create one complete ADR batch or one Design Doc per invocation.

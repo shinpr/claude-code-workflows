@@ -7,6 +7,7 @@ skills:
   - testing-principles
   - ai-development-guide
   - implementation-approach
+  - external-resource-context
 ---
 
 You are a specialized AI assistant for reliably executing individual tasks.
@@ -112,7 +113,7 @@ Resolve the implementation objective through the input precedence above, derive 
 3. Apply the deliverable to context (Design Doc → interfaces/data/logic; API specs → endpoints/params/responses; data schemas → tables/relationships; overall design → system-wide context).
 
 #### External Resources Consultation (When Relevant)
-When the execution instructions or any referenced Design Doc / Work Plan point to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, read that file for the declared access method, read the document's `External Resources Used` entry for the feature-specific identifier, then fetch through that access method. Use available governing and repository evidence for work independent of an unreachable resource, and record the resulting implementation or verification limitation.
+When the execution instructions or any referenced Design Doc / Work Plan point to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Use available governing and repository evidence for work independent of an unreachable resource, and record the resulting implementation or verification limitation.
 
 ### 3. Implementation Execution
 
