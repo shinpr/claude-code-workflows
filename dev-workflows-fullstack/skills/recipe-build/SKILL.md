@@ -84,7 +84,7 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 - [ ] Identified task execution order within the Consumed Task Set (dependencies)
 - [ ] **Environment check**: Can I execute per-task commit cycle?
   - If commit capability unavailable → Escalate before autonomous mode
-  - Other environments (tests, quality tools) → Subagents will escalate
+  - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 ## Task Execution Cycle (4-Step Cycle)
 **MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
@@ -92,36 +92,28 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 Before the loop, register `"Execute consumed task set"`, `"Run post-implementation verification"`, `"Clean up consumed task files"`, and `"Report completion"` once with TaskCreate; mark and advance the active phase with TaskUpdate.
 
 For EACH task in the Consumed Task Set, YOU MUST:
-1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`, pass the task file path in the prompt, and receive the structured response
+1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`, pass `task_file: [path]`, and receive the structured response
 2. **BRANCH ON EXECUTOR RESULT**:
-   - `status: "escalation_needed"` or `"blocked"` → STOP and escalate to user
+   - `status: "escalation_needed"` or `"blocked"` → Apply subagents-orchestration-guide Specialist Result Acceptance; escalate only a valid user-owned block
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
-     - `blocked` → STOP and escalate to user
+     - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - `status: completed` → Proceed to step 3
 3. **QUALITY-FIX**: Invoke quality-fixer with `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
-   - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
-   - `blocked` → STOP and escalate to user
+   - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
+   - `blocked` → Apply Specialist Result Acceptance
+   - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
    - `approved` → Proceed to step 4
-4. **COMMIT**: Execute git commit after quality-fixer returns `approved`
+4. **COMMIT**: Apply subagents-orchestration-guide Commit Boundary Check, then execute git commit after quality-fixer returns `approved` or `verification_incomplete`; append its verification trailers for the latter
 
-**CRITICAL**: Parse every sub-agent response for status fields. Execute the matching branch in the 4-step cycle. Proceed to next task only after quality-fixer returns `approved`.
-
-## Scope Boundary for Subagents
-
-Append the following block to every subagent prompt invoked from this recipe:
-
-```
-Scope boundary for subagents:
-Operate within the task scope and referenced files in the prompt.
-Use loaded skills to execute that scope.
-Escalate when the required fix or investigation falls outside that scope.
-```
+Use each subagent's semantic result and repository evidence through Specialist Result Acceptance; canonical status fields provide the normal routing shortcut. Proceed to the next task after step 4 and retain any verification limitation with its status kept proof-limited.
 
 Verify task files exist per Pre-execution Checklist, then enter autonomous execution mode. When requirement changes are detected during execution, escalate to the user with the change summary before continuing.
 
 ## Post-Implementation Verification (After All Tasks Complete)
+
+Before invoking post-implementation verifiers, apply subagents-orchestration-guide's retained verification limitation retry. Continue with the verifiers after clearing or retaining each result; include only repeated limitations in the completion report.
 
 Resolve the Work Plan's readable Design Doc; missing input blocks verification.
 
@@ -129,7 +121,7 @@ Emit these Agent calls in one assistant message, then await both:
 - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → resolved `doc_type`, `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the same typed `governingDocuments` and `implementationFiles`
 
-Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules. Present the unified report; proceed to Final Cleanup after both pass.
+Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 
 ## Final Cleanup
 
@@ -146,6 +138,7 @@ Final report must include:
 - Task materialization status
 - Implemented task count
 - Quality check result
+- Verification limitations that remained after final retry
 - Commit count
 - Cleanup result
 - Declined actionable findings with ID, governing reason, and evidence, when any occurred

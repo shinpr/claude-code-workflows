@@ -23,10 +23,12 @@ Operates in an independent context, executing autonomously until task completion
 
 ## Input Parameters
 
-- **Design Doc**: Required. Source of acceptance criteria for test skeleton generation. When the Design Doc contains a "Test Boundaries" section, use its mock boundary decisions to determine which dependencies to mock and which to test with real implementations.
-- **UI Spec**: Optional. When provided, use screen transitions, state x display matrix, and interaction definitions as additional E2E test candidate sources. See `references/e2e-design.md` in integration-e2e-testing skill for mapping methodology.
-- **confirmed_requirement_context**: Optional approved PRD path or unchanged confirmed convergence record. When absent, resolve the carrier from the Design Doc's Requirement Convergence section if possible.
-- **test_value_context**: Optional user-confirmed supplemental facts returned after `value_input_required`. Preserve the supplied wording and use it only for the named Business Value, User Frequency, or Legal Requirement inputs.
+- **design_docs**: Required list of one or more Design Doc paths. These provide acceptance criteria and Test Boundaries decisions.
+- **ui_spec**: Optional UI Spec path. Use its screen transitions, state x display matrix, and interaction definitions as additional E2E candidate sources. See `references/e2e-design.md` in integration-e2e-testing skill for mapping methodology.
+- **confirmed_requirement_context**: Optional approved PRD path or unchanged confirmed convergence record. When absent, resolve the carrier from the Design Docs' Requirement Convergence sections when possible.
+- **test_value_context**: Optional verbatim user response returned after `value_input_required`. Apply supplied Business Value, User Frequency, and Legal Requirement facts; its presence marks the single value-input round complete.
+
+Workflow callers use these canonical names. Accept equivalent Design Doc and UI Spec labels, individual paths, and concise prose forms, then normalize them into the fields above.
 
 ## Test Type Definition
 
@@ -120,11 +122,12 @@ ROI calculation formula and cost table are defined in **integration-e2e-testing 
      - Transactional consistency across services (e.g., two-phase commit, saga compensation)
 4. **Resolve decision-relevant ROI inputs**:
    - On the surviving lane-assigned pool, determine whether each `unknown` can change ranking, a lane threshold, or budget selection
-   - Resolve Defect Detection from the Design Doc proof boundary and existing-test search; continue repository investigation when that evidence is incomplete
-   - When an unknown Business Value, User Frequency, or Legal Requirement can change selection, return `status: "value_input_required"` before writing skeletons, naming only the missing inputs and decision effects
+   - Resolve Defect Detection from the Design Doc proof boundaries and existing-test search; continue repository investigation when that evidence is incomplete
+   - When `test_value_context` is absent and an unknown Business Value, User Frequency, or Legal Requirement can change selection, return `status: "value_input_required"` before writing skeletons, naming only the missing inputs and decision effects
+   - When `test_value_context` is present, apply the supplied facts, retain every remaining decision-relevant value as `unknown` with its numeric score unset, and continue with the integration-e2e-testing Unknown-Value Ordering
    - When it cannot, mark it `not_decision_relevant` and retain the invariant selection basis without fabricating a score
-5. **Calculate ROI** for each candidate whose resolved inputs control selection
-6. **Sort by ROI** within each lane using the score and tie-break order from integration-e2e-testing skill — this is the single ranking step, and Phase 4 budget enforcement processes the ranked list in the order produced here.
+5. **Calculate ROI** for each fully resolved candidate; keep unresolved decision-relevant inputs unknown
+6. **Sort within each lane** using ROI and its tie-break order for fully scored candidates, or Unknown-Value Ordering for affected candidates. Phase 4 processes that single ranked list.
 
 **Output**: Ranked, deduplicated candidate list with lane assigned per E2E candidate.
 
@@ -221,7 +224,7 @@ A skeleton is committed before its implementation exists, so its committed form 
     "serviceE2e": null
   },
   "budgetUsage": { "integration": "2/3", "fixtureE2e": "2/3", "serviceE2e": "0/2" },
-  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": "no_real_service_dependency" }
+  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": "Design Doc §Test Boundaries designates the gateway as mockable; the selected fixture-e2e covers every accepted journey proof obligation." }
 }
 ```
 
@@ -236,13 +239,13 @@ A skeleton is committed before its implementation exists, so its committed form 
     "serviceE2e": null
   },
   "budgetUsage": { "integration": "1/3", "fixtureE2e": "0/3", "serviceE2e": "0/2" },
-  "e2eAbsenceReason": { "fixtureE2e": "no_multi_step_journey", "serviceE2e": "no_multi_step_journey" }
+  "e2eAbsenceReason": { "fixtureE2e": "Design Doc AC1-AC4 classify as single-step behavior under the journey rule; selected integration coverage proves their accepted boundaries.", "serviceE2e": "Design Doc §Test Boundaries assigns every external dependency to a mockable boundary; selected integration coverage proves the accepted boundaries." }
 }
 ```
 
 **Contract**:
 - A `completed` result always contains `generatedFiles.integration`, `generatedFiles.fixtureE2e`, and `generatedFiles.serviceE2e`. Value is a file path string when generated, `null` when not.
-- `e2eAbsenceReason` is an object with `fixtureE2e` and `serviceE2e` keys. Each value is `null` when that lane emitted, otherwise one of: `no_multi_step_journey`, `below_threshold_user_confirmed`, `no_real_service_dependency` (service-integration-e2e only — meaning the journey is verifiable in fixture-e2e).
+- `e2eAbsenceReason` is an object with `fixtureE2e` and `serviceE2e` keys. Each value is `null` when that lane emitted; otherwise name the selection rule, the source evidence checked, and the selected or governing proof that covers the accepted boundary. A valid null lane accounts for every accepted proof obligation.
 
 **When a decision-relevant value input is missing:**
 ```json
@@ -255,7 +258,7 @@ A skeleton is committed before its implementation exists, so its committed form 
 }
 ```
 
-Return this status before creating or modifying skeleton files. The caller supplies only the missing facts as `test_value_context` and reinvokes the generator.
+Return this status before creating or modifying skeleton files. The caller supplies its single response as `test_value_context` and reinvokes the generator. Apply supplied facts, preserve every remaining decision-relevant value as `unknown`, use Unknown-Value Ordering, and return the normal completed result. Record the evidence checked, ordering basis, and selection effect in generated skeleton metadata or the absence report.
 
 ## Test Meta Information Assignment
 
@@ -295,6 +298,7 @@ These annotations drive test planning and prioritization. The `@lane` annotation
 - **No E2E Tests (no multi-step journey)**: Valid outcome - report "No multi-step user journey detected; E2E tests not applicable"
 - **Budget Exceeded by Critical Test**: Report to user
 - **Missing value that cannot change selection**: Record `not_decision_relevant` with the invariant selection basis and continue
+- **Decision-relevant value remains unknown after the value-input round**: Preserve `unknown`, apply Unknown-Value Ordering, record its selection effect, and continue
 
 ### Escalation Required
 1. **Critical**: AC absent, Design Doc absent → Error termination
@@ -302,7 +306,7 @@ These annotations drive test planning and prioritization. The `@lane` annotation
 3. **High**: All ACs filtered out but feature is business-critical → User confirmation needed
 4. **Medium**: Budget insufficient for critical user journey (ROI > 90) → Present options
 5. **Low**: Multiple interpretations possible but minor impact → Adopt interpretation + note in report
-6. **Decision input**: An unknown Business Value, User Frequency, or Legal Requirement can change ranking, threshold, or budget selection → Return `value_input_required`; the caller obtains the missing fact and reinvokes
+6. **Decision input**: An unknown Business Value, User Frequency, or Legal Requirement can change ranking, threshold, or budget selection → Return `value_input_required` when `test_value_context` is absent; after that input round, preserve remaining unknowns and continue with Unknown-Value Ordering
 
 ## Technical Specifications
 

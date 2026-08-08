@@ -6,15 +6,20 @@ Preserve reviewer/verifier evidence ownership so each gate converges on the gove
 
 ## Verdict Gate
 
-Route a document-reviewer result before assessing issues:
+Route a document-reviewer result in this order:
 
-- `approved`: complete the review with `issues: []`; downstream consumers receive the approved artifact path and pre-existing governing evidence only.
-- `needs_revision`: continue to section 1 with the returned issues.
-- `rejected`: resolve the governing-source conflict or user-held decision before another review.
+- a `rejected` verdict first resolves its governing-source conflict or user-held decision before another review, regardless of its issue set.
+- an empty actionable issue set completes the review; downstream consumers receive the reviewed artifact path and pre-existing governing evidence only.
+- a non-empty actionable issue set continues to section 1.
 
-Treat `approved` with non-empty `issues`, or `needs_revision` with empty `issues`, as an invalid reviewer result and re-invoke document-reviewer with the same inputs for a contract-correct result. An approved review creates no author correction or downstream semantic input.
+After `rejected` precedence, issue evidence governs routing when `approved` or `needs_revision` differs from the issue set. A completed review creates no author correction or downstream semantic input.
 
 For verifier, design-sync, code-reviewer, security-reviewer, and integration-test-reviewer results, enter section 1 only for the status or findings that their caller contract routes to correction.
+
+Use the result producer's declared verification mode:
+
+- **Reconciliation reviewer**: document-reviewer, code-reviewer, security-reviewer, and integration-test-reviewer accept `prior_feedback` and return `prior_feedback_reconciliation` after correction.
+- **Fresh verifier**: code-verifier and design-sync independently report the current state from their original inputs. After an applied correction, rerun them and adjudicate the current result; a decline-only result is complete.
 
 ## 1. Assess Every Finding
 
@@ -43,7 +48,9 @@ Only findings with `apply`, and maintained `apply` findings under section 3, ent
 
 ## 2. Revise and Reconsider
 
-Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. On reviewer re-review, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
+Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
+
+For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
 
 The correction assessment covers exactly every received item. The reviewer completes that scope and then:
 
@@ -53,7 +60,9 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-## 3. Converge or Escalate
+For a fresh verifier, rerun only after at least one applied correction. The latest result replaces the prior current-state result for corrected items. Retain a prior decline when the latest result reports the materially same claim or conflict with unchanged governing evidence; adjudicate new or materially changed findings before routing. Match materially identical findings by their claim/conflict and cited source/target evidence rather than relying only on a regenerated positional ID.
+
+## 3. Converge or Report
 
 Resolve correction re-review entries by their recorded `prior_disposition`:
 
@@ -61,15 +70,17 @@ Resolve correction re-review entries by their recorded `prior_disposition`:
 - `maintained` with `prior_disposition: apply` returns the original finding and the complete reconciliation entry verbatim through the same author or executor path, followed by another correction re-review;
 - `maintained` with `prior_disposition: decline` retains that decline and does not reopen the correction cycle.
 
-Escalate when the same ID with `prior_disposition: apply` returns `maintained` in two consecutive correction re-reviews, the disposition is `user_decision_required`, user-held authority is needed, an irreversible action awaits authorization, or required inputs are genuinely unusable. Progress after no `maintained` entry with `prior_disposition: apply` remains, every other actionable finding has a disposition, and every `user_decision_required` item has a recorded user decision.
+For a fresh verifier, a current finding with `apply` returns through the correction path, a current finding with a retained or newly assigned `decline` is complete, and an empty actionable result is complete.
+
+After the same `apply` finding remains material through two consecutive correction attempts, finish the correction cycle as incomplete and report the finding with its latest implementation and verification evidence. Apply the same terminal report to a required input or verification prerequisite that remains unavailable after in-scope recovery. Request user input only for `user_decision_required`, user-held authority, an irreversible action awaiting authorization, a changed product outcome, or a major approved design change. Progress after every `apply` correction is complete, every other actionable finding has a disposition, and every `user_decision_required` item has a recorded user decision.
 
 Handoffs contain this exact set:
 
 - the original review target identifier;
-- initial reviewer inputs unchanged when re-reviewing;
+- initial reviewer or verifier inputs unchanged when rechecking;
 - complete `apply` finding objects verbatim, with only their orchestrator dispositions added;
 - the complete reconciliation entry when a maintained `apply` finding returns to its author or executor;
-- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation.
+- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation; for a fresh verifier, retain those dispositions in orchestrator state and compare them with the latest result as described above.
 
 An author handoff contains no other orchestrator-authored semantic content.
 

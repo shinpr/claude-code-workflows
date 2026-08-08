@@ -11,13 +11,19 @@ The orchestrator owns workflow decisions, routing, progress management, user int
 
 ### Workflow Subagent Context — Mandatory
 
-This workflow's specialists are already self-contained through their agent definitions, loaded skills, and referenced artifacts. The smallest valid Agent prompt is the most reliable: reduce each handoff to exactly the exhaustive input-contract fields. Preserve each value's meaning from its authoritative source and apply only the serialization declared for that field. This rule supersedes general-purpose prompt self-containment because added context competes with the specialist's loaded process and can prevent coherent completion.
+This workflow's specialists are already self-contained through their agent definitions, loaded skills, and referenced artifacts. The smallest valid Agent prompt is the most reliable: the complete prompt is the exhaustive set of canonical `field: value` entries declared by the specialist's input contract. Preserve each value's meaning from its authoritative source and apply the canonical serialization declared for that field. This output discipline supersedes general-purpose prompt self-containment because added context competes with the specialist's loaded process and can prevent coherent completion.
+
+This section governs the orchestrator's Agent prompt. Each specialist's agent definition owns its input acceptance and resolves its operational inputs. The orchestrator supplies the canonical contract entries unchanged.
 
 ### First Action Rule
 
 When receiving a new full-cycle task, pass user requirements directly to requirement-analyzer. Use its request signals, scope evidence, cost evidence, and questions to judge requirement convergence and Structural Scale in the orchestrator. Dedicated design recipes use their own codebase-scoped bootstrap.
 
-Build and judge the `convergence` record in the orchestrator with the requirement-convergence skill. Run its hearing protocol at the requirements stop point. Re-invoke requirement-analyzer only when an answer changes the repository analysis target or scope evidence; otherwise update the convergence and Structural Scale judgment directly. ADR qualification occurs only after codebase-analyzer returns credible technical options and the scope is confirmed.
+Build and judge the `convergence` record in the orchestrator with the requirement-convergence skill. Run its hearing protocol at the requirements stop point. Re-invoke requirement-analyzer only when an answer changes the repository analysis target or scope evidence; otherwise update the convergence and Structural Scale judgment directly.
+
+### Small Evidence Gate
+
+Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that route remains inside one responsibility, and every `costEvidence.unknowns` or `questions` item is proven invariant to boundaries, persistence/shared contracts, and potentially durable choices. Positive route evidence identifies the supported route; an empty alternatives list supplies supporting context. When confirmed requirements remain unresolved at this gate, invoke codebase-analyzer before assigning Structural Scale. Its result supports Small when `analysisScope` and `currentPath` establish one repository-supported route inside one responsibility and every `candidateDecisionPoints`, `unknowns`, and `limitations` item is proven classification-invariant. Other observed boundaries and outcomes route Medium or Large. Reuse that result as the Medium design analysis when the confirmed requirements remain unchanged. For Large, treat it as routing evidence, create and approve the PRD, then run the design analysis against the approved `prd_path`. ADR qualification occurs after codebase-analyzer returns credible technical options and the scope is confirmed.
 
 ### Requirement Change Detection During Flow
 
@@ -43,7 +49,11 @@ Pass the governing requirement source and the specialist's expected action. Inve
 
 Before routing specialist output, validate each claim that controls the next workflow decision against the highest applicable source above. Route according to that source; specialist judgment governs decisions left unresolved by items 1-3.
 
-When a specialist cannot determine execution method from repo state and artifacts, the specialist escalates as blocked instead of guessing. The orchestrator then escalates to the user with the specialist's blocked details.
+### Specialist Result Acceptance
+
+Each specialist's agent definition owns its canonical result shape. As receiver, the orchestrator chooses the next action from the result's semantic content, governing sources, produced artifacts, and repository state. Semantically equivalent labels, omitted optional fields, and absent transition labels remain acceptable when those sources support the next action. Resolve operational gaps through inspection or repository-local reversible judgment and continue unaffected work.
+
+Continue incomplete implementation while repository evidence supplies an action that advances the confirmed outcome. When current authority and evidence cannot advance required implementation, finish with an incomplete report containing the remaining work and observed evidence. Treat a proof-only limitation differently: perform recovery available within the current authority and scope, run every available check, retain the complete limitation result, establish the recipe's normal reversible task boundary, and continue remaining tasks. Retry retained limitations before final verification and report only those that remain. Claim only the proof actually observed. User interaction is reserved for a changed product outcome, a major approved design change, authority held by the user, or an irreversible external action.
 
 ### Review Resolution
 
@@ -121,14 +131,14 @@ Use create mode for initial documents. For requirement-driven revisions, invoke 
 |-------|---------------|
 | Large | requirement-analyzer → PRD → PRD review → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
 | Medium | requirement-analyzer → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
-| Small | requirement-analyzer → direct task execution (no Work Plan) |
+| Small | requirement-analyzer → conditional codebase-analyzer when the Small evidence gate is unresolved → direct task execution (no Work Plan) |
 
 The requirement-convergence and external-resource hearings run in the orchestrator. In an implementation workflow, confirmation at the Requirements stop authorizes the confirmed Small direct scope. Medium/Large implementation begins after Work Plan batch approval.
 
 Rules:
 - When documentation-criteria requires a UI Spec, complete it before ADR qualification and Design Doc creation
 - An ADR batch is optional; the Design Doc is mandatory for Medium/Large work even when ADRs exist
-- After requirement confirmation for Medium/Large, invoke codebase-analyzer once with exactly one governing source: approved `prd_path`, or confirmed `requirements` when no approved PRD exists
+- When the Small evidence gate is unresolved, invoke codebase-analyzer with confirmed `requirements` to resolve routing. Reuse that result for unchanged Medium scope. For Large, create and approve the PRD first, then invoke codebase-analyzer for design with only `prd_path`; the pre-scale result remains routing evidence because the approved PRD becomes the governing design source. For Medium already established by positive boundary evidence, invoke once with confirmed `requirements`
 - When a UI Spec applies, invoke ui-analyzer with that same governing-source choice plus existing `ui_spec_path`, decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`; invoke ui-spec-designer with `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, plus the complete unchanged `ui_analysis`, applicable unchanged `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`
 - Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
 - Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add only their named UI or layer artifact paths
@@ -142,7 +152,7 @@ Rules:
 
 ### Pre-Execution Gate
 
-Verify commit capability before autonomous mode. Let task-executor and quality-fixer detect and escalate unavailable test or quality tooling; escalate a known critical missing prerequisite before entry.
+Verify commit capability before autonomous mode. Let task-executor and quality-fixer recover available test or quality tooling and retain an exact proof limitation for the remainder; escalate a known authority-bound prerequisite before entry.
 
 Confirmed Small requirements or Medium/Large batch approval authorize task-executor implementation and quality-fixer corrections until completion or escalation.
 
@@ -155,7 +165,8 @@ graph TD
     TD --> CYCLE[Per-task 4-step cycle, including commit]
     CYCLE -->|remaining tasks| CYCLE
     CYCLE -->|all tasks complete| VERIFY[code-verifier + security-reviewer]
-    CYCLE -->|blocked, escalation, or requirement change| USER[Escalate or re-analyze]
+    CYCLE -->|recoverable or structurally incomplete result| CYCLE
+    CYCLE -->|user-owned block or requirement change| USER[Escalate or re-analyze]
     VERIFY -->|passed| REPORT[Completion report]
     VERIFY -->|actionable findings| RR[Review Resolution]
     RR -->|apply| FIX[task-executor + quality-fixer]
@@ -164,51 +175,73 @@ graph TD
     RR -->|user decision required| USER
 ```
 
-For Small, execute one direct-scope 4-step cycle and complete when quality-fixer is approved and the direct scope's observable verification condition is satisfied. Small has no task decomposition, document-dependent post-implementation verification, or task-file cleanup.
+For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation verification, or task-file cleanup.
 
-### Post-Implementation Verification Pass/Fail Criteria (Medium/Large)
+### Post-Implementation Verification Status Routing (Medium/Large)
 
-| Verifier | Pass | Fail | Blocked |
-|----------|------|------|---------|
-| code-verifier | `summary.status` is `consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Escalate to user |
-| security-reviewer | `status` is `approved` | `status` is `needs_revision` | `status` is `blocked` → Escalate to user |
+| Verifier | Complete: empty finding set | Enter Review Resolution | Blocked |
+|----------|---------------------------|-------------------------|---------|
+| code-verifier | `summary.status` is `consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Apply Specialist Result Acceptance |
+| security-reviewer | `status` is `approved` | `status` is `needs_revision` | `status` is `blocked` → Apply Specialist Result Acceptance |
 
-**Fix-cycle handoff**: Apply Review Resolution, then pass each required executor the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` to reviewer inputs that support reconciliation.
+**Fix-cycle handoff**: Apply Review Resolution, then invoke each required executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` only to reconciliation reviewers.
 
-**Re-run rule**: After any post-implementation verification fix cycle, re-run both code-verifier and security-reviewer before accepting the result.
+**Re-run rule**: After any applied post-implementation correction, re-run both code-verifier and security-reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
 
 ### Conditions for Stopping Autonomous Execution
 
 | Trigger | Action |
 |---|---|
-| A subagent returns `escalation_needed` or `blocked` | Escalate its concrete details to the user. |
+| A valid `escalation_needed` or `blocked` result identifies a product, major design, authority, or irreversible-action decision owned by the user | Escalate its concrete decision and evidence to the user. |
+| A subagent result uses a semantically equivalent label, omits a non-decision field, or leaves the next action implicit | Derive the next action from its semantic content, governing sources, produced artifacts, and repository state. |
+| Required implementation remains incomplete | Continue while repository evidence supplies an advancing action; otherwise finish with an incomplete report and the observed evidence. |
+| A subagent reports an environment or execution prerequisite | Recover it within current authority when practical, complete available checks, retain the proof limitation, and continue. Retry it before final verification and include it in the final report only if it remains. |
 | Review Resolution returns `user_decision_required` | Stop at the current gate and request that decision. |
 | A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when re-analysis changes an approved requirement, contract, data flow, verification strategy, or task boundary. |
 | The user stops or interrupts | Stop autonomous execution. |
 
 ### Task Management: 4-Step Cycle
 
+#### Commit Boundary Check
+
+Immediately before a workflow commit:
+1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change. `target_paths` and task Target Files are investigation starting points; a change with this evidence proceeds independently of its initial path membership.
+2. Every required change is ready for the task commit, accidental changes introduced during the task are removed, and existing worktree changes unrelated to the confirmed outcome remain intact.
+3. Commit the resulting change set. Apply Specialist Result Acceptance only when deciding whether a change belongs to the confirmed outcome requires a user-owned decision.
+
+For a `verification_incomplete` commit, append one trailer pair per retained limitation:
+
+```text
+Verification-Limitation: <reason>
+Verification-Affected: <affected check or command>
+```
+
+Derive the values from the quality-fixer result. Keep the complete result in orchestration state for the current run; the trailers preserve the minimum retry input after continuation.
+
 **Per-task cycle**:
-1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with the task file path when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
+1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. **Branch on executor result**:
-   - `status: escalation_needed` or `blocked` → Escalate to user
+   - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance; escalate only a valid user-owned block
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
-     - `blocked` → Escalate to user
+     - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - Otherwise → Proceed to step 3
 3. **Quality-fix**: invoke quality-fixer with upstream `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise
-   - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
-   - `blocked` → Escalate to user
+   - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
+   - `blocked` → Apply Specialist Result Acceptance
+   - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
    - `approved` → Proceed to step 4
-4. **Commit**: after quality-fixer returns `approved`, compose the message from `changeSummary` and execute git commit with Bash
+4. **Commit**: apply Commit Boundary Check, then compose the message from `changeSummary` and execute git commit with Bash after `approved` or `verification_incomplete`; append the verification trailers for the latter
 
 Register overall phases using TaskCreate and update each phase with TaskUpdate as it completes.
+
+Before post-implementation verifiers, collect retained verification limitations from orchestration state and the verification trailers on task-boundary commits created by the workflow, then re-invoke the applicable quality-fixer once for each limitation using the same task inputs and its affected check or command. Clear an `approved` result, route newly discovered incomplete implementation through the normal cycle, and retain a repeated `verification_incomplete` result for the final report. Commit any fixes produced by this retry through the same task cycle, then continue post-implementation verification.
 
 ## Handoff Contracts
 
 ### HC-01: requirement-analyzer → orchestrator and codebase-analyzer
-- The orchestrator uses `requestSignals`, `scopeEvidence`, `costEvidence`, and `questions` to judge convergence and Structural Scale.
+- The orchestrator uses `requestSignals`, `scopeEvidence`, `costEvidence`, and `questions` to judge convergence and Structural Scale. Small requires the positive `scopeEvidence.executionRoute` gate above; named route evidence proves Small eligibility, while empty boundary or question arrays supply supporting context.
 - Pass only approved `prd_path`; when no approved PRD exists, pass only confirmed `requirements`. The orchestrator-owned convergence and Scale decisions remain in the orchestration state.
 - Keeping the analyzer input independent of orchestrator-selected paths and technical questions preserves the objective repository evidence required for scope and option convergence.
 
@@ -249,11 +282,11 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 
 ### HC-06: acceptance-test-generator → work-planner
 
-- Pass the Design Doc and optional UI Spec paths plus the same `confirmed_requirement_context` used for design to acceptance-test-generator.
-- When it returns `value_input_required`, ask only for each listed missing fact, preserve the user's answers verbatim as `test_value_context`, and reinvoke. This status creates no skeleton files and does not weaken or default an ROI input.
-- Verify each non-null `generatedFiles.<lane>` path exists and each null lane has `e2eAbsenceReason.<lane>`.
-- Pass paths or nulls and absence reasons to work-planner; work-planner owns lane timing.
-- Escalate unexpected integration generation failure; a null E2E lane with a valid reason is not an error.
+- Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `confirmed_requirement_context` used for design.
+- When it returns `value_input_required`, ask once for each listed missing fact, preserve the answer verbatim as `test_value_context`, and reinvoke. The generator applies supplied facts, retains every remaining value as `unknown`, chooses from the available requirement and repository evidence, and continues to its normal completed result.
+- Verify each non-null `generatedFiles.<lane>` path exists. For each null E2E lane, accept its `e2eAbsenceReason.<lane>` only when it names the selection rule, source evidence, and selected or governing proof covering the accepted boundary. Return an uncovered accepted proof obligation to the generator for completion.
+- Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement. Consume valid null-lane reasons at this gate.
+- Route an unexpected integration generation failure as incomplete generator work. A validated null E2E lane is complete.
 
 ## References
 

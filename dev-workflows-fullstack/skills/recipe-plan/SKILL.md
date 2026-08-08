@@ -51,24 +51,18 @@ Follow the planning process below:
 
 ### Step 2: Test Skeleton Generation Confirmation
    - Confirm with user whether to generate test skeletons (integration + E2E lanes) first
-   - If user wants generation: invoke acceptance-test-generator with the selected Design Doc and the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
-   - On `value_input_required`, ask only for the returned missing facts, pass the user's answers verbatim as `test_value_context`, and reinvoke before continuing
+   - If user wants generation: invoke acceptance-test-generator with `design_docs: [selected Design Doc path]` and `confirmed_requirement_context` as the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
+   - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
    - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
 
 ### Step 3: Work Plan Creation
 Invoke work-planner using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:work-planner"
 - `description`: "Work plan creation"
-- If test skeletons were generated in Step 2, build the prompt by listing every lane's status:
-  - Always include: "Integration test file: [path or 'not generated']"
-  - For each E2E lane (`fixtureE2e`, `serviceE2e`):
-    - When `generatedFiles.<lane>` is not null: "[lane] test file: [path]"
-    - When `generatedFiles.<lane>` is null: "No [lane] skeleton generated (reason: [e2eAbsenceReason.<lane>])"
-  - Append placement guidance: "Integration tests are created simultaneously with each phase implementation. fixture-e2e tests are created alongside the UI feature phase. service-integration-e2e tests are executed only in the final phase."
-- If test skeletons were not generated:
-  `prompt`: "Create work plan from Design Doc at [path]."
-
-- Follow subagents-orchestration-guide Prompt Construction Rule for additional prompt parameters
+- `mode: create`
+- `designDoc: [selected Design Doc path]`
+- `prd: [approved PRD path]` when one exists
+- `testSkeletons: [non-null generatedFiles paths]` when Step 2 generated skeletons
 
 ### Step 4: Work Plan Review
 Invoke document-reviewer to review the work plan:

@@ -51,7 +51,7 @@ Adjustment request → conditional external resource evidence
 - Quality verification via quality-fixer-frontend
 - Commit per adjustment unit
 
-**Responsibility Boundary**: This skill completes when the adjustment is committed and quality has passed. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
+**Responsibility Boundary**: This skill completes when each adjustment is committed after its quality cycle and any retained proof limitation receives its final retry. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
 
 **Escalation Boundary**: Escalate to the full frontend design phase when the request crosses a responsibility or approved UI boundary, requires a complete Design Doc, or contains a technical choice that passes documentation-criteria's Choice and Durability filters.
 
@@ -118,12 +118,17 @@ When the project-tier file declares no automated verification mechanism for an a
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
-  - `blocked` → read `reason`. When `"Cannot determine due to unclear specification"`, surface `blockingIssues[]` to the user and stop. When `"Execution prerequisites not met"`, surface `missingPrerequisites[]` with `resolutionSteps` to the user and stop
+  - `verification_incomplete` → retain the complete result for final retry and proceed to Step 7
+  - `blocked` → use `blockingIssues[]`, changed files, and repository state to recover within current authority; present only a product or major design decision, unavailable authority, or irreversible action to the user
 
 ### Step 7: Commit (per adjustment unit)
-Commit the adjustment unit on quality approval. Include the affected files and any regenerated artifacts required by repository tooling.
+Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the unit commit, accidental changes introduced during the unit are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.
+
+Commit the adjustment unit after `approved` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
 
 Then loop back to Step 5 for the next file until all units are committed.
+
+On continuation, reconstruct retained limitations from the verification trailers on adjustment-unit commits already completed for this request. After all units are committed, retry each retained verification limitation once with quality-fixer-frontend. Clear an `approved` result, commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
 
 ## Completion Criteria
 
@@ -132,8 +137,8 @@ Then loop back to Step 5 for the next file until all units are committed.
 - [ ] Write set confirmed by the user before scale judgment
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context presented and confirmed
-- [ ] All adjustment units edited and verified using the project's declared verification mechanism (manual confirmation when no automated mechanism is declared)
-- [ ] Each adjustment unit passed quality-fixer-frontend before commit
+- [ ] All adjustment units edited; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
+- [ ] Each adjustment unit completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
 - [ ] Each adjustment unit committed
 
 ## Output Example
@@ -144,5 +149,5 @@ Frontend adjustment completed.
 - UI evidence: existing pattern [path], external sources [fetched|partial|not_recorded]
 - Scale: direct existing-pattern adjustment
 - Adjustment units committed: [count]
-- Quality status: all passed
+- Quality status: all passed | [remaining proof limitations]
 ```

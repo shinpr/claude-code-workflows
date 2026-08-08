@@ -180,17 +180,12 @@ For Design Doc, invoke design-sync:
 ```
 subagent_type: design-sync
 description: "Verify consistency"
-prompt: |
-  Verify consistency of the updated Design Doc with other design documents.
-
-  Updated document: [path from Step 1]
+prompt: "source_design: [path from Step 1]"
 ```
 
 **On consistency result**:
 - No conflicts → Present result to user for final approval
-- Conflicts detected → Present conflicts to user with AskUserQuestion:
-  - A: Return to Step 4 to resolve conflicts in this document
-  - B: End and address conflicts separately
+- Conflicts detected → Apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, retain evidenced declines as complete, and request user input for `user_decision_required` or the Gate's escalation conditions. Present final approval at convergence.
 
 ## Error Handling
 
@@ -198,7 +193,6 @@ prompt: |
 |-------|--------|
 | Target document not found | Report and end (document creation is out of scope) |
 | Sub-agent update fails | Log failure, present error to user, retry once |
-| design-sync detects conflicts | Present to user for resolution decision |
 
 ## Completion Criteria
 

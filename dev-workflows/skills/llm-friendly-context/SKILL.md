@@ -5,9 +5,7 @@ description: Clarifies inputs, outputs, success criteria, decisions, and unresol
 
 # LLM-Friendly Context
 
-The goal is stable downstream execution: the next agent should know what to read, what to do, what counts as success, and when to stop or escalate.
-
-An active workflow's declared input contract is already optimized for its specialist. For that handoff, preserve the contract's named fields and declared value forms; the prompt consists of those fields and values. Apply the general prompt-composition rules below only when no input contract exists, and apply the generated-artifact rules to artifacts.
+The goal is stable downstream execution: the next agent should know what to read, what to do, what counts as success, and which unresolved decisions can change the result.
 
 ## Core Rules
 
@@ -22,8 +20,8 @@ An active workflow's declared input contract is already optimized for its specia
    - Terms that often need clarification when they leave a decision to the next agent: `appropriate`, `proper`, `related`, `existing behavior`, `optional`, `as needed`, `if needed`, `per convention`, unresolved alternatives, `TBD`, `placeholder`.
 
 3. **Specify output shape**
-   - Define required sections, fields, table columns, JSON keys, or checklist items.
-   - For handoffs, include paths to produced artifacts and the exact status fields the caller must inspect.
+   - Use the sections, fields, table columns, JSON keys, or checklist items the consumer uses.
+   - For handoffs, include only produced artifact paths and status fields that control the next transition.
 
 4. **Provide necessary context**
    - Include the purpose, source artifacts, hard constraints, accepted decisions, and unresolved conditions.
@@ -35,8 +33,8 @@ An active workflow's declared input contract is already optimized for its specia
    - Each step needs a checkpoint: what evidence proves it is complete.
 
 6. **Permit uncertainty explicitly**
-   - If the source material is missing, contradictory, or not verifiable, state the uncertainty and the required escalation.
-   - Record unknown business, product, security, or compatibility decisions as blocking unresolved items with the input needed to resolve them.
+   - Resolve missing operational detail from referenced artifacts and repository evidence before treating it as unresolved.
+   - Record remaining uncertainty with its effect. Escalate only when it requires a user-owned product, major design, authority, or irreversible-action decision; make reversible repository-local choices within the confirmed boundary.
 
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
@@ -64,13 +62,13 @@ Use these rewrites before treating a prompt, handoff, or artifact as complete.
 Before sending a prompt or artifact to another agent, verify:
 
 - [ ] The target action is explicit.
-- [ ] Required input paths and source artifacts are named.
+- [ ] Required input paths, source artifacts, and decision-relevant facts are named.
 - [ ] Accepted decisions and constraints use one canonical wording.
 - [ ] Output format or expected status fields are specified.
 - [ ] Success criteria are observable.
 - [ ] Ambiguous expressions have been rewritten or marked as unresolved.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
-- [ ] The next agent can complete its scope with explicit choices, decision rules, or blocking unresolved items.
+- [ ] The next agent can complete its scope from the supplied purpose, sources, criteria, and evidence, or return an exact user-owned decision.
 
 ## Generated Artifact Checklist
 

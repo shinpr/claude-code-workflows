@@ -62,14 +62,14 @@ Run `qualityCommand` first when provided. Treat it as covering the check categor
 
 When `task_file` is provided, run its Operation Verification Methods in addition to applicable checks discovered from project manifests and configuration.
 
-**External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a UI Spec / Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, escalate via `blocked` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites`.
+**External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a UI Spec / Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
 ### Step 3: Execute Quality Checks
 Follow frontend-ai-guide skill "Quality Check Workflow" section:
 - Basic checks (lint, format, build)
 - Tests (unit, integration, React Testing Library)
 - Final gate (all must pass)
-- Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance still cannot be confirmed, return `blocked`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
+- Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance remains unavailable, return `verification_incomplete`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 - For a probe that establishes a test or command prerequisite, verify the consumer's exact postcondition through the same boundary; command/import success or object existence is setup evidence.
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
@@ -78,7 +78,7 @@ Apply fixes per typescript-rules and test-implement skills.
 
 ### Step 5: Repeat Until Approved
 - In-scope error found → Fix → Re-run checks
-- Verified pre-existing or out-of-scope error found → Return `blocked` with evidence and the required scope decision
+- Verified failure in a separate responsibility → Return `verification_incomplete` with evidence and continue reporting checks unaffected by it
 - All pass → proceed to Step 6
 - Cannot determine spec → proceed to Step 6 with `blocked` status
 
@@ -86,7 +86,8 @@ Apply fixes per typescript-rules and test-implement skills.
 Return one of the following as the final response (see Output Format for schemas):
 - `status: "approved"` — all quality checks pass
 - `status: "stub_detected"` — incomplete implementation found (from Step 1)
-- `status: "blocked"` — specification, prerequisites, or fix scope requires a user decision
+- `status: "verification_incomplete"` — environment or a separate-responsibility failure prevents required proof
+- `status: "blocked"` — a product, major design or UX, authority, or irreversible-action decision belongs to the user
 
 ## Frontend-Specific Quality Criteria
 
@@ -115,7 +116,7 @@ Returned immediately when Step 1 finds incomplete implementations in the diff. Q
 - Lint/Format succeeds
 - Bundle size within acceptable limits (if configured)
 
-### blocked (Specification, prerequisites, or fix scope requires a decision)
+### blocked (User-owned decision)
 
 **Specification Confirmation Process**:
 Before setting status to blocked, confirm specifications in this order:
@@ -131,14 +132,16 @@ Before setting status to blocked, confirm specifications in this order:
 | Test and implementation contradict, both technically valid | Test: "button disabled", Implementation: "button enabled" | Cannot determine correct UX requirement |
 | Cannot identify expected values from external systems | External API supports multiple response formats | Cannot determine even after all verification methods |
 | Multiple implementation methods with different UX values | Form validation "on blur" vs "on submit" | Cannot determine correct UX design |
-| Execution prerequisites not met | Missing test database, seed data, required libraries, environment variables, external service access | Cannot run tests without prerequisites — not a code fix |
 
-**Determination Logic**: Treat a failure as in scope when evidence ties it to the current change or confirmed task scope; fix it and re-run the check. Return `blocked` with the command, file, and classification basis for verified pre-existing or out-of-scope failures. When classification is uncertain, preserve the current scope and name the evidence or decision required.
+**Determination Logic**: Treat a failure as in scope when evidence ties it to the current change or confirmed outcome; fix it and re-run the check. Resolve repository-local reversible ambiguity from governing sources and representative code. Return `blocked` only when the unresolved choice changes the product outcome, a major approved design or UX decision, user-held authority, or an irreversible action.
 
-**Execution prerequisites escalation**: When tests fail due to missing environment, report the specific missing prerequisites with concrete resolution steps. Include:
+### verification_incomplete (Required proof remains unavailable)
+
+Use this status only after Step 1 confirmed implementation completeness and every available in-scope check and fix completed. It records an unavailable environment or a verified failure owned by a separate responsibility while allowing the workflow to retain the limitation and continue. Report:
 - What is missing (library, seed data, environment variable, running service, etc.)
 - What tests are affected
-- What would be needed to resolve (concrete steps, not vague descriptions)
+- Concrete resolution steps
+- Checks and fixes completed independently of the limitation
 
 ## Output Format
 
@@ -194,7 +197,7 @@ Before setting status to blocked, confirm specifications in this order:
 }
 ```
 
-**blocked response format — Variant A (UX specification conflict)**:
+**blocked response format (user-owned UX or design decision)**:
 ```json
 {
   "status": "blocked",
@@ -210,10 +213,10 @@ Before setting status to blocked, confirm specifications in this order:
 }
 ```
 
-**blocked response format — Variant B (missing prerequisites)**:
+**verification_incomplete response format**:
 ```json
 {
-  "status": "blocked",
+  "status": "verification_incomplete",
   "reason": "Execution prerequisites not met",
   "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training.e2e.test.ts"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }],
   "taskFileMechanisms": {
@@ -222,12 +225,11 @@ Before setting status to blocked, confirm specifications in this order:
     "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
   },
   "testsSkipped": 3,
-  "testsPassedWithoutPrerequisites": 47,
-  "needsUserDecision": "<what the user must confirm>"
+  "testsPassedWithoutPrerequisites": 47
 }
 ```
 
-**Scope-decision blocked fields**: `reason: "Quality failure outside current task scope"`, `outOfScopeFailures: [{ command, file, evidence }]`, and `needsUserDecision`.
+For a verified failure in a separate responsibility, use the same `verification_incomplete` status with `separateResponsibilityFailures: [{ command, file, evidence, owningBoundary }]`.
 
 ## Intermediate Progress Report
 
@@ -235,7 +237,7 @@ Between tool calls, briefly report: which phase is running, the command executed
 
 ## Completion Criteria
 
-- [ ] Final response is a single JSON with status `approved`, `stub_detected`, or `blocked`
+- [ ] Final response is a single JSON with status `approved`, `stub_detected`, `verification_incomplete`, or `blocked`
 
 ## Fix Execution Policy
 
@@ -253,7 +255,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Add optional chaining
 - **Clear Code Quality Issues**
   - Remove unused variables/functions/components
-  - Remove exports made obsolete by the current change only after checking their consumers; report other apparently unused exports as out-of-scope evidence
+  - Remove exports made obsolete by the current change only after checking their consumers; report other apparently unused exports with their separate owning responsibility
   - Remove unreachable code
   - Remove console.log statements
 
@@ -315,4 +317,4 @@ All fixes must satisfy these criteria:
 
 ## Fix Determination Flow
 
-Detect error → execute Specification Confirmation Process → fix per frontend project rules → proceed to next check. When the specification stays unclear after exhausting Design Doc / PRD / ADR / similar-component confirmations, return `blocked` for user decision.
+Detect error → execute Specification Confirmation Process → fix per frontend project rules → proceed to next check. Resolve repository-local reversible choices from representative evidence; return `blocked` only when the remaining ambiguity changes the product outcome, a major approved design or UX decision, user-held authority, or an irreversible action.

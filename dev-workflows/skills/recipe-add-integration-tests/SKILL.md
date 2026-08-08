@@ -66,16 +66,11 @@ Classify discovered documents by filename:
 Invoke acceptance-test-generator using Agent tool:
 - `subagent_type`: "dev-workflows:acceptance-test-generator"
 - `description`: "Generate test skeletons"
-- `prompt`: List only the documents that exist from Step 1:
-  ```
-  Generate test skeletons from the following documents:
-  - Design Doc (backend): [path]    ← include only if exists
-  - Design Doc (frontend): [path]   ← include only if exists
-  - UI Spec: [path]                 ← include only if exists
-  - Confirmed requirement context: [approved PRD path or Design Doc Requirement Convergence record]
-  ```
+- `design_docs`: Existing backend, frontend, or single-layer Design Doc paths from Step 1
+- `ui_spec`: Existing UI Spec path when present
+- `confirmed_requirement_context`: Approved PRD path or unchanged Design Doc Requirement Convergence record
 
-If the generator returns `value_input_required`, ask only for the listed facts, pass the user's answers verbatim as `test_value_context`, and reinvoke before Step 3.
+Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation before Step 3.
 
 **Expected output**: `generatedFiles` containing integration and e2e paths
 
@@ -85,16 +80,20 @@ For each layer with generated skeletons, record the current HEAD as `diffBase`, 
 - Backend or single-layer → `subagent_type`: "dev-workflows:task-executor"
 - Frontend → `subagent_type`: "dev-workflows-frontend:task-executor-frontend"
 - `description`: "Implement integration tests"
-- `prompt`: "Implement every test defined by these generated skeletons: [layer-specific Step 2 paths]. Governing documents: [layer-specific Design Doc and UI Spec when present]. Keep changes within the generated tests and the setup or fixture files they require. Verify the implemented tests against the skeleton claims."
+- `direct_scope`: Implement every test defined by the layer-specific generated skeletons
+- `governing_sources`: Layer-specific Design Doc, applicable UI Spec, and generated skeleton paths
+- `target_paths`: Generated test paths plus the existing setup or fixture paths explicitly identified before invocation
+- `observable_verification`: Execute the implemented tests and verify every skeleton claim at its declared boundary
 
 Execute one layer at a time through Steps 3→4→5→6→7 before starting the next.
 
 **Expected output**: `status`, `testsAdded`, `mutationEvidence`
 
 Apply this response gate after every task-executor invocation in Steps 3 and 5:
-- `status: completed`, `testsAdded` is present, and at least one changed integration/E2E test file is confirmed → Proceed to Step 4
-- `status: escalation_needed` → Escalate to the user
-- Any other status, or a response missing the required fields above → Stop and report the invalid or missing fields
+- At least one changed integration/E2E test file and its implementation evidence are confirmed from the response and repository state → Proceed to Step 4
+- Required implementation remains incomplete → Apply Specialist Result Acceptance and continue Step 3 while repository evidence supplies an advancing action
+- A changed product outcome, major approved design change, user-held authority, or irreversible action is identified → Present that decision to the user
+- Other result variations → Apply subagents-orchestration-guide Specialist Result Acceptance
 
 ### Step 4: Test Review
 
@@ -109,12 +108,13 @@ Invoke integration-test-reviewer using Agent tool:
 
 Check Step 4 result:
 - `status: approved` → Mark complete, proceed to Step 6
-- `status: blocked` → Escalate to user
+- `status: blocked` → Apply Specialist Result Acceptance
 - `status: needs_revision` → Pass Step 4 `qualityIssues` unchanged into the Review Resolution Gate; invoke task-executor for rerouted corrections, return to Step 4, and derive convergence from `prior_feedback_reconciliation`
 
 Invoke the same layer's task-executor:
 - `description`: "Fix review findings"
-- `prompt`: "Fix these adjudicated test-review findings directly: [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]."
+- Reuse Step 3 `direct_scope`, `governing_sources`, `target_paths`, and `observable_verification`
+- `correction_findings`: Complete reviewer finding objects verbatim, with only their orchestrator dispositions added
 
 ### Step 6: Quality Check
 
@@ -125,27 +125,19 @@ Invoke quality-fixer for the current layer:
 - Pass the latest executor's `mutationEvidence`.
 - `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
 
-**Expected output**: `status` (approved/stub_detected/blocked)
+**Expected output**: `status` (`approved`, `stub_detected`, `verification_incomplete`, or `blocked`)
 
 Check quality-fixer response:
-- `stub_detected` → Return to Step 3 with `incompleteImplementations[]` details, then re-execute Steps 3→4→5→6
-- `blocked` → Escalate to user
+- `stub_detected` → Return to Step 3 with the quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field, then re-execute Steps 3→4→5→6
+- `blocked` → Apply Specialist Result Acceptance
+- `verification_incomplete` → Retain the complete result for one final retry and proceed to Step 7
 - `approved` → Proceed to Step 7
 
 ### Step 7: Commit
 
-On `approved` from quality-fixer:
-- Commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]"
+On `approved` or `verification_incomplete` from quality-fixer:
+- Apply subagents-orchestration-guide Commit Boundary Check, then commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]". Append its verification trailers for `verification_incomplete`.
 
-In the completion report, list each declined actionable finding with its ID, governing reason, and evidence when any occurred.
+After every layer has a clean commit boundary, retry each retained verification limitation once with the same layer quality-fixer inputs. Clear an `approved` result, route newly discovered incomplete implementation through Steps 3→6, and retain a repeated limitation for the completion report while continuing the workflow.
 
-## Scope Boundary for Subagents
-
-Append the following block to every subagent prompt invoked from this recipe:
-
-```
-Scope boundary for subagents:
-Operate within the task scope and referenced files in the prompt.
-Use loaded skills to execute that scope.
-Escalate when the required fix or investigation falls outside that scope.
-```
+In the completion report, list each repeated verification limitation and each declined actionable finding with its ID, governing reason, and evidence when any occurred.
