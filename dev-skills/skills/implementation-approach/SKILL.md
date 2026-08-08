@@ -35,7 +35,7 @@ Complete these steps in order before selecting an implementation strategy:
 
 Classify supporting claims as observed, inferred, or unknown. When an unknown blocks the next step, stop at the current step and name the evidence or user decision required.
 
-**Design Doc output**: Direct MVP, Failed Items, Adopted Additions, and Rejected Additions.
+**Phase 2 outputs**: Direct MVP, Failed Items, Adopted Additions, and Rejected Additions. A Design Doc author records all four; an implementer uses them as the convergence check without producing a document.
 
 ### Phase 3: Strategy Exploration and Creation
 
@@ -117,7 +117,7 @@ Select the implementation approach that directly fits the verified dependency an
 
 ### Phase 7: Decision Rationale Documentation
 
-**Design Doc Documentation**: Record in the Design Doc's implementation approach section:
+**Record in the artifact this agent owns**, and in the Design Doc's implementation approach section when this agent owns that document:
 1. Selected strategy name and characteristics
 2. A materially different alternative and reason for rejection, when one was compared
 3. Risk mitigation plan (from Phase 4)

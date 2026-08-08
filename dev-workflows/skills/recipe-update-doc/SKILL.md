@@ -24,21 +24,21 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Execute update flow**:
    - Identify target → Clarify changes → Update document → Review → Consistency check
-   - **Stop at every `[Stop: ...]` marker** → Wait for user approval before proceeding
+   - **Stop at the `[Stop: Final approval]` marker** → Wait for user approval before completing
 3. **Scope**: Complete when updated document receives approval
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**CRITICAL**: Execute document-reviewer and all stopping points — each serves as a quality gate for document accuracy.
+**CRITICAL**: Execute document-reviewer — it is the quality gate for document accuracy.
 
 ## Workflow Overview
 
 ```
-Target document → [Stop: Confirm changes]
+Target document → change clarification
                         ↓
               technical-designer / technical-designer-frontend / prd-creator (update mode)
                         ↓ (Design Doc only)
-              code-verifier → document-reviewer → [Stop: Review approval]
+              code-verifier → document-reviewer
                         ↓ (Design Doc only)
               design-sync → [Stop: Final approval]
 ```
@@ -47,7 +47,7 @@ Target document → [Stop: Confirm changes]
 
 **Included in this skill**:
 - Existing document identification and selection
-- Change content clarification with user
+- Change content clarification
 - Document update with appropriate agent (update mode)
 - Document review with document-reviewer
 - Consistency verification with design-sync (Design Doc only)
@@ -64,10 +64,7 @@ Target document: $ARGUMENTS
 
 ### Step 1: Target Document Identification
 
-```bash
-# Check existing documents
-ls docs/design/*.md docs/prd/*.md docs/adr/*.md 2>/dev/null | grep -v template
-```
+Discover the existing documents under `docs/design/`, `docs/prd/`, and `docs/adr/`.
 
 **Decision flow**:
 
@@ -97,16 +94,11 @@ Read the document and determine its layer from content signals:
 - **Minor changes** (clarification, typo fix, small scope adjustment): Update the existing ADR file
 - **Major changes** (decision reversal, significant scope change): Create a new ADR that supersedes the original
 
-### Step 3: Change Content Clarification [Stop]
+### Step 3: Change Content Clarification
 
-Use AskUserQuestion to clarify what changes are needed:
-- What sections need updating
-- Reason for the change (bug fix findings, spec change, review feedback, etc.)
-- Expected outcome after the update
+Determine which sections need updating, the reason for the change, and the expected outcome after the update. Derive them from the request and the target document. Use AskUserQuestion only for an item the request and document leave undetermined, and only when a different answer would change which sections are updated or what the update must achieve.
 
-Confirm understanding of changes with user before proceeding.
-
-Pass approved items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update; request a scope decision for unmapped or over-budget changes.
+Pass the resulting items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update; request a scope decision for unmapped or over-budget changes.
 
 ### Step 4: Document Update
 
@@ -119,13 +111,13 @@ prompt: |
   Existing Document: [path from Step 1]
 
   ## Changes Required
-  [user-approved Step 3 statements for the sections to update, reason, and expected outcome, copied verbatim]
+  [Step 3 statements for the sections to update, reason, and expected outcome, copied verbatim]
 
   Update the document to reflect the specified changes.
   Add change history entry.
 ```
 
-### Step 5: Document Review [Stop]
+### Step 5: Document Review
 
 **For Design Doc updates only**: Before document-reviewer, invoke code-verifier:
 ```
@@ -170,22 +162,18 @@ For each type, review consistency of the changed sections and their dependent st
 - On re-review pass `prior_feedback` as `[{id, disposition, reason?, evidence}]`
 - All actionable findings are `decline` and every `user_decision_required` item is resolved → Proceed to Step 6
 
-Present review result to user for approval.
+### Step 6: Consistency Verification and Final Approval `[Stop: Final approval]`
 
-### Step 6: Consistency Verification (Design Doc only) [Stop]
-
-**Skip condition**: Document type is PRD or ADR → Proceed to completion.
-
-For Design Doc, invoke design-sync:
+**For Design Doc only**, invoke design-sync first:
 ```
 subagent_type: design-sync
 description: "Verify consistency"
 prompt: "source_design: [path from Step 1]"
 ```
 
-**On consistency result**:
-- No conflicts → Present result to user for final approval
-- Conflicts detected → Apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, retain evidenced declines as complete, and request user input for `user_decision_required` or the Gate's escalation conditions. Present final approval at convergence.
+When conflicts are detected, apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, retain evidenced declines as complete, and request user input for `user_decision_required` or the Gate's escalation conditions.
+
+**For every document type**, present the updated document, the review outcome, any resolved declines, and the sync result when one ran. This is the only approval gate in the flow: wait for the user's decision before completing.
 
 ## Error Handling
 
@@ -197,7 +185,7 @@ prompt: "source_design: [path from Step 1]"
 ## Completion Criteria
 
 - [ ] Identified target document
-- [ ] Clarified change content with user
+- [ ] Change content determined from the request, the document, or a question whose answer changed the update
 - [ ] Updated document with appropriate agent (update mode)
 - [ ] Executed code-verifier before document-reviewer (Design Doc only)
 - [ ] Executed document-reviewer and addressed feedback

@@ -1,6 +1,6 @@
 ---
 name: external-resource-context
-description: Captures and persists access methods for resources outside the repository (design source, design system, API schema, IaC source, secret store) so downstream work can reach them deterministically. Use when work depends on external resources, or when the user mentions design source, design system, API schema, IaC source, secret store, or canonical source.
+description: Records where resources outside the repository live (design source, design system, API schema, IaC source, secret store) and how design, implementation, and verification reach them. Use when work depends on an external resource, or when the user mentions design source, design system, API schema, IaC source, secret store, or canonical source.
 ---
 
 # External Resource Context
@@ -10,12 +10,6 @@ description: Captures and persists access methods for resources outside the repo
 AI agents understand the codebase but not the external resources surrounding it. This skill captures, in a deterministic location, the **access methods** to resources outside the repository so downstream work (design, planning, implementation, review) can reach them without re-asking the user.
 
 Resources covered: design origin (where the canonical visual specification lives), design system (component library and tokens), guidelines (usage docs, accessibility rules), visual verification environment (how to confirm rendering), database schema source, migration history, secret store location, API schema source (OpenAPI / proto / GraphQL SDL), mock environment, IaC source, environment configuration.
-
-## Scope Boundaries
-
-**In scope**: hearing protocol, storage location, single-source-of-truth ownership rule, reference protocol for downstream consumers.
-
-**Out of scope**: enforcing that captured resources are correct or current — verification belongs to the agent that consumes the resource. Generating the resources themselves (e.g., creating a DESIGN.md from scratch).
 
 ## Storage Locations (Two-Tier)
 
@@ -30,58 +24,19 @@ The project tier owns environment facts. Feature-tier sections list only feature
 
 Example feature-tier entry uses the table format defined in `references/template.md`: a row with the project-tier label in the first column and the feature-specific identifier in the second column.
 
-## Hearing Protocol
-
-### When to Hear
-
-| Condition | Action |
-|-----------|--------|
-| `docs/project-context/external-resources.md` does not exist | Run full hearing for the relevant domain(s) |
-| File exists and covers the current decision | Use it without an update question |
-| User or caller identifies changed environment facts | Run diff-only hearing for the named axes |
-| A relevant axis is absent | Hear only the missing axis |
-| Access failure or contradictory current evidence indicates possible staleness | Ask via AskUserQuestion: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing; on `yes-diff-only` hear the named stale axes; on `no` preserve the file and report the limitation |
-
-### Domain Routing
-
-Load the domain reference matching the current task:
-
-| Task type | References to load |
-|-----------|--------------------|
-| Frontend (UI work) | [references/frontend.md](references/frontend.md) |
-| Backend (server / data work) | [references/backend.md](references/backend.md) |
-| API contract work | [references/api.md](references/api.md) |
-| Infrastructure / deployment | [references/infra.md](references/infra.md) |
-| Fullstack | Load only the references whose frontend, backend/data, API-contract, or infrastructure responsibilities are affected by the confirmed scope; a fullstack label alone does not activate infrastructure |
-
-Each domain reference defines the axes and the question template.
-
-### Two-Phase Hearing
-
-1. **Structured hearing** — for each axis selected by the When to Hear and Domain Routing rules, present the user with AskUserQuestion using the choices listed in its domain reference (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
-
-2. **Self-declaration for a full hearing** — after the structured axes for all selected domains are complete, present one integrated AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection. A diff-only or missing-axis hearing ends after its named axes because the existing project record already completed self-declaration.
-
-For a full hearing, the two phases are sequential and self-declaration runs even if the user answered "Not applicable" to every structured axis.
-
-## Storage Protocol
-
-After hearing completes:
-
-1. Build the project-tier content from the answers. Use [references/template.md](references/template.md) as the structure.
-2. Write to `docs/project-context/external-resources.md`. Create the directory if absent.
-3. When the calling workflow has a target UI Spec or Design Doc, also append or update the document's `## External Resources Used` section with the feature-tier subset (label references + feature-specific identifiers only).
-4. Report the file paths back to the calling workflow.
-
 ## Reference Protocol (For Downstream Consumers)
 
-Agents that load this skill consult resources in this order:
+Before investigating the repository for an external fact, check whether it is already recorded:
 
-1. Read `docs/project-context/external-resources.md` first (if present) to learn what is available and how to access it.
+1. Read `docs/project-context/external-resources.md` (if present) to learn what is available and how to access it.
 2. Read the target UI Spec or Design Doc's `## External Resources Used` section for feature-specific identifiers.
 3. Use the access method declared in the project tier (e.g., the named MCP, the URL, the file path) to fetch the actual resource content.
 
-Agents that only need to *consult* the saved file as input data (not actively hear) can read it directly without loading this skill — frontmatter declaration is reserved for agents that may need to trigger hearing or interpret the protocol semantics.
+When the file is absent or the resource is unreachable, continue from governing and repository evidence. Each consuming agent reports that limitation through its own output contract.
+
+## Capturing and Updating Records
+
+Capturing a record requires AskUserQuestion, so it belongs to the session that can ask the user. Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
 
 ## Output Format
 
@@ -89,16 +44,9 @@ The project-tier file follows the structure in [references/template.md](referenc
 
 For feature-tier sections inside UI Spec or Design Doc, the heading text "External Resources Used" is fixed; the heading level matches the parent document's natural structure (h2 in UI Spec where it is a sibling of other top-level sections, h3 in Design Doc where it sits under Background and Context).
 
-## Quality Checklist
-
-- [ ] Each axis answered has both a presence indicator and an access method, or is marked "Not applicable"
-- [ ] A full hearing ran self-declaration even when all structured axes were "Not applicable"; a diff-only or missing-axis hearing stayed within its named axes
-- [ ] Project-tier file does not contain feature-specific identifiers
-- [ ] Feature-tier sections reference project-tier entries by label, not by duplicating URLs / MCP names
-- [ ] When the project file already existed, each write traces to an explicit changed fact, a missing relevant axis, or a confirmed stale-evidence update decision
-
 ## References
 
+- [references/hearing.md](references/hearing.md) — Hearing conditions, domain routing, storage protocol, quality checklist
 - [references/frontend.md](references/frontend.md) — Frontend domain axes
 - [references/backend.md](references/backend.md) — Backend domain axes
 - [references/api.md](references/api.md) — API contract domain axes

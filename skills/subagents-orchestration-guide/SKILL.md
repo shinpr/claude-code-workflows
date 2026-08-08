@@ -284,8 +284,8 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 
 - Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `confirmed_requirement_context` used for design.
 - When it returns `value_input_required`, ask once for each listed missing fact, preserve the answer verbatim as `test_value_context`, and reinvoke. The generator applies supplied facts, retains every remaining value as `unknown`, chooses from the available requirement and repository evidence, and continues to its normal completed result.
-- Verify each non-null `generatedFiles.<lane>` path exists. For each null E2E lane, accept its `e2eAbsenceReason.<lane>` only when it names the selection rule, source evidence, and selected or governing proof covering the accepted boundary. Return an uncovered accepted proof obligation to the generator for completion.
-- Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement. Consume valid null-lane reasons at this gate.
+- Verify each non-null `generatedFiles.<lane>` path exists. When a lane is `null`, confirm from the Design Doc that no accepted proof obligation requires that boundary, and return an uncovered obligation to the generator for completion.
+- Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement.
 - Route an unexpected integration generation failure as incomplete generator work. A validated null E2E lane is complete.
 
 ## References

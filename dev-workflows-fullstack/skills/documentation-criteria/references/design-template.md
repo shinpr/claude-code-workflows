@@ -8,27 +8,11 @@
 - UI Spec path: [docs/ui-spec/xxx-ui-spec.md]
 - Component structure and state design are inherited from UI Spec
 
-## Design Summary (Meta)
-
-```yaml
-design_type: "new_feature|extension|refactoring"
-risk_level: "low|medium|high"
-complexity_level: "low|medium|high"
-complexity_rationale: "[Required if medium/high: (1) which requirements/ACs necessitate this complexity, (2) which constraints/risks it addresses]"
-main_constraints:
-  - "[constraint 1]"
-  - "[constraint 2]"
-biggest_risks:
-  - "[risk 1]"
-  - "[risk 2]"
-unknowns:
-  - "[uncertainty 1]"
-  - "[uncertainty 2]"
-```
-
 ## Background and Context
 
 ### Prerequisite ADRs
+
+List the accepted ADRs that govern the changed responsibility, including accepted common (cross-cutting) ADRs, and verify this design aligns with each recorded decision.
 
 - [docs/adr/ADR-XXXX.md]: [Related decision items]
 - Reference common technical ADRs when applicable
@@ -50,20 +34,7 @@ Records exclusions **the user decided** at requirement time. Exclusions this des
 - **Speculative**: [idea the user raised without deciding on -> deferral reason | None]
 - **Open questions**: [field the user left as weak-but-explicit | None]
 
-### Agreement Checklist
-
-#### Scope
-- [ ] [Features/components to change]
-- [ ] [Features to add]
-
-#### Non-Scope (Explicitly not changing)
-- [ ] [Features/components not to change]
-- [ ] [Existing logic to preserve]
-
-#### Constraints
-- [ ] Parallel operation: [Yes/No]
-- [ ] Backward compatibility: [Required/Not required]
-- [ ] Performance measurement: [Required/Not required]
+### Standards and Assumptions
 
 #### Applicable Standards
 - [ ] [Standard/convention] `[explicit]` - Source: [config / rule file / documentation path]
@@ -178,6 +149,8 @@ No Ripple Effect:
 ### Architecture Overview
 
 [How this feature is positioned within the overall system]
+
+Add an architecture or data-flow Mermaid diagram only when the changed relationships stay unclear in prose or a compact table; otherwise keep the prose form.
 
 ### Data Flow
 

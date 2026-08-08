@@ -71,17 +71,12 @@ skills:
       - "Design Doc Culture - Google Engineering Practices"
       - "Single Source of Truth"
     sections:
-      - "Templates"
+      - "What Each Document Fixes"
       - "Creation Decision Matrix"
       - "Structural Scale"
       - "ADR Decision Filters"
-      - "Detailed Document Definitions"
-      - "Creation Process"
       - "Storage Locations"
-      - "ADR Status"
-      - "AI Automation Rules"
-      - "Diagram Requirements"
-      - "Common ADR Relationships"
+      - "References"
 
   implementation-approach:
     skill: "implementation-approach"
@@ -203,6 +198,7 @@ skills:
     tags: [cross-cutting, hearing-protocol, design-source, design-system, api-schema, iac-source, secrets, environment, two-tier-storage]
     typical-use: "Captures access methods for resources outside the repository (design origin, design system, API schema, IaC source, secrets, etc.) and persists them in a deterministic location for downstream agents"
     key-references:
+      - "references/hearing.md"
       - "references/frontend.md"
       - "references/backend.md"
       - "references/api.md"
@@ -210,13 +206,10 @@ skills:
       - "references/template.md"
     sections:
       - "Purpose"
-      - "Scope Boundaries"
       - "Storage Locations (Two-Tier)"
-      - "Hearing Protocol"
-      - "Storage Protocol"
       - "Reference Protocol (For Downstream Consumers)"
+      - "Capturing and Updating Records"
       - "Output Format"
-      - "Quality Checklist"
       - "References"
 
   requirement-convergence:

@@ -5,12 +5,6 @@ Type: feature|fix|refactor
 Related Issue/PR: #XXX (if any)
 Review Scope: [repository responsibilities or expected files derived from the Design Doc]
 
-## WorkPlan Review
-
-Plan creation and material updates set this to `pending`. Record `approved` after the user approves the reviewed implementation scope.
-
-- **Status**: pending|approved
-
 ## Governing Documents
 
 - Design Doc: [docs/design/XXX.md]
@@ -26,6 +20,14 @@ Plan creation and material updates set this to `pending`. Record `approved` afte
 ## Implementation Phases
 
 Use the implementation approach and dependency order from the Design Doc. Each phase groups work that reaches a shared observable verification point. Keep implementation, tests, configuration, wiring, and documentation together when they become complete at that point.
+
+Shape the phases from the approach the Design Doc selected:
+
+- **Vertical Slice**: each phase is one value unit (feature, component, or migration target) carrying its own implementation and verification per the Verification Strategy.
+- **Horizontal Slice**: foundation (contract definitions, interfaces/signatures, test preparation) → core feature (business logic, unit tests) → integration (external connections, presentation layer).
+- **Hybrid**: combine the two as the Design Doc's implementation approach defines.
+
+Whole-repository quality assurance stays outside the plan as a separate execution responsibility.
 
 ### Phase 1: [First implementation outcome]
 
@@ -63,7 +65,3 @@ Use the implementation approach and dependency order from the Design Doc. Each p
 - [ ] Dependencies permit execution in the listed order
 - [ ] Verification is executable from repository artifacts or the task's own output
 - [ ] Task verification passes and cited acceptance criteria are satisfied
-
-## Progress Notes
-
-[Record execution-relevant discoveries only when they change task order, scope, or verification.]

@@ -95,7 +95,7 @@ Storage location and naming convention follow documentation-criteria skill.
 Execute file output immediately (considered approved at execution).
 
 ### Notes for PRD Creation
-- Create following the PRD template (see documentation-criteria skill)
+- Create following `references/prd-template.md` in the documentation-criteria skill
 - Understand and describe intent of each section
 - Limit questions to 3-5 in interactive mode
 

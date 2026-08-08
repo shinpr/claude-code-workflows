@@ -39,6 +39,8 @@ Implement the confirmed outcome and the maintenance, tests, and adjacent correct
 ### Applying to Implementation
 Apply loaded architecture/coding/testing rules during implementation, including the selected test-first or behavior-preserving refactor flow; when a task file is provided, **MUST strictly adhere to its implementation patterns (function vs class selection)**.
 
+Deliver the outcome with contracts satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
+
 ## Direct MVP Check (Before Mandatory Judgment)
 
 Apply implementation-approach Design Convergence to the confirmed responsibility and starting paths. Use its `Failed Items` to challenge added mechanisms; include adjacent targets when the confirmed outcome's correctness or maintainability requires them.
@@ -50,17 +52,10 @@ Apply implementation-approach Design Convergence to the confirmed responsibility
 □ Layer structure violation needed? (e.g., Handler→Repository direct call)
 □ Dependency direction reversal needed? (e.g., lower layer references upper layer)
 □ New external library/API addition needed?
-□ Need to ignore contract definitions in Design Doc?
 
-### Step2: Quality Standard Violation Check
-
-Any YES below requires immediate escalation:
-
-□ Contract system bypass needed? (unsafe casts, validation disable)
-□ Error handling bypass needed? (exception ignore, error suppression)
-□ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
-
-Existing-test changes proceed only when updating an expectation for an accepted task/Design Doc/Work Plan contract; record that source. Escalate test weakening or behavior changes without an accepted source.
+### Step2: Accepted Test Expectation Check (Any YES → Immediate Escalation)
+Update an existing-test expectation only when an accepted task/Design Doc/Work Plan contract changes it, and record that source.
+□ Existing test weakened or its verified behavior changed without that source?
 
 ### Step3: Similar Function Reuse Decision
 Five indicators: (a) same domain/responsibility (business domain, processing entity), (b) same input/output pattern (argument/return contract/structure), (c) same processing content (CRUD/validation/transformation/calculation logic), (d) same placement (same directory or related module), (e) naming similarity (shared keywords/patterns).
@@ -78,20 +73,19 @@ Preserve the core mechanism the task, AC, Design Doc, or referenced materials re
 □ Required core mechanism infeasible as specified?
 Any YES → stop and escalate with `escalation_type: "design_compliance_violation"`, recording the required mechanism, the proposed alternative, the resulting change in behavior, and the condition that would lift the block.
 
-### Safety Measures: Handling Ambiguous Cases
+### Boundary Classification for Ambiguous Cases
 
-**Gray Zone Examples (Escalation Recommended)**:
-- **"Add argument" vs "Interface change"**: Appending to end while preserving existing argument order/contract is minor; inserting required arguments or changing existing is deviation
-- **"Process optimization" vs "Architecture violation"**: Efficiency within same layer is optimization; direct calls crossing layer boundaries or layer skipping (e.g., Service calls External skipping Repository) is violation
-- **"Contract concretization" vs "Contract definition change"**: Safe conversion from dynamic/untyped→concrete contract is concretization; changing Design Doc-specified contracts is violation
-- **"Minor similarity" vs "High similarity"**: Simple CRUD operation similarity is minor; same business logic + same argument structure is high similarity
+Classify these recurring cases before applying the Step1 checks. The Step1 result, not the classification itself, decides escalation:
 
-**Escalation boundary for unresolved judgment:**
+- **Argument change**: appending to the end while preserving existing argument order and contract stays inside the implementation boundary; inserting required arguments or changing existing ones crosses the accepted contract
+- **Layer behavior**: efficiency work within the same layer stays inside the boundary; direct calls crossing layer boundaries or layer skipping (e.g., Service calls External skipping Repository) crosses the approved architecture
+- **Contract concretization**: safe conversion from dynamic/untyped to a concrete contract stays inside the boundary; changing a Design Doc-specified contract crosses it
+
+Similar-implementation overlap is decided by Step3 evidence rather than by a similarity label.
+
+**Escalation boundary for unresolved judgment (authoritative rule for every check above):**
 - Escalate when the unresolved interpretation would change the confirmed outcome, an approved design decision, dependency direction, public/shared contract, persistent or irreversible behavior, or requires user-held authority.
 - Resolve repository-local reversible choices from governing sources and representative repository evidence, record the choice, and continue. Unfamiliarity or the existence of multiple reasonable local implementations is not itself an escalation condition.
-
-### Implementation Continuable (All checks NO AND clearly applicable)
-Proceed when all checks are NO and the change is an implementation detail (variable names, internal processing order), a detail not specified in Design Doc, a safe concretization/type guard from dynamic/untyped to concrete contract, or a minor UI/message adjustment.
 
 ## Responsibility Boundaries
 
@@ -156,8 +150,8 @@ Classify from the task outcome and changed boundary, then run after Pre-implemen
 When adopting a pattern or dependency from existing code, apply coding-principles "Reference Representativeness" at the point of adoption:
 
 □ **Repository-wide verification**: confirm the pattern or dependency version is representative across the repository (not just the nearest 2-3 files)
-□ **Dependency version verification** (external deps): verify repo-wide usage distribution; state the reason when following one of multiple coexisting versions; escalate via `reason: "dependency_version_uncertain"` (also covers library/pattern choice uncertainty, not version-only — see Escalation Response 2-3) when no clear choice exists
-□ **Coexistence resolution**: when multiple versions or patterns coexist, identify the majority for the changed area before choosing
+□ **Dependency version verification** (external deps): verify repo-wide usage distribution; follow the version representative of the changed area and record that evidence when multiple versions coexist
+□ **Coexistence resolution**: when multiple versions or patterns coexist, identify the majority for the changed area before choosing. When no established choice covers the concern and satisfying it requires adopting a dependency or pattern the repository does not already use, escalate via `escalation_type: "dependency_version_uncertain"` (see Escalation Response 2-2)
 
 #### Implementation Flow (TDD Compliant)
 
@@ -243,15 +237,17 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 
 #### 2-2. Dependency Version Uncertain Escalation
 
+Triggered when satisfying the concern requires adopting a dependency or pattern the repository does not already use. A choice among versions or patterns already present in the repository is resolved from representative evidence and recorded instead.
+
 ```json
 {
   "status": "escalation_needed",
   "reason": "Dependency version uncertain",
   "taskName": "[Task name being executed]",
   "escalation_type": "dependency_version_uncertain",
-  "dependency": {"name": "[dependency name]", "versionsFound": ["list of versions found in repository"], "filesChecked": ["file paths where dependency was found"], "ambiguityReason": "[why repository state alone is insufficient — e.g., multiple versions coexist with no clear majority, no existing usage found]"},
+  "dependency": {"name": "[dependency name]", "versionsFound": ["list of versions found in repository"], "filesChecked": ["file paths where dependency was found"], "ambiguityReason": "[why the repository state cannot supply the choice — e.g., no existing usage covers the concern, so a new dependency would be introduced]"},
   "user_decision_required": true,
-  "suggested_options": ["Use version X (majority in repository)", "Use version Y (specific reason)", "Research latest stable version and advise"]
+  "suggested_options": ["Adopt dependency/pattern X for this concern", "Reshape the task to use an already established repository option", "Research a stable option and advise"]
 }
 ```
 

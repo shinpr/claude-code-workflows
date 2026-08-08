@@ -44,6 +44,8 @@ Use the appropriate run command based on the `packageManager` field in package.j
 ### Applying to Implementation
 Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
+Deliver the outcome with types satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
+
 ## Direct MVP Check (Before Mandatory Judgment)
 
 Apply implementation-approach Design Convergence to the confirmed responsibility and starting paths. Use its `Failed Items` to challenge added mechanisms; include adjacent targets when the confirmed outcome's correctness or maintainability requires them.
@@ -51,21 +53,14 @@ Apply implementation-approach Design Convergence to the confirmed responsibility
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
 ### Step1: Design Deviation Check (Any YES → Immediate Escalation)
-□ Change beyond the accepted shared, Design Doc-defined, or UI Spec-defined Props contract needed? (type/structure/name changes)
+□ Change beyond the accepted shared Props contract or a Design Doc / UI Spec-defined type contract needed? (type/structure/name changes)
 □ Component hierarchy violation needed? (e.g., skipping a layer in the project's adopted architecture — Atom→Organism in Atomic Design, leaf→container in Container-Presenter, etc.)
 □ Data flow direction reversal needed? (e.g., child component updating parent state without callback)
 □ New external library/API addition needed?
-□ Need to ignore type definitions in Design Doc?
 
-### Step2: Quality Standard Violation Check
-
-Any YES below requires immediate escalation:
-
-□ Type system bypass needed? (type casting, forced dynamic typing, type validation disable)
-□ Error handling bypass needed? (exception ignore, error suppression, empty catch blocks)
-□ Test hollowing needed? (test skip, meaningless verification, always-passing tests)
-
-Existing-test changes proceed only when updating an expectation for an accepted task/Design Doc/Work Plan/UI Spec contract; record that source. Escalate test weakening or behavior changes without an accepted source.
+### Step2: Accepted Test Expectation Check (Any YES → Immediate Escalation)
+Update an existing-test expectation only when an accepted task/Design Doc/Work Plan/UI Spec contract changes it, and record that source.
+□ Existing test weakened or its verified behavior changed without that source?
 
 ### Step3: Similar Component Reuse Decision
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
@@ -83,20 +78,19 @@ Preserve the core mechanism the task, AC, Design Doc, or UI Spec requires. Imple
 □ Required core mechanism infeasible as specified?
 Any YES → stop and escalate with `escalation_type: "design_compliance_violation"`, recording the required mechanism, the proposed alternative, the resulting change in behavior, and the condition that would lift the block.
 
-### Safety Measures: Handling Ambiguous Cases
+### Boundary Classification for Ambiguous Cases
 
-**Gray Zone Examples (Escalation Recommended)**:
-- **"Add Props" vs "Interface change"**: Appending optional Props while preserving existing is minor; inserting required Props or changing existing is deviation
-- **"Component optimization" vs "Architecture violation"**: Optimization within the same component level is acceptable. Direct imports crossing adopted hierarchy boundaries are violations. Prop drilling through 3+ levels triggers mandatory ownership review; it is a violation when intermediate components only forward the value and the implementation provides no evidence that explicit props preserve clearer ownership than composition, Context, or the project state layer
-- **"Type concretization" vs "Type definition change"**: Safe conversion from unknown→concrete type is concretization; changing Design Doc-specified Props types is violation
-- **"Minor similarity" vs "High similarity"**: Simple form field similarity is minor; same business logic + same Props structure is high similarity
+Classify these recurring cases before applying the Step1 checks. The Step1 result, not the classification itself, decides escalation:
 
-**Escalation boundary for unresolved judgment:**
+- **Props change**: appending optional Props while preserving existing ones stays inside the implementation boundary; inserting required Props or changing existing ones crosses the accepted contract
+- **Component structure**: optimization within the same component level stays inside the boundary; direct imports crossing the adopted hierarchy boundaries cross the approved architecture
+- **Type concretization**: safe conversion from unknown to a concrete type stays inside the boundary; changing Design Doc-specified Props types crosses it
+
+Similar-component overlap is decided by Step3 evidence rather than by a similarity label.
+
+**Escalation boundary for unresolved judgment (authoritative rule for every check above):**
 - Escalate when the unresolved interpretation would change the confirmed outcome, an approved design or UI decision, dependency/data-flow direction, public/shared contract, persistent or irreversible behavior, or requires user-held authority.
 - Resolve repository-local reversible choices from governing sources and representative repository evidence, record the choice, and continue. Unfamiliarity or the existence of multiple reasonable local implementations is not itself an escalation condition.
-
-### Implementation Continuable (All checks NO AND clearly applicable)
-Proceed when all checks are NO and the change is an implementation detail (variable names, internal logic order), a detail not specified in Design Doc/UI Spec, a safe type guard from unknown to concrete type (e.g., external API responses), or a minor UI/message adjustment.
 
 ## Responsibility Boundaries
 
@@ -161,8 +155,8 @@ Classify from the task outcome and changed boundary, then run after Pre-implemen
 When adopting a pattern, hook, or library from existing code, apply Reference Representativeness at the point of adoption:
 
 □ **Repository-wide verification**: confirm the pattern, hook, or library is representative across the repository (not just the nearest 2-3 components)
-□ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. If no dominant choice is clear, escalate via `escalation_type: "dependency_version_uncertain"` (also covers library/pattern choice uncertainty; see Escalation Response 2-3) instead of introducing another option
-□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-3 instead of adopting it directly
+□ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. When no dominant choice is clear, select from the repository choices already established for the concern and record the evidence for that selection
+□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-2 instead of adopting it directly
 
 #### Implementation Flow (TDD Compliant)
 **Completion Confirmation**: When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`, report "already completed" and end
@@ -246,7 +240,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 
 #### 2-2. Dependency Version Uncertain Escalation
 
-Triggered when Reference Representativeness cannot determine the dominant library or version choice for the changed concern.
+Triggered when satisfying the concern requires adopting a library or pattern the repository does not already use. A choice among options already established in the repository is resolved from representative evidence and recorded instead.
 
 ```json
 {
@@ -254,9 +248,9 @@ Triggered when Reference Representativeness cannot determine the dominant librar
   "reason": "Dependency version uncertain",
   "taskName": "[Task name being executed]",
   "escalation_type": "dependency_version_uncertain",
-  "dependency": {"name": "[library or pattern concern, e.g., routing, server-state, forms]", "candidatesFound": ["list of coexisting choices found in repository"], "filesChecked": ["file paths where each choice was found"], "ambiguityReason": "[why repository state alone is insufficient — e.g., multiple choices coexist with no clear majority for the changed feature area]"},
+  "dependency": {"name": "[library or pattern concern, e.g., routing, server-state, forms]", "candidatesFound": ["list of choices found in repository, or empty when none address the concern"], "filesChecked": ["file paths inspected for the concern"], "ambiguityReason": "[why the repository state cannot supply the choice — e.g., no established option addresses the concern, so a new library or pattern would be introduced]"},
   "user_decision_required": true,
-  "suggested_options": ["Follow choice X (dominant in adjacent feature area)", "Follow choice Y (matches a specific repository convention or constraint)", "Defer the choice and split the task"]
+  "suggested_options": ["Adopt library/pattern X for this concern", "Reshape the task to use an already established repository option", "Defer the choice and split the task"]
 }
 ```
 

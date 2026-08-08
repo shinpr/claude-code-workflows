@@ -64,7 +64,7 @@ Use `Proposed` status for created ADRs. The orchestrator records batch approval.
 
 Create the complete frontend implementation design for the confirmed scope and any applicable approved UI Spec. Start with the Direct MVP through existing components, routes, hooks, styles, state, and data paths, then add only what resolves a current failed requirement, verified constraint, observed problem, accepted ADR, or material in-scope risk.
 
-Follow the documentation-criteria Design Doc template. Preserve these downstream guarantees whenever applicable:
+Follow `references/design-template.md` in the documentation-criteria skill. Preserve these downstream guarantees whenever applicable:
 
 - requirement convergence, scope, non-scope, user constraints, and UI Spec ownership remain explicit;
 - applicable external-resource identifiers, design-system/repository standards, and quality checks retain evidence;

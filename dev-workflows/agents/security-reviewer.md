@@ -146,9 +146,8 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 ## Status Determination
 
 ### blocked
-- Governing documents fail the Step 1 input gate
-- Credentials, API keys, or tokens found in committed code
-- Escalate immediately with the blocking reason and any finding details — requires human intervention
+- Governing documents fail the Step 1 input gate → return the missing or unusable input so the orchestrator can supply it
+- Credentials, API keys, or tokens found in committed code → return immediately with the finding details; revoking and rotating a committed secret is user-held authority
 
 ### needs_revision
 - One or more findings require correction

@@ -36,13 +36,7 @@ Design Doc (uses most recent if omitted): $ARGUMENTS
 ## Execution Flow
 
 ### Step 1: Prerequisite Check
-```bash
-# Identify Design Doc
-ls docs/design/*.md | grep -v template | tail -1
-
-# Check implementation files
-git diff --name-only main...HEAD
-```
+Identify the review inputs: the most recently updated Design Doc under `docs/design/`, and the files changed on the current branch relative to its base.
 
 ### Step 2: Execute code-reviewer
 Invoke code-reviewer using Agent tool:
@@ -116,7 +110,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
    - `prompt`: "Review updated Design Doc at [path] for consistency and completeness. doc_type: DesignDoc. review_context: update."
    - Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions, using technical-designer-frontend for rerouted corrections. Proceed only at its convergence condition.
 
-3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
+3. When more than one Design Doc exists under `docs/design/`, invoke design-sync:
    - `subagent_type`: "dev-workflows-fullstack:design-sync"
    - `description`: "Cross-DD consistency check"
    - `prompt`: "source_design: [updated DD path]"
