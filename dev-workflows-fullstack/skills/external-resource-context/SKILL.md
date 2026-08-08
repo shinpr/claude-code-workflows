@@ -11,12 +11,6 @@ AI agents understand the codebase but not the external resources surrounding it.
 
 Resources covered: design origin (where the canonical visual specification lives), design system (component library and tokens), guidelines (usage docs, accessibility rules), visual verification environment (how to confirm rendering), database schema source, migration history, secret store location, API schema source (OpenAPI / proto / GraphQL SDL), mock environment, IaC source, environment configuration.
 
-## Scope Boundaries
-
-**In scope**: hearing protocol, storage location, single-source-of-truth ownership rule, reference protocol for downstream consumers.
-
-**Out of scope**: enforcing that captured resources are correct or current — verification belongs to the agent that consumes the resource. Generating the resources themselves (e.g., creating a DESIGN.md from scratch).
-
 ## Storage Locations (Two-Tier)
 
 | Tier | Location | Holds | Update Frequency |

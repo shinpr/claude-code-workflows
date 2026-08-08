@@ -206,7 +206,6 @@ skills:
       - "references/template.md"
     sections:
       - "Purpose"
-      - "Scope Boundaries"
       - "Storage Locations (Two-Tier)"
       - "Reference Protocol (For Downstream Consumers)"
       - "Capturing and Updating Records"
