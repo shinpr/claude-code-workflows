@@ -62,7 +62,7 @@ Invoke security-reviewer using Agent tool:
 
 ### Step 4: Verdict and Response
 
-**If security-reviewer returned `blocked`**: Stop at this gate, report its blocking reason and any returned finding, then escalate to the user. The workflow remains at this gate pending the user's response.
+**If security-reviewer reports a limitation**: Apply subagents-orchestration-guide Specialist Result Acceptance. Route findings from their substance and repository evidence, carry unavailable verification into the report, and present only a user-owned decision or unavailable authority to the user.
 
 Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing.
 
@@ -119,8 +119,8 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 3. When multiple Design Docs exist (`ls docs/design/*.md | grep -v template | wc -l > 1`), invoke design-sync:
    - `subagent_type`: "dev-workflows-fullstack:design-sync"
    - `description`: "Cross-DD consistency check"
-   - `prompt`: "source_design: [updated DD path]. Detect conflicts across all Design Docs after the update."
-   - When `sync_status: conflicts_found`: present conflicts to the user; resolution requires re-invoking technical-designer-frontend for affected DDs.
+   - `prompt`: "source_design: [updated DD path]"
+   - When `sync_status: CONFLICTS_FOUND`, apply the Review Resolution Gate using design-sync as a fresh verifier. Send the `apply` conflicts to the owning technical designer, rerun design-sync after correction, retain evidenced declines as complete, and request user input for `user_decision_required` or the Gate's escalation conditions.
 
 4. After Step 5 completes:
    - If the user selected `d` for all findings (no `c` routes) → skip Steps 6-7, proceed to Step 8 for re-validation
@@ -131,7 +131,11 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 Invoke task-executor-frontend using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:task-executor-frontend"
 - `description`: "Execute review fixes"
-- `prompt`: "Apply these approved code-side findings directly: [complete reviewer finding objects verbatim, with only their orchestrator dispositions added]. Keep the change within the approved routes and stated total size budget."
+- `direct_scope`: Apply the approved frontend corrections within the confirmed review scope and stated total size budget
+- `governing_sources`: The reviewed Design Doc, applicable UI Spec, and accepted requirement or ADR paths
+- `target_paths`: The implementation and test paths confirmed for the approved code-side routes
+- `observable_verification`: The focused UI behavior tests or observable contract checks named by the findings and governing sources pass
+- `correction_findings`: Complete reviewer finding objects verbatim, with only their orchestrator dispositions added
 
 ### Step 7: Quality Check
 
@@ -140,6 +144,12 @@ Invoke quality-fixer-frontend using Agent tool:
 - `description`: "Quality gate check"
 - Pass Step 6 `mutationEvidence`.
 - `prompt`: "Confirm quality gate passage for fixed files."
+
+Route the quality-fixer-frontend result:
+- `approved` → Proceed to Step 8
+- `stub_detected` → Return to Step 6 with `incompleteImplementations` unchanged, then repeat Step 7
+- `verification_incomplete` → Retain the complete result and proceed to Step 8
+- `blocked` → Apply Specialist Result Acceptance
 
 ### Step 8: Re-validate code-reviewer
 
@@ -157,6 +167,8 @@ Invoke security-reviewer using Agent tool (only if security fixes were applied):
 
 Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Follow its `maintained` transitions and repeat the affected verification after a rerouted correction; stop at its escalation conditions; proceed at its convergence condition.
 
+Before Step 10, retry each retained quality-fixer-frontend limitation once with the same Step 7 inputs and affected check. Clear an `approved` result, route newly discovered incomplete implementation through Steps 6-9, and report a repeated `verification_incomplete` result. When the retry changes the repository, repeat Steps 8-9 for the changed code before reporting.
+
 ### Step 10: Final Report
 
 Present the final report:
@@ -171,6 +183,12 @@ Security Review:
   Initial: [status]
   Correction review: [status for the re-review scope] (if fixes executed)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
+
+Quality Check:
+  Final: [approved / verification_incomplete / not_run when no code-side fixes were selected]
+
+Remaining proof limitations:
+- [reason — affected check and evidence] (only when repeated after retry)
 
 Declined actionable findings:
 - [ID: governing reason — evidence] (only when any were declined)
@@ -199,14 +217,3 @@ Discrepancies suitable for the design-side path (code is correct, DD became stal
 - New ACs that the implementation already satisfies but the DD never enumerated
 
 **Scope**: Design Doc compliance validation, security review, code-side auto-fixes, and design-side update routing.
-
-## Scope Boundary for Subagents
-
-Append the following block to every subagent prompt invoked from this recipe:
-
-```
-Scope boundary for subagents:
-Operate within the review scope and referenced files in the prompt.
-Use loaded skills to execute that scope.
-Escalate when the required fix or investigation falls outside that scope.
-```

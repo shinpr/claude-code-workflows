@@ -26,7 +26,7 @@ Preserve the user's apparent outcome, explicit current requirements, explicit ex
 
 ### 2. Collect Shallow Scope Evidence
 
-Inspect only far enough to locate likely targets, responsibility boundaries, affected layers, reusable existing mechanisms, persistence or shared-contract surfaces, and representative verification support. Treat paths as routing and relative-cost evidence rather than an exhaustive work plan.
+Inspect until the evidence locates likely targets, responsibility boundaries, affected layers, reusable existing mechanisms, persistence or shared-contract surfaces, and representative verification support. Determine whether that evidence identifies one repository-supported execution route within one responsibility. Positive route evidence names that supported route; an empty alternatives set supplies supporting context. Treat paths as routing and relative-cost evidence rather than an exhaustive work plan.
 
 Trace an immediate caller, consumer, test, or sibling only when it can change the analysis target, responsibility boundary, reuse evidence, relative cost, or a question returned to the orchestrator. Stop expanding when another path cannot change one of those results.
 
@@ -52,6 +52,7 @@ Return exactly one JSON object:
   "scopeEvidence": {
     "affectedFiles": ["candidate/path"],
     "affectedLayers": ["backend"],
+    "executionRoute": {"status": "evident|unresolved", "responsibility": "single owner or null", "representativePattern": "path:symbol or null", "targetPaths": ["candidate/path"], "evidence": "why this is one supported route, or what prevents that conclusion"},
     "responsibilityBoundaries": [
       {"boundary": "responsibility or integration", "evidence": "path:line", "effect": "how it can change scale or analysis target"}
     ],
@@ -75,6 +76,7 @@ Return exactly one JSON object:
 
 - User statements retain their source category for orchestrator judgment.
 - Scope and cost evidence is shallow, compact, and source-backed.
+- `executionRoute.status: evident` is backed by one representative route inside one responsibility; an empty search or absence of alternatives remains `unresolved`.
 - Every question names the decision its answer can change.
 - Convergence, Structural Scale, ADR, and implementation-scope decisions remain assigned to the orchestrator.
 - The response is one valid JSON object.

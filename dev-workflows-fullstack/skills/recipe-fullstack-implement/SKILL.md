@@ -76,10 +76,10 @@ After scale determination, use TaskCreate to register each design/planning step 
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts. Determine Structural Scale from the confirmed outcome and responsibility boundaries, then run the requirement-convergence hearing protocol before presenting anything else.
+Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
 
 When user responds to questions:
-- Update the orchestrator-owned convergence record and Structural Scale judgment from the answer.
+- Update the orchestrator-owned convergence record from the answer, then update the Structural Scale judgment through the Small evidence gate.
 - Re-execute requirement-analyzer only when the answer changes the repository analysis target or scope evidence.
 - Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 
@@ -95,22 +95,11 @@ When user responds to questions:
 - [ ] code-verifier included before document-reviewer for each Design Doc
 - [ ] **Environment check**: Can I execute per-task commit cycle?
   - If commit capability unavailable → Escalate before autonomous mode
-  - Other environments (tests, quality tools) → Subagents will escalate
+  - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
 - Run quality-fixer (layer-appropriate) before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
-
-## Scope Boundary for Subagents
-
-Append the following block to every subagent prompt invoked from this recipe:
-
-```
-Scope boundary for subagents:
-Operate within the task scope and referenced files in the prompt.
-Use loaded skills to execute that scope.
-Escalate when the required fix or investigation falls outside that scope.
-```
 
 ## Mandatory Orchestrator Responsibilities
 
@@ -126,15 +115,19 @@ Escalate when the required fix or investigation falls outside that scope.
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
    - `approved` → Continue to rule 3
-   - `blocked` → Escalate to user
+   - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate, return rerouted corrections to the layer executor, and continue to rule 3 only when correction re-review `prior_feedback_reconciliation` establishes convergence
 3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
 4. Check quality-fixer response:
-   - `stub_detected` → Return to executor with `incompleteImplementations[]` details
-   - `blocked` → Escalate to user
+   - `stub_detected` → Return to executor with the layer quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
+   - `blocked` → Apply Specialist Result Acceptance
+   - `verification_incomplete` → Retain the complete result for final retry and proceed to commit
    - `approved` → Proceed to commit
+5. Apply subagents-orchestration-guide Commit Boundary Check before each commit; append its verification trailers when the quality-fixer result is `verification_incomplete`
 
 ### Post-Implementation Verification (After All Tasks Complete)
+
+Apply subagents-orchestration-guide's retained verification limitation retry with each layer's quality-fixer before the document-dependent verifiers. Continue after clearing or retaining each result and report only repeated limitations.
 
 Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
 
@@ -142,7 +135,7 @@ Emit one code-verifier call per resolved document plus one security-reviewer cal
 - code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → each resolved `doc_type`, single `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
 
-Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after all pass.
+Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 
 ### Final Cleanup
 
@@ -157,10 +150,7 @@ In the completion report, list each declined actionable finding with its ID, gov
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows-fullstack:work-planner"), communicate:
-- Generated integration test file path (from `generatedFiles.integration`)
-- Generated fixture-e2e test file path or null (from `generatedFiles.fixtureE2e`)
-- Generated service-integration-e2e test file path or null (from `generatedFiles.serviceE2e`)
-- Per-lane E2E absence reason (from `e2eAbsenceReason.fixtureE2e` and `e2eAbsenceReason.serviceE2e`, when each lane is null)
+- `testSkeletons`: every non-null path from `generatedFiles`
 
 ## Execution Method
 

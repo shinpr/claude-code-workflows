@@ -7,6 +7,7 @@ disable-model-invocation: true
 Execute Skill: documentation-criteria before document routing or creation.
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before invoking agents or resolving findings.
+Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
 ## Outcome and Ownership
 
@@ -113,7 +114,7 @@ Keep verifier observations unchanged so corrections remain traceable to observed
 
 Invoke `dev-workflows:code-verifier` with `doc_type: design-doc` and the Design Doc path. Leave `code_paths` absent so future behavior remains intent and current premises and feasibility are verified.
 
-Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to technical-designer in update mode and rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result. Continue only when it contains no unresolved `apply` or `user_decision_required` item.
+Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to technical-designer in update mode and rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
 
 ## Step 7: Review and Approve
 

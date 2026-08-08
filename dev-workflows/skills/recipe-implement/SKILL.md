@@ -63,10 +63,10 @@ When continuing existing flow, verify:
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts. Determine Structural Scale from the confirmed outcome and responsibility boundaries, then run the requirement-convergence hearing protocol before presenting anything else.
+Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
 
 When user responds to questions:
-- Update the orchestrator-owned convergence record and Structural Scale judgment from the answer.
+- Update the orchestrator-owned convergence record from the answer, then update the Structural Scale judgment through the Small evidence gate.
 - Re-execute requirement-analyzer only when the answer changes the repository analysis target or scope evidence.
 - Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 - For Small, the user's requirement confirmation authorizes the direct implementation scope; proceed to the 4-step cycle without a Work Plan.
@@ -86,43 +86,35 @@ After scale determination, use TaskCreate to register the applicable design/plan
 - [ ] code-verifier included before document-reviewer for Design Doc review (Medium/Large scale)
 - [ ] **Environment check**: Can I execute per-task commit cycle?
   - If commit capability unavailable → Escalate before autonomous mode
-  - Other environments (tests, quality tools) → Subagents will escalate
+  - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
 - Run quality-fixer before every commit
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
-
-## Scope Boundary for Subagents
-
-Append the following block to every subagent prompt invoked from this recipe:
-
-```
-Scope boundary for subagents:
-Operate within the task scope and referenced files in the prompt.
-Use loaded skills to execute that scope.
-Escalate when the required fix or investigation falls outside that scope.
-```
 
 ## Mandatory Orchestrator Responsibilities
 
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
-1. **Agent tool** (subagent_type: "dev-workflows:task-executor") → Record the current HEAD as `diffBase`; pass the task file path when one exists, otherwise pass `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
+1. **Agent tool** (subagent_type: "dev-workflows:task-executor") → Record the current HEAD as `diffBase`; pass `task_file: [path]` when one exists, otherwise pass `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. Check task-executor response:
-   - `status: escalation_needed` or `blocked` → Escalate to user
+   - `status: escalation_needed` or `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance; escalate only a valid user-owned block
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
-     - `blocked` → Escalate to user
+     - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - Otherwise → Proceed to step 3
 3. quality-fixer → Pass `task_file` when one exists, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
-   - `stub_detected` → Return to step 1 with `incompleteImplementations[]` details
-   - `blocked` → Escalate to user
+   - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
+   - `blocked` → Apply Specialist Result Acceptance
+   - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
    - `approved` → Proceed to step 4
-4. git commit → Execute with Bash (on `approved`)
+4. git commit → Apply subagents-orchestration-guide Commit Boundary Check, then execute with Bash after `approved` or `verification_incomplete`; append its verification trailers for the latter
 
 ### Post-Implementation Verification (Medium/Large, After All Tasks Complete)
+
+Apply subagents-orchestration-guide's retained verification limitation retry before the document-dependent verifiers. Continue after clearing or retaining each result and report only repeated limitations.
 
 Resolve the Work Plan's readable Design Doc; missing input blocks verification.
 
@@ -130,9 +122,9 @@ Emit these Agent calls in one assistant message, then await both:
 - code-verifier (subagent_type: "dev-workflows:code-verifier") → resolved `doc_type`, `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
 - security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the same typed `governingDocuments` and `implementationFiles`
 
-Apply subagents-orchestration-guide's Post-Implementation Verification pass/fail and fix/re-run rules. Present the unified report; proceed to Final Cleanup after both pass.
+Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 
-For Small, skip this document-dependent verification. Complete after quality-fixer approval and successful `observable_verification` from the confirmed direct scope.
+For Small, skip this document-dependent verification. Retry a retained verification limitation once after the task commit; complete with observed `observable_verification` evidence and report any proof that remains unavailable.
 
 ### Final Cleanup
 
@@ -149,10 +141,7 @@ In the completion report, list each declined actionable finding with its ID, gov
 
 ### Test Information Communication
 After acceptance-test-generator execution, when invoking work-planner (subagent_type: "dev-workflows:work-planner"), communicate:
-- Generated integration test file path (from `generatedFiles.integration`)
-- Generated fixture-e2e test file path or null (from `generatedFiles.fixtureE2e`)
-- Generated service-integration-e2e test file path or null (from `generatedFiles.serviceE2e`)
-- Per-lane E2E absence reason (from `e2eAbsenceReason.fixtureE2e` and `e2eAbsenceReason.serviceE2e`, when each lane is null)
+- `testSkeletons`: every non-null path from `generatedFiles`
 
 ## Execution Method
 

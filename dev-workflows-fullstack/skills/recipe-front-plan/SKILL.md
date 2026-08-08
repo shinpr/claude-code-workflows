@@ -55,24 +55,21 @@ Follow the planning process below:
      - Invoke acceptance-test-generator using Agent tool:
        - `subagent_type`: "dev-workflows-fullstack:acceptance-test-generator"
        - `description`: "Test skeleton generation"
-       - If UI Spec exists: `prompt: "Generate test skeletons from Design Doc at [path]. UI Spec at [ui-spec path]."`
-       - If no UI Spec: `prompt: "Generate test skeletons from Design Doc at [path]."`
-   - Pass integration test file path, fixture-e2e and service-integration-e2e file paths (or null per lane), and e2eAbsenceReason (per lane) to work-planner according to subagents-orchestration-guide "acceptance-test-generator → work-planner" section
+       - `design_docs: [Design Doc path]`
+       - `ui_spec: [UI Spec path]` when one exists
+       - `confirmed_requirement_context`: approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
+       - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
+   - Pass existing generated skeleton paths to work-planner according to subagents-orchestration-guide HC-06
 
 ### Step 3: Work Plan Creation
 Invoke work-planner using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:work-planner"
 - `description`: "Work plan creation"
-- If test skeletons were generated in Step 2, build the prompt by listing every lane's status:
-  - Always include: "Integration test file: [path or 'not generated']"
-  - For each E2E lane (`fixtureE2e`, `serviceE2e`):
-    - When `generatedFiles.<lane>` is not null: "[lane] test file: [path]"
-    - When `generatedFiles.<lane>` is null: "No [lane] skeleton generated (reason: [e2eAbsenceReason.<lane>])"
-  - Append placement guidance: "Integration tests are created simultaneously with each phase implementation. fixture-e2e tests are created alongside the UI feature phase. service-integration-e2e tests are executed only in the final phase."
-- If test skeletons were not generated:
-  `prompt`: "Create work plan from Design Doc at [path]."
-
-- Follow subagents-orchestration-guide Prompt Construction Rule for additional prompt parameters
+- `mode: create`
+- `designDoc: [selected Design Doc path]`
+- `uiSpec: [UI Spec path]` when one exists
+- `prd: [approved PRD path]` when one exists
+- `testSkeletons: [non-null generatedFiles paths]` when Step 2 generated skeletons
 
 ### Step 4: Work Plan Review
 Invoke document-reviewer to review the work plan:

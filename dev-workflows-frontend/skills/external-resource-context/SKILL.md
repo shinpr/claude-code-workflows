@@ -37,7 +37,10 @@ Example feature-tier entry uses the table format defined in `references/template
 | Condition | Action |
 |-----------|--------|
 | `docs/project-context/external-resources.md` does not exist | Run full hearing for the relevant domain(s) |
-| File exists | Ask the user via AskUserQuestion: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing. On `yes-diff-only` ask the user which axes changed, hear only those. On `no` skip hearing |
+| File exists and covers the current decision | Use it without an update question |
+| User or caller identifies changed environment facts | Run diff-only hearing for the named axes |
+| A relevant axis is absent | Hear only the missing axis |
+| Access failure or contradictory current evidence indicates possible staleness | Ask via AskUserQuestion: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing; on `yes-diff-only` hear the named stale axes; on `no` preserve the file and report the limitation |
 
 ### Domain Routing
 
@@ -49,17 +52,17 @@ Load the domain reference matching the current task:
 | Backend (server / data work) | [references/backend.md](references/backend.md) |
 | API contract work | [references/api.md](references/api.md) |
 | Infrastructure / deployment | [references/infra.md](references/infra.md) |
-| Fullstack | All of the above; per-axis "Not applicable" answers are expected |
+| Fullstack | Load only the references whose frontend, backend/data, API-contract, or infrastructure responsibilities are affected by the confirmed scope; a fullstack label alone does not activate infrastructure |
 
 Each domain reference defines the axes and the question template.
 
 ### Two-Phase Hearing
 
-1. **Structured hearing** — for each axis defined in every selected domain reference, present the user with AskUserQuestion using the choices listed there (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command). Each domain reference ends after its access-method follow-up; phase 2 owns the single self-declaration question.
+1. **Structured hearing** — for each axis selected by the When to Hear and Domain Routing rules, present the user with AskUserQuestion using the choices listed in its domain reference (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
 
-2. **Self-declaration** — after the structured axes for all selected domains are complete, present one integrated AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection.
+2. **Self-declaration for a full hearing** — after the structured axes for all selected domains are complete, present one integrated AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection. A diff-only or missing-axis hearing ends after its named axes because the existing project record already completed self-declaration.
 
-The two phases are sequential. Self-declaration runs even if the user answered "Not applicable" to every structured axis.
+For a full hearing, the two phases are sequential and self-declaration runs even if the user answered "Not applicable" to every structured axis.
 
 ## Storage Protocol
 
@@ -89,10 +92,10 @@ For feature-tier sections inside UI Spec or Design Doc, the heading text "Extern
 ## Quality Checklist
 
 - [ ] Each axis answered has both a presence indicator and an access method, or is marked "Not applicable"
-- [ ] Self-declaration phase ran even when all structured axes were "Not applicable"
+- [ ] A full hearing ran self-declaration even when all structured axes were "Not applicable"; a diff-only or missing-axis hearing stayed within its named axes
 - [ ] Project-tier file does not contain feature-specific identifiers
 - [ ] Feature-tier sections reference project-tier entries by label, not by duplicating URLs / MCP names
-- [ ] When the project file already existed, the update decision (no / yes-full / yes-diff-only) was confirmed before any write
+- [ ] When the project file already existed, each write traces to an explicit changed fact, a missing relevant axis, or a confirmed stale-evidence update decision
 
 ## References
 

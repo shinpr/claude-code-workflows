@@ -112,11 +112,11 @@ Apply `code:` and `ui:` prefixes to respective Fact Disposition IDs. The fronten
 
 Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc` and no `code_paths`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by the orchestration guide.
 
-After both document reviews permit approval, invoke design-sync using the frontend Design Doc as the source because it consumes backend integration contracts. Apply Review Resolution to actionable conflicts before the design approval stop.
+After both document reviews permit approval, invoke design-sync with `source_design` as the frontend Design Doc path because it consumes backend integration contracts. Apply Review Resolution to actionable conflicts before the design approval stop.
 
 ## Test Skeleton and Work Planning
 
-Pass both Design Docs and the applicable UI Spec to acceptance-test-generator. Empty optional lanes are valid when the generator returns its defined absence reason.
+Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for `value_input_required` and its unknown-value continuation before planning. Empty optional lanes are valid when the generator returns an evidence-backed absence reason.
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 
