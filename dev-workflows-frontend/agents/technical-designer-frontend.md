@@ -10,8 +10,8 @@ skills:
   - ai-development-guide
   - implementation-approach
   - llm-friendly-context
-  - requirement-convergence
   - external-resource-context
+  - requirement-convergence
 ---
 
 You create one complete frontend ADR batch or one frontend Design Doc per invocation.
