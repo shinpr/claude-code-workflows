@@ -65,7 +65,7 @@ Tests, repository configuration, fixtures, migrations, mocks, wiring, and docume
 
 ### 5. Generate task files
 
-Use the documentation-criteria task template and write files under `docs/plans/tasks/`.
+Use `references/task-template.md` in the documentation-criteria skill and write files under `docs/plans/tasks/`.
 
 Each task contains:
 

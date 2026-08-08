@@ -154,7 +154,7 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
-- Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
+- Record each reuse, extend, separate, or repair decision with its evidence in the artifact this agent owns
 - **Reference representativeness check**: When adopting a pattern or dependency from nearby code, verify it is representative across the repository before adopting — nearby files alone are an insufficient basis
 
 ## Quality Assurance Mechanism Awareness

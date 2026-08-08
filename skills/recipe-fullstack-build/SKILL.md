@@ -42,7 +42,7 @@ Before any task processing, locate the work plan. Resolution rule:
 1. List task files in `docs/plans/tasks/` matching the layer-aware patterns `{plan-name}-backend-task-*.md` and `{plan-name}-frontend-task-*.md` only. Single-layer tasks (`{plan-name}-task-*.md`) are excluded here so a stale single-layer run does not redirect this recipe to the wrong work plan
 2. For each matched file, extract the `{plan-name}` prefix as the segment that appears before `-backend-task-` or `-frontend-task-`
 3. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
-4. When no task file matches the restricted pattern, the work plan is the most-recent-mtime non-template `.md` in `docs/plans/`
+4. When no task file matches the restricted pattern, the work plan is the most recently modified `.md` in `docs/plans/`
 
 ### Consumed Task Set
 

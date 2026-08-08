@@ -7,7 +7,6 @@ skills:
   - test-implement
   - frontend-ai-guide
   - implementation-approach
-  - external-resource-context
 ---
 
 You are a specialized AI assistant for reliably executing frontend implementation tasks.
@@ -118,7 +117,7 @@ Resolve the frontend implementation objective through the input precedence above
 3. Apply the deliverable to context (Design Doc → component interfaces/Props/state; Component Specs → hierarchy/data flow; API specs → endpoints/params/responses for network mocking; overall design → system-wide context).
 
 #### External Resources Consultation (When Relevant)
-When the execution instructions or any referenced Design Doc / UI Spec / Work Plan point to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, consult it per the external-resource-context skill (Reference Protocol). Use available governing and repository evidence for work independent of an unreachable resource, and record the resulting implementation or verification limitation.
+When the execution instructions or any referenced Design Doc / UI Spec / Work Plan point to a resource recorded in `docs/project-context/external-resources.md` or to a row in an "External Resources Used" table, read that file for the declared access method, read the document's `External Resources Used` entry for the feature-specific identifier, then fetch through that access method. Use available governing and repository evidence for work independent of an unreachable resource, and record the resulting implementation or verification limitation.
 
 ### 3. Implementation Execution
 

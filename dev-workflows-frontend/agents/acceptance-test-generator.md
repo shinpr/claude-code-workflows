@@ -198,22 +198,6 @@ A skeleton is committed before its implementation exists, so its committed form 
 
 ### Generation Report
 
-**When both E2E lanes are emitted:**
-```json
-{
-  "status": "completed",
-  "feature": "payment",
-  "generatedFiles": {
-    "integration": "tests/payment.int.test.[ext]",
-    "fixtureE2e": "tests/payment.fixture.e2e.test.[ext]",
-    "serviceE2e": "tests/payment.service.e2e.test.[ext]"
-  },
-  "budgetUsage": { "integration": "2/3", "fixtureE2e": "1/3", "serviceE2e": "1/2" },
-  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": null }
-}
-```
-
-**When only fixture-e2e is emitted:**
 ```json
 {
   "status": "completed",
@@ -222,30 +206,13 @@ A skeleton is committed before its implementation exists, so its committed form 
     "integration": "tests/payment.int.test.[ext]",
     "fixtureE2e": "tests/payment.fixture.e2e.test.[ext]",
     "serviceE2e": null
-  },
-  "budgetUsage": { "integration": "2/3", "fixtureE2e": "2/3", "serviceE2e": "0/2" },
-  "e2eAbsenceReason": { "fixtureE2e": null, "serviceE2e": "Design Doc §Test Boundaries designates the gateway as mockable; the selected fixture-e2e covers every accepted journey proof obligation." }
+  }
 }
 ```
 
-**When no E2E tests are emitted:**
-```json
-{
-  "status": "completed",
-  "feature": "config-update",
-  "generatedFiles": {
-    "integration": "tests/config.int.test.[ext]",
-    "fixtureE2e": null,
-    "serviceE2e": null
-  },
-  "budgetUsage": { "integration": "1/3", "fixtureE2e": "0/3", "serviceE2e": "0/2" },
-  "e2eAbsenceReason": { "fixtureE2e": "Design Doc AC1-AC4 classify as single-step behavior under the journey rule; selected integration coverage proves their accepted boundaries.", "serviceE2e": "Design Doc §Test Boundaries assigns every external dependency to a mockable boundary; selected integration coverage proves the accepted boundaries." }
-}
-```
+**Contract**: a `completed` result always contains `generatedFiles.integration`, `generatedFiles.fixtureE2e`, and `generatedFiles.serviceE2e`. Value is a file path string when that lane emitted, `null` when it did not. The orchestrator confirms an empty lane against the Design Doc's accepted proof obligations; the selection evidence for every emitted skeleton stays in that skeleton's metadata.
 
-**Contract**:
-- A `completed` result always contains `generatedFiles.integration`, `generatedFiles.fixtureE2e`, and `generatedFiles.serviceE2e`. Value is a file path string when generated, `null` when not.
-- `e2eAbsenceReason` is an object with `fixtureE2e` and `serviceE2e` keys. Each value is `null` when that lane emitted; otherwise name the selection rule, the source evidence checked, and the selected or governing proof that covers the accepted boundary. A valid null lane accounts for every accepted proof obligation.
+Describe the run's filtering and selection outcome in the surrounding message. Whenever a lane emits nothing, name the removed candidates and the filter that removed each one — the JSON carries paths only.
 
 **When a decision-relevant value input is missing:**
 ```json
@@ -258,7 +225,7 @@ A skeleton is committed before its implementation exists, so its committed form 
 }
 ```
 
-Return this status before creating or modifying skeleton files. The caller supplies its single response as `test_value_context` and reinvokes the generator. Apply supplied facts, preserve every remaining decision-relevant value as `unknown`, use Unknown-Value Ordering, and return the normal completed result. Record the evidence checked, ordering basis, and selection effect in generated skeleton metadata or the absence report.
+Return this status before creating or modifying skeleton files. The caller supplies its single response as `test_value_context` and reinvokes the generator. Apply supplied facts, preserve every remaining decision-relevant value as `unknown`, use Unknown-Value Ordering, and return the normal completed result. Record the evidence checked, ordering basis, and selection effect in generated skeleton metadata.
 
 ## Test Meta Information Assignment
 
@@ -290,23 +257,25 @@ These annotations drive test planning and prioritization. The `@lane` annotation
 - Clarify dependencies explicitly
 - Logical test execution order
 
-## Exception Handling and Escalation
+## Exception Handling and Stop Conditions
 
 ### Auto-processable
 - **Directory Absent**: Auto-create appropriate directory following detected test structure
 - **No Integration Candidates**: Valid outcome - report "No Integration candidates remained after Phase 1 filtering, deduplication, and push-down analysis"
 - **No E2E Tests (no multi-step journey)**: Valid outcome - report "No multi-step user journey detected; E2E tests not applicable"
-- **Budget Exceeded by Critical Test**: Report to user
+- **Budget insufficient for a critical user journey (ROI > 90)**: Exceed the lane budget per the integration-e2e-testing skill's budget rule when the journey's failure mode cannot be proved by a selected test, and annotate the exception and why consolidation cannot cover it
+- **No E2E test emitted after budget enforcement, but the input Design Doc contains a user-facing multi-step journey**: Report the journey, every candidate evaluated with its ROI score, and the filter that removed each one, then continue. (This case arises only when the reserved slot in Phase 4 did not apply — e.g., no journey candidate passed Phase 1-3 filtering.)
+- **Every AC filtered out, leaving no generated test**: Valid outcome - return the empty result and report the filter that removed each AC
+- **Multiple interpretations possible but minor impact**: Adopt the interpretation and note it in the report
 - **Missing value that cannot change selection**: Record `not_decision_relevant` with the invariant selection basis and continue
 - **Decision-relevant value remains unknown after the value-input round**: Preserve `unknown`, apply Unknown-Value Ordering, record its selection effect, and continue
 
-### Escalation Required
-1. **Critical**: AC absent, Design Doc absent → Error termination
-2. **High**: No E2E test emitted after budget enforcement, but the input Design Doc contains a user-facing multi-step journey → Escalate with message: "The Design Doc includes a user-facing multi-step journey but no E2E test was emitted. Journey candidates evaluated: [list with ROI scores]. Confirm whether to proceed without E2E." (Note: this escalation fires only when the reserved slot in Phase 4 did not apply — e.g., no journey candidate passed Phase 1-3 filtering. When a reserved slot candidate exists, it is emitted and this escalation does not fire.)
-3. **High**: All ACs filtered out but feature is business-critical → User confirmation needed
-4. **Medium**: Budget insufficient for critical user journey (ROI > 90) → Present options
-5. **Low**: Multiple interpretations possible but minor impact → Adopt interpretation + note in report
-6. **Decision input**: An unknown Business Value, User Frequency, or Legal Requirement can change ranking, threshold, or budget selection → Return `value_input_required` when `test_value_context` is absent; after that input round, preserve remaining unknowns and continue with Unknown-Value Ordering
+### Stop Conditions
+
+These two cases end generation and hand control back; every other case above completes with a recorded result.
+
+1. **Required input absent**: AC absent or Design Doc absent → terminate and name the missing input
+2. **Decision input required**: An unknown Business Value, User Frequency, or Legal Requirement can change ranking, threshold, or budget selection → Return `value_input_required` when `test_value_context` is absent; after that input round, preserve remaining unknowns and continue with Unknown-Value Ordering
 
 ## Technical Specifications
 

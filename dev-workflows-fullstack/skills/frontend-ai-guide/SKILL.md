@@ -123,7 +123,7 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 - Similar functionality found → Verify that its props, lifecycle, design-system role, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
-- Record all decisions and rationale in "Existing Codebase Analysis" section of Design Doc
+- Record each reuse, extend, separate, or repair decision with its evidence in the artifact this agent owns
 
 ## Quality Check Workflow
 
@@ -165,11 +165,7 @@ Read `package.json` scripts, map the project's actual commands to the phases bel
 **Completion Criteria**: Complete all 3 stages. Concise search/inspection notes are sufficient for an isolated component change with no shared contract, routing, state-ownership, or build/config impact; use the structured report for cross-component or high-risk changes.
 
 #### 1. Discovery
-```bash
-Grep -n "ComponentName\|hookName" -o content
-Grep -n "importedFunction" -o content
-Grep -n "propsType\|StateType" -o content
-```
+Search the repository for every reference to the changed component or hook, its imported functions, and its Props/State types.
 
 #### 2. Understanding
 Read the discovered files needed to establish:

@@ -9,7 +9,6 @@ skills:
   - ai-development-guide
   - implementation-approach
   - llm-friendly-context
-  - external-resource-context
   - requirement-convergence
 ---
 
@@ -69,7 +68,7 @@ Use `Proposed` status for created ADRs. The orchestrator records user approval f
 
 Create the complete end-to-end technical design for the confirmed scope. Start with the Direct MVP through existing responsibilities, then add only what resolves a current failed requirement, verified constraint, observed problem, accepted ADR, or material in-scope risk.
 
-Follow the documentation-criteria Design Doc template. Preserve these downstream guarantees whenever applicable:
+Follow `references/design-template.md` in the documentation-criteria skill. Preserve these downstream guarantees whenever applicable:
 
 - requirement convergence, scope, non-scope, and user constraints remain explicit;
 - external resources record only feature-used identifiers, and applicable explicit/implicit standards and repository checks retain their evidence;

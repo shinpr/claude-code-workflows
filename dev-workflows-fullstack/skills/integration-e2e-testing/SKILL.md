@@ -76,7 +76,7 @@ The two E2E lanes have different ownership costs and use independent standard th
 | fixture-e2e | ROI ≥ 20 (beyond reserved slot) | Cost is comparable to integration tests once the harness exists; the floor avoids filling MAX 3 with low-signal tests when fewer would suffice |
 | service-integration-e2e | ROI > 50 (beyond reserved slot) | Live-service setup, state cleanup, and failure diagnosis add material ownership cost; reserve for journeys whose value cannot be proven any other way |
 
-Reserved slot rules (see Multi-Step User Journey Definition below) apply per lane and override the threshold (the reserved candidate is emitted regardless of its ROI score). Below-floor candidates beyond the reserved slot are not emitted unless an accepted requirement or distinct uncovered failure mode justifies an exception. Leave budget intentionally unfilled rather than padding with low-value tests; record any threshold or budget exception in the skeleton and generation report.
+Reserved slot rules (see Multi-Step User Journey Definition below) apply per lane and override the threshold (the reserved candidate is emitted regardless of its ROI score). Below-floor candidates beyond the reserved slot are not emitted unless an accepted requirement or distinct uncovered failure mode justifies an exception. Leave budget intentionally unfilled rather than padding with low-value tests; record any threshold or budget exception in the skeleton that carries the exception.
 
 ### ROI Calculation Examples
 

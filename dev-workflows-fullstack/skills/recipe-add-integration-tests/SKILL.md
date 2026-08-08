@@ -41,18 +41,7 @@ Document paths: $ARGUMENTS
 
 ### Step 1: Discover and Validate Documents
 
-```bash
-# Verify at least one document path was provided
-test -n "$ARGUMENTS" || { echo "ERROR: No document paths provided"; exit 1; }
-
-# Verify provided paths exist
-ls $ARGUMENTS
-
-# Discover additional documents
-ls docs/design/*.md 2>/dev/null | grep -v template
-ls docs/ui-spec/*.md 2>/dev/null
-ls docs/prd/*.md 2>/dev/null
-```
+Confirm `$ARGUMENTS` names at least one existing document path; report and end when it is empty or every path is unresolvable. Then discover the remaining Design Docs, UI Specs, and PRDs under `docs/design/`, `docs/ui-spec/`, and `docs/prd/`.
 
 Classify discovered documents by filename:
 - Filename contains `backend` → **Design Doc (backend)**

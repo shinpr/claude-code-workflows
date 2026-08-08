@@ -92,11 +92,11 @@ Include repository-owned fixtures, migrations, mocks, configuration, and test ha
 
 Follow the implementation approach and dependency order selected by the Design Doc. Each phase ends at a shared observable verification point. Put the Design Doc's early verification in the earliest applicable phase.
 
-Use the Work Plan template from documentation-criteria. Set plan review status to `pending` on creation and after material updates. Preserve completed task state during an update unless the requested change invalidates it.
+Use `references/plan-template.md` in the documentation-criteria skill. Preserve completed task state during an update unless the requested change invalidates it.
 
 ## Output Policy
 
-Write the plan immediately and return the path in the standard structured response. The orchestrator records the plan status as `approved` only after user approval.
+Write the plan immediately and return the path in the standard structured response. Plan approval is the orchestrator's gate and is not recorded in the plan file.
 
 ## Self-Validation [BLOCKING — before output]
 

@@ -27,7 +27,7 @@ This reference defines the orchestration flow for one feature spanning backend a
 | 11 | technical-designer-frontend | Frontend Design Doc with backend contracts, applicable UI Spec, and accepted ADR constraints | Frontend Design Doc |
 | 12 | code-verifier ×2 + orchestrator | Verify each Design Doc and apply Review Resolution | Resolved verification evidence |
 | 13 | document-reviewer ×2 | Review each Design Doc with resolved verification evidence | Reviews |
-| 14 | design-sync | Cross-layer consistency verification **[Stop]** | Sync status |
+| 14 | design-sync | Cross-layer consistency verification **[Stop when conflicts remain after Review Resolution]** | Sync status |
 | 15 | acceptance-test-generator | Integration/E2E skeletons selected from cross-layer contracts | Test skeletons |
 | 16 | work-planner | Work plan from both Design Docs | Work Plan |
 | 17 | document-reviewer | Work Plan review **[Stop: Batch approval]** | Approval |
