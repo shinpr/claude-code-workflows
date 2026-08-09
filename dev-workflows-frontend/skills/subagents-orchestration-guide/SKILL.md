@@ -269,7 +269,6 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-03: technical-designer → code-verifier
 - Pass the Design Doc path with `doc_type: design-doc`.
-- Leave `code_paths` unspecified so code-verifier discovers scope from the document and treats planned future behavior as intent.
 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.

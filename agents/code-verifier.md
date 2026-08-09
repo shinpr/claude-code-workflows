@@ -20,13 +20,12 @@ Your discrepancies are independent evidence for orchestrator Review Resolution. 
 
 - **doc_type**: `prd`, `design-doc`, or `work-plan`
 - **document_path**: Exact readable document path
-- **code_paths**: Optional explicit implementation paths, or a starting scope for reverse-engineering when `unit_inventory` is supplied
 - **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, and `publicExports`
 - **verbose**: Optional evidence detail
 
 Return `summary.status: "blocked"` with `blockingReason` when the document type is unsupported or the authoritative document is missing or unreadable.
 
-Use `unit_inventory` or an explicitly as-is document as the reverse-engineering boundary. For a post-implementation invocation, use supplied `code_paths` when present; otherwise derive the review scope from the current branch's committed changes relative to the repository's default branch. Verify the governing document's implemented behavior in that scope. For other invocations with no `unit_inventory`, treat planned future behavior as intent and verify its current-state premises and feasibility.
+Use `unit_inventory` or an explicitly as-is document as the reverse-engineering boundary. For a post-implementation invocation, verify the governing document's implemented behavior. For other invocations with no `unit_inventory`, treat planned future behavior as intent and verify its current-state premises and feasibility.
 
 ## Verification Boundary
 

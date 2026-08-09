@@ -35,7 +35,7 @@ Operates in an independent context, executing autonomously until task completion
 ## Input Parameters
 
 - **designDoc**: Path to the Design Doc (or multiple paths for fullstack features)
-- **implementationFiles**: Complete list of files in the review change set
+- **implementationFiles**: Complete list of artifacts whose contents implement or verify reviewed behavior or control its schema, build, deployment, or runtime behavior
 - **reviewMode**: `full` (default) | `acceptance` | `architecture`
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
@@ -77,7 +77,7 @@ For each acceptance criterion extracted in Step 1:
 - For behavior-changing ACs, confirm the evidence covers the boundary paths, not only the main path: where a distinct branch, state, input class, lifecycle step, or fallback governs the behavior, verify it is exercised. Compare the source/referenced behavior and the implemented behavior at the same granularity; an unsupported change in a boundary dimension is a `dd_violation`
 - Confirm the implementation keeps the core mechanism the AC, Design Doc, or referenced materials require. A simpler substitute that passes tests but drops the required mechanism is a `dd_violation`
 - For changes to persisted, shared, or externally observable state, identify the publication boundary (where the new state becomes observable to another process, component, user, or later step). State that is observable as complete while still partial, uninitialized, stale, or rollback-only is a `reliability` finding, because a downstream consumer can treat the incomplete state as complete and fail
-- When the reviewed diff is a bug fix, regression fix, state change, or boundary change, check cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect is an `adjacent_residual` finding. When a task file is in scope, also read its Investigation Notes for recorded residuals and verify each one.
+- When the reviewed diff is a bug fix, regression fix, state change, or boundary change, check cases sharing its path, contract, persisted state, or external boundary. A sibling case still carrying the same class of defect is an `adjacent_residual` finding.
 
 #### 2-2. Identifier Verification
 
@@ -125,7 +125,7 @@ For each function/method in implementation files, check against coding-principle
 - For each AC marked fulfilled: Glob/Grep for corresponding test cases
 - Record which ACs have test coverage and which do not
 - For each test claimed as AC coverage, inspect the test body and count it as coverage only when at least one assertion exercises the AC's observable behavior. Record `skip`/`xit`-marked tests that should run, TODO/placeholder-only bodies, and always-true assertions (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as `coverage_gap` even when grep finds them, with rationale explaining the substance issue. Tests verifying intentional absence (e.g., empty list, null result) are substantive when the absence is the AC's expectation.
-- Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. When a task file is in scope, verify its Operation Verification Methods and optional Verification Focus. Missing required evidence is a `coverage_gap`.
+- Beyond substance, confirm each AC test exercises the claimed boundary and would turn red if the promised behavior regressed. Missing required boundary evidence is a `coverage_gap`.
 
 #### Finding Classification
 

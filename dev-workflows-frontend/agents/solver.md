@@ -46,7 +46,6 @@ This agent outputs **solution derivation and recommendation presentation**. Proc
 - `independent`: derive separate solution for each failure point
 - `dependent`: one failure point causes another — solving the upstream may resolve downstream, but verify both
 - `same_chain`: failure points are on the same causal chain — prioritize the root of the chain
-- If no relationship information is provided, default assumption: failure points are independent
 
 **For text format**:
 - Extract failure point descriptions
