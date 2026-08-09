@@ -31,10 +31,10 @@ Work plan: $ARGUMENTS
 ### Work Plan Resolution
 
 Before any task processing, locate the work plan. Resolution rule:
-1. List task files in `docs/plans/tasks/` matching the single-layer pattern `{plan-name}-task-*.md`. Layer-aware fullstack tasks (`{plan-name}-backend-task-*.md` / `{plan-name}-frontend-task-*.md`) are excluded here so a stale fullstack run does not redirect this recipe to the wrong work plan
-2. For each matched file, extract the `{plan-name}` prefix as the segment that appears before `-task-`
-3. When at least one task file matches, the work plan is `docs/plans/{plan-name}.md` for the prefix that has the most recent task-file mtime; ties broken by the lexicographically last `{plan-name}`
-4. When no task file matches the restricted pattern, the work plan is the most recently modified `.md` in `docs/plans/`
+1. Use the work plan explicitly supplied in `$ARGUMENTS` when present.
+2. Otherwise group single-layer task files by the existing `{plan-name}-task-*.md` naming contract and map each group to `docs/plans/{plan-name}.md`. Exclude layer-aware fullstack task sets.
+3. When task groups produce no candidate, use the only Work Plan under `docs/plans/` when exactly one exists.
+4. Select the sole candidate. When multiple candidates remain, present them for selection. When none exists, continue through the missing-prerequisite branch below.
 
 ### Consumed Task Set
 
@@ -51,7 +51,8 @@ Analyze the Consumed Task Set and determine the action required:
 | State | Criteria | Next Action |
 |-------|----------|-------------|
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
-| No tasks + plan exists | Consumed Task Set is empty but the resolved work plan exists | Confirm with user → run task-decomposer |
+| No tasks + approved plan exists | Consumed Task Set is empty but the resolved work plan has batch approval | Run task-decomposer; the approval already authorizes mechanical task materialization |
+| No tasks + unapproved plan exists | Consumed Task Set is empty and the resolved work plan is not approved | Review it when needed, then present the plan approval gate before task materialization |
 | Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-frontend:document-reviewer`, doc_type: WorkPlan). Run Review Resolution through its correction re-review, escalation, and convergence transitions, using work-planner for rerouted corrections; then present the resolved plan for batch approval before task materialization |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
@@ -59,22 +60,18 @@ Analyze the Consumed Task Set and determine the action required:
 
 When the Consumed Task Set is empty:
 
-### 1. User Confirmation
-```
-No task files in the Consumed Task Set.
-Work plan: docs/plans/[plan-name].md
+### 1. Authorization Check
 
-Generate tasks from the work plan? (y/n):
-```
+Use the normal Work Plan review and approval gate when batch approval is absent. Existing batch approval authorizes task materialization directly.
 
-### 2. Task Materialization (if approved)
+### 2. Task Materialization
 Invoke task-decomposer using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:task-decomposer"
 - `description`: "Materialize work plan tasks"
 - `prompt`: "Read work plan at docs/plans/[plan-name].md and output individual single-commit task files in docs/plans/tasks/."
 
 ### 3. Verify Generation
-Recompute the Consumed Task Set using the same restricted pattern from the Consumed Task Set section above. Confirm it is now non-empty. If it is still empty, escalate to the user — task-decomposer either failed silently or produced files that don't match the expected pattern.
+Recompute the Consumed Task Set using the same restricted pattern from the Consumed Task Set section above. When it remains empty, apply Specialist Result Acceptance: validate the invocation and returned artifacts, correct recoverable input or naming errors, and rerun. Stop for the user only when resolving the plan or intended task boundary requires a user-owned decision.
 
 **Flow**: Task generation → Consumed Task Set recompute → Autonomous execution (in this order)
 
@@ -118,8 +115,8 @@ Before invoking post-implementation verifiers, apply subagents-orchestration-gui
 Resolve the Work Plan's readable Design Doc; missing input blocks verification.
 
 Emit these Agent calls in one assistant message, then await both:
-- code-verifier (subagent_type: "dev-workflows-frontend:code-verifier") → resolved `doc_type`, `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
-- security-reviewer (subagent_type: "dev-workflows-frontend:security-reviewer") → the same typed `governingDocuments` and `implementationFiles`
+- code-verifier (subagent_type: "dev-workflows-frontend:code-verifier") → verify the completed implementation against the resolved `doc_type` and `document_path`
+- security-reviewer (subagent_type: "dev-workflows-frontend:security-reviewer") → review the completed implementation against the same typed `governingDocuments`
 
 Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the frontend executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 

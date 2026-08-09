@@ -214,10 +214,8 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "requiresTestReview": false,
   "newTestsPassed": true,
   "reuseDecisions": [{"candidate": "[path:component-or-hook]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, props/contract, lifecycle/state ownership, design-system role, and repository-representativeness evidence]"}],
-  "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
-  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
-  "nextActions": "Overall quality verification by quality assurance process"
+  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}]
 }
 ```
 

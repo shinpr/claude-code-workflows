@@ -211,10 +211,8 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "requiresTestReview": true,
   "newTestsPassed": true,
   "reuseDecisions": [{"candidate": "[path:symbol]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, contract, lifecycle, and repository-representativeness evidence]"}],
-  "progressUpdated": {"taskFile": "5/8 items completed", "workPlan": "Relevant sections updated", "designDoc": "Progress section updated or N/A"},
   "runnableCheck": {"level": "L1: Unit test / L2: Integration test / L3: E2E test", "executed": true, "command": "Executed test command", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
-  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}],
-  "nextActions": "Overall quality verification by quality assurance process"
+  "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}]
 }
 ```
 

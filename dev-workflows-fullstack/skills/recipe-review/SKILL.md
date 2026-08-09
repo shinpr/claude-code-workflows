@@ -31,18 +31,20 @@ Orchestrator invokes sub-agents and passes structured JSON between them. The des
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-Design Doc (uses most recent if omitted): $ARGUMENTS
+Design Doc: $ARGUMENTS
 
 ## Execution Flow
 
 ### Step 1: Prerequisite Check
-Identify the review inputs: the most recently updated Design Doc under `docs/design/`, and the files changed on the current branch relative to its base.
+Freeze `reviewBase` before the first review call as the current branch's merge base with the repository's default branch. Derive `reviewChangeSet` as every path changed from `reviewBase` through the current repository state, including committed changes, working-tree changes, and untracked files.
+
+Use the Design Doc explicitly supplied in `$ARGUMENTS`. When omitted, first use a Work Plan whose declared target files or responsibilities intersect `reviewChangeSet` and take its recorded Design Doc path. When that does not produce one candidate, use the sole Design Doc under `docs/design/`. Present candidates only when multiple governing Design Docs remain; report a missing prerequisite when none exists.
 
 ### Step 2: Execute code-reviewer
 Invoke code-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:code-reviewer"
 - `description`: "Code compliance review"
-- `prompt`: "Design Doc: [path]. Implementation files: [git diff file list]. Review mode: full. Validate Design Doc compliance and return structured JSON report."
+- `prompt`: "Design Doc: [path]. Implementation files: [complete review change-set file list]. Review mode: full. Validate Design Doc compliance and return structured JSON report."
 
 **Store output as**: `$STEP_2_OUTPUT`
 
@@ -50,7 +52,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:security-reviewer"
 - `description`: "Security review"
-- `prompt`: "governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [git diff file list]. Review security compliance."
+- `prompt`: "governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [complete review change-set file list]. Review security compliance."
 
 **Store output as**: `$STEP_3_OUTPUT`
 

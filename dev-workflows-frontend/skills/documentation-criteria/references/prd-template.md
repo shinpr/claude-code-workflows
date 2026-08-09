@@ -120,6 +120,8 @@ C4Context
 - [Prerequisite requiring validation 2]
 
 ### Risks and Mitigation
+Include only evidenced product or delivery risks that can change scope, success criteria, sequencing, or acceptance.
+
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
 | [Risk 1] | High/Medium/Low | High/Medium/Low | [Countermeasure] |

@@ -63,15 +63,27 @@ Confirm from rule-advisor output:
 
 Execute each selected skill by its `skill` name and apply the named sections in the context of the complete skill before constructing the investigator prompt.
 
+### 0.4 Diagnosis Scope Envelope
+
+Before investigation, define a semantic scope envelope from the confirmed problem and repository evidence by recording:
+
+- phenomenon and occurrence conditions to explain
+- symptom-reachable execution paths and adjacent cases that share the same path, contract, persisted state, or external boundary
+- applicable evidence axes: code, history, dependencies, configuration, governing documents, and external specifications
+- explicit exclusions from the user or governing artifacts
+- newly discovered areas are inside the envelope only when they have one of the relationships above and evidence shows they can change the supported cause set, coverage judgment, or counter-evidence
+
+The envelope bounds relevance. Keep every relationship above active throughout investigation, including after a plausible cause appears.
+
 ## Diagnosis Flow Overview
 
 ```
-Problem → investigator → verifier → solver ─┐
-                 ↑                          │
-                 └── coverage insufficient ─┘
-                      (max 2 iterations)
+Problem → scope envelope → investigator → verifier
+                         ↑                 │
+                         └── named gaps ───┘
 
-coverage sufficient → Report
+coverage closed → design decision gate when applicable → solver → Report
+material evidence unavailable → limitation/block report
 ```
 
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
@@ -91,6 +103,7 @@ prompt: |
 
   Phenomenon: [Problem reported by user verbatim]
   Problem essence: [exact `metaCognitiveGuidance.taskEssence` from Step 0.3]
+  diagnosisScopeEnvelope: [Step 0.4 semantic scope envelope]
   Selected rules: [complete `selectedRules` from Step 0.3]
   Warning patterns: [complete `warningPatterns` from Step 0.3]
 
@@ -100,7 +113,7 @@ prompt: |
   Stated relationship: [user-confirmed relationship statement verbatim]
 ```
 
-**Expected output**: pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
+**Expected output**: scopeAccounting, pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
 
 ### Step 2: Investigation Quality Check
 
@@ -114,6 +127,7 @@ Review investigation output:
 - [ ] `investigationSources` covers at least 3 distinct source types (code, history, dependency, config, document, external)
 - [ ] Investigation accounts for each supplied `warningPatterns` item
 - [ ] All nodes on mapped paths have been checked (no path was abandoned after finding the first fault)
+- [ ] `scopeAccounting` accounts for every scope-envelope item as investigated, excluded with governing evidence, or unavailable with its potential effect
 
 **If quality insufficient**: Re-run investigator specifying missing items explicitly:
 ```
@@ -121,19 +135,9 @@ prompt: |
   Re-investigate with focus on the following gaps:
   - Missing: [unsatisfied Step 2 Quality Check items, copied as written]
 
-  Use these previous investigation results as context and investigate only the gaps listed above:
+  Use these previous investigation results as context and investigate only the gaps listed above. Return one updated complete investigation JSON, retaining prior evidence that remains valid:
   [Previous investigation JSON]
 ```
-
-**design_gap Escalation**:
-
-When investigator output contains `causeCategory: design_gap` or `recurrenceRisk: high`:
-1. **Insert user confirmation before verifier execution**
-2. Use AskUserQuestion:
-   "A design-level issue was detected. How should we proceed?"
-   - A: Attempt fix within current design
-   - B: Include design reconsideration
-3. If user selects B, pass `includeRedesign: true` to solver
 
 Proceed to verifier once quality is satisfied.
 
@@ -143,19 +147,40 @@ Proceed to verifier once quality is satisfied.
 ```
 subagent_type: verifier
 description: "Verify investigation results"
-prompt: Verify the following investigation results.
+prompt: Verify the following investigation results against the semantic diagnosis scope envelope.
 
+diagnosisScopeEnvelope: [Step 0.4 semantic scope envelope]
 Investigation results: [Investigation JSON output]
 ```
 
-**Expected output**: Coverage check (missing paths, unchecked nodes), Devil's Advocate evaluation per failure point, failure point evaluation with checkStatus, coverage assessment
+**Expected output**: Scope-envelope coverage, coverage check (missing paths, unchecked nodes), Devil's Advocate evaluation per failure point, failure point evaluation with checkStatus, coverage assessment and disposition
 
 **Coverage Criteria**:
-- **sufficient**: Main paths traced, all critical nodes checked, each failure point individually evaluated
-- **partial**: Main paths traced, some nodes unchecked or some failure points at blocked/not_reached
-- **insufficient**: Significant paths untraced, or critical nodes not investigated
+- **sufficient / closed**: Every relevant scope-envelope item and symptom-reachable critical node is accounted for; each failure point is independently evaluated; remaining limitations cannot materially change the supported cause set
+- **partial / gaps_remaining**: Named accessible gaps could materially change the supported cause set
+- **insufficient / gaps_remaining**: Significant relevant paths or critical nodes remain uninvestigated
+- **partial or insufficient / evidence_unavailable**: Unavailable material evidence could change the supported cause set and no available action can close that gap
 
-### Step 4: Solution Derivation (solver)
+### Step 4: Coverage Convergence
+
+Branch on verifier output before invoking solver:
+
+- `coverageDisposition: closed`: freeze the complete verified cause set and continue to the applicable design decision gate.
+- `coverageDisposition: gaps_remaining`: return to Step 1 with only verifier's named gaps, their relevance to the cause set, and the prior investigation JSON. Keep `scopeAccounting` monotonic by preserving every accounted item. Add a gap only when new evidence identifies a distinct previously unaccounted gap within the semantic scope envelope that can materially change the supported cause set. Closing a gap or establishing that its evidence is unavailable advances convergence; renaming, splitting, or further describing the same gap preserves its existing state. When no available action can produce one of those state changes, return the attempted recovery to verifier for `evidence_unavailable`. Repeat verification after the investigation result passes Step 2.
+- `coverageDisposition: evidence_unavailable`: finish with the unavailable-evidence report, including the evidence, attempted recovery, and why it can change the cause set.
+
+Continue investigation while an available action can advance a material gap. Completion is determined by verifier-established semantic closure or by confirmation that no available action can advance the gap.
+
+### Step 5: Design Decision Gate
+
+After coverage is closed, inspect the verified cause set. When resolving a confirmed failure point requires reconsidering ownership, a contract, or an approved design decision, including `causeCategory: design_gap`, use AskUserQuestion:
+"A verified design-level issue was detected. How should we proceed?"
+- A: Attempt fix within current design
+- B: Include design reconsideration
+
+Pass `includeRedesign: true` to solver only when the user selects B. This gate remains before solution selection; investigation and verification proceed independently of the choice.
+
+### Step 6: Solution Derivation (solver)
 
 **Agent tool invocation**:
 ```
@@ -167,25 +192,17 @@ Confirmed failure points: [verifier's conclusion.confirmedFailurePoints]
 Refuted failure points: [verifier's conclusion.refutedFailurePoints]
 Failure point relationships: [verifier's conclusion.failurePointRelationships]
 Impact analysis: [investigator's impactAnalysis]
-Coverage assessment: [sufficient/partial/insufficient]
+Coverage disposition: closed
+[When set by Step 5] Include redesign: true
 ```
 
-**Expected output**: Multiple solutions (at least 3), tradeoff analysis, recommendation and implementation steps, residual risks
+**Expected output**: Materially distinct feasible solutions derived from the complete verified cause set, tradeoff analysis, recommendation and implementation steps, residual risks
 
-**Completion condition**: coverageAssessment=sufficient
+**Prerequisite**: `coverageDisposition: closed`
 
-**When not reached**:
-1. Return to Step 1 with unchecked areas identified by verifier as investigation targets
-2. Maximum 2 additional investigation iterations
-3. After 2 iterations without reaching sufficient, present user with options:
-   - Continue additional investigation
-   - Execute solution at current coverage level
+### Step 7: Final Report Creation
 
-### Step 5: Final Report Creation
-
-**Prerequisite**: coverageAssessment=sufficient achieved
-
-After diagnosis completion, report to user in the following format:
+For `coverageDisposition: closed`, require `coverageAssessment: sufficient` and use the verified-solution report below.
 
 ```
 ## Diagnosis Result Summary
@@ -196,8 +213,9 @@ After diagnosis completion, report to user in the following format:
 
 ### Verification Process
 - Path coverage: [Paths traced and nodes checked]
-- Additional investigation iterations: [0/1/2]
-- Coverage assessment: [sufficient/partial/insufficient]
+- Additional investigation iterations: [count and named gaps closed]
+- Coverage assessment: sufficient
+- Coverage disposition: closed
 
 ### Recommended Solution
 [Solution derivation recommendation]
@@ -220,11 +238,30 @@ Rationale: [Selection rationale]
 - [Verification item 2]
 ```
 
+For `coverageDisposition: evidence_unavailable`, return this limitation-only form:
+
+```
+## Diagnosis Limited by Unavailable Evidence
+
+### Verified Findings
+[Failure points and counter-evidence verified without the missing evidence]
+
+### Material Evidence Gap
+- Missing evidence: [exact evidence]
+- Recovery attempted: [actions and results]
+- Why unavailable: [reason]
+- Possible effect on cause set: [what could be confirmed, weakened, added, or refuted]
+
+### Coverage
+- Coverage assessment: [partial/insufficient]
+- Coverage disposition: evidence_unavailable
+```
+
 ## Completion Criteria
 
 - [ ] Executed investigator and obtained pathMap, failurePoints, and impactAnalysis
 - [ ] Performed investigation quality check and re-ran if insufficient
 - [ ] Executed verifier and obtained coverage assessment
-- [ ] Executed solver
-- [ ] Achieved coverageAssessment=sufficient (or obtained user approval after 2 additional iterations)
+- [ ] Closed every material scope-envelope gap or reported material evidence as unavailable
+- [ ] Executed solver exactly for `coverageDisposition: closed`; completed the unavailable-evidence report for `coverageDisposition: evidence_unavailable`
 - [ ] Presented final report to user

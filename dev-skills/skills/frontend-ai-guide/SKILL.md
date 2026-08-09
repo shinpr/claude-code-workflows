@@ -17,15 +17,15 @@ Explore broadly, then converge on the lowest-lifecycle-cost solution that delive
 Pause the affected decision and review the design when detecting the following patterns:
 
 ### Code Quality Anti-patterns
-1. **Writing similar code 3 or more times** - Violates Rule of Three
+1. **Duplicating one UI responsibility across independently maintained components** - Review whether the duplicated behavior or contract should have one owner
 2. **Multiple responsibilities mixed in a single component** - Violates Single Responsibility Principle (SRP)
 3. **Defining same content in multiple components** - Violates DRY principle
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
 7. **Excessive use of type assertions (as)** - Abandoning type safety
-8. **Prop drilling through 3+ levels** - Mandatory ownership review. Use composition, Context, or the project's state layer when intermediate components only forward the value; retain explicit props only when they keep ownership clearer and avoid broader shared state
-9. **Components at 300+ lines** - Mandatory decomposition review. Split by default when rendering, state/data ownership, or reusable/testable behavior forms an independent responsibility; retain only when the component is cohesive and splitting would add avoidable prop/state synchronization
+8. **Pass-through prop chains that obscure state ownership** - Use composition, Context, or the project's state layer when intermediate components only forward values and a broader owner is clearer; retain explicit props when they preserve local ownership and broader state ownership would add coordination while responsibility remains local
+9. **Components mixing independently changing responsibilities** - Split when rendering, state/data ownership, or reusable/testable behavior forms an independent responsibility; retain cohesive components when splitting would add avoidable prop/state synchronization
 
 ### Design Anti-patterns
 - **"Make it work for now" thinking** - Accumulation of technical debt
@@ -46,20 +46,14 @@ Design philosophy that prioritizes improving primary code reliability over fallb
   - Event handlers, ordinary async callbacks, SSR, and hook/API operations outside rendering: Handle them at the owning event, hook, API, or server boundary using its error contract
 
 ### Detection of Excessive Fallbacks
-- Require design review when writing the 3rd catch statement in the same feature; retain it only for a distinct failure mode with a documented recovery owner and visible UI outcome
+- Require design review when adding a catch that duplicates or fragments an existing recovery responsibility; retain it for a distinct failure mode with a documented recovery owner and visible UI outcome
 - Require design review when the same failure is caught at multiple component/hook/API layers without one recovery owner, or when nested handlers obscure the visible UI state
 - Identify the accepted recovery contract before implementing a fallback
 - Make fallback activation observable through one existing UI, log, or metric channel at the boundary that owns diagnosis or recovery; add a new channel only when an operational requirement or project policy requires it
 
-## Rule of Three - Criteria for Code Duplication
+## Criteria for Code Duplication
 
-How to handle duplicate code based on Martin Fowler's "Refactoring":
-
-| Duplication Count | Action | Reason |
-|-------------------|--------|--------|
-| 1st time | Inline implementation | Cannot predict future changes |
-| 2nd time | Consider future consolidation | Pattern beginning to emerge |
-| 3rd time | Implement commonalization | Pattern established |
+Keep concrete implementations separate while their similarity is accidental or their UI ownership differs. Consolidate when repository evidence shows one shared interaction, validation rule, visual contract, or coordinated change responsibility.
 
 ### Criteria for Commonalization
 
@@ -75,16 +69,6 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Possibility of evolving in different directions
 - Significant readability decrease from commonalization
 - Simple helpers in test code
-
-### Implementation Example
-```typescript
-// 1st-2nd occurrence: keep separate, no commonalization yet
-function UserEmailInput() { /* ... */ }
-function ContactEmailInput() { /* ... */ }
-
-// Commonalize on 3rd occurrence
-function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /* ... */ }
-```
 
 ## Common Failure Patterns and Avoidance Methods
 
@@ -107,7 +91,7 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 **Symptom**: Frequent unexpected errors when introducing new technology
 **Cause**: Assuming "it should work according to official documentation" without prior investigation
 **Avoidance**:
-- Record certainty evaluation at the beginning of task files
+- Record certainty where it controls implementation or verification decisions
   ```
   Certainty: low (Reason: new experimental feature with limited production examples)
   Exploratory implementation: true
@@ -123,18 +107,20 @@ function EmailInput({ context }: { context: 'user' | 'contact' | 'admin' }) { /*
 - Similar functionality found → Verify that its props, lifecycle, design-system role, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
-- Record each reuse, extend, separate, or repair decision with its evidence in the artifact this agent owns
+- Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
 
 ## Quality Check Workflow
 
-Read `package.json` scripts, map the project's actual commands to the phases below, and run them with the project's package manager (`packageManager` field).
+Discover the repository's configured quality entry points and the categories they cover. Use the repository's declared package tooling and conventions and the categories below as the applicable evidence checklist.
 
-### Phases (run in order)
-1. **Lint/format** — the project's formatter + linter (e.g., Biome, or ESLint + Prettier)
-2. **Type check** — type check without emit
-3. **Build** — production build
-4. **Test** — unit/integration tests
-5. **Coverage** — coverage run when the task added or changed behavior
+### Applicable Check Categories
+
+- **Lint/format** — the project's configured formatter and linter
+- **Type check** — the project's configured type validation
+- **Build** — the configured production or package build
+- **Behavior checks** — the smallest configured tests that exercise the changed behavior, plus integration or E2E suites when the change crosses their boundary, a generated skeleton requires them, or the repository gate includes them
+
+Follow repository-declared command composition or ordering when it exists. Otherwise choose an order that respects command dependencies and provides useful feedback. Completion requires every applicable configured check to pass.
 
 ### Troubleshooting
 - **Port already in use** — stop the stale dev/preview/test process holding the port
@@ -144,7 +130,7 @@ Read `package.json` scripts, map the project's actual commands to the phases bel
 ## Situations Requiring Technical Decisions
 
 ### Timing of Abstraction
-- Extract patterns after writing concrete implementation 3 times
+- Extract a shared abstraction after repository evidence establishes a shared UI responsibility and coordinated change pattern
 - Be conscious of YAGNI, implement only currently needed features
 - Prioritize current simplicity over future extensibility
 
@@ -182,7 +168,7 @@ For cross-component or high-risk changes, produce a structured impact report:
 ### Processing Flow: Props → Render → Events → Callbacks
 ```
 
-Proceed when the user-requested or task-defined scope, consumers, state flow, and required checks are identified.
+Proceed when the accepted scope, consumers, state flow, required adjacent changes, and applicable checks are identified.
 
 ### Unused Code Deletion Rule
 

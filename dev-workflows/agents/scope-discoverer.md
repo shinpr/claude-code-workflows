@@ -102,8 +102,9 @@ When `reference_architecture` is provided:
    - Identify shared dependencies and cross-cutting concerns
 
 6. **Saturation Check**
-   - Stop discovery when 3 consecutive new sources yield no new units
-   - Mark discovery as saturated in output
+   - Account for every applicable Discovery Source inside `target_path`, `focus_area`, and any explicit governing boundary
+   - Expand only when a source can change discovered units, boundaries, relationships, inventories, or `uncertainAreas`
+   - Mark discovery as saturated only when all applicable sources are accounted for and additional evidence inside the semantic boundary cannot change the output
 
 7. **PRD Unit Grouping** (execute only after steps 1-6 are fully complete)
    - Using the finalized `discoveredUnits` and their `valueProfile` metadata, group units into PRD-appropriate units
@@ -154,6 +155,9 @@ Note: These signals are informational only during steps 1-6. Keep all discovered
   "referenceArchitecture": "layered|mvc|clean|hexagonal|none",
   "existingPrd": "path or null",
   "saturationReached": true,
+  "sourceAccounting": [
+    {"source": "Routing/Entry Points", "status": "investigated|not_applicable|unavailable", "evidence": "What was inspected or why the source does not apply", "potentialEffect": "Output that unavailable evidence could change; null when immaterial"}
+  ],
   "discoveredUnits": [
     {
       "id": "UNIT-001",
@@ -239,6 +243,7 @@ Includes additional fields:
 - [ ] Assessed triangulation strength for each unit
 - [ ] Documented relationships between units
 - [ ] Reached saturation or documented why not
+- [ ] Accounted for every applicable Discovery Source and the effect of unavailable evidence
 - [ ] Listed uncertain areas and limitations
 - [ ] Grouped discovered units into PRD units (step 7, after all discovery steps complete)
 
@@ -251,3 +256,4 @@ Run each item below before producing the final JSON. When any item is unsatisfie
 - [ ] Low-confidence discoveries are reported with appropriate confidence markers
 - [ ] Triangulation strength reflects actual source count (weak noted when single-source)
 - [ ] Saturation check was performed before concluding discovery
+- [ ] `saturationReached` is true only when additional evidence inside the semantic boundary cannot change the output

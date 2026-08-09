@@ -264,6 +264,8 @@ Fill the Reset/Clear Behavior column when the feature has a reset or clear-all o
 
 ### Logging and Monitoring
 
+Include this section only when the feature changes an observable operational boundary or an accepted requirement/project policy requires diagnostics, metrics, or alerts.
+
 - **Log events**: [Key events to log: state transitions, external calls, error occurrences, performance thresholds]
 - **Log levels**: [Which events at DEBUG/INFO/WARN/ERROR]
 - **Sensitive data**: [Fields to mask or exclude — coordinate with Security Considerations]
@@ -332,7 +334,7 @@ Verification Strategy defines what correctness means and how to prove it at desi
 
 - **First verification target**: [The smallest unit that proves the approach works — e.g., "first repository migration", "single API endpoint", "one screen flow"]
 - **Success criteria**: [Observable outcome — e.g., "CSV download produces identical output to legacy", "API returns 200 with expected schema"]
-- **Failure response**: [What to do if early verification fails — e.g., "reassess approach before proceeding", "escalate to user"]
+- **Failure response**: [What to do if early verification fails — e.g., "reassess approach before proceeding", "return to the governing decision gate"]
 
 ### Output Comparison (When Replacing or Modifying Existing Behavior)
 
@@ -354,6 +356,8 @@ This section records what **this design** excluded from the current design surfa
 - **Extension points (existing, with current consumers)**: [Interfaces or hooks already in use by named current consumers. Each entry names a current consumer]
 
 ## Risks and Mitigation
+
+Include only evidenced risks that can change the design, rollout, rollback, contract, or verification strategy.
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|

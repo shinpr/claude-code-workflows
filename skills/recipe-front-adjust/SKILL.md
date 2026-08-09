@@ -14,7 +14,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Execution Protocol**:
 1. **Delegate to subagents** (one-shot calls): quality-fixer-frontend.
-2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set confirmation, scale judgment, adjustment edits, verification against the design source, iteration until acceptance.
+2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
 ## Initial Mandatory Tasks
@@ -28,9 +28,7 @@ Adjustment request → conditional external resource evidence
                                   ↓
                      existing-pattern and write-set inspection
                                   ↓
-                     write-set confirmation (parent session, AskUserQuestion)
-                                  ↓
-                     structural boundary judgment on confirmed write set
+                     structural boundary judgment on candidate write set
                                   ↓
                      local existing-pattern adjustment → [Stop]
                                   ↓
@@ -73,8 +71,7 @@ Inspect the named or current UI and the smallest sufficient repository evidence 
 ### Step 3: Scale Judgment
 
 1. Read the candidate write set from Step 2.
-2. Present the candidate list to the user via AskUserQuestion: "Confirmed write set for this adjustment? (a) accept high-confidence entries / (b) accept all entries / (c) edit list manually". On `c`, send a follow-up plain message asking the user to paste the edited file list, then proceed with that list.
-3. Apply Structural Scale to the confirmed outcome and responsibility boundary. Use write-set count as supporting evidence only:
+2. Apply Structural Scale to the confirmed outcome and responsibility boundary. Use write-set count as supporting evidence only:
    - **0 files**: The adjustment request did not map to any existing file. Escalate to the user with the message "No write target identified from the adjustment request. Please clarify which component(s) should change, or run the full frontend design phase if this is a new feature." Stop this recipe.
    - **Direct adjustment**: One coherent UI outcome follows existing component, state, interaction, and verification patterns inside one responsibility boundary. Continue directly to adjustment context even when generated or tightly coupled files increase the count.
    - **Design required**: The change crosses a responsibility or approved UI contract, coordinates independently valuable outcomes, or needs a durable technical choice between credible alternatives. Escalate to the full frontend design phase.
@@ -84,7 +81,7 @@ Inspect the named or current UI and the smallest sufficient repository evidence 
 No work plan. Build a minimal adjustment context for the parent session:
 - Adjustment request (verbatim)
 - Existing UI pattern and preserved visible behavior relevant to the adjustment
-- Affected files list
+- Evidence-backed affected files list from the candidate write set
 - External resources fetched_summary and access methods that the verification loop will use
 
 Present the adjustment context to the user for review.
@@ -134,9 +131,8 @@ On continuation, reconstruct retained limitations from the verification trailers
 
 - [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
 - [ ] UI Spec applicability and the candidate write set were determined from the requested UI and sufficient repository evidence
-- [ ] Write set confirmed by the user before scale judgment
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
-- [ ] Adjustment context presented and confirmed
+- [ ] Adjustment context, including the affected files, was presented and confirmed once
 - [ ] All adjustment units edited; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
 - [ ] Each adjustment unit completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
 - [ ] Each adjustment unit committed

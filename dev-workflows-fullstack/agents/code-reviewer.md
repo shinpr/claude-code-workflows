@@ -35,7 +35,7 @@ Operates in an independent context, executing autonomously until task completion
 ## Input Parameters
 
 - **designDoc**: Path to the Design Doc (or multiple paths for fullstack features)
-- **implementationFiles**: List of files to review (or git diff range)
+- **implementationFiles**: Complete list of files in the review change set
 - **reviewMode**: `full` (default) | `acceptance` | `architecture`
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 

@@ -43,10 +43,9 @@ skills:
 
   ai-development-guide:
     skill: "ai-development-guide"
-    tags: [anti-patterns, technical-judgment, debugging, quality-commands, rule-of-three, implementation, refactoring, code-reading, fail-fast, error-handling, impact-analysis, scope-control]
+    tags: [anti-patterns, technical-judgment, debugging, quality-commands, implementation, refactoring, code-reading, fail-fast, error-handling, impact-analysis, scope-control]
     typical-use: "Technical decision criteria, anti-pattern gates, repository quality-check discovery, scope control, and impact analysis"
     key-references:
-      - "Rule of Three - Martin Fowler"
       - "5 Whys - Toyota Production System"
       - "DRY Principle - The Pragmatic Programmer"
       - "YAGNI Principle - Extreme Programming"
@@ -54,7 +53,7 @@ skills:
       - "Value-First Engineering"
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fail-Fast Fallback Design Principles"
-      - "Rule of Three - Criteria for Code Duplication"
+      - "Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
       - "Quality Assurance Mechanism Awareness"
       - "Quality Check Workflow"
@@ -165,13 +164,12 @@ skills:
     tags: [frontend, react, anti-patterns, technical-judgment, component-design, testing, quality-commands]
     typical-use: "Frontend technical decision criteria, React anti-pattern detection, component quality check workflows"
     key-references:
-      - "Rule of Three - Martin Fowler"
       - "React Best Practices"
     sections:
       - "Value-First Engineering"
       - "Technical Anti-patterns (Red Flag Patterns)"
       - "Fallback Design Principles"
-      - "Rule of Three - Criteria for Code Duplication"
+      - "Criteria for Code Duplication"
       - "Common Failure Patterns and Avoidance Methods"
       - "Quality Check Workflow"
       - "Situations Requiring Technical Decisions"

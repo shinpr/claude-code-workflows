@@ -7,7 +7,7 @@ description: Records where resources outside the repository live (design source,
 
 ## Purpose
 
-AI agents understand the codebase but not the external resources surrounding it. This skill captures, in a deterministic location, the **access methods** to resources outside the repository so downstream work (design, planning, implementation, review) can reach them without re-asking the user.
+Repository evidence does not contain every external resource surrounding a system. This skill captures, in a deterministic location, the **access methods** to resources outside the repository so downstream work (design, planning, implementation, review) can reach them without repeatedly rediscovering access details.
 
 Resources covered: design origin (where the canonical visual specification lives), design system (component library and tokens), guidelines (usage docs, accessibility rules), visual verification environment (how to confirm rendering), database schema source, migration history, secret store location, API schema source (OpenAPI / proto / GraphQL SDL), mock environment, IaC source, environment configuration.
 
@@ -32,11 +32,11 @@ Before investigating the repository for an external fact, check whether it is al
 2. Read the target UI Spec or Design Doc's `## External Resources Used` section for feature-specific identifiers.
 3. Use the access method declared in the project tier (e.g., the named MCP, the URL, the file path) to fetch the actual resource content.
 
-When the file is absent or the resource is unreachable, continue from governing and repository evidence. Each consuming agent reports that limitation through its own output contract.
+When the file is absent or the resource is unreachable, continue from governing and repository evidence. Each consumer records the limitation in its applicable output.
 
 ## Capturing and Updating Records
 
-Capturing a record requires AskUserQuestion, so it belongs to the session that can ask the user. Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
+Capturing a record requires an interactive hearing. The workflow using this skill owns the interaction mechanism and routing. Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
 
 ## Output Format
 

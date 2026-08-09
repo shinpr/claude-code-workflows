@@ -59,11 +59,7 @@ When `task_file` is provided, run its Operation Verification Methods in addition
 **External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
 ### Step 3: Execute Quality Checks
-Follow ai-development-guide skill "Quality Check Workflow" section:
-- Basic checks (lint, format, build)
-- Tests (unit, integration)
-- Final gate (all must pass)
-- **Structural gate (changed files only)**: For functions at 50+ lines, nesting deeper than 3 levels, or files over 500 lines, apply coding-principles' decomposition review. Approval requires either a split or one concise retention reason satisfying its criteria
+Run every applicable check discovered in Step 2. Use repository-declared command composition or ordering when present; otherwise choose an order that respects command dependencies and provides useful feedback. Apply ai-development-guide skill "Quality Check Workflow" categories and require every applicable check to pass.
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., empty result, null return) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance remains unavailable, return `verification_incomplete`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 - Apply testing-principles Capability Probe Postconditions to prerequisite probes.
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
@@ -128,30 +124,17 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 
 ### Internal Structured Response (for Main AI)
 
+`checksPerformed` includes only checks actually executed, keyed by the repository check name. `fixesApplied` is `[]` when no fix was needed; otherwise retain the existing `type`, `category`, `description`, and `filesCount` fields with observed values.
+
 **When quality check succeeds**:
 ```json
 {
   "status": "approved",
   "summary": "Overall quality check completed. All checks passed.",
   "checksPerformed": {
-    "phase1_linting": { "status": "passed", "commands": ["lint", "format"], "autoFixed": true },
-    "phase2_structure": { "status": "passed", "commands": ["unused code check", "dependency check"] },
-    "phase3_build": { "status": "passed", "commands": ["build"] },
-    "phase4_tests": { "status": "passed", "commands": ["test"], "testsRun": 42, "testsPassed": 42 },
-    "phase5_code_recheck": { "status": "passed", "commands": ["code quality re-check"] }
+    "<actual-check-name>": { "status": "passed", "commands": ["<actual-command>"] }
   },
-  "fixesApplied": [
-    { "type": "auto", "category": "format", "description": "Auto-fixed indentation and style", "filesCount": 5 },
-    { "type": "manual", "category": "correctness", "description": "Improved correctness guarantees", "filesCount": 2 }
-  ],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanism names found and executed>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
-  "metrics": { "totalErrors": 0, "totalWarnings": 0, "executionTime": "2m 15s" },
-  "approved": true,
-  "nextActions": "Ready to commit"
+  "fixesApplied": []
 }
 ```
 
@@ -177,11 +160,6 @@ Use this status only after Step 1 confirmed implementation completeness and ever
   "reason": "Cannot determine due to unclear specification",
   "blockingIssues": [{ "type": "specification_conflict", "details": "Test expectation and implementation contradict", "test_expects": "500 error", "implementation_returns": "400 error", "why_cannot_judge": "Correct specification unknown" }],
   "attemptedFixes": ["Tried aligning test to implementation", "Tried aligning implementation to test", "Tried inferring specification from related documentation"],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanisms executed before blocking>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
   "needsUserDecision": "Please confirm the correct error code"
 }
 ```
@@ -191,14 +169,7 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 {
   "status": "verification_incomplete",
   "reason": "Execution prerequisites not met",
-  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training-e2e-tests"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanisms executed before blocking>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
-  "testsSkipped": 3,
-  "testsPassedWithoutPrerequisites": 47
+  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training-e2e-tests"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }]
 }
 ```
 

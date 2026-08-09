@@ -112,7 +112,7 @@ Invoke quality-fixer for the current layer:
 - Frontend → `subagent_type`: "dev-workflows-fullstack:quality-fixer-frontend"
 - `description`: "Final quality assurance"
 - Pass the latest executor's `mutationEvidence`.
-- `prompt`: "Final quality assurance for test files added in this workflow. Run all tests and verify coverage."
+- `prompt`: "Run the repository-configured quality checks applicable to the test files added in this workflow and verify their intended observable behavior."
 
 **Expected output**: `status` (`approved`, `stub_detected`, `verification_incomplete`, or `blocked`)
 

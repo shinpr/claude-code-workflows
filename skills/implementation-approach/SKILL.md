@@ -14,7 +14,7 @@ description: Implementation strategy selection framework. Use when planning impl
 #### Analysis Framework
 ```yaml
 Architecture Analysis: Responsibility separation, data flow, dependencies, technical debt
-Implementation Quality Assessment: Code quality, test coverage, performance, security
+Implementation Quality Assessment: Code quality, behavior-relevant test evidence, performance, security
 Historical Context Understanding: Current form rationale, past decision validity, constraint changes, requirement evolution
 ```
 
@@ -67,11 +67,13 @@ External Research: Official/current sources only when repository evidence cannot
 
 Use these patterns only when their named migration or dependency problem exists. Start with the direct strategy. Compare an alternative when it would materially change risk, rollout, compatibility, or the early verification point. Keep the option set limited to patterns that produce one of those material differences.
 
-### Phase 4: Risk Assessment and Control
+### Phase 4: Material Risk Assessment and Control
 
 **Core Question**: "What risks arise when applying this to existing implementation, and what's the best way to control them?"
 
-#### Risk Analysis Matrix
+Evaluate only risk categories for which current evidence can change the strategy, public contract, rollout, rollback, or verification boundary.
+
+#### Conditional Risk Categories
 ```yaml
 Technical Risks: System impact, data consistency, performance degradation, integration complexity
 Operational Risks: Service availability, deployment downtime, process changes, rollback procedures
@@ -84,11 +86,13 @@ Preventive Measures: Phased migration, parallel operation verification, integrat
 Incident Response: Rollback procedures, log/metrics preparation, communication system, service continuation procedures
 ```
 
-### Phase 5: Constraint Compatibility Verification
+### Phase 5: Decision-Relevant Constraint Compatibility
 
 **Core Question**: "What are this project's constraints?"
 
-#### Constraint Checklist
+Check only constraints evidenced by the governing requirements, repository, external contracts, or current environment that can change the selected strategy or verification boundary.
+
+#### Conditional Constraint Categories
 ```yaml
 Technical Constraints: Library compatibility, resource capacity, mandatory requirements, numerical targets
 Temporal Constraints: Deadlines/priorities, dependencies, milestones, learning periods
@@ -102,12 +106,12 @@ Select the implementation approach that directly fits the verified dependency an
 
 #### Vertical Slice (Feature-driven)
 **Characteristics**: Vertical implementation across all layers by feature unit
-**Application Conditions**: Default when an end-to-end value unit can be delivered and verified independently. Sharing fewer than 2 data models or touching 3+ layers are supporting signals, not substitutes for independent deliverability
+**Application Conditions**: Default when an end-to-end value unit can be delivered and verified independently. Data-model sharing and layer breadth are supporting evidence, not substitutes for independent deliverability
 **Verification Method**: End-user value delivery at each feature completion
 
 #### Horizontal Slice (Foundation-driven)
 **Characteristics**: Phased construction by architecture layer
-**Application Conditions**: Use when a common foundation blocks consumer work or must pass stability/compatibility verification before dependent slices can proceed. Three or more dependent features is a mandatory signal to evaluate this approach
+**Application Conditions**: Use when a common foundation blocks consumer work or must pass stability/compatibility verification before dependent slices can proceed. Materially shared dependency ownership across multiple consumers is a signal to evaluate this approach
 **Verification Method**: Integrated operation verification when all foundation layers complete
 
 #### Hybrid
@@ -117,11 +121,11 @@ Select the implementation approach that directly fits the verified dependency an
 
 ### Phase 7: Decision Rationale Documentation
 
-**Record in the artifact this agent owns**, and in the Design Doc's implementation approach section when this agent owns that document:
+Record in the applicable implementation or design decision record:
 1. Selected strategy name and characteristics
 2. A materially different alternative and reason for rejection, when one was compared
-3. Risk mitigation plan (from Phase 4)
-4. Constraint compliance summary (from Phase 5)
+3. Controls for each material risk activated in Phase 4
+4. Compatibility with each decision-relevant constraint activated in Phase 5
 5. Verification level (L1/L2/L3) and integration point definition
 
 ## Verification Level Definitions
@@ -146,8 +150,8 @@ Define integration points according to selected strategy:
 
 1. Confirm Phase 1 identifies the current responsibility, dependency path, and historical constraints before selecting a strategy
 2. Confirm Phase 2 records all four Design Convergence outputs, evidence for every Failed Item, and each Adopted Addition's Failed Item mapping, lower-surface insufficiency rationale, and subtraction result
-3. Confirm Phase 4 records the material risks and concrete controls before implementation starts
-4. Confirm Phase 5 checks the constraints that can change strategy selection; mark non-applicable categories explicitly rather than inventing content
+3. Confirm Phase 4 records concrete controls for every evidenced material risk; no entry is required for an inapplicable category
+4. Confirm Phase 5 checks every evidenced constraint that can change strategy selection or verification; no entry is required for an inapplicable category
 5. Confirm Phase 7 records the selected strategy, any materially different alternative, and the early verification point
 
 ## Guidelines for Meta-cognitive Execution
