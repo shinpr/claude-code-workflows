@@ -137,7 +137,7 @@ prompt: |
   verbose: false
 ```
 
-Leave `code_paths` absent so the verifier independently locates implementation evidence. `unit_inventory` supplies the completeness baseline while repository evidence supplies the search scope.
+`unit_inventory` supplies the completeness baseline while repository evidence supplies the search scope.
 
 **Store output as**: `$STEP_3_OUTPUT`
 
@@ -325,8 +325,6 @@ prompt: |
   unit_inventory: [the current Design Doc target's Step 6 unitInventory]
   verbose: false
 ```
-
-Leave `code_paths` absent so the verifier independently discovers code scope from the document.
 
 **Store output as**: `$STEP_8_OUTPUT`
 

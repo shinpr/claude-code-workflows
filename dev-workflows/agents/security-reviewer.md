@@ -25,10 +25,8 @@ Operates in an independent context, executing autonomously until task completion
 ## Input Parameters
 
 - **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
-- **implementationFiles**: Optional explicit implementation files for the review
+- **implementationFiles**: Optional complete list of artifacts whose contents implement or verify reviewed behavior or control its schema, build, deployment, or runtime behavior
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
-
-For a post-implementation invocation, use supplied `implementationFiles` when present; otherwise derive the review scope from the current branch's committed changes relative to the repository's default branch.
 
 ## Review Criteria
 

@@ -112,7 +112,7 @@ The Design Doc owns the full end-to-end design and retains all applicable downst
 
 Keep verifier observations unchanged so corrections remain traceable to observed repository evidence instead of becoming orchestrator-authored design instructions.
 
-Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and the Design Doc path. Leave `code_paths` absent so future behavior remains intent and current premises and feasibility are verified.
+Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and the Design Doc path to verify current premises and feasibility while treating planned behavior as intent.
 
 Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to technical-designer in update mode and rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
 
