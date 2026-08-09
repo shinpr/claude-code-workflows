@@ -17,7 +17,7 @@ Explore broadly, then converge on the lowest-lifecycle-cost solution that delive
 Pause the affected decision and review the design when detecting the following patterns:
 
 ### Code Quality Anti-patterns
-1. **Writing similar code 3 or more times** - Violates Rule of Three
+1. **Duplicating one responsibility across independently maintained locations** - Review whether the duplicated logic has one change reason and should have one owner
 2. **Multiple responsibilities mixed in a single file** - Violates Single Responsibility Principle (SRP)
 3. **Defining same content in multiple files** - Violates DRY principle
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
@@ -63,13 +63,13 @@ Make all errors visible and traceable with full context. Prioritize primary code
 ### Error Masking Detection
 
 **Review Triggers** (require design review):
-- Writing the 3rd error handler in the same feature; review whether recovery ownership is fragmented before adding it
+- Adding an error handler that duplicates or fragments an existing recovery responsibility
 - The same failure is caught at multiple layers without a single recovery owner
 - Nested handlers obscure which state is committed, rolled back, or exposed
 - A handler converts a failure to success/default output without an observable degraded-state contract
 - Error handlers that return default values without logging
 
-The third handler may remain when it covers a distinct failure mode with a documented recovery owner, state outcome, and observable signal.
+Another handler may remain when it covers a distinct failure mode with a documented recovery owner, state outcome, and observable signal.
 
 **Before Implementing Any Fallback**:
 1. Identify the accepted requirement, boundary contract, project policy, or Design Doc entry that defines this fallback
@@ -93,15 +93,9 @@ PREFERRED: Explicit failure with context
 
 **Adaptation**: Use language-appropriate error handling (exceptions, Result types, error tuples, etc.)
 
-## Rule of Three - Criteria for Code Duplication
+## Criteria for Code Duplication
 
-How to handle duplicate code based on Martin Fowler's "Refactoring":
-
-| Duplication Count | Action | Reason |
-|-------------------|--------|--------|
-| 1st time | Inline implementation | Cannot predict future changes |
-| 2nd time | Consider future consolidation | Pattern beginning to emerge |
-| 3rd time | Implement commonalization | Pattern established |
+Keep concrete implementations separate while their apparent similarity is accidental or their change reasons differ. Consolidate when repository evidence shows the same business rule, algorithm, validation contract, or coordinated change responsibility is maintained in multiple places.
 
 ### Criteria for Commonalization
 
@@ -138,7 +132,7 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 **Symptom**: Frequent unexpected errors when introducing new technology
 **Cause**: Assuming "it should work according to official documentation" without prior investigation
 **Avoidance**:
-- Record certainty evaluation at the beginning of task files
+- Record certainty where it controls implementation or verification decisions
   ```
   Certainty: low (Reason: no working examples found for this integration)
   Exploratory implementation: true
@@ -154,7 +148,7 @@ How to handle duplicate code based on Martin Fowler's "Refactoring":
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
-- Record each reuse, extend, separate, or repair decision with its evidence in the artifact this agent owns
+- Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
 - **Reference representativeness check**: When adopting a pattern or dependency from nearby code, verify it is representative across the repository before adopting — nearby files alone are an insufficient basis
 
 ## Quality Assurance Mechanism Awareness
@@ -164,55 +158,23 @@ Before executing quality checks, identify what quality mechanisms exist for the 
   - Check CI pipeline definitions for checks that cover the affected paths
   - Check for domain-specific linter or validator configurations (e.g., schema validators, API spec validators, configuration file linters)
   - Check for domain-specific constraints in project configuration (naming rules, length limits, format requirements)
-- When a task file supplies Operation Verification Methods, run them as task-specific checks
+- Run verification methods supplied by the governing work artifact as change-specific checks
 - Include discovered domain-specific checks alongside standard quality phases below
 
 ## Quality Check Workflow
 
-Universal quality assurance phases applicable to all languages:
+Discover the repository's configured quality entry points and the categories they cover. The categories below define applicable evidence, not a universal execution order:
 
-### Phase 1: Static Analysis
-1. **Code Style Checking**: Verify adherence to style guidelines
-2. **Code Formatting**: Ensure consistent formatting
-3. **Unused Code Detection**: Identify dead code and unused imports/variables
-4. **Static Type Checking**: Verify type correctness (for statically typed languages)
-5. **Static Analysis**: Detect potential bugs, security issues, code smells
+- **Static checks**: formatting, linting, unused-code detection, type checking, and configured static analysis
+- **Build checks**: compilation or production build, dependency resolution, and configured resource validation
+- **Behavior checks**: the smallest configured tests that exercise the changed behavior, plus integration or E2E suites when the change crosses their boundary, a generated skeleton requires them, or the repository gate includes them
 
-### Phase 2: Build Verification
-1. **Compilation/Build**: Verify code builds successfully (for compiled languages)
-2. **Dependency Resolution**: Ensure all dependencies are available and compatible
-3. **Resource Validation**: Check configuration files, assets are valid
-
-### Phase 3: Testing
-1. **Implementation Feedback**: During implementation, run the smallest configured tests that exercise the changed behavior
-2. **Completion Tests**: Before completion, run the repository's configured test commands; include integration or E2E suites when the change crosses their boundary, test skeletons require them, or the project quality gate includes them
-3. **Test Coverage**: Use coverage as a gap signal and satisfy any project-configured threshold
-
-### Phase 4: Final Quality Gate
-All checks must pass before proceeding:
-- Zero static analysis errors
-- Build succeeds
-- All tests pass
-- Coverage meets project-configured threshold
-
-### Quality Check Pattern (Language-Agnostic)
-```
-Workflow:
-1. Discover applicable project checks → 2. Run fast affected checks →
-3. Run configured build/static gates → 4. Run boundary-relevant broader tests →
-5. Run the project's final required gate
-
-Auto-fix capabilities (when available):
-- Format auto-fix
-- Lint auto-fix
-- Dependency/import organization
-- Simple code smell corrections
-```
+Follow repository-declared command composition or ordering when it exists. Otherwise choose an order that respects command dependencies and provides useful feedback. Completion requires every applicable configured check to pass.
 
 ## Situations Requiring Technical Decisions
 
 ### Timing of Abstraction
-- Extract patterns after writing concrete implementation 3 times
+- Extract a shared abstraction after repository evidence establishes a shared responsibility and coordinated change pattern
 - Be conscious of YAGNI, implement only currently needed features
 - Prioritize current simplicity over future extensibility
 
@@ -227,11 +189,12 @@ Auto-fix capabilities (when available):
 - Use abstraction mechanisms to reduce duplication
 
 ### Scope Expansion
-- Apply implementation/edit instructions to the user's or task's specified scope. Escalate before expanding it.
-- Treat explicit quantities and targets ("one", "this file", "only X") as boundaries
+- Apply implementation/edit instructions to the accepted outcome and its governing scope.
+- Treat explicit restrictions and quantities ("one", "this file", "only X") in the governing request or approved artifact as hard boundaries
+- Treat referenced or expected paths as investigation starting points unless the governing source explicitly makes them exclusive
 - Copy/move/mirror requests preserve content verbatim; edit content only when requested
 - Port/translation requests preserve intent and behavior; adapt only what the destination context requires
-- Before changing related files, symmetric locations, adjacent behavior, or adding helpful extras, escalate with the proposed expansion
+- Include related files, symmetric locations, and adjacent behavior when evidence shows they are required by the same accepted outcome or consistency contract; report unrelated improvements separately
 
 ## Implementation Completeness Assurance
 
@@ -242,7 +205,7 @@ Complete these stages sequentially before implementation. For an isolated change
 **1. Discovery** - Identify all affected code:
 - Implementation references (imports, calls, instantiations)
 - Interface dependencies (contracts, types, data structures)
-- Test coverage
+- Behavior-relevant test evidence
 - Configuration (build configs, env settings, feature flags)
 - Documentation (comments, docs, diagrams)
 
@@ -274,13 +237,13 @@ Complete these stages sequentially before implementation. For an isolated change
 2. [...]
 ```
 
-Proceed when discovery and understanding cover the files and behaviors named by the user or current task/design artifact, and the identified risks have an implementation or escalation path.
+Proceed when discovery and understanding cover the accepted outcome, governing boundaries, and required adjacent dependencies, and each material risk has an implementation, verification, or unresolved-decision disposition.
 
 ### Unused Code Deletion
 
 When an artifact made obsolete by the requested change is detected:
 - Delete it in the same change when its callers and generated/operational uses are checked
-- Preserve and report it when obsolescence is uncertain or deletion would expand beyond the files and behaviors named by the user or current task/design artifact
+- Preserve and report it when obsolescence is uncertain or deletion would expand beyond the accepted outcome and governing boundaries
 - Keep unrelated dormant code outside the implementation scope
 
 ### Existing Code Modification

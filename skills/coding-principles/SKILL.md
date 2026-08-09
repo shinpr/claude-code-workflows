@@ -16,7 +16,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 ## Code Quality
 
 ### Continuous Improvement
-- Refactor related code named by the user or current task/design artifact when it reduces the change's risk or maintenance cost
+- Refactor related code inside the accepted outcome and governing boundaries when it reduces the change's risk or maintenance cost
 - Improve code structure incrementally
 - Keep the codebase lean and focused
 - Delete code proven obsolete by the requested change after checking its callers; report uncertain or out-of-scope cleanup separately
@@ -31,13 +31,12 @@ description: Language-agnostic coding principles for maintainability, readabilit
 ## Function Design
 
 ### Parameter Management
-- **Recommended**: 0-2 positional parameters per function
-- **At 3+ parameters**: Group related values into an object, struct, or dictionary by default. Retain positional parameters only when their order is conventional and the call remains clear, or an external/public signature requires them
-- Preserve external/public signatures unless the user request or current task/design artifact includes their migration
+- Group related positional parameters into an object, struct, or dictionary when call-site clarity or coordinated evolution requires it. Retain positional parameters when their order is conventional and the call remains clear, or an external/public signature requires them
+- Preserve external/public signatures unless their migration is part of the accepted outcome or governing artifact
 
 ### Single Responsibility
 - Each function should do one thing well
-- Keep functions under 50 lines by default. At 50+ lines, perform a mandatory extraction review; retain the function only when it remains one cohesive behavior and extraction would obscure the domain flow or create artificial coupling
+- Extract a function when independently changing responsibilities or obscured control flow make the current unit harder to understand, verify, or reuse; retain a cohesive domain flow when extraction would create artificial coupling
 - Extract complex logic into separate, well-named functions
 - Functions should have a single level of abstraction
 
@@ -45,7 +44,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Pure functions when possible (no side effects)
 - Separate data transformation from side effects
 - Use early returns to reduce nesting
-- Keep nesting to a maximum of 3 levels by default. At deeper nesting, use early returns or extraction unless the nested form maps the domain decision more clearly; record that reason when retaining it
+- Use early returns or extraction when nesting obscures state transitions or decision ownership; retain nested structure when it maps the domain decision more clearly
 
 ## Error Handling
 
@@ -73,9 +72,9 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 ### Verifying References Before Adoption
 When adopting patterns, APIs, or dependencies from existing code:
-- **IF** referencing only 2-3 nearby files → **THEN** confirm the pattern is representative by checking usage across the repository before adopting
+- **IF** a reference sample covers only nearby files → **THEN** confirm the pattern is representative by checking relevant repository usage before adopting
 - **IF** multiple approaches coexist in the repository → **THEN** identify the majority pattern and make a deliberate choice — selecting whichever is nearest is insufficient
-- **IF** adopting an external dependency (library, plugin, SDK) → **THEN** verify repository-wide usage distribution for the same dependency; if the appropriate version cannot be determined from repository state alone, escalate
+- **IF** adopting an external dependency (library, plugin, SDK) → **THEN** verify repository-wide usage and compatibility evidence; when that evidence cannot determine the required version, record the unresolved version decision and the evidence needed to settle it
 - **IF** following an existing pattern → **THEN** state the reason for following it when an alternative exists (e.g., consistency with surrounding code, avoiding breaking changes, pending coordinated update)
 
 ### Principle
@@ -106,7 +105,7 @@ Nearby code is a starting point for investigation, not a sufficient basis for ad
 - One primary responsibility per file
 - Logical grouping of related functions/classes
 - Clear folder structure reflecting architecture
-- Treat files over 500 lines as a mandatory decomposition review. Split when the file contains independently changing responsibilities; retain it only when it is cohesive and the proposed split would add avoidable coupling or navigation cost
+- Split a file when it contains independently changing responsibilities or creates material navigation, coupling, or verification cost; retain a cohesive file when splitting would add avoidable coupling or navigation cost
 
 ## Commenting Principles
 
@@ -142,7 +141,7 @@ One comment per decision. If a comment restates what the names and control flow 
 
 ### Refactoring Triggers
 - Code duplication (DRY principle)
-- Functions over 50 lines, especially when they contain independently changing responsibilities or obscured control flow
+- Functions that contain independently changing responsibilities or obscured control flow
 - Complex conditional logic
 - Unclear naming or structure
 

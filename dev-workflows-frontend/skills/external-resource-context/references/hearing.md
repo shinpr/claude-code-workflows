@@ -1,6 +1,6 @@
 # External Resource Hearing and Storage
 
-Producer-side protocol. Load this when capturing or updating external-resource records. Running it requires AskUserQuestion, so it belongs to the session that can ask the user directly.
+Content protocol for capturing or updating external-resource records. The owning workflow supplies the interactive question mechanism.
 
 ## When to Hear
 
@@ -8,9 +8,9 @@ Producer-side protocol. Load this when capturing or updating external-resource r
 |-----------|--------|
 | `docs/project-context/external-resources.md` does not exist | Run full hearing for the relevant domain(s) |
 | File exists and covers the current decision | Use it without an update question |
-| User or caller identifies changed environment facts | Run diff-only hearing for the named axes |
+| The governing request identifies changed environment facts | Run diff-only hearing for the named axes |
 | A relevant axis is absent | Hear only the missing axis |
-| Access failure or contradictory current evidence indicates possible staleness | Ask via AskUserQuestion: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing; on `yes-diff-only` hear the named stale axes; on `no` preserve the file and report the limitation |
+| Access failure or contradictory current evidence indicates possible staleness | Ask: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing; on `yes-diff-only` hear the named stale axes; on `no` preserve the file and report the limitation |
 
 ## Domain Routing
 
@@ -28,9 +28,9 @@ Each domain reference defines the axes and the question template.
 
 ## Two-Phase Hearing
 
-1. **Structured hearing** — for each axis selected by the When to Hear and Domain Routing rules, present the user with AskUserQuestion using the choices listed in its domain reference (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
+1. **Structured hearing** — for each axis selected by the When to Hear and Domain Routing rules, present the choices listed in its domain reference (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
 
-2. **Self-declaration for a full hearing** — after the structured axes for all selected domains are complete, present one integrated AskUserQuestion: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If the user describes additional resources, append them to the storage file under an "Additional resources" subsection. A diff-only or missing-axis hearing ends after its named axes because the existing project record already completed self-declaration.
+2. **Self-declaration for a full hearing** — after the structured axes for all selected domains are complete, ask: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If additional resources are supplied, append them to the storage file under an "Additional resources" subsection. A diff-only or missing-axis hearing ends after its named axes because the existing project record already completed self-declaration.
 
 For a full hearing, the two phases are sequential and self-declaration runs even if the user answered "Not applicable" to every structured axis.
 

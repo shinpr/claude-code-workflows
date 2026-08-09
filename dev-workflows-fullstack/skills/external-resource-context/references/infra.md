@@ -6,7 +6,7 @@ Hearing axes for tasks that involve deployment, environment configuration, or in
 
 The canonical source of infrastructure definitions.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Terraform configuration in the repository
 - Pulumi or CDK code in the repository
 - Kubernetes manifests / Helm charts in the repository
@@ -20,7 +20,7 @@ The canonical source of infrastructure definitions.
 
 How per-environment settings (development, staging, production) differ.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Per-environment configuration files in the repository (e.g., `terraform/envs/`, `config/staging.yaml`)
 - Environment variables managed by the deployment platform
 - Workspace or stack abstraction in the IaC tool itself
@@ -33,7 +33,7 @@ How per-environment settings (development, staging, production) differ.
 
 How infrastructure code references secrets without exposing them.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Secrets sourced from a secret manager via IaC data lookup
 - Secrets injected at apply time via environment variables
 - Encrypted secret files committed alongside IaC
@@ -46,7 +46,7 @@ How infrastructure code references secrets without exposing them.
 
 How infrastructure and application changes reach environments.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - CI pipeline triggered on merge to a specific branch
 - Manual approval step in CI
 - Local apply by an operator

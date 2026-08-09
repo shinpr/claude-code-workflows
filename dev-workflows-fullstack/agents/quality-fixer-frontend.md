@@ -65,10 +65,7 @@ When `task_file` is provided, run its Operation Verification Methods in addition
 **External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a UI Spec / Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
 ### Step 3: Execute Quality Checks
-Follow frontend-ai-guide skill "Quality Check Workflow" section:
-- Basic checks (lint, format, build)
-- Tests (unit, integration, React Testing Library)
-- Final gate (all must pass)
+Run every applicable check discovered in Step 2. Use repository-declared command composition or ordering when present; otherwise choose an order that respects command dependencies and provides useful feedback. Apply frontend-ai-guide skill "Quality Check Workflow" categories and require every applicable check to pass.
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance remains unavailable, return `verification_incomplete`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 - For a probe that establishes a test or command prerequisite, verify the consumer's exact postcondition through the same boundary; command/import success or object existence is setup evidence.
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
@@ -95,7 +92,7 @@ Return one of the following as the final response (see Output Format for schemas
 Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. Route any new library/pattern decision through the `blocked` output (`reason: "Cannot determine due to unclear specification"`).
 
 ### Testing Quality
-- **Test Coverage**: concentrate rigor on foundational/high-reuse units (shared components, hooks, utils); treat coverage as a signal for gaps, not a target. Enforce the project's configured threshold when one exists
+- **Test evidence**: concentrate rigor on foundational/high-reuse units (shared components, hooks, utils) and on observable behavior whose regression would matter
 - **Mock layering**: Use the repository's existing network/API mocking layer for network behavior; browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
 - **Query selection**: Prefer role/name queries for user-visible elements; use async queries (`findBy*`, `waitFor`) for async appearance and `queryBy*`/`queryAllBy*` only when asserting intentional absence
 
@@ -155,30 +152,17 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 
 ### Internal Structured Response (for Main AI)
 
+`checksPerformed` includes only checks actually executed, keyed by the repository check name. `fixesApplied` is `[]` when no fix was needed; otherwise retain the existing `type`, `category`, `description`, and `filesCount` fields with observed values.
+
 **When quality check succeeds**:
 ```json
 {
   "status": "approved",
   "summary": "Overall frontend quality check completed. All checks passed.",
   "checksPerformed": {
-    "lint_format": {
-      "status": "passed", "commands": ["<detected-lint-command>"], "autoFixed": true
-    },
-    "typescript": { "status": "passed", "commands": ["<detected-build-command>"] },
-    "tests": { "status": "passed", "commands": ["<detected-test-command>"], "testsRun": 42, "testsPassed": 42, "coverage": "85%" }
+    "<actual-check-name>": { "status": "passed", "commands": ["<actual-command>"] }
   },
-  "fixesApplied": [
-    { "type": "auto", "category": "format", "description": "Auto-fixed indentation and semicolons", "filesCount": 5 },
-    { "type": "manual", "category": "type", "description": "Replaced any type with unknown + type guards", "filesCount": 3 }
-  ],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanism names found and executed>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
-  "metrics": { "totalErrors": 0, "totalWarnings": 0, "executionTime": "3m 30s" },
-  "approved": true,
-  "nextActions": "Ready to commit"
+  "fixesApplied": []
 }
 ```
 
@@ -204,11 +188,6 @@ Use this status only after Step 1 confirmed implementation completeness and ever
   "reason": "Cannot determine due to unclear specification",
   "blockingIssues": [{ "type": "ux_specification_conflict", "details": "Test expectation and implementation contradict on user interaction behavior", "test_expects": "Button disabled on form error", "implementation_behavior": "Button enabled, shows error on click", "why_cannot_judge": "Correct UX specification unknown" }],
   "attemptedFixes": ["Tried aligning test to implementation", "Tried aligning implementation to test", "Tried inferring specification from Design Doc"],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanisms executed before blocking>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
   "needsUserDecision": "Please confirm the correct button disabled behavior"
 }
 ```
@@ -218,14 +197,7 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 {
   "status": "verification_incomplete",
   "reason": "Execution prerequisites not met",
-  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training.e2e.test.ts"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }],
-  "taskFileMechanisms": {
-    "provided": true,
-    "executed": ["<mechanisms executed before blocking>"],
-    "skipped": [{ "mechanism": "<name>", "reason": "tool not found / config not found / not executable" }]
-  },
-  "testsSkipped": 3,
-  "testsPassedWithoutPrerequisites": 47
+  "missingPrerequisites": [{ "type": "seed_data | library | environment_variable | running_service | other", "description": "E2E test database has no test player with active subscription", "affectedTests": ["training.e2e.test.ts"], "resolutionSteps": ["Create seed script for E2E test player", "Add subscription record to seed"] }]
 }
 ```
 
@@ -271,7 +243,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Add manual memoization only for the profiler- or identity-based conditions in typescript-rules
 - **Structural Issues**
   - Resolve circular dependencies (extract to common modules)
-  - For components at 300+ lines, perform the mandatory decomposition review: split independent rendering/state/data/test responsibilities by default; retain a cohesive component only when splitting would add avoidable prop/state synchronization, and record that evidence
+  - Split components when independent rendering, state, data, or test responsibilities create material coupling or verification cost; retain a cohesive component when splitting would add avoidable prop/state synchronization
   - Refactor deeply nested conditionals
 - **Type Error Fixes**
   - Handle external API responses with unknown type and type guards

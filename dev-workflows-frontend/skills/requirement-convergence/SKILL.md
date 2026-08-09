@@ -28,7 +28,7 @@ Judgment rules per field: [references/criteria.md](references/criteria.md).
 
 ## Hearing Protocol
 
-Eliciting and judging the convergence fields require user interaction, so the orchestrator owns them. The hearing runs after the specialist analysis that produced the scope facts; production of that investigation output remains with the specialist.
+Run the hearing after scope analysis has produced the facts needed to judge the convergence fields. The workflow using this skill owns the interaction method and routing; this skill defines the hearing content and pass conditions.
 
 Register these steps before starting and record each step's evidence as it completes:
 
@@ -46,9 +46,9 @@ Step 3's evidence is what keeps the hearing reviewable: a value restating the he
 
 | Carrier | Holds | Written by |
 |---------|-------|------------|
-| The convergence record in the judging step's output | Every field with its readiness label | Whichever step judged them |
-| PRD `Success Criteria` and `Future / Out of Scope` | `outcome`; `nonGoals` and `speculative` requirements with origin `user` | The agent that owns the PRD |
-| Design Doc `Requirement Convergence` | The same when no PRD exists, and the fields left `weak-but-explicit` in every case | The agent that owns the Design Doc |
+| The convergence record in the judging step's output | Every field with its readiness label | The judging step |
+| PRD `Success Criteria` and `Future / Out of Scope` | `outcome`; `nonGoals` and `speculative` requirements with origin `user` | The PRD production step |
+| Design Doc `Requirement Convergence` | The same when no PRD exists, and the fields left `weak-but-explicit` in every case | The Design Doc production step |
 
 A flow that produces neither document carries the record in its own context to the next step.
 
@@ -56,7 +56,7 @@ A flow that produces neither document carries the record in its own context to t
 
 1. Read the convergence record from the prompt.
 2. Treat `nonGoals` and `speculative` requirements as excluded from the current change. A `speculative` item becomes buildable only after the user promotes it to `desired-future`.
-3. Treat a `weak-but-explicit` field as a recorded open question rather than a settled decision, and escalate when the work depends on resolving it.
+3. Treat a `weak-but-explicit` field as a recorded open question rather than a settled decision. When work depends on it, return the missing decision and its effect to the owning workflow.
 
 ## Quality Checklist
 

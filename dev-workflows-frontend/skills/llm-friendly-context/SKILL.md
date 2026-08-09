@@ -1,23 +1,23 @@
 ---
 name: llm-friendly-context
-description: Clarifies inputs, outputs, success criteria, decisions, and unresolved conditions so downstream agents can execute without guessing. Use when writing or revising LLM-facing prompts, handoffs, planning artifacts, reviews, reports, or generated instructions.
+description: Clarifies inputs, outputs, success criteria, decisions, and unresolved conditions so downstream consumers can execute without guessing. Use when writing or revising LLM-facing prompts, handoffs, planning artifacts, reviews, reports, or generated instructions.
 ---
 
 # LLM-Friendly Context
 
-The goal is stable downstream execution: the next agent should know what to read, what to do, what counts as success, and which unresolved decisions can change the result.
+The goal is stable downstream execution: the next consumer should know what to read, what to do, what counts as success, and which unresolved decisions can change the result.
 
 ## Core Rules
 
 1. **Use positive, executable instructions**
-   - State what the next agent should do.
+   - State what the next consumer should do.
    - Convert quality policies into positive criteria.
    - Keep a prohibition only when it protects an irreversible boundary or shipped contract. Name the protected condition and the allowed action.
    - Example: "Preserve existing public API behavior across the documented compatibility cases."
 
 2. **Make vague instructions concrete**
    - Replace subjective terms with observable conditions, paths, commands, schemas, examples, or decision rules.
-   - Terms that often need clarification when they leave a decision to the next agent: `appropriate`, `proper`, `related`, `existing behavior`, `optional`, `as needed`, `if needed`, `per convention`, unresolved alternatives, `TBD`, `placeholder`.
+   - Terms that often need clarification when they leave a decision to the next consumer: `appropriate`, `proper`, `related`, `existing behavior`, `optional`, `as needed`, `if needed`, `per convention`, unresolved alternatives, `TBD`, `placeholder`.
 
 3. **Specify output shape**
    - Use the sections, fields, table columns, JSON keys, or checklist items the consumer uses.
@@ -34,7 +34,7 @@ The goal is stable downstream execution: the next agent should know what to read
 
 6. **Permit uncertainty explicitly**
    - Resolve missing operational detail from referenced artifacts and repository evidence before treating it as unresolved.
-   - Record remaining uncertainty with its effect. Escalate only when it requires a user-owned product, major design, authority, or irreversible-action decision; make reversible repository-local choices within the confirmed boundary.
+   - Record remaining uncertainty with its effect, required input, and decision owner. Make reversible repository-local choices when governing evidence resolves them.
 
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
@@ -48,18 +48,18 @@ Use these rewrites before treating a prompt, handoff, or artifact as complete.
 | Ambiguous form | Rewrite as |
 |---|---|
 | `optional` used as an unresolved choice | Required, omitted, or required only under a named condition |
-| Multiple alternatives that the next agent must choose between | The selected option, or a deterministic decision rule |
+| Multiple alternatives that the next consumer must choose between | The selected option, or a deterministic decision rule |
 | `as needed` / `if needed` | The triggering condition and required action |
 | `per convention` | The file, function, test, or documented convention to follow |
 | `related files` | Specific paths, globs, or search hints |
 | `existing behavior` | The observable behavior, source file, test, API response, or UI state to preserve |
 | `placeholder` | Exact temporary value/behavior, allowed dependencies, and verification expectation |
-| `TBD` used as a placeholder for required information | A blocking unresolved item with owner, required input, or escalation condition |
+| `TBD` used as a placeholder for required information | A blocking unresolved item with owner, required input, and decision effect |
 | `appropriate` / `proper` | A measurable criterion or checklist |
 
 ## Handoff Checklist
 
-Before sending a prompt or artifact to another agent, verify:
+Before sending a prompt or artifact to another consumer, verify:
 
 - [ ] The target action is explicit.
 - [ ] Required input paths, source artifacts, and decision-relevant facts are named.
@@ -68,7 +68,7 @@ Before sending a prompt or artifact to another agent, verify:
 - [ ] Success criteria are observable.
 - [ ] Ambiguous expressions have been rewritten or marked as unresolved.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
-- [ ] The next agent can complete its scope from the supplied purpose, sources, criteria, and evidence, or return an exact user-owned decision.
+- [ ] The next consumer can complete its scope from the supplied purpose, sources, criteria, and evidence, or return the exact unresolved decision and owner.
 
 ## Generated Artifact Checklist
 
@@ -79,4 +79,4 @@ Before writing or finalizing a generated document:
 - [ ] Verification steps say what to run or observe and what result proves success.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
 - [ ] If an artifact is derived from another artifact, copied decisions stay consistent in wording and meaning.
-- [ ] If downstream work is blocked by missing information, the artifact records the missing input and escalation condition.
+- [ ] If downstream work is blocked by missing information, the artifact records the missing input, decision owner, and effect.

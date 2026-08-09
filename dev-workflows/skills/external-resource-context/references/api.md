@@ -6,7 +6,7 @@ Hearing axes for tasks that involve API contract design, client integration, or 
 
 The canonical source of API contracts (request/response shapes, endpoints, RPC methods).
 
-**AskUserQuestion choices**:
+**Question choices**:
 - OpenAPI / Swagger specification (file in repository or hosted URL)
 - Protobuf definitions (file in repository)
 - GraphQL schema (SDL file or introspection endpoint)
@@ -20,7 +20,7 @@ The canonical source of API contracts (request/response shapes, endpoints, RPC m
 
 How clients exercise the API without depending on the live server.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Generated mocks from the schema (e.g., from OpenAPI / Protobuf tooling)
 - Hand-written mock server in the repository
 - Hosted mock service (URL)
@@ -33,7 +33,7 @@ How clients exercise the API without depending on the live server.
 
 How the API authenticates and authorizes requests.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Bearer token (e.g., JWT) issued by an auth service
 - API key in a header or query parameter
 - Session cookie set by a separate login flow
@@ -47,7 +47,7 @@ How the API authenticates and authorizes requests.
 
 How breaking and non-breaking schema changes are reviewed and rolled out.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Documented contract review process (link to the document)
 - Versioned endpoints (e.g., `/v1/`, `/v2/`)
 - Backward-compatible changes only, no formal versioning

@@ -6,7 +6,7 @@ Hearing axes for tasks that involve UI work (component implementation, screen de
 
 The canonical source of the visual specification.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Design tool (e.g., a hosted design platform)
 - Specification file in the repository (e.g., `DESIGN.md`, `docs/design/...`)
 - Public documentation URL
@@ -19,7 +19,7 @@ The canonical source of the visual specification.
 
 Reusable component library and design tokens.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Component library with MCP server access
 - Component library with documentation URL
 - Storybook or equivalent component catalog
@@ -33,7 +33,7 @@ Reusable component library and design tokens.
 
 Usage guidance, accessibility rules, anti-patterns, naming conventions for UI work.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Project-level guideline file (e.g., `DESIGN.md`, `docs/guidelines/...`)
 - External documentation site
 - Inline guidance in the design system catalog
@@ -46,7 +46,7 @@ Usage guidance, accessibility rules, anti-patterns, naming conventions for UI wo
 
 How rendered output is confirmed during implementation.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - End-to-end test runner with screenshot capability
 - Storybook or equivalent isolated component preview
 - Browser automation tool (dedicated CLI or MCP server)

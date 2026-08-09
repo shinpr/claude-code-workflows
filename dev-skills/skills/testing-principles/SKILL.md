@@ -16,7 +16,7 @@ RED: confirm the new test fails for the intended reason. GREEN: implement the sm
 - Treat coverage as a diagnostic signal for finding untested areas, not a target — a target gets gamed into trivial tests (Goodhart's Law)
 - Concentrate tests on critical paths, business logic, and behavior whose regression would matter
 - Prioritize meaningful assertions over the coverage number; any CI threshold is the project's config, not a quality goal in itself
-- Use project-configured speed budgets when present. Otherwise treat unit tests ≥ 100ms, integration tests ≥ 1s, or a full suite ≥ 10 minutes as mandatory slow-test review triggers; retain slower tests only when their boundary/value requires it and record the reason
+- Use project-configured speed budgets when present. Otherwise investigate test speed only when observed feedback or CI cost is material to the current outcome; retain slower tests when their proof boundary requires it
 
 ## Test Design Rules
 

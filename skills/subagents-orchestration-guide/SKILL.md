@@ -47,6 +47,12 @@ Pass the governing requirement source and the specialist's expected action. Inve
 3. Objective repo state (git status, file system, project configuration)
 4. Specialist judgment
 
+**Scope source classification**:
+- An explicit restriction in the user instruction or approved artifact is a hard boundary.
+- Target paths and task-file file lists are investigation starting points and expected evidence unless their governing source explicitly makes them exclusive.
+- Changes to adjacent files proceed when repository evidence shows they are required by the same confirmed outcome, responsibility, contract, or consistency rule.
+- Unrelated improvements remain outside the active change. A changed product outcome, major approved design decision, user-held authority, or irreversible external action returns to the applicable user gate.
+
 Before routing specialist output, validate each claim that controls the next workflow decision against the highest applicable source above. Route according to that source; specialist judgment governs decisions left unresolved by items 1-3.
 
 ### Specialist Result Acceptance

@@ -27,7 +27,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**CRITICAL**: When the user requests test generation, always execute acceptance-test-generator first — it provides the test skeleton that work-planner depends on.
+Acceptance-test-generator is part of this planning flow and may return no selected lanes when the Design Doc has no justified integration/E2E proof boundary.
 
 ## Scope Boundaries
 
@@ -45,15 +45,14 @@ Follow the planning process below:
 ## Execution Process
 
 ### Step 1: Design Document Selection
-   ! ls -la docs/design/*.md | head -10
-   - Check for existence of design documents, notify user if none exist
-   - Present options if multiple exist (can be specified with $ARGUMENTS)
+   - Use the Design Doc explicitly supplied in `$ARGUMENTS` when present
+   - Otherwise use the only Design Doc under `docs/design/` when exactly one exists
+   - Report when none exist; when multiple exist, present them for selection
 
-### Step 2: Test Skeleton Generation Confirmation
-   - Confirm with user whether to generate test skeletons (integration + E2E lanes) first
-   - If user wants generation: invoke acceptance-test-generator with `design_docs: [selected Design Doc path]` and `confirmed_requirement_context` as the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
+### Step 2: Test Skeleton Generation
+   - Invoke acceptance-test-generator with `design_docs: [selected Design Doc path]` and `confirmed_requirement_context` as the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
    - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
-   - Pass generation results to next process according to subagents-orchestration-guide skill coordination specification
+   - Pass every non-null generated skeleton path to the next process; an evidence-backed empty lane proceeds without a separate confirmation
 
 ### Step 3: Work Plan Creation
 Invoke work-planner using Agent tool:
@@ -62,7 +61,7 @@ Invoke work-planner using Agent tool:
 - `mode: create`
 - `designDoc: [selected Design Doc path]`
 - `prd: [approved PRD path]` when one exists
-- `testSkeletons: [non-null generatedFiles paths]` when Step 2 generated skeletons
+- `testSkeletons: [non-null generatedFiles paths]`
 
 ### Step 4: Work Plan Review
 Invoke document-reviewer to review the work plan:

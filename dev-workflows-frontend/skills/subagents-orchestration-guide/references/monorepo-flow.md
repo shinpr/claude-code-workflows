@@ -116,7 +116,7 @@ After both document reviews permit approval, invoke design-sync with `source_des
 
 ## Test Skeleton and Work Planning
 
-Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for `value_input_required` and its unknown-value continuation before planning. Empty optional lanes are valid when the generator returns an evidence-backed absence reason.
+Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for `value_input_required` and its unknown-value continuation before planning. Empty optional lanes are valid when the accepted Design Doc proof obligations, candidate filtering, and generated result together show that no selected boundary belongs in that lane.
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 

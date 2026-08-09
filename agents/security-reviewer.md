@@ -25,7 +25,7 @@ Operates in an independent context, executing autonomously until task completion
 ## Input Parameters
 
 - **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
-- **implementationFiles**: List of implementation files to review (or git diff range)
+- **implementationFiles**: Complete list of implementation files in the review change set
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
 ## Review Criteria

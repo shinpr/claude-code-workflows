@@ -132,7 +132,7 @@ The run began with an existing Work Plan. When `/recipe-build` found that its pl
 After the first run, inspect the artifacts:
 
 - Does the agreed approach extend what already exists and give evidence for each addition?
-- Can you follow each requirement into a task and a verification method, and did implementation stay within the assigned files and contracts?
+- Can you follow each requirement into a task and a verification method, and did implementation stay within the approved outcome and contracts while including required adjacent changes?
 - Does the final report compare the finished code with the intended behavior and security requirements?
 
 ---
@@ -379,7 +379,7 @@ These plugins cover adjacent work without changing the core development workflow
 
 **Q: What if there are errors?**
 
-A: The quality-fixer agents handle test, type, lint, and build failures within the assigned task scope. If a fix would change a contract, exceed that scope, or needs a decision that the existing documents do not answer, the workflow stops and reports what needs attention.
+A: The quality-fixer agents handle test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract. The workflow stops when a fix would change the product outcome, an approved contract or major design decision, requires user-held authority, or performs an irreversible external action that the existing approval does not cover.
 
 **Q: Is there a version for OpenAI Codex CLI?**
 

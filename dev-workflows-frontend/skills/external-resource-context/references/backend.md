@@ -6,7 +6,7 @@ Hearing axes for tasks that involve server-side, data, or storage work.
 
 The canonical source of the database schema (tables, columns, indexes, constraints).
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Migration files in the repository (e.g., a `migrations/` directory)
 - Schema file in the repository (e.g., `schema.sql`, `prisma/schema.prisma`)
 - Database MCP that introspects a live database
@@ -20,7 +20,7 @@ The canonical source of the database schema (tables, columns, indexes, constrain
 
 How schema changes are tracked over time.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Versioned migration files in the repository
 - ORM-managed migration tool (e.g., Alembic, Flyway, Prisma Migrate)
 - Manual change log document
@@ -33,7 +33,7 @@ How schema changes are tracked over time.
 
 Where credentials, API keys, and other secrets are stored and accessed.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Secret manager service (e.g., AWS Secrets Manager, Vault, GCP Secret Manager)
 - Environment variables loaded from a `.env` file (development only)
 - Encrypted file in the repository
@@ -46,7 +46,7 @@ Where credentials, API keys, and other secrets are stored and accessed.
 
 How asynchronous work is dispatched and observed.
 
-**AskUserQuestion choices**:
+**Question choices**:
 - Queue service (e.g., SQS, Pub/Sub, RabbitMQ)
 - Cron / scheduled tasks managed by deployment platform
 - In-process worker thread

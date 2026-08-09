@@ -132,8 +132,8 @@ Apply subagents-orchestration-guide's retained verification limitation retry wit
 Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
 
 Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
-- code-verifier (subagent_type: "dev-workflows:code-verifier") → each resolved `doc_type`, single `document_path`, and `code_paths` from `git diff --name-only main...HEAD`
-- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the typed `governingDocuments` list and `implementationFiles`
+- code-verifier (subagent_type: "dev-workflows:code-verifier") → each resolved `doc_type`, single `document_path`, and complete implementation `code_paths`
+- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the typed `governingDocuments` list and complete `implementationFiles`
 
 Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 
