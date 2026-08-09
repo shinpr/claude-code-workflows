@@ -71,7 +71,7 @@ Use these patterns only when their named migration or dependency problem exists.
 
 **Core Question**: "What risks arise when applying this to existing implementation, and what's the best way to control them?"
 
-Evaluate only risk categories for which current evidence can change the strategy, public contract, rollout, rollback, or verification boundary. Omit categories with no such effect rather than generating placeholder work.
+Evaluate only risk categories for which current evidence can change the strategy, public contract, rollout, rollback, or verification boundary.
 
 #### Conditional Risk Categories
 ```yaml

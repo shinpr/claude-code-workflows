@@ -120,7 +120,7 @@ C4Context
 - [Prerequisite requiring validation 2]
 
 ### Risks and Mitigation
-Include only evidenced product or delivery risks that can change scope, success criteria, sequencing, or acceptance. Omit this subsection when no such risk exists.
+Include only evidenced product or delivery risks that can change scope, success criteria, sequencing, or acceptance.
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|

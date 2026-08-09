@@ -34,7 +34,7 @@ Before any task processing, locate the work plan. Resolution rule:
 1. Use the work plan explicitly supplied in `$ARGUMENTS` when present.
 2. Otherwise group single-layer task files by the existing `{plan-name}-task-*.md` naming contract and map each group to `docs/plans/{plan-name}.md`. Exclude layer-aware fullstack task sets.
 3. When task groups produce no candidate, use the only Work Plan under `docs/plans/` when exactly one exists.
-4. Select the sole candidate. When multiple candidates remain, present them for selection. When none exists, continue through the missing-prerequisite branch below. Modification time and lexical order are not selection evidence.
+4. Select the sole candidate. When multiple candidates remain, present them for selection. When none exists, continue through the missing-prerequisite branch below.
 
 ### Consumed Task Set
 
@@ -62,7 +62,7 @@ When the Consumed Task Set is empty:
 
 ### 1. Authorization Check
 
-Confirm that the resolved work plan has batch approval. If it does not, complete the normal Work Plan review and approval gate. Do not add a second confirmation for task-file generation.
+Use the normal Work Plan review and approval gate when batch approval is absent. Existing batch approval authorizes task materialization directly.
 
 ### 2. Task Materialization
 Invoke task-decomposer using Agent tool:
@@ -115,8 +115,8 @@ Before invoking post-implementation verifiers, apply subagents-orchestration-gui
 Resolve the Work Plan's readable Design Doc; missing input blocks verification.
 
 Emit these Agent calls in one assistant message, then await both:
-- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → resolved `doc_type`, `document_path`, and complete implementation `code_paths`
-- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → the same typed `governingDocuments` and complete `implementationFiles`
+- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → verify the completed implementation against the resolved `doc_type` and `document_path`
+- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the same typed `governingDocuments`
 
 Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the frontend executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 

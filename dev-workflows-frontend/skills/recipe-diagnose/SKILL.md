@@ -73,7 +73,7 @@ Before investigation, define a semantic scope envelope from the confirmed proble
 - explicit exclusions from the user or governing artifacts
 - newly discovered areas are inside the envelope only when they have one of the relationships above and evidence shows they can change the supported cause set, coverage judgment, or counter-evidence
 
-The envelope bounds relevance, not investigation effort or file count. Do not narrow it around the first plausible cause.
+The envelope bounds relevance. Keep every relationship above active throughout investigation, including after a plausible cause appears.
 
 ## Diagnosis Flow Overview
 
@@ -83,7 +83,7 @@ Problem → scope envelope → investigator → verifier
                          └── named gaps ───┘
 
 coverage closed → design decision gate when applicable → solver → Report
-material evidence unavailable → limitation/block report without solution derivation
+material evidence unavailable → limitation/block report
 ```
 
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
@@ -166,19 +166,19 @@ Investigation results: [Investigation JSON output]
 Branch on verifier output before invoking solver:
 
 - `coverageDisposition: closed`: freeze the complete verified cause set and continue to the applicable design decision gate.
-- `coverageDisposition: gaps_remaining`: return to Step 1 with only verifier's named gaps, their relevance to the cause set, and the prior investigation JSON. Keep `scopeAccounting` monotonic: an accounted item never becomes unaccounted, and add a gap only when new evidence identifies a distinct previously unaccounted gap within the semantic scope envelope that can materially change the supported cause set. Closing a gap or establishing that its evidence is unavailable advances convergence; renaming, splitting, or further describing the same gap does not. When no available action can produce one of those state changes, return the attempted recovery to verifier for `evidence_unavailable`. Repeat verification after the investigation result passes Step 2.
-- `coverageDisposition: evidence_unavailable`: do not derive or execute a solution. Report the unavailable evidence, attempted recovery, and why it can change the cause set.
+- `coverageDisposition: gaps_remaining`: return to Step 1 with only verifier's named gaps, their relevance to the cause set, and the prior investigation JSON. Keep `scopeAccounting` monotonic by preserving every accounted item. Add a gap only when new evidence identifies a distinct previously unaccounted gap within the semantic scope envelope that can materially change the supported cause set. Closing a gap or establishing that its evidence is unavailable advances convergence; renaming, splitting, or further describing the same gap preserves its existing state. When no available action can produce one of those state changes, return the attempted recovery to verifier for `evidence_unavailable`. Repeat verification after the investigation result passes Step 2.
+- `coverageDisposition: evidence_unavailable`: finish with the unavailable-evidence report, including the evidence, attempted recovery, and why it can change the cause set.
 
-Do not stop because of a fixed iteration or file count. Stop broadening investigation within the envelope when verifier establishes semantic closure, or when no available action can advance a material gap.
+Continue investigation while an available action can advance a material gap. Completion is determined by verifier-established semantic closure or by confirmation that no available action can advance the gap.
 
 ### Step 5: Design Decision Gate
 
-After coverage is closed, inspect the verified cause set. When a confirmed failure point has `causeCategory: design_gap` or `recurrenceRisk: high`, use AskUserQuestion:
+After coverage is closed, inspect the verified cause set. When resolving a confirmed failure point requires reconsidering ownership, a contract, or an approved design decision, including `causeCategory: design_gap`, use AskUserQuestion:
 "A verified design-level issue was detected. How should we proceed?"
 - A: Attempt fix within current design
 - B: Include design reconsideration
 
-Pass `includeRedesign: true` to solver only when the user selects B. This gate remains before solution selection; investigation and verification do not depend on the choice.
+Pass `includeRedesign: true` to solver only when the user selects B. This gate remains before solution selection; investigation and verification proceed independently of the choice.
 
 ### Step 6: Solution Derivation (solver)
 
@@ -238,7 +238,7 @@ Rationale: [Selection rationale]
 - [Verification item 2]
 ```
 
-For `coverageDisposition: evidence_unavailable`, omit solution derivation and return:
+For `coverageDisposition: evidence_unavailable`, return this limitation-only form:
 
 ```
 ## Diagnosis Limited by Unavailable Evidence
@@ -263,5 +263,5 @@ For `coverageDisposition: evidence_unavailable`, omit solution derivation and re
 - [ ] Performed investigation quality check and re-ran if insufficient
 - [ ] Executed verifier and obtained coverage assessment
 - [ ] Closed every material scope-envelope gap or reported material evidence as unavailable
-- [ ] Executed solver when coverage closed, and did not execute it when material evidence remained unavailable
+- [ ] Executed solver exactly for `coverageDisposition: closed`; completed the unavailable-evidence report for `coverageDisposition: evidence_unavailable`
 - [ ] Presented final report to user

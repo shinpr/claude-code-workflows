@@ -264,7 +264,7 @@ Fill the Reset/Clear Behavior column when the feature has a reset or clear-all o
 
 ### Logging and Monitoring
 
-Include this section only when the feature changes an observable operational boundary or an accepted requirement/project policy requires diagnostics, metrics, or alerts. Omit it when no design decision depends on new logging or monitoring.
+Include this section only when the feature changes an observable operational boundary or an accepted requirement/project policy requires diagnostics, metrics, or alerts.
 
 - **Log events**: [Key events to log: state transitions, external calls, error occurrences, performance thresholds]
 - **Log levels**: [Which events at DEBUG/INFO/WARN/ERROR]
@@ -357,7 +357,7 @@ This section records what **this design** excluded from the current design surfa
 
 ## Risks and Mitigation
 
-Include only evidenced risks that can change the design, rollout, rollback, contract, or verification strategy. Omit this section when no such risk exists.
+Include only evidenced risks that can change the design, rollout, rollback, contract, or verification strategy.
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|

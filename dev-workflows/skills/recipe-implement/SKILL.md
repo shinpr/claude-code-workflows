@@ -119,8 +119,8 @@ Apply subagents-orchestration-guide's retained verification limitation retry bef
 Resolve the Work Plan's readable Design Doc; missing input blocks verification.
 
 Emit these Agent calls in one assistant message, then await both:
-- code-verifier (subagent_type: "dev-workflows:code-verifier") → resolved `doc_type`, `document_path`, and complete implementation `code_paths`
-- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → the same typed `governingDocuments` and complete `implementationFiles`
+- code-verifier (subagent_type: "dev-workflows:code-verifier") → verify the completed implementation against the resolved `doc_type` and `document_path`
+- security-reviewer (subagent_type: "dev-workflows:security-reviewer") → review the completed implementation against the same typed `governingDocuments`
 
 Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
 

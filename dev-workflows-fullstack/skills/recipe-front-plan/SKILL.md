@@ -58,7 +58,7 @@ Follow the planning process below:
      - `ui_spec: [UI Spec path]` when one exists
      - `confirmed_requirement_context`: approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
      - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
-   - Pass every non-null generated skeleton path to work-planner; an evidence-backed empty lane proceeds without a separate confirmation
+   - Pass every non-null generated skeleton path to work-planner; treat an evidence-backed empty lane as complete for that lane and continue to work-planner
 
 ### Step 3: Work Plan Creation
 Invoke work-planner using Agent tool:

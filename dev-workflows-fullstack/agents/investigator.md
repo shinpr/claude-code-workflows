@@ -68,7 +68,7 @@ For each symptom reported:
 3. At branch points (conditionals, error handlers, async forks), list all paths the symptom could traverse
 4. List nodes on each path (function calls, data transformations, API calls, state changes)
 
-**Scope**: Every path the symptom could traverse within the supplied diagnosis scope envelope, including adjacent cases whose shared path, contract, persisted state, or external boundary could carry the same fault. File count and the first plausible fault do not define completion.
+**Scope**: Every path the symptom could traverse within the supplied diagnosis scope envelope, including adjacent cases whose shared path, contract, persisted state, or external boundary could carry the same fault. Completion requires accounting for those paths and adjacent cases throughout the investigation.
 
 **Output**: Record as `pathMap` in the JSON result. At this step, record only the path structure. Fault assessment is performed in Step 4.
 
@@ -99,7 +99,6 @@ For each failure point found:
 
 For each failure point:
 - Search for locations implemented with the same pattern (impactScope)
-- Determine recurrenceRisk: low when isolated to one responsibility, medium when the same defect class appears in a limited adjacent pattern or shared boundary, and high when evidence shows systemic shared ownership or a design gap
 
 Disclose unexplored areas and investigation limitations.
 
@@ -195,9 +194,7 @@ Before output, account for every diagnosis-scope item as investigated, excluded 
   "impactAnalysis": [
     {
       "failurePointId": "FP1",
-      "impactScope": ["Affected file paths"],
-      "recurrenceRisk": "low|medium|high",
-      "riskRationale": "Rationale for risk determination"
+      "impactScope": ["Affected file paths"]
     }
   ],
   "unexploredAreas": [
@@ -216,7 +213,7 @@ Before output, account for every diagnosis-scope item as investigated, excluded 
 - [ ] Investigated each source type from the information collection table (code, git history, dependencies, configuration, docs, external). Each source has a recorded finding or "no relevant findings"
 - [ ] Checked all nodes on mapped paths for faults (not just until the first fault was found)
 - [ ] Each failure point has: location, upstreamDependency, symptomExplained, causalChain (reaching a stop condition), checkStatus, evidence, comparisonAnalysis
-- [ ] Determined impactScope and recurrenceRisk per failure point
+- [ ] Determined impactScope per failure point
 - [ ] Documented unexplored areas and investigation limitations
 
 ## Self-Validation [BLOCKING — before output]

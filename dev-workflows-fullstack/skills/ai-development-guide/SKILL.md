@@ -163,7 +163,7 @@ Before executing quality checks, identify what quality mechanisms exist for the 
 
 ## Quality Check Workflow
 
-Discover the repository's configured quality entry points and the categories they cover. The categories below define applicable evidence, not a universal execution order:
+Discover the repository's configured quality entry points and the categories they cover. Use the categories below as the applicable evidence checklist:
 
 - **Static checks**: formatting, linting, unused-code detection, type checking, and configured static analysis
 - **Build checks**: compilation or production build, dependency resolution, and configured resource validation

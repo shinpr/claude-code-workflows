@@ -109,7 +109,7 @@ Set `coverageDisposition` independently:
 
 - `closed`: the sufficient criteria hold.
 - `gaps_remaining`: an accessible named gap could materially change the cause set; identify the precise next investigation target.
-- `evidence_unavailable`: unavailable evidence could materially change the cause set and no available investigation action can close it. Do not recommend solving from this state.
+- `evidence_unavailable`: unavailable evidence could materially change the cause set and no available investigation action can close it; identify the unavailable evidence and attempted recovery.
 
 ## Output Format
 
@@ -150,7 +150,7 @@ Set `coverageDisposition` independently:
   ],
   "conclusion": {
     "confirmedFailurePoints": [
-      {"failurePointId": "FP1", "description": "What the fault is", "location": "file:line", "symptomId": "S1", "symptomExplained": "How this fault leads to the observed symptom", "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor", "finalStatus": "supported|weakened", "causalChain": ["Phenomenon", "→ Direct cause", "→ Root cause"], "impactScope": ["Affected file paths"], "recurrenceRisk": "low|medium|high"}
+      {"failurePointId": "FP1", "description": "What the fault is", "location": "file:line", "symptomId": "S1", "symptomExplained": "How this fault leads to the observed symptom", "causeCategory": "typo|logic_error|missing_constraint|design_gap|external_factor", "finalStatus": "supported|weakened", "causalChain": ["Phenomenon", "→ Direct cause", "→ Root cause"], "impactScope": ["Affected file paths"]}
     ],
     "refutedFailurePoints": [
       {"failurePointId": "FP2", "reason": "Reason for refutation"}
