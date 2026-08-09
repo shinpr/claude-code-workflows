@@ -5,23 +5,23 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
-Repeatable software development workflows for Claude Code that keep design decisions traceable through implementation, tests, and review.
+Claude Code can explore a codebase deeply. On non-trivial work, the harder problem is convergence. While designing an account-recovery flow, Claude may find a real inconsistency in token handling and spend most of the design on it, leaving the requested recovery behavior vague.
 
-Each phase runs in a fresh agent context and hands off through explicit artifacts. The workflow inspects the existing codebase, designs the smallest sufficient change, pauses for approval, implements one task at a time, and checks whether the finished work still matches the agreed scope and requirements.
+claude-code-workflows keeps that work tied to an agreed result. It records the outcome and its exclusions, then creates only the design and verification artifacts the change needs. A separate review checks the finished implementation against that outcome, while Claude still decides how to get there from repository evidence.
 
-Use the end-to-end recipes for production changes that span files, layers, or contributors, where a long AI coding session can quietly grow in scope or lose an important decision between design and implementation. Focused recipes let you stop after design, continue from approved artifacts, review an implementation, or investigate a problem without changing the code.
+Use Claude Code directly when the outcome and safe implementation boundary are already clear. Use these workflows when a change needs scope agreement, durable design decisions, a reliable handoff between contexts, or independent verification.
 
 ---
 
-## Why use a development workflow?
+## When is the workflow useful?
 
-Claude Code can complete an individual coding task well. The harder problem is keeping a larger change coherent after the first answer.
+A focused fix, experiment, or prototype is usually faster to run directly. The workflow adds agent calls and artifacts, so it should earn that cost.
 
-Suppose analysis finds that an existing authentication path should be extended. Halfway through implementation, a new abstraction looks convenient, the response contract changes with it, and the frontend adapts to the new shape. Every local edit may look reasonable and every test may pass, while the result no longer matches the design that the team agreed on.
+On a larger change, a real side finding can still be the wrong work for the current outcome. The workflow keeps the approved result and exclusions in view from design through final review.
 
-In that example, extending the existing authentication path remains the default. A second mechanism needs evidence during design, and the agreed response contract is carried into the work plan, implementation tasks, tests, and final review. If implementation discovers that the contract really must change, the workflow stops and returns to design instead of letting the frontend quietly adapt to a decision nobody reviewed.
+Specialist agents contribute repository evidence and draft artifacts. The main session still owns the product scope: it applies findings needed to protect an approved requirement, contract, or observable behavior, and can decline findings that only add work. Product changes and major design changes return to the user. Reversible implementation choices remain with Claude.
 
-Because the process is packaged as a Claude Code plugin, a team can apply it consistently across repositories.
+Because the process is packaged as a Claude Code plugin, a team can apply the same boundaries across repositories without prescribing Claude's steps.
 
 ---
 
@@ -54,20 +54,19 @@ claude
 
 ### Install one workflow plugin
 
+Install the plugin that matches your project. If the install tells you to run `/reload-plugins`, do that before invoking the recipe.
+
 ```bash
 # Backend or general
 /plugin install dev-workflows@claude-code-workflows
-/reload-plugins
 /recipe-implement "Add rate limiting to the public API"
 
 # Frontend
 /plugin install dev-workflows-frontend@claude-code-workflows
-/reload-plugins
 /recipe-front-design "Add account recovery screens"
 
 # Full-stack
 /plugin install dev-workflows-fullstack@claude-code-workflows
-/reload-plugins
 /recipe-fullstack-implement "Add user authentication with JWT + login form"
 ```
 
@@ -92,25 +91,25 @@ Replace `dev-workflows-fullstack` with the plugin that matches the repository. S
 
 ```mermaid
 flowchart LR
-    A[Request] --> B[Scope the change]
-    B -->|Needs design| C[Inspect and design]
-    C --> D{Approve}
-    D -->|Revise| C
-    D -->|Proceed| H[Write task handoff]
-    H --> E[Implement in a fresh context]
-    B -->|Small change| E
-    E --> F[Final verification]
-    F -->|Fix a gap| E
-    F -->|Passed| G[Complete]
+    A[Request] --> B[Agree on outcome and exclusions]
+    B --> C{Durable design needed?}
+    C -->|No| F[Implement]
+    C -->|Yes| D[Inspect and record needed decisions]
+    D --> E[Approve product and major design boundaries]
+    E --> F
+    F --> G[Verify the approved outcome]
+    G -->|In-scope gap| F
+    G -->|Boundary changed| B
+    G -->|Passed| H[Complete]
 ```
 
-Small changes skip documents they do not need. Larger changes add codebase analysis and a Design Doc, plus a PRD, UI Spec, ADR, acceptance tests, or work plan when required by the scope. The requirement and affected layers decide the route; the workflow does not create a full document set by default.
+The number of product and design decisions determines the route. Small changes skip documents they do not need. Larger changes add codebase analysis and a Design Doc, plus a PRD, UI Spec, ADR, acceptance tests, or work plan only when required by the scope.
 
-Implementation proceeds through task files with explicit targets and checks. When all tasks are done, a separate review checks the result for design consistency and security issues. If the requirement changes along the way, the workflow identifies which decisions are no longer valid and returns there before continuing.
+The main session owns convergence between phases. It carries forward only evidence that can change the next decision, resolves repository-local ambiguity, and keeps unaffected work moving. When implementation is complete, separate reviews provide evidence about design consistency, observable coverage, and security. Their findings are resolved against the approved outcome instead of becoming work automatically.
 
 ### A handoff you can inspect
 
-Fresh contexts only help if the handoff between them is concrete. The included [Work Plan template](skills/documentation-criteria/references/plan-template.md) requires every technical requirement from a Design Doc to have a covering task or an explicit gap:
+Fresh contexts only help if the handoff between them is concrete. The included [Work Plan template](skills/documentation-criteria/references/plan-template.md) requires every approved technical requirement from a Design Doc to have a covering task or an explicit gap. It does not turn every document section or review suggestion into a task. A gap means an approved requirement has no implementation or verification task yet.
 
 ```markdown
 | Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
@@ -125,14 +124,15 @@ The [Task template](skills/documentation-criteria/references/task-template.md) t
 
 [The incremental sync feature in mcp-local-rag](https://github.com/shinpr/mcp-local-rag/pull/171) was a 42-file change across filesystem scanning, storage, and both the CLI and MCP surfaces. An independent security review sent the implementation back twice. It caught file reads happening before validation and a path-containment escape through a symlinked parent.
 
-The run began with an existing Work Plan. When `/recipe-build` found that its planned ADR and Design Doc were missing, it stopped at the intended approval boundary. The user approved using the Work Plan as the technical source of truth, and the recipe divided it into 13 planned tasks. Adding test files outside the planned file set required a second user decision. The PR also records why watch mode and persistent jobs were left out.
+The run began with an existing Work Plan that referred to an ADR and Design Doc that were not present, leaving the approved source for its technical decisions unclear. The user chose to treat the Work Plan as the source of truth, and the recipe divided it into 13 planned tasks. The final implementation included the changes needed to verify the approved behavior, while the PR records why watch mode and persistent jobs were left out.
 
 ### What to inspect after the first run
 
 After the first run, inspect the artifacts:
 
 - Does the agreed approach extend what already exists and give evidence for each addition?
-- Can you follow each requirement into a task and a verification method, and did implementation stay within the approved outcome and contracts while including required adjacent changes?
+- Can you follow each requirement into a task and a verification method?
+- Did implementation stay within the approved outcome and contracts while including required adjacent changes?
 - Does the final report compare the finished code with the intended behavior and security requirements?
 
 ---
@@ -379,7 +379,13 @@ These plugins cover adjacent work without changing the core development workflow
 
 **Q: What if there are errors?**
 
-A: The quality-fixer agents handle test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract. The workflow stops when a fix would change the product outcome, an approved contract or major design decision, requires user-held authority, or performs an irreversible external action that the existing approval does not cover.
+A: The quality-fixer agents handle test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract.
+
+The workflow stops only when a fix:
+
+- changes the product outcome, an approved contract, or a major design decision;
+- requires authority held by the user; or
+- performs an irreversible external action that the existing approval does not cover.
 
 **Q: Is there a version for OpenAI Codex CLI?**
 
@@ -424,6 +430,13 @@ claude-code-workflows/
 ```
 
 </details>
+
+---
+
+## Design Rationale
+
+- [When Better Models Make Old Agent Workflows Worse](https://www.norsica.jp/blog/when-better-models-make-old-agent-workflows-worse): why the workflow is strict about boundaries and evidence without prescribing the route between them
+- [Reasoning Effort Is Not a Quality Setting](https://www.norsica.jp/blog/reasoning-effort-is-not-a-quality-setting): why broader exploration must still converge on the work the current outcome justifies
 
 ---
 
