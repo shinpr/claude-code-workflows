@@ -7,7 +7,7 @@
 
 Claude Code can explore a codebase deeply. On non-trivial work, the harder problem is convergence. While designing an account-recovery flow, Claude may find a real inconsistency in token handling and spend most of the design on it, leaving the requested recovery behavior vague.
 
-claude-code-workflows keeps that work tied to an agreed result. It records the outcome and its exclusions, then creates only the design and verification artifacts the change needs. A separate review checks the finished implementation against that outcome, while Claude still decides how to get there from repository evidence.
+claude-code-workflows keeps that exploration pointed at an agreed result. It agrees on the outcome and exclusions before design, checks designs against the repository, verifies each task before commit, and, on larger changes, independently reviews the finished implementation for intended behavior and security. Within that scope, Claude chooses the implementation details from the codebase.
 
 Use Claude Code directly when the outcome and safe implementation boundary are already clear. Use these workflows when a change needs scope agreement, durable design decisions, a reliable handoff between contexts, or independent verification.
 
@@ -15,13 +15,9 @@ Use Claude Code directly when the outcome and safe implementation boundary are a
 
 ## When is the workflow useful?
 
-A focused fix, experiment, or prototype is usually faster to run directly. The workflow adds agent calls and artifacts, so it should earn that cost.
+The workflow adds agent calls and artifacts, so it should earn that cost. Use it when a real side finding could pull a larger change away from its intended result, a design could be internally consistent but miss the requested behavior, or a passing test could fail to observe what it claims to prove.
 
-On a larger change, a real side finding can still be the wrong work for the current outcome. The workflow keeps the approved result and exclusions in view from design through final review.
-
-Specialist agents contribute repository evidence and draft artifacts. The main session still owns the product scope: it applies findings needed to protect an approved requirement, contract, or observable behavior, and can decline findings that only add work. Product changes and major design changes return to the user. Reversible implementation choices remain with Claude.
-
-Because the process is packaged as a Claude Code plugin, a team can apply the same boundaries across repositories without prescribing Claude's steps.
+Once the implementation scope is approved, Claude carries the tasks through focused verification, repository quality checks, commits, and final review without asking for routine implementation decisions. Product changes and major design changes return to the user; reversible implementation choices remain with Claude. Because the process is packaged as a Claude Code plugin, a team can apply the same controls across repositories without prescribing Claude's steps.
 
 ---
 
@@ -92,24 +88,35 @@ Replace `dev-workflows-fullstack` with the plugin that matches the repository. S
 ```mermaid
 flowchart LR
     A[Request] --> B[Agree on outcome and exclusions]
-    B --> C{Durable design needed?}
-    C -->|No| F[Implement]
-    C -->|Yes| D[Inspect and record needed decisions]
-    D --> E[Approve product and major design boundaries]
-    E --> F
-    F --> G[Verify the approved outcome]
-    G -->|In-scope gap| F
-    G -->|Boundary changed| B
-    G -->|Passed| H[Complete]
+    B --> C{One evident implementation path?}
+    C -->|Yes| S[Direct task cycle]
+    S --> J[Complete]
+    C -->|No| D[Inspect, design, and review]
+    D --> E[Approve implementation scope]
+    E --> F[Per task: implement, verify, quality-check, commit]
+    F --> I[Independent implementation and security review]
+    I -->|Correction| F
+    I -->|Boundary changed| B
+    I -->|Passed| J[Complete]
 ```
 
-The number of product and design decisions determines the route. Small changes skip documents they do not need. Larger changes add codebase analysis and a Design Doc, plus a PRD, UI Spec, ADR, acceptance tests, or work plan only when required by the scope.
+The number of product and design decisions determines the route, not file count or the amount of implementation work:
 
-The main session owns convergence between phases. It carries forward only evidence that can change the next decision, resolves repository-local ambiguity, and keeps unaffected work moving. When implementation is complete, separate reviews provide evidence about design consistency, observable coverage, and security. Their findings are resolved against the approved outcome instead of becoming work automatically.
+| Scale | What the change needs | What happens |
+|-------|-----------------------|--------------|
+| Small | One outcome that follows an existing pattern within one responsibility | Direct task cycle → focused and repository checks → security review |
+| Medium | One outcome that crosses responsibilities or needs a lasting design decision | Reviewed Design Doc, plus UI Spec / ADR when required → selected integration/E2E proof → reviewed Work Plan → task cycles → final review |
+| Large | Multiple independent product outcomes that need separate design decisions | Reviewed PRD and Design Docs, plus UI Spec / ADR when required → selected integration/E2E proof → reviewed Work Plan → task cycles → final review |
 
-### A handoff you can inspect
+UI Specs, ADRs, and integration or E2E test skeletons appear only when their decisions or proof boundaries apply.
 
-Fresh contexts only help if the handoff between them is concrete. The included [Work Plan template](skills/documentation-criteria/references/plan-template.md) requires every approved technical requirement from a Design Doc to have a covering task or an explicit gap. It does not turn every document section or review suggestion into a task. A gap means an approved requirement has no implementation or verification task yet.
+Generating an artifact does not advance the workflow on its own. Design claims are checked against the repository before approval. The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews examine design consistency, observable coverage, and security.
+
+The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. An accepted correction returns through implementation and the affected verification gates.
+
+### How decisions survive fresh contexts
+
+Fresh contexts keep one phase's reasoning from silently becoming the next phase's authority. The included [Work Plan template](skills/documentation-criteria/references/plan-template.md) requires every approved technical requirement from a Design Doc to have a covering task or an explicit gap. It does not turn every document section or review suggestion into a task. A gap means an approved requirement has no implementation or verification task yet.
 
 ```markdown
 | Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
@@ -118,7 +125,7 @@ Fresh contexts only help if the handoff between them is concrete. The included [
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-The [Task template](skills/documentation-criteria/references/task-template.md) then carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. The final review reads the same source documents instead of relying on the implementation conversation.
+The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation.
 
 ### A real workflow run
 
@@ -130,10 +137,11 @@ The run began with an existing Work Plan that referred to an ADR and Design Doc 
 
 After the first run, inspect the artifacts:
 
-- Does the agreed approach extend what already exists and give evidence for each addition?
-- Can you follow each requirement into a task and a verification method?
-- Did implementation stay within the approved outcome and contracts while including required adjacent changes?
-- Does the final report compare the finished code with the intended behavior and security requirements?
+- Did the agreed approach extend what already exists and give evidence for each addition?
+- Can you follow each requirement into a task and an observable verification method?
+- Did every completed task pass its focused and repository quality checks before commit?
+- Did final review compare the whole change with the intended behavior and security requirements?
+- When a reviewer proposed more work, did the report show why it was applied or declined?
 
 ---
 
@@ -145,7 +153,7 @@ After the first run, inspect the artifacts:
 /recipe-implement "Add rate limiting to the public API"
 ```
 
-The recipe scopes the change, inspects the current implementation, creates only the documents required for its size, pauses when a decision is needed, and carries the plan through implementation and final review.
+The recipe scopes the change, inspects the current implementation, creates only the documents required by its decisions, pauses when a decision is needed, and carries the plan through implementation and final review.
 
 ### Design first, implement later
 
@@ -173,7 +181,7 @@ For example, two dashboard components may each handle loading correctly while th
 /recipe-fullstack-implement "Add user authentication with JWT + React login form"
 ```
 
-When the scale calls for a PRD, one document covers the whole feature. Backend and frontend design stay separate, `design-sync` checks the boundary between them, and the work plan uses vertical slices so integration is exercised before the end.
+When the change has multiple independent product outcomes, one PRD covers the whole feature. Backend and frontend design stay separate, `design-sync` checks the boundary between them, and the work plan uses vertical slices so integration is exercised before the end.
 
 Use `/recipe-fullstack-build` to continue from an existing full-stack work plan. The full-stack plugin also includes the applicable backend and frontend recipes.
 
@@ -435,8 +443,15 @@ claude-code-workflows/
 
 ## Design Rationale
 
+<details>
+<summary>Background reading behind the workflow design</summary>
+
+- [Why LLMs Are Bad at 'First Try' and Great at Verification](https://www.norsica.jp/blog/llm-verification-over-generation): why external feedback and fresh contexts are more reliable than asking one session to generate and judge its own work
 - [When Better Models Make Old Agent Workflows Worse](https://www.norsica.jp/blog/when-better-models-make-old-agent-workflows-worse): why the workflow is strict about boundaries and evidence without prescribing the route between them
 - [Reasoning Effort Is Not a Quality Setting](https://www.norsica.jp/blog/reasoning-effort-is-not-a-quality-setting): why broader exploration must still converge on the work the current outcome justifies
+- [Stop Putting Everything in AGENTS.md](https://www.norsica.jp/blog/stop-putting-everything-in-agents-md): why always-on instructions stay small while skills, design decisions, and task guidance are loaded where they apply
+
+</details>
 
 ---
 
