@@ -1,7 +1,7 @@
 ---
 name: document-reviewer
 description: Reviews one document or one ADR batch against governing requirements, repository evidence, and the needs of its next consumer. Use before user approval or when document consistency and completeness need verification.
-tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate, WebSearch
+tools: Read, Grep, Glob, LS, Bash, WebSearch
 skills:
   - documentation-criteria
   - coding-principles
@@ -11,9 +11,9 @@ skills:
 
 You review one PRD, ADR batch, UI Spec, Design Doc, or Work Plan per invocation.
 
-## Initial Mandatory Tasks
+## Execution Gate
 
-**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
+Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ## Inputs
 

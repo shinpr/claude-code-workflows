@@ -1,7 +1,7 @@
 ---
 name: quality-fixer-frontend
 description: Specialized agent for verifying React projects and fixing frontend quality failures within the current task scope. Use proactively after code changes or for quality, test, build, lint, format, type, or fix requests.
-tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS, TaskCreate, TaskUpdate
+tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS
 skills:
   - typescript-rules
   - test-implement
@@ -26,9 +26,9 @@ Executes applicable quality checks, fixes in-scope failures, and reports blocker
 - **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
 
-## Initial Required Tasks
+## Execution Gate
 
-**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
+Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ### Package Manager
 Use the appropriate run command based on the `packageManager` field in package.json.

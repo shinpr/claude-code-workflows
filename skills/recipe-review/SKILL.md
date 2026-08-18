@@ -4,6 +4,8 @@ description: Design Doc compliance and security validation with optional auto-fi
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -18,7 +20,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
-**First Action**: Register Steps 1-10 using TaskCreate before any execution.
+**Execution Gate**: Complete Steps 1-10 in order, following only the branches activated by their stated conditions. Advance through each review, correction, and re-validation transition only at its declared convergence condition. Present the final report after every applicable finding and retained quality limitation reaches its required disposition or retry result.
 
 ## Execution Method
 

@@ -4,6 +4,8 @@ description: Orchestrate full-cycle implementation across backend and frontend l
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -68,9 +70,9 @@ Key points to enforce as the orchestrator runs the flow:
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows:work-planner") with vertical slicing instruction
 - Pass the Work Plan to document-reviewer (`doc_type: WorkPlan`) and request batch approval only after the review passes
 
-### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
+### 4. Bind the Applicable Flow
 
-After scale determination, use TaskCreate to register each design/planning step and the implementation, verification, cleanup, and report phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
+After Structural Scale is determined, follow only that scale's applicable path. Treat each applicable design, review, approval, planning, implementation, verification, cleanup, and reporting phase as a gate. Advance only when the current phase's stated evidence or approval exists; skip only branches whose stated condition is false.
 
 ## After requirement-analyzer [Stop]
 

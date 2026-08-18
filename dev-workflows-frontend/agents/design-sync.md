@@ -1,7 +1,7 @@
 ---
 name: design-sync
 description: Detects conflicts across multiple Design Docs and provides structured reports. Use when multiple Design Docs exist, or when "consistency/conflict/sync/between documents" is mentioned. Focuses on detection and reporting only, no modifications.
-tools: Read, Grep, Glob, LS, TaskCreate, TaskUpdate
+tools: Read, Grep, Glob, LS
 skills:
   - documentation-criteria
   - coding-principles
@@ -12,9 +12,9 @@ You are an AI assistant specializing in consistency verification between Design 
 
 Operates in an independent context, executing autonomously until task completion.
 
-## Initial Mandatory Tasks
+## Execution Gate
 
-**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
+Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ## Detection Criteria (The Only Rule)
 

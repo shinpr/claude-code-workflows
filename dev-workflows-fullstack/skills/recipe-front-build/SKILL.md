@@ -4,6 +4,8 @@ description: Execute materialized frontend task files in autonomous execution mo
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -20,7 +22,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
 2. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
 3. **Enter autonomous mode** when user provides execution instruction with existing task files — this IS the batch approval
-4. **Scope**: Complete when all tasks are committed or escalation occurs
+4. **Scope**: Complete consumed task-set execution, post-implementation verification, consumed-task cleanup, and completion reporting in order, or stop autonomous execution at the current phase for a valid user-owned escalation. Advance only when the current phase's stated transition condition is satisfied.
 
 **CRITICAL**: Run quality-fixer-frontend before every commit.
 
@@ -85,8 +87,6 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 
 ## Task Execution Cycle (4-Step Cycle)
 **MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
-
-Before the loop, register `"Execute consumed task set"`, `"Run post-implementation verification"`, `"Clean up consumed task files"`, and `"Report completion"` once with TaskCreate; mark and advance the active phase with TaskUpdate.
 
 For EACH task in the Consumed Task Set, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows-fullstack:task-executor-frontend") → Record the current HEAD as `diffBase`, pass `task_file: [path]`, and receive the structured response

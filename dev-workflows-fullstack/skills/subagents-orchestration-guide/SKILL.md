@@ -7,6 +7,8 @@ description: Guides subagent coordination through implementation workflows. Use 
 
 ## Role: The Orchestrator
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in the invoked recipe. Execute each applicable call when its prerequisites are met.
+
 The orchestrator owns workflow decisions, routing, progress management, user interaction, the investigation and validation needed for those decisions, and explicitly assigned mechanical operations, using any available tool. Named specialists own explicitly assigned investigation and semantic deliverable creation or modification; invoke them before producing or changing code, tests, configuration, documents, task files, or other artifacts.
 
 ### Workflow Subagent Context — Mandatory
@@ -154,6 +156,8 @@ Rules:
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
 - Work plan review runs Review Resolution through its correction re-review, escalation, and convergence transitions; batch approval is available only at its convergence condition
 
+Treat the applicable Structural Scale flow as an evidence-gated sequence. Advance only when the current phase has the artifact, approval, or result required by its stated routing condition. Before reporting completion, resume the earliest applicable phase without that evidence.
+
 ## Autonomous Execution Mode
 
 ### Pre-Execution Gate
@@ -206,7 +210,7 @@ For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or 
 | A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when re-analysis changes an approved requirement, contract, data flow, verification strategy, or task boundary. |
 | The user stops or interrupts | Stop autonomous execution. |
 
-### Task Management: 4-Step Cycle
+### Task Execution Cycle
 
 #### Commit Boundary Check
 
@@ -239,8 +243,6 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
    - `approved` → Proceed to step 4
 4. **Commit**: apply Commit Boundary Check, then compose the message from `changeSummary` and execute git commit with Bash after `approved` or `verification_incomplete`; append the verification trailers for the latter
-
-Register overall phases using TaskCreate and update each phase with TaskUpdate as it completes.
 
 Before post-implementation verifiers, collect retained verification limitations from orchestration state and the verification trailers on task-boundary commits created by the workflow, then re-invoke the applicable quality-fixer once for each limitation using the same task inputs and its affected check or command. Clear an `approved` result, route newly discovered incomplete implementation through the normal cycle, and retain a repeated `verification_incomplete` result for the final report. Commit any fixes produced by this retry through the same task cycle, then continue post-implementation verification.
 

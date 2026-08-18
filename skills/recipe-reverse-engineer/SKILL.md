@@ -4,6 +4,8 @@ description: Generate PRD and Design Docs from existing codebase through discove
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -27,7 +29,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**Task Registration**: Register phases first using TaskCreate, then steps within each phase as you enter it. Update status using TaskUpdate.
+**Execution Gate**: Complete Phase 1 before Phase 2. Within each phase, complete one unit's generation, verification, review, and required revision to convergence before starting the next unit. Advance only when the current step's stated output and quality gate are satisfied. At each loop boundary, select the first unit in the current phase's declared order whose Unit Completion conditions are unsatisfied and that is not logged as a generation failure. A document path proves generation only.
 
 ## Step 0: Initial Configuration
 
@@ -62,10 +64,6 @@ Phase 2: Design Doc Generation (if requested)
 ```
 
 ## Phase 1: PRD Generation
-
-**Register using TaskCreate**:
-- Step 1: PRD Scope Discovery
-- Per-unit processing (Steps 2-5 for each unit)
 
 ### Step 1: PRD Scope Discovery
 
@@ -196,10 +194,6 @@ prompt: |
 ## Phase 2: Design Doc Generation
 
 *Execute only if Design Docs were requested in Step 0*
-
-**Register using TaskCreate**:
-- Step 6: Design Doc Scope Mapping
-- Per-unit processing (Steps 7-10 for each unit)
 
 ### Step 6: Design Doc Scope Mapping
 

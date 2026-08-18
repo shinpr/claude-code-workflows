@@ -4,6 +4,8 @@ description: Execute from repository evidence through applicable UI Spec and opt
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: documentation-criteria before document routing or creation.
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before invoking agents or resolving findings.
