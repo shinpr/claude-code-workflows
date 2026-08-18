@@ -4,6 +4,8 @@ description: Orchestrate the complete implementation lifecycle from requirements
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -71,9 +73,9 @@ When user responds to questions:
 - Repeat the hearing until every convergence field is `ready` or `weak-but-explicit`, then proceed with the resulting Scale.
 - For Small, the user's requirement confirmation authorizes the direct implementation scope; proceed to the 4-step cycle without a Work Plan.
 
-### 4. Register All Flow Steps Using TaskCreate (MANDATORY)
+### 4. Bind the Applicable Flow
 
-After scale determination, use TaskCreate to register the applicable design/planning steps and the implementation, verification, report, and Medium/Large cleanup phases. Complete registration before invoking subagents; mark and advance the active phase with TaskUpdate.
+After Structural Scale is determined, follow only that scale's applicable path. Treat each applicable design, review, approval, planning, implementation, verification, cleanup, and reporting phase as a gate. Advance only when the current phase's stated evidence or approval exists; skip only branches whose stated condition is false.
 
 ## Subagents Orchestration Guide Compliance Execution
 

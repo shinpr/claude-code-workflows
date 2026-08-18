@@ -4,6 +4,8 @@ description: Adjust an already-implemented UI in-session with verification again
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 
 **Context**: UI adjustment on already-implemented features. The verification loop (edit → check against the design source → refine) runs in the parent session.
@@ -17,9 +19,9 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
-## Initial Mandatory Tasks
+## Execution Gate
 
-**Task Registration**: Before Step 1, register the recipe's execution flow using TaskCreate so progress is trackable. Register Steps 1-7 below as individual tasks plus a final task "Verify completion against Completion Criteria". Update status using TaskUpdate as each step starts and completes.
+Complete Steps 1-7 in order for each adjustment unit. Advance only through the current step's stated evidence, quality result, or user stop; skip work only when its stated condition is false. Report completion after every applicable Completion Criterion and retained-limitation retry is satisfied.
 
 ## Workflow Overview
 

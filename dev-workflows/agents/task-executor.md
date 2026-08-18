@@ -1,7 +1,7 @@
 ---
 name: task-executor
 description: Executes implementation completely self-contained from an explicit prompt or task file. Use when task files exist in docs/plans/tasks/, or when "execute task/implement task/start implementation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
-tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS, TaskCreate, TaskUpdate
+tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS
 skills:
   - coding-principles
   - testing-principles
@@ -34,7 +34,7 @@ Implement the confirmed outcome and the maintenance, tests, and adjacent correct
 
 ## Mandatory Rules
 
-**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
+Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ### Applying to Implementation
 Apply loaded architecture/coding/testing rules during implementation, including the selected test-first or behavior-preserving refactor flow; when a task file is provided, **MUST strictly adhere to its implementation patterns (function vs class selection)**.

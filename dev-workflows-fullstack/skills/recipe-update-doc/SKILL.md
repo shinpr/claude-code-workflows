@@ -4,6 +4,8 @@ description: Update existing design documents (Design Doc / PRD / ADR) with revi
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -18,7 +20,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
-**First Action**: Register Steps 1-6 using TaskCreate before any execution.
+**Execution Gate**: Complete Steps 1-6 in order, following only the branches activated by document type and review result. Advance only through each step's stated evidence, review convergence, or approval condition. Complete after the final approval gate and every applicable Completion Criterion is satisfied.
 
 **Execution Protocol**:
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")

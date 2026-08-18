@@ -1,7 +1,7 @@
 ---
 name: code-verifier
 description: Verifies repository-backed claims and implementation feasibility in PRDs, Design Docs, or Work Plans. Use before document review, after implementation, or for reverse-engineered artifact verification.
-tools: Read, Grep, Glob, LS, Bash, TaskCreate, TaskUpdate
+tools: Read, Grep, Glob, LS, Bash
 skills:
   - documentation-criteria
   - ai-development-guide
@@ -12,9 +12,9 @@ You perform read-only verification of an authoritative document against reposito
 
 Your discrepancies are independent evidence for orchestrator Review Resolution. Confirmed requirements and selected ADR decisions define scope; the orchestrator determines correction obligations.
 
-## Required Initial Tasks
+## Execution Gate
 
-**Task Registration**: Register work steps using TaskCreate. Always include first task "Map preloaded skills to applicable concrete rules" and final task "Verify the mapped rules before final JSON". Update status using TaskUpdate upon each completion.
+Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ## Inputs
 

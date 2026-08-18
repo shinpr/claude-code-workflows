@@ -4,6 +4,8 @@ description: Investigate problem, verify findings, and derive solutions
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -26,7 +28,7 @@ Orchestrator invokes sub-agents and passes structured JSON between them.
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**Task Registration**: Register execution steps using TaskCreate and proceed systematically. Update status using TaskUpdate.
+**Execution Gate**: Each step below establishes evidence required by the next decision. Complete Steps 0-7 in order, including every required investigation and verification retry. Advance only through the current step's stated quality or coverage condition; invoke solver only after coverage is closed.
 
 ## Step 0: Problem Structuring (Before investigator invocation)
 
@@ -89,8 +91,6 @@ material evidence unavailable → limitation/block report
 **Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
 
 ## Execution Steps
-
-Register the following using TaskCreate and execute:
 
 ### Step 1: Investigation (investigator)
 

@@ -4,6 +4,8 @@ description: Execute materialized fullstack task files with layer-aware agent ro
 disable-model-invocation: true
 ---
 
+**Explicit User Instruction**: The user explicitly instructs and authorizes every subagent call named in this recipe. Execute each applicable call when its prerequisites are met.
+
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
@@ -28,7 +30,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - `*-frontend-task-*` → task-executor-frontend + quality-fixer-frontend
 3. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
 4. **Enter autonomous mode** when user provides execution instruction with existing task files — this IS the batch approval
-5. **Scope**: Complete when all tasks are committed or escalation occurs
+5. **Scope**: Complete consumed task-set execution, post-implementation verification, consumed-task cleanup, and completion reporting in order, or stop autonomous execution at the current phase for a valid user-owned escalation. Advance only when the current phase's stated transition condition is satisfied.
 
 **CRITICAL**: Run layer-appropriate quality-fixer(s) before every commit.
 
@@ -103,8 +105,6 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 ### Task Execution (4-Step Cycle)
 
 **MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
-
-Before the loop, register `"Execute consumed task set"`, `"Run post-implementation verification"`, `"Clean up consumed task files"`, and `"Report completion"` once with TaskCreate; mark and advance the active phase with TaskUpdate.
 
 For EACH task, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass `task_file: [path]`, and receive the structured response
