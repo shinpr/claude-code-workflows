@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shinpr/claude-code-workflows/pulls)
 
+**English** | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [한국어](README.ko.md) | [Português (Brasil)](README.pt-BR.md)
+
 Claude Code can explore a codebase deeply. On non-trivial work, the harder problem is convergence. While designing an account-recovery flow, Claude may find a real inconsistency in token handling and spend most of the design on it, leaving the requested recovery behavior vague.
 
 claude-code-workflows keeps that exploration pointed at an agreed result. It agrees on the outcome and exclusions before design, checks designs against the repository, verifies each task before commit, and, on larger changes, independently reviews the finished implementation for intended behavior and security. Within that scope, Claude chooses the implementation details from the codebase.
