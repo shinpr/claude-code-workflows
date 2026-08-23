@@ -112,7 +112,9 @@ O caminho é determinado pelo número de decisões de produto e design, não pel
 
 UI Specs, ADRs e esqueletos de testes de integração ou E2E só aparecem quando as respectivas decisões ou fronteiras de verificação se aplicam.
 
-Gerar um documento, por si só, não faz o fluxo avançar. Premissas que podem alterar o design escolhido precisam ser resolvidas com evidências verificáveis antes da aprovação. Se as evidências do repositório e as fontes confiáveis não bastarem para a decisão, a etapa de verificação identifica primeiro o que falta comprovar. Se um teste delimitado for a forma mais simples e suficiente de obter essa evidência, o agente responsável pelo design o executa uma única vez e descarta os artefatos temporários. O Work Plan é revisado quanto à cobertura, à ordem das dependências e à viabilidade das verificações antes de autorizar a implementação. Cada tarefa só entra em um commit depois de passar pelas verificações específicas e pelos controles aplicáveis do repositório. Ao fim da implementação em etapas, revisões separadas examinam a consistência com o design, a cobertura observável e a segurança.
+Gerar um documento, por si só, não faz o fluxo avançar. Premissas que podem alterar o design escolhido precisam ser resolvidas com evidências verificáveis antes da aprovação; um teste delimitado só é usado quando for a forma mais simples e suficiente de comprová-las.
+
+O Work Plan é revisado quanto à cobertura, à ordem das dependências e à viabilidade das verificações antes de autorizar a implementação. Cada tarefa só entra em um commit depois de passar pelas verificações específicas e pelos controles aplicáveis do repositório. Ao fim da implementação em etapas, revisões separadas examinam a consistência com o design, a cobertura observável e a segurança.
 
 A sessão principal decide quais descobertas pertencem ao resultado atual, resolve dúvidas de implementação com base no repositório e mantém em andamento o trabalho que não foi afetado. Sugestões de revisão não viram tarefas automaticamente. Correções aceitas retornam à implementação e passam novamente pelos controles afetados.
 
