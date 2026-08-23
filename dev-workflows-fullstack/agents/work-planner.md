@@ -56,7 +56,7 @@ Record each obligation only as its governing path and section or AC identifier.
 
 Apply the Design Doc's implementation approach and dependency order.
 
-1. Treat the approved Direct MVP and adopted necessary additions as the complete implementation scope.
+1. Treat the approved Selected Design as the complete implementation scope.
 2. Group source, tests, repository configuration, wiring, and documentation that become complete at the same observable verification point.
 3. Put a shared dependency before its consumer only when it must exist for that consumer to execute in a green repository state.
 4. Use each skeleton's `@lane` as its placement rule: assign `integration` to the earliest task where its declared boundary becomes executable, `fixture-e2e` alongside the owning UI feature, and `service-integration-e2e` to the final implementation phase after its services are executable. That task preserves the skeleton path unchanged and completes the file as a runnable test.

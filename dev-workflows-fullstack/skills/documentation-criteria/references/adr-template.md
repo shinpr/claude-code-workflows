@@ -37,12 +37,12 @@ A created ADR starts at `Proposed` and advances `Proposed` → `Accepted` → `D
 
 Compare credible, materially distinct options supported by current requirements and repository evidence. The evidence determines how many options exist, and relative evidence-backed cost is sufficient. Add a Mermaid option-comparison diagram only when the relationship between options stays unclear in the table below.
 
-| Option | Requirement and repository fit | Current-scope benefit | Lifecycle cost | Maintainability | Material trade-offs |
-|--------|--------------------------------|-----------------------|----------------|-----------------|---------------------|
-| [Option 1] | [fit and evidence] | [benefit required now] | [implementation, operation, change, reversal] | [fit with ownership and representative patterns] | [trade-offs] |
-| [Option 2] | [fit and evidence] | [benefit required now] | [implementation, operation, change, reversal] | [fit with ownership and representative patterns] | [trade-offs] |
+| Option | Confirmed product value | Repository fit | Total complexity | Maintainability | Material trade-offs | Reversibility |
+|--------|-------------------------|----------------|------------------|-----------------|---------------------|---------------|
+| [Option 1] | [value required now] | [fit and evidence] | [materially different activated surfaces and lifecycle costs] | [fit with ownership and representative patterns] | [trade-offs] | [cost and conditions to reverse] |
+| [Option 2] | [value required now] | [fit and evidence] | [materially different activated surfaces and lifecycle costs] | [fit with ownership and representative patterns] | [trade-offs] | [cost and conditions to reverse] |
 
-**Selected**: [The smallest sufficient option whose maintainability and lifecycle cost are justified by its current-scope benefit]
+**Selected**: [The smallest sufficient option whose total complexity is justified by confirmed product value and repository evidence]
 
 ## Consequences
 

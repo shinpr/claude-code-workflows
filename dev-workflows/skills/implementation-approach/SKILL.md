@@ -7,7 +7,7 @@ description: Implementation strategy selection framework. Use when planning impl
 
 ## Meta-cognitive Strategy Selection Process
 
-### Phase 1: Comprehensive Current State Analysis
+### Phase 1: Decision-Sufficient Current State Analysis
 
 **Core Question**: "What does the existing implementation look like?"
 
@@ -24,18 +24,20 @@ Historical Context Understanding: Current form rationale, past decision validity
 - What dependencies or implicit preconditions are unclear from the code?
 - What benefits and constraints does the current design bring?
 
+Stop when another current-state fact cannot change responsibility, reuse, option validity, total complexity, a contract, or verification.
+
 ### Phase 2: Design Convergence
 
 Complete these steps in order before selecting an implementation strategy:
 
-1. **Direct MVP**: Describe the simplest end-to-end design that delivers the current required outcome using existing system capabilities. Explicit user requirements and confirmed decisions are binding; technical mechanisms framed as suggestions or options remain candidates unless confirmed as mandatory.
-2. **Failure Check**: Test the Direct MVP against current requirements, verified constraints, observed problems within confirmed scope or dependencies required for the outcome, and evidence-backed material risks. Record only unmet items as `Failed Items` with their evidence; record `None` when all pass. Report problems outside that boundary separately for a scope decision.
-3. **Targeted Expansion**: For each Failed Item, first test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary within the existing design surface. When these fail, select the smallest sufficient addition. Record `Adopted Additions` as addition → Failed Item → evidence that lower-surface resolutions fail; an addition requires a Failed Item.
-4. **Subtraction Check**: Temporarily remove each Adopted Addition and re-test its Failed Item. Keep the addition when the item becomes unmet again. Record options considered in step 3 but not adopted as `Rejected Additions` with a brief reason; record `None` when step 3 had no rejected candidate.
+1. **Existing-Surface Baseline**: Form the simplest end-to-end path that delivers the current outcome through existing responsibilities. Explicit requirements and accepted decisions are binding; suggested mechanisms remain candidates.
+2. **Evidence Check**: Test that path against current requirements, verified constraints, observed in-scope problems, and evidence-backed material risks. Keep only the unmet conditions that can change the selected design.
+3. **Targeted Comparison**: For each unmet condition, test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary before adding design surface. Compare viable choices by total complexity across the dimensions that materially differ: user decisions, settings, modes, concepts, outputs, persistent state, implementation paths, UX, runtime, implementation, testing, documentation, and maintenance. Select the lowest-total-complexity choice that satisfies the condition.
+4. **Subtraction Check**: Remove each proposed addition and re-test its governing condition. Retain it only when the confirmed outcome, a required boundary, or necessary proof becomes unmet.
 
 Classify supporting claims as observed, inferred, or unknown. When an unknown blocks the next step, stop at the current step and name the evidence or user decision required.
 
-**Phase 2 outputs**: Direct MVP, Failed Items, Adopted Additions, and Rejected Additions. A Design Doc author records all four; an implementer uses them as the convergence check without producing a document.
+Candidate paths and rejected additions remain active analysis. The durable output is the **Selected Design**: the complete chosen path plus evidence for each added design surface and the condition that fails when it is removed. An accepted ADR may retain alternatives as decision history. An implementer uses the same convergence check without producing a separate artifact.
 
 ### Phase 3: Strategy Exploration and Creation
 
@@ -123,10 +125,12 @@ Select the implementation approach that directly fits the verified dependency an
 
 Record in the applicable implementation or design decision record:
 1. Selected strategy name and characteristics
-2. A materially different alternative and reason for rejection, when one was compared
+2. Current evidence and total-complexity basis for added design surface
 3. Controls for each material risk activated in Phase 4
 4. Compatibility with each decision-relevant constraint activated in Phase 5
 5. Verification level (L1/L2/L3) and integration point definition
+
+Alternatives remain active analysis unless an accepted ADR owns them as decision history.
 
 ## Verification Level Definitions
 
@@ -149,10 +153,10 @@ Define integration points according to selected strategy:
 ## Quality Checks
 
 1. Confirm Phase 1 identifies the current responsibility, dependency path, and historical constraints before selecting a strategy
-2. Confirm Phase 2 records all four Design Convergence outputs, evidence for every Failed Item, and each Adopted Addition's Failed Item mapping, lower-surface insufficiency rationale, and subtraction result
+2. Confirm Phase 2 produces one complete Selected Design and every added design surface maps to current evidence, lower-surface insufficiency, and a failed condition under subtraction
 3. Confirm Phase 4 records concrete controls for every evidenced material risk; no entry is required for an inapplicable category
 4. Confirm Phase 5 checks every evidenced constraint that can change strategy selection or verification; no entry is required for an inapplicable category
-5. Confirm Phase 7 records the selected strategy, any materially different alternative, and the early verification point
+5. Confirm Phase 7 records the selected strategy, its total-complexity basis, and the early verification point; alternatives appear only in an accepted ADR
 
 ## Guidelines for Meta-cognitive Execution
 

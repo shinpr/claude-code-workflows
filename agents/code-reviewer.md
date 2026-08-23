@@ -258,4 +258,4 @@ Recommend higher-level review when:
 - Implementation significantly exceeds Design Doc quality
 - Security concerns discovered
 - Critical performance issues found
-- Implementation introduces persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits absent from both the Design Doc's Direct MVP and Adopted Additions
+- Implementation introduces persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits absent from the Design Doc's Selected Design

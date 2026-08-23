@@ -57,13 +57,14 @@ Verify current external facts from authoritative sources only when an ADR select
 
 ### ADR Batch
 
+- For ADR and Design Doc checks, total complexity covers every activated user decision, setting, mode, concept, output, persistent state, and implementation path, together with its UX, runtime, implementation, testing, documentation, and maintenance cost; compare only dimensions that differ between valid options.
 - Each ADR owns one technical question inside confirmed scope.
 - Current requirements and repository evidence support at least two credible, materially distinct options, and the choice has durable impact.
-- Options compare requirement/repository fit, current-scope benefit, lifecycle cost, maintainability, material trade-offs, and reversibility using available evidence.
-- The selected option is necessary and sufficient for the approved outcome and has the lowest justified lifecycle cost among valid options. A more expensive option has a current-scope benefit that changes the selection.
+- Options compare confirmed product value, repository fit, total complexity, maintainability, material trade-offs, and reversibility using available evidence.
+- The selected option is necessary and sufficient for the approved outcome and has the lowest justified total complexity among valid options. A more expensive option has confirmed product value that changes the selection.
 - Relative evidence is sufficient. A numeric estimate or fixed option count applies only when governing evidence requires it.
 - The selected decision alone constrains the downstream Design Doc for that technical question. Implementation procedure, end-to-end design, release strategy, and work planning remain outside the ADR.
-- For a batch, decision ownership does not overlap and the selected combination has justified cumulative lifecycle cost.
+- For a batch, decision ownership does not overlap and the selected combination has justified cumulative total complexity.
 
 ### UI Spec
 
@@ -75,9 +76,9 @@ Verify current external facts from authoritative sources only when an ADR select
 
 - Each confirmed requirement maps to an adopted end-to-end flow or concrete verification evidence; exclusions are not implemented indirectly.
 - The Design Doc remains the complete implementation design and carries the flow, contracts, impact, and verification design; ADRs constrain selected technical questions.
-- Existing dependencies and behavioral premises relied upon by the design have evidence, or a material unverified premise records its limitation and an executable in-scope verification or guard.
+- Every premise that can change the Selected Design is resolved by current evidence before approval. Risks contain only residual implementation uncertainty whose possible outcomes leave the Selected Design valid, with an executable in-scope verification or guard when needed.
 - Every supplied code/UI focus area has one evidence-preserving Fact Disposition row. This check protects existing behavior; it does not require disposition rows for unrelated discovered symbols.
-- Direct MVP delivers the outcome. Each added persistent mechanism resolves a recorded requirement failure, verified constraint, observed problem, accepted decision, or material in-scope risk, and subtraction evidence identifies the unmet condition that returns when it is removed.
+- The Selected Design delivers the outcome. Each added design surface resolves a current requirement, verified constraint, observed problem, accepted decision, or evidence-backed material risk; lower-surface insufficiency and subtraction evidence show why the added complexity is necessary.
 - Applicable responsibility, integration points, interfaces, data/error contracts, state/persistence transitions, exact serialized field propagation, compatibility, data representation, security, and test boundaries supply the details required for implementation.
 - Behavior replacement or transformation has a representative output-comparison method covering applicable pipeline steps.
 - Applicable standards and repository checks retain source evidence and adoption decisions.
@@ -100,10 +101,13 @@ Create an issue only when the artifact otherwise:
 
 - contradicts a governing source;
 - describes an incorrect approved outcome or contract;
-- leaves approved implementation non-executable; or
-- leaves a required result non-verifiable.
+- leaves approved implementation non-executable;
+- leaves a required result non-verifiable; or
+- commits downstream implementation to added design surface whose total complexity lacks current evidence and whose removal still satisfies the confirmed outcome, boundaries, and required proof.
 
 Every issue includes its governing `basis` and the observable `expectedEffect` of correction. Group observations that share one violated basis and one correction into one issue with related locations. Omit scope additions, optional hardening, external operations, extra Product Context, duplicate proof, stylistic completeness, and template-only omissions from the review result.
+
+For an unresolved decision-changing premise, state the exact premise, design effect, and observable evidence needed; set `requiredEvidence` to that exact observable fact. Use `null` for other issues. The owning designer chooses the correction route under its update-mode evidence gate.
 
 For `prior_feedback`, re-check only the affected boundary and dependent consistency while confirming required safeguards still exist. Mark an applied item `resolved` when current evidence satisfies it. Mark a declined item `withdrawn` when its basis no longer holds. `maintained` requires current or new evidence of one of the issue conditions above; otherwise withdraw the repeated preference.
 
@@ -124,7 +128,7 @@ Return exactly one JSON object:
   "metadata": {"doc_type": "DesignDoc|ADRBatch", "targets": ["docs/design/example.md"]},
   "verdict": {"decision": "approved|needs_revision|rejected"},
   "issues": [
-    {"id": "I001", "category": "consistency|completeness|compliance|clarity|feasibility", "target": "artifact path", "location": "section or line", "relatedLocations": ["same-cause location"], "description": "specific issue", "basis": "governing source or observed fact", "expectedEffect": "observable effect of correction", "correction": "smallest sufficient correction"}
+    {"id": "I001", "category": "consistency|completeness|compliance|clarity|feasibility", "target": "artifact path", "location": "section or line", "relatedLocations": ["same-cause location"], "description": "specific issue", "basis": "governing source or observed fact", "expectedEffect": "observable effect of correction", "requiredEvidence": "exact observable fact needed for an unresolved decision-changing premise", "correction": "smallest sufficient correction"}
   ],
   "prior_feedback_reconciliation": [
     {"id": "D001", "prior_disposition": "apply|decline", "status": "resolved|withdrawn|maintained", "evidence": "current governing evidence"}
@@ -140,6 +144,7 @@ Use one `target` as the sole `targets` entry for a non-batch review. Initial rev
 - Only checks activated by the artifact's scope were applied, while all applicable historical safeguards remained enforced.
 - An ADR batch was reviewed as one decision set.
 - Same-cause observations were grouped into one correction obligation.
-- Every issue ties to one of the four issue conditions.
+- Every issue ties to one of the five issue conditions.
+- Every issue about an unresolved decision-changing premise carries route-independent `requiredEvidence`.
 - `approved` has no issue or follow-on correction work.
 - The response is one valid JSON object.

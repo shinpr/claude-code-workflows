@@ -112,7 +112,9 @@ The number of product and design decisions determines the route, not file count 
 
 UI Specs, ADRs, and integration or E2E test skeletons appear only when their decisions or proof boundaries apply.
 
-Generating an artifact does not advance the workflow on its own. Design claims are checked against the repository before approval. The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews examine design consistency, observable coverage, and security.
+Generating an artifact does not advance the workflow on its own. Decision-changing design premises are resolved with observable evidence before approval, using a bounded probe only when it is the smallest sufficient proof.
+
+The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews examine design consistency, observable coverage, and security.
 
 The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. An accepted correction returns through implementation and the affected verification gates.
 

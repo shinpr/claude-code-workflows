@@ -38,7 +38,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
   - `reverse-engineer`: Create PRD from existing implementation (Reverse PRD)
 
 - **Requirements Analysis Results**: Requirements analysis results
-- **Convergence Result**: The `convergence` object (HC-01b) → `outcome` anchors Success Criteria; `nonGoals` and `speculative` requirements populate `Future / Out of Scope` with origin `user`. Treat both as excluded from MVP Requirements
+- **Convergence Result**: The `convergence` object (HC-01b) → `outcome` anchors Success Criteria; user-authored `nonGoals` populate `Future / Out of Scope`. The PRD contains confirmed requirements and boundaries; evaluation requests, speculative ideas, and unselected mechanisms remain only in pre-confirmation convergence context
 - **Existing PRD**: Path to existing PRD file for reference (if any)
 - **Project Context**:
   - Target users (sales, marketing, HR, etc.)
@@ -114,7 +114,7 @@ PRDs focus solely on "what to build." Implementation phases and task decompositi
 1. State the user problem and value as observable outcomes
 2. Define the smallest coherent behavior or journey that delivers that value
 3. Keep a candidate behavior in the MVP only when removing it would break that value or a required legal, contractual, security, or compatibility obligation
-4. Record every excluded capability under Future or Out of Scope with a brief reason
+4. Limit Future or Out of Scope to user-authored non-goals and current exclusions needed to make the MVP boundary executable
 
 ### 3. Measurable Success Metrics
 - Set specific numerical targets for quantitative metrics

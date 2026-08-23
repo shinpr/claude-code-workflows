@@ -116,14 +116,14 @@ Keep verifier observations unchanged so corrections remain traceable to observed
 
 Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and the Design Doc path to verify current premises and feasibility while treating planned behavior as intent.
 
-Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to technical-designer in update mode and rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
+Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to a fresh technical-designer update invocation with `Operation Mode: update`, `Existing Document: [Design Doc path]`, and `correction_findings: [complete findings unchanged except for their dispositions]`. The designer applies its review-triggered bounded self-verification gate when a finding names an unverified decision-changing premise; this fresh designer is the sole correction specialist and selects the evidence route. Rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
 
 ## Step 7: Review and Approve
 
 Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `confirmed_requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
 
 - `approved`: continue.
-- `needs_revision`: apply Review Resolution, update through technical-designer, then rerun Steps 6-7 for the affected boundary.
+- `needs_revision`: apply Review Resolution, update through a fresh technical-designer invocation using the existing path and complete applied findings, then rerun Steps 6-7 for the affected boundary.
 - `rejected`: resolve the governing-source conflict; ask the user only when it changes the product outcome or a major approved decision.
 
 Invoke `dev-workflows-fullstack:design-sync` for consistency with other Design Docs and apply Review Resolution to actionable conflicts. Report `SKIPPED` distinctly when only one Design Doc exists.

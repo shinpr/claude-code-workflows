@@ -112,7 +112,9 @@ El recorrido depende de la cantidad de decisiones de producto y diseño, no del 
 
 Las UI Specs, los ADR y los esqueletos de pruebas de integración o E2E solo aparecen cuando hacen falta sus decisiones o sus límites de verificación.
 
-Generar un documento no hace avanzar el flujo por sí solo. Las afirmaciones del diseño se comprueban contra el repositorio antes de aprobarlo. El Work Plan se revisa para comprobar cobertura, orden de dependencias y verificaciones ejecutables antes de autorizar la implementación. Cada tarea se incorpora a un commit solo después de pasar sus controles específicos y los controles aplicables del repositorio. Al terminar la implementación por etapas, revisiones separadas examinan la coherencia con el diseño, la cobertura observable y la seguridad.
+Generar un documento no hace avanzar el flujo por sí solo. Las premisas que podrían cambiar el diseño elegido deben resolverse con evidencia comprobable antes de aprobarlo; solo se recurre a una prueba acotada cuando sea la forma más sencilla y suficiente de obtenerla.
+
+El Work Plan se revisa para comprobar cobertura, orden de dependencias y verificaciones ejecutables antes de autorizar la implementación. Cada tarea se incorpora a un commit solo después de pasar sus controles específicos y los controles aplicables del repositorio. Al terminar la implementación por etapas, revisiones separadas examinan la coherencia con el diseño, la cobertura observable y la seguridad.
 
 La sesión principal decide qué hallazgos pertenecen al resultado actual, resuelve preguntas de implementación a partir del repositorio y mantiene en marcha el trabajo no afectado. Las sugerencias de una revisión no se convierten automáticamente en tareas. Las correcciones aceptadas vuelven a implementación y atraviesan de nuevo los controles correspondientes.
 
