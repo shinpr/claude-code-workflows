@@ -29,7 +29,7 @@ The orchestrator records one disposition for every actionable finding:
 
 | Disposition | Use when |
 |---|---|
-| `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, or leave required correctness or verification unsupported. |
+| `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, leave required correctness or verification unsupported, or commit downstream work to added design surface whose total complexity lacks current evidence. |
 | `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, depends on a property outside the reviewer's declared artifact boundary, or concerns other work outside that boundary. |
 | `user_decision_required` | Resolving the finding would change a confirmed product outcome, exclusion, major approved design decision, or requires authority held only by the user. |
 
@@ -48,7 +48,9 @@ Only findings with `apply`, and maintained `apply` findings under section 3, ent
 
 ## 2. Revise and Reconsider
 
-Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
+Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. Invoke a document author as a fresh update call with the original target and those findings; the artifact supplies unaffected context. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
+
+For an applied Design Doc finding about an unverified decision-changing premise, the fresh technical-designer invocation applies its bounded self-verification gate. The finding carries the exact premise and required evidence; the designer selects existing evidence, a smaller design valid under every unresolved outcome, or a probe when all gate conditions hold. Rerun the originating verifier or reviewer after the update.
 
 For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
 

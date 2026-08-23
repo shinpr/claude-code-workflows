@@ -46,9 +46,9 @@ Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules durin
 
 Deliver the outcome with types satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
 
-## Direct MVP Check (Before Mandatory Judgment)
+## Design Surface Check (Before Mandatory Judgment)
 
-Apply implementation-approach Design Convergence to the confirmed responsibility and starting paths. Use its `Failed Items` to challenge added mechanisms; include adjacent targets when the confirmed outcome's correctness or maintainability requires them.
+Apply implementation-approach Design Convergence to the confirmed responsibility and starting paths. Challenge added design surface against current evidence, lower-surface alternatives, total complexity, and subtraction; include adjacent targets when the confirmed outcome's correctness or maintainability requires them.
 
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 

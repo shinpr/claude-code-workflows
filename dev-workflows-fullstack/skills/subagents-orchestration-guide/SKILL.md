@@ -78,7 +78,7 @@ For frontend work, substitute task-executor-frontend and quality-fixer-frontend;
 
 ## Constraints Between Subagents
 
-**Important**: Subagents cannot directly call other subagents—all coordination flows through the orchestrator.
+Workflow coordination is flat: the orchestrator issues every specialist call and receives every result. Specialist definitions keep `Agent` outside their tool sets.
 
 ## Explicit Stop Points
 
@@ -151,6 +151,7 @@ Rules:
 - Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
 - Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add only their named UI or layer artifact paths
 - Resolve code-verifier discrepancies through Review Resolution before invoking document-reviewer; pass the exact HC-04 inputs rather than a narrative evidence bundle
+- An applied `unverified` discrepancy returns through a fresh owning technical-designer update invocation. Capability probing is reserved for the designer's review-triggered gate, with that fresh designer as the sole correction specialist
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
@@ -255,7 +256,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-01b: convergence record → document owner
 - Pass the orchestrator-judged `convergence` record to whichever agent owns the persisting document.
-- **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria`, and `nonGoals` plus `speculative` requirements to `Future / Out of Scope` with origin `user`
+- **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria` and user-authored `nonGoals` to `Future / Out of Scope`; the PRD contains confirmed requirements and boundaries while evaluation requests, speculative ideas, and unselected mechanisms remain only in pre-confirmation convergence context
 - **technical-designer / technical-designer-frontend**: persists the same to the Design Doc's `Requirement Convergence` when no PRD exists, and always records the fields left `weak-but-explicit` there
 - Pass the record unchanged; a field's readiness label travels with it
 
@@ -271,6 +272,11 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-03: technical-designer → code-verifier
 - Pass the Design Doc path with `doc_type: design-doc`.
+
+### HC-03b: applied design-evidence finding → technical-designer
+- Invoke the owning designer as a fresh `update` call with the existing Design Doc path and complete `correction_findings` objects copied verbatim with only their `apply` dispositions added.
+- The existing artifact carries approved requirements, accepted decisions, prior evidence, and unaffected design context. Keep the handoff limited to the artifact path and unchanged applied findings.
+- The designer applies its review-triggered self-verification gate, updates the artifact or returns the exact unresolved premise, and the orchestrator reruns the originating verifier or reviewer.
 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.

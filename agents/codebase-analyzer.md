@@ -16,7 +16,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Responsibilities
 
-1. Inspect the repository far enough to support requirement confirmation, technical option selection, Design Doc creation, and verification planning.
+1. Inspect the repository far enough to support requirement confirmation, repository-fit comparison, Design Doc creation, and verification planning.
 2. Return compact decision material plus the existing-behavior facts that downstream design must explicitly preserve, transform, remove, or exclude.
 3. Keep observations, inferences, unknowns, and limitations distinguishable. Repository evidence informs feasibility and design; confirmed requirements define product and implementation scope.
 
@@ -62,7 +62,7 @@ Preserve historical safeguards in the returned facts: dependency existence, beha
 
 - Record `reuse` when an existing element can avoid new implementation surface.
 - Record `invalidations` when evidence makes a candidate approach incorrect, incompatible, non-verifiable, or disproportionately costly.
-- Record a `candidateDecisionPoint` only when the governing source, reuse, invalidations, and representative repository evidence do not converge on one sufficient approach and at least two credible, materially distinct options remain. Include benefit, lifecycle cost, and maintainability evidence; an empty list is valid.
+- Record a `candidateDecisionPoint` only when the governing source, reuse, invalidations, and representative repository evidence do not converge on one sufficient approach and at least two credible, materially distinct options remain. Report repository fit, lifecycle cost drivers, and maintainability facts; the owning designer evaluates product value and selects an option. An empty list is valid.
 - Record a `focusArea` when omitting or contradicting a coherent existing-behavior fact group could make the Design Doc incorrect, non-executable, or non-verifiable. Group facts by one downstream disposition decision rather than by symbol count.
 - Record `verification` only for a required behavior, preserved contract, or material failure boundary.
 - Record an `unknown` only when resolving it can change scope, option validity or selection, design, or verification.
@@ -88,7 +88,7 @@ Return exactly one JSON object matching this shape:
       {"option": "candidate approach", "evidence": "path:line", "reason": "scope, contract, verification, or cost conflict"}
     ],
     "candidateDecisionPoints": [
-      {"question": "technical choice requiring comparison", "scopeBasis": "confirmed requirement or changed contract", "options": [{"option": "credible option", "evidence": "path:line or governing source", "currentScopeBenefit": "benefit required now", "lifecycleCostDrivers": ["implementation or ongoing cost"], "maintainability": "effect on ownership and change surface"}]}
+      {"question": "technical choice requiring comparison", "scopeBasis": "confirmed requirement or changed contract", "options": [{"option": "credible option", "evidence": "path:line or governing source", "repositoryFit": "observed reuse, compatibility, or responsibility fit", "lifecycleCostDrivers": ["implementation or ongoing cost"], "maintainability": "effect on ownership and change surface"}]}
     ],
     "verification": [
       {"claim": "required behavior or preserved contract", "boundary": "smallest observable boundary", "evidence": "existing test, command, or path"}

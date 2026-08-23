@@ -7,10 +7,12 @@ description: Applies React/TypeScript-specific technical decision criteria, anti
 
 ## Value-First Engineering
 
-Explore broadly, then converge on the lowest-lifecycle-cost solution that delivers the required user or maintainer value while keeping the UI correct and maintainable.
+Inspect until the evidence identifies the lowest-total-complexity solution that delivers the required user or maintainer value while keeping the UI correct and maintainable.
 - Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
 - Introduce state, props, variants, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
 - Treat behavior-preserving maintenance inside the confirmed responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
+
+Judge total complexity across every activated user decision, prop, state, variant, concept, output, persistent state, and component or hook path, together with its UX, runtime, implementation, testing, documentation, and maintenance cost. Compare only dimensions that differ between viable approaches. Prefer reuse or no new mechanism when it delivers the same confirmed value and proof at lower total complexity.
 
 ## Technical Anti-patterns (Red Flag Patterns)
 

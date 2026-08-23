@@ -57,6 +57,8 @@ Emit a discrepancy only when leaving it unresolved can change scope, feasibility
 
 Use `unverified` only for a specific material document claim whose unresolved truth can change scope, feasibility, implementation, a contract, or verification. Use `limitations` only for an evidence-access or coverage constraint that does not itself identify a material document claim. Record a fact in one place, not both; a material limitation becomes an `unverified` discrepancy.
 
+Set `requiredEvidence` to the exact observable fact needed to decide an `unverified` claim. Use `null` for other discrepancy statuses.
+
 ## Output
 
 Return exactly one JSON object:
@@ -67,7 +69,7 @@ Return exactly one JSON object:
   "blockingReason": null,
   "inventoryCoverage": null,
   "discrepancies": [
-    {"id": "D001", "status": "drift|gap|conflict|unverified", "claim": "document claim", "documentLocation": "section or line", "codeLocation": "file:line or null", "relatedLocations": ["other location with the same cause"], "evidence": "observed fact", "effect": "why this changes scope, feasibility, implementation, contract, or verification"}
+    {"id": "D001", "status": "drift|gap|conflict|unverified", "claim": "document claim", "documentLocation": "section or line", "codeLocation": "file:line or null", "relatedLocations": ["other location with the same cause"], "evidence": "observed fact", "effect": "why this changes scope, feasibility, implementation, contract, or verification", "requiredEvidence": "exact observable fact needed to decide an unverified claim"}
   ],
   "limitations": ["exact evidence-access or coverage constraint and its verification effect"]
 }
@@ -100,6 +102,7 @@ Status rules:
 - The central requirement and preserved contracts were checked before secondary details.
 - Supplied Unit Inventory coverage accounting includes every input item and is count-consistent.
 - Every discrepancy cites the document claim, observed evidence, and exact downstream effect.
+- Every `unverified` discrepancy names the exact observable evidence needed to decide the affected design independently of an investigation route.
 - Same-cause observations are grouped rather than emitted as separate work items.
 - Search breadth stopped at decision-relevant evidence.
 - The response is one valid JSON object.

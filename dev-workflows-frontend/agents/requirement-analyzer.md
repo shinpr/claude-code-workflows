@@ -22,7 +22,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ### 1. Extract Request Signals
 
-Preserve the user's apparent outcome, explicit current requirements, explicit exclusions, speculative ideas, and prescribed mechanisms as separate signals. An implementation suggestion or speculative idea becomes a requirement only through user confirmation.
+Classify each material request signal once by its primary role: apparent outcome, explicit current requirement, explicit exclusion, evaluation request, speculative idea, or prescribed mechanism. Preserve its verbatim wording and identify whether it came from `requirements` or `context`. Evaluation requests ask for judgment rather than implementation; speculative ideas and prescribed mechanisms remain candidates unless the user explicitly confirms them as current requirements.
 
 ### 2. Collect Shallow Scope Evidence
 
@@ -43,11 +43,12 @@ Return exactly one JSON object:
 ```json
 {
   "requestSignals": {
-    "apparentOutcome": "user-stated result or null",
-    "explicitRequirements": ["user statement"],
-    "explicitExclusions": ["user-stated exclusion"],
-    "speculativeIdeas": ["candidate future idea"],
-    "prescribedMechanisms": ["implementation suggestion requiring later option evaluation"]
+    "apparentOutcome": {"statement": "verbatim user-stated result", "source": "requirements|context"},
+    "explicitRequirements": [{"statement": "verbatim user statement", "source": "requirements|context"}],
+    "explicitExclusions": [{"statement": "verbatim user-stated exclusion", "source": "requirements|context"}],
+    "evaluationRequests": [{"statement": "verbatim request to assess or compare without implementation authorization", "source": "requirements|context"}],
+    "speculativeIdeas": [{"statement": "verbatim candidate future idea", "source": "requirements|context"}],
+    "prescribedMechanisms": [{"statement": "verbatim implementation suggestion requiring later option evaluation", "source": "requirements|context"}]
   },
   "scopeEvidence": {
     "affectedFiles": ["candidate/path"],
@@ -72,9 +73,12 @@ Return exactly one JSON object:
 }
 ```
 
+Use `null` for `apparentOutcome` when the request states no outcome.
+
 ## Completion Check
 
-- User statements retain their source category for orchestrator judgment.
+- Every material request signal retains one primary category, verbatim wording, and its input source for orchestrator judgment.
+- Evaluation requests, speculative ideas, and prescribed mechanisms remain judgment-only candidates until the user explicitly confirms a current requirement.
 - Scope and cost evidence is shallow, compact, and source-backed.
 - `executionRoute.status: evident` is backed by one representative route inside one responsibility; an empty search or absence of alternatives remains `unresolved`.
 - Every question names the decision its answer can change.

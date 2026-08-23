@@ -14,9 +14,10 @@ A requirement that cannot be traced to the outcome is excess: drop it, or have t
 |-------|---------|---------------|
 | `current-state` | Behavior that already exists | No — these are facts, not work |
 | `desired-future` | The change the user is asking for | Yes |
-| `speculative` | An idea the user raised without deciding on | No — record with a deferral reason |
 
-Flattening these three into one requirement list is what makes a bloated plan look coherent, because every item then reads as equally required. Label each item; ask when a label is unclear rather than inferring it.
+Evaluation requests, speculative ideas, and prescribed mechanisms stay in active request context as candidates. `requirements[]` and durable requirement/design documents receive only candidates explicitly promoted by the user to `desired-future`; an accepted ADR may retain evaluated options as decision history.
+
+Flattening current state, desired future, and candidates into one requirement list makes a bloated plan look coherent because every item then reads as equally required. Label each build-relevant item; ask when its current-state or desired-future role is unclear rather than inferring it.
 
 ## nonGoals[]
 
@@ -57,6 +58,4 @@ Report an unknown that would move the band up as a blocking question rather than
 
 ## Solution-in-disguise test
 
-When the requirement names a mechanism rather than an outcome ("add a cache layer", "introduce a queue"), state three materially different ways to reach the same outcome.
-
-When three exist, the named mechanism is one option among several — present them for a user decision. When the mechanism is genuinely the only route, record that and proceed.
+When a request names a mechanism rather than an outcome ("add a cache layer", "introduce a queue"), first determine whether selecting that mechanism is required to confirm the current outcome or scope. If it is, compare only the materially distinct repository-supported routes needed for that decision and include the named mechanism as one candidate. If it is not, retain the mechanism as an unelected candidate and continue without generating alternatives.
