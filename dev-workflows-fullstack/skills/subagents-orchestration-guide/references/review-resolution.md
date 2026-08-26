@@ -19,7 +19,7 @@ For verifier, design-sync, code-reviewer, security-reviewer, and integration-tes
 Use the result producer's declared verification mode:
 
 - **Reconciliation reviewer**: document-reviewer, code-reviewer, security-reviewer, and integration-test-reviewer accept `prior_feedback` and return `prior_feedback_reconciliation` after correction.
-- **Fresh verifier**: code-verifier and design-sync independently report the current state from their original inputs. After an applied correction, rerun them and adjudicate the current result; a decline-only result is complete.
+- **Fresh verifier**: code-verifier and design-sync independently report the current state from their original inputs. After a correction is applied from a fresh verifier's result, rerun that verifier and adjudicate the current result; a decline-only result is complete.
 
 ## 1. Assess Every Finding
 
@@ -62,7 +62,7 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-For a fresh verifier, rerun only after at least one applied correction. The latest result replaces the prior current-state result for corrected items. Retain a prior decline when the latest result reports the materially same claim or conflict with unchanged governing evidence; adjudicate new or materially changed findings before routing. Match materially identical findings by their claim/conflict and cited source/target evidence rather than relying only on a regenerated positional ID.
+For a fresh verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule requires a current-state result. The latest result replaces the prior current-state result for corrected items. Retain a prior decline when the latest result reports the materially same claim or conflict with unchanged governing evidence; adjudicate new or materially changed findings before routing. Match materially identical findings by their claim/conflict and cited source/target evidence rather than relying only on a regenerated positional ID.
 
 ## 3. Converge or Report
 
