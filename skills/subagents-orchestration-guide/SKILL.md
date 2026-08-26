@@ -29,7 +29,7 @@ Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that rou
 
 ### Requirement Change Detection During Flow
 
-Treat new or changed behaviors, constraints, or technical requirements as requirement changes. Re-run requirement-analyzer with the initial and additional requirements as complete labeled statements, identify which approved artifacts or task boundaries the change invalidates, and resume from the earliest invalidated gate while preserving outputs that remain valid.
+Treat new or changed behaviors, constraints, or technical requirements as requirement changes. Update the orchestrator-owned convergence record with the requirement change, identify which approved artifacts or task boundaries it invalidates, and resume from the earliest invalidated gate while preserving outputs that remain valid.
 
 ## Orchestration Principles
 
@@ -208,7 +208,7 @@ For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or 
 | Required implementation remains incomplete | Continue while repository evidence supplies an advancing action; otherwise finish with an incomplete report and the observed evidence. |
 | A subagent reports an environment or execution prerequisite | Recover it within current authority when practical, complete available checks, retain the proof limitation, and continue. Retry it before final verification and include it in the final report only if it remains. |
 | Review Resolution returns `user_decision_required` | Stop at the current gate and request that decision. |
-| A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when re-analysis changes an approved requirement, contract, data flow, verification strategy, or task boundary. |
+| A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when the requirement change invalidates an approved requirement, contract, data flow, verification strategy, or task boundary. |
 | The user stops or interrupts | Stop autonomous execution. |
 
 ### Task Execution Cycle
