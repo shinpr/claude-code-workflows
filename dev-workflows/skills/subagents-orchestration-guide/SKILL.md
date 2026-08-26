@@ -175,7 +175,7 @@ graph TD
     START[Batch approval] --> TD[task-decomposer]
     TD --> CYCLE[Per-task 4-step cycle, including commit]
     CYCLE -->|remaining tasks| CYCLE
-    CYCLE -->|all tasks complete| VERIFY[code-verifier + security-reviewer]
+    CYCLE -->|all tasks complete| VERIFY[Initial verifier set or evidence-required reruns]
     CYCLE -->|recoverable or structurally incomplete result| CYCLE
     CYCLE -->|user-owned block or requirement change| USER[Escalate or re-analyze]
     VERIFY -->|passed| REPORT[Completion report]
@@ -197,7 +197,7 @@ For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or 
 
 **Fix-cycle handoff**: Apply Review Resolution, then invoke each required executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` only to reconciliation reviewers.
 
-**Re-run rule**: After any applied post-implementation correction, re-run both code-verifier and security-reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
+**Re-run rule**: After any applied post-implementation correction, re-run each verifier run with at least one correction applied from its latest result. Retain any other verifier result completed by Post-Implementation Verification Status Routing or Review Resolution only when repository evidence establishes that the correction preserved its verification boundary; otherwise re-run that verifier. After Specialist Result Acceptance recovers a blocked verifier's prerequisite, re-run that verifier. Review Resolution convergence governs acceptance and preserves resolved declines.
 
 ### Conditions for Stopping Autonomous Execution
 
