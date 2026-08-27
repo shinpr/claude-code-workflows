@@ -63,7 +63,7 @@ Analyze the Consumed Task Set and determine the action required:
 | Tasks exist | Consumed Task Set is non-empty | User's execution instruction serves as batch approval → Enter autonomous execution immediately |
 | No tasks + approved plan exists | Consumed Task Set is empty but the resolved work plan has batch approval | Run task-decomposer; the approval already authorizes mechanical task materialization |
 | No tasks + unapproved plan exists | Consumed Task Set is empty and the resolved work plan is not approved | Review it when needed, then present the plan approval gate before task materialization |
-| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan). Run Review Resolution through its correction re-review, escalation, and convergence transitions, using work-planner for rerouted corrections; then present the resolved plan for batch approval before task materialization |
+| Neither exists + Design Doc exists | No plan, no Consumed Task Set, but `docs/design/*.md` exists | Invoke work-planner to create a work plan, then run document-reviewer (`dev-workflows-fullstack:document-reviewer`, doc_type: WorkPlan). Run Review Resolution through correction re-review, its parent requirement or authority exits, and convergence, using work-planner for rerouted corrections; then present the resolved plan for batch approval before task materialization |
 | Neither exists | No plan, no Consumed Task Set, no Design Doc | Report missing prerequisites to user and stop |
 
 ## Task Materialization Phase (Conditional)
@@ -81,14 +81,14 @@ Invoke task-decomposer using Agent tool:
 - `prompt`: "Read work plan at docs/plans/[plan-name].md and output individual single-commit task files in docs/plans/tasks/. Use layer-aware naming: {plan}-backend-task-{n}.md, {plan}-frontend-task-{n}.md from each Work Plan task's Executor lane."
 
 ### 3. Verify Generation
-Recompute the Consumed Task Set using the same restricted pattern from the Consumed Task Set section above. When it remains empty, apply Specialist Result Acceptance: validate the invocation and returned artifacts, correct recoverable input or naming errors, and rerun. Stop for the user only when resolving the plan or intended layer boundary requires a user-owned decision.
+Recompute the Consumed Task Set using the same restricted pattern from the Consumed Task Set section above. When it remains empty, apply Specialist Result Acceptance: validate the invocation and returned artifacts, correct recoverable input or naming errors, and rerun.
 
 ## Pre-execution Checklist
 
 - [ ] Confirmed Consumed Task Set is non-empty (computed in the Consumed Task Set section above)
 - [ ] Identified task execution order within the Consumed Task Set (dependencies)
 - [ ] **Environment check**: Can I execute per-task commit cycle?
-  - If commit capability unavailable → Escalate before autonomous mode
+  - If commit capability is unavailable → Apply Specialist Result Acceptance before autonomous mode
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 ## Task Execution Cycle (Filename-Pattern-Based)
@@ -109,7 +109,7 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
 For EACH task, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type per routing table) → Record the current HEAD as `diffBase`, pass `task_file: [path]`, and receive the structured response
 2. **BRANCH ON EXECUTOR RESULT**:
-   - `status: "escalation_needed"` or `"blocked"` → Apply subagents-orchestration-guide Specialist Result Acceptance; escalate only a valid user-owned block
+   - `status: "escalation_needed"` or `"blocked"` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
@@ -126,17 +126,17 @@ Use each subagent's semantic result and repository evidence through Specialist R
 
 Verify task files exist per Pre-execution Checklist, then enter autonomous execution mode. When requirement changes are detected during execution, escalate to the user with the change summary before continuing.
 
-## Post-Implementation Verification (After All Tasks Complete)
+## Post-Implementation Review (After All Tasks Complete)
 
-Before invoking post-implementation verifiers, apply subagents-orchestration-guide's retained verification limitation retry with each layer's quality-fixer. Continue with the verifiers after clearing or retaining each result; include only repeated limitations in the completion report.
+Before invoking post-implementation reviewers, apply subagents-orchestration-guide's retained verification limitation retry with each layer's quality-fixer. Continue with the reviewers after clearing or retaining each result; include only repeated limitations in the completion report.
 
-Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
+Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks review.
 
-Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
-- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → verify the completed implementation against each resolved `doc_type` and single `document_path`
+Emit one code-reviewer call plus one security-reviewer call in one assistant message, then await both:
+- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved typed `governingDocuments` list, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the typed `governingDocuments` list
 
-Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
+Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.
 
 ## Final Cleanup
 

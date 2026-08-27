@@ -4,7 +4,7 @@
 
 Inspect the repository's browser-test configuration, scripts, fixtures, neighboring tests, and CI routing. Preserve the existing harness, imports, locator conventions, setup lifecycle, file naming, and test location.
 
-When no browser harness exists, introduce one only when the accepted Design Doc or task explicitly includes that work. Otherwise return the missing harness decision.
+When no browser harness exists, use integration-e2e-testing to determine whether browser-level proof is necessary. If it is, select the lowest-surface sufficient harness from repository and applicable external evidence; if it is not, use the cheaper observable boundary. Report an unavailable execution environment as a proof limitation rather than a user decision.
 
 ## Lane Selection
 

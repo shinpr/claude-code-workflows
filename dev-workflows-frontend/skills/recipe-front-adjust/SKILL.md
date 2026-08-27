@@ -118,7 +118,7 @@ When the project-tier file declares no automated verification mechanism for an a
   - `approved` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
   - `verification_incomplete` → retain the complete result for final retry and proceed to Step 7
-  - `blocked` → use `blockingIssues[]`, changed files, and repository state to recover within current authority; present only a product or major design decision, unavailable authority, or irreversible action to the user
+  - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance using the result's semantic evidence, changed files, and repository state
 
 ### Step 7: Commit (per adjustment unit)
 Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the unit commit, accidental changes introduced during the unit are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.

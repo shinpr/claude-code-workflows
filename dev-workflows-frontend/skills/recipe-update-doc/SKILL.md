@@ -100,7 +100,7 @@ Read the document and determine its layer from content signals:
 
 Determine which sections need updating, the reason for the change, and the expected outcome after the update. Derive them from the request and the target document. Use AskUserQuestion only for an item the request and document leave undetermined, and only when a different answer would change which sections are updated or what the update must achieve.
 
-Pass the resulting items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update; request a scope decision for unmapped or over-budget changes.
+Pass the resulting items, covered sections, and any stated total size budget to update or revision agents. Before the next approval gate, map every diff hunk to an approved item or required consistency update. Remove accidental unmapped changes; when a necessary change would alter the requested document outcome or explicit size constraint, return to the request clarification gate.
 
 ### Step 4: Document Update
 
@@ -162,7 +162,7 @@ For each type, review consistency of the changed sections and their dependent st
     Treat these findings as the complete revision scope and preserve adjacent content.
   ```
 - On re-review pass `prior_feedback` as `[{id, disposition, reason?, evidence}]`
-- All actionable findings are `decline` and every `user_decision_required` item is resolved → Proceed to Step 6
+- All actionable findings are `decline` → Proceed to Step 6
 
 ### Step 6: Consistency Verification and Final Approval `[Stop: Final approval]`
 
@@ -173,7 +173,7 @@ description: "Verify consistency"
 prompt: "source_design: [path from Step 1]"
 ```
 
-When conflicts are detected, apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, retain evidenced declines as complete, and request user input for `user_decision_required` or the Gate's escalation conditions.
+When conflicts are detected, apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, and retain evidenced declines as complete.
 
 **For every document type**, present the updated document, the review outcome, any resolved declines, and the sync result when one ran. This is the only approval gate in the flow: wait for the user's decision before completing.
 

@@ -96,7 +96,7 @@ When user responds to questions:
 - [ ] one complete-scope codebase-analyzer result included before Design Doc creation
 - [ ] code-verifier included before document-reviewer for each Design Doc
 - [ ] **Environment check**: Can I execute per-task commit cycle?
-  - If commit capability unavailable → Escalate before autonomous mode
+  - If commit capability is unavailable → Apply Specialist Result Acceptance before autonomous mode
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
@@ -127,17 +127,17 @@ When user responds to questions:
    - `approved` → Proceed to commit
 5. Apply subagents-orchestration-guide Commit Boundary Check before each commit; append its verification trailers when the quality-fixer result is `verification_incomplete`
 
-### Post-Implementation Verification (After All Tasks Complete)
+### Post-Implementation Review (After All Tasks Complete)
 
-Apply subagents-orchestration-guide's retained verification limitation retry with each layer's quality-fixer before the document-dependent verifiers. Continue after clearing or retaining each result and report only repeated limitations.
+Apply subagents-orchestration-guide's retained verification limitation retry with each layer's quality-fixer before the document-dependent reviewers. Continue after clearing or retaining each result and report only repeated limitations.
 
-Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks verification.
+Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks review.
 
-Emit one code-verifier call per resolved document plus one security-reviewer call in one assistant message, then await all:
-- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → verify the completed implementation against each resolved `doc_type` and single `document_path`
+Emit one code-reviewer call plus one security-reviewer call in one assistant message, then await both:
+- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved typed `governingDocuments` list, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the typed `governingDocuments` list
 
-Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules with the layer-appropriate executor and quality-fixer. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
+Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.
 
 ### Final Cleanup
 

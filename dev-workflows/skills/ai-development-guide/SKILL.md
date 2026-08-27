@@ -8,7 +8,7 @@ description: Applies language-agnostic and backend technical decision criteria, 
 ## Value-First Engineering
 
 Inspect until the evidence identifies the lowest-total-complexity solution that delivers the required user, operator, or maintainer value while keeping the system correct and maintainable.
-- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
+- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with their owning boundary and evidence without expanding the active change.
 - Introduce capabilities, infrastructure, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
 - Treat behavior-preserving maintenance inside the confirmed responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
 
@@ -192,7 +192,7 @@ Follow repository-declared command composition or ordering when it exists. Other
 
 ### Scope Expansion
 - Apply implementation/edit instructions to the accepted outcome and its governing scope.
-- Treat explicit restrictions and quantities ("one", "this file", "only X") in the governing request or approved artifact as hard boundaries
+- Treat explicit restrictions and quantities ("one", "this file", "only X") in the governing request or confirmed outcome, desired-future requirements, and non-goals as hard boundaries; treat technical-artifact How as a correctable baseline when repository evidence invalidates it without changing those boundaries
 - Treat referenced or expected paths as investigation starting points unless the governing source explicitly makes them exclusive
 - Copy/move/mirror requests preserve content verbatim; edit content only when requested
 - Port/translation requests preserve intent and behavior; adapt only what the destination context requires

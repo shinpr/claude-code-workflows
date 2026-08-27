@@ -83,7 +83,6 @@ Execute one layer at a time through Steps 3→4→5→6→7 before starting the 
 Apply this response gate after every task-executor invocation in Steps 3 and 5:
 - At least one changed integration/E2E test file and its implementation evidence are confirmed from the response and repository state → Proceed to Step 4
 - Required implementation remains incomplete → Apply Specialist Result Acceptance and continue Step 3 while repository evidence supplies an advancing action
-- A changed product outcome, major approved design change, user-held authority, or irreversible action is identified → Present that decision to the user
 - Other result variations → Apply subagents-orchestration-guide Specialist Result Acceptance
 
 ### Step 4: Test Review

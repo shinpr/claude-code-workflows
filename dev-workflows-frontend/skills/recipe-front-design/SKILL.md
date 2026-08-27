@@ -141,7 +141,7 @@ Invoke `dev-workflows-frontend:document-reviewer` with exact inputs: `doc_type: 
 
 - `approved`: continue.
 - `needs_revision`: apply Review Resolution, update through a fresh technical-designer-frontend invocation using the existing path and complete applied findings, and rerun verification/review for the affected boundary.
-- `rejected`: resolve the governing-source conflict; ask the user only when product outcome or a major approved decision must change.
+- `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
 Invoke `dev-workflows-frontend:design-sync` with `source_design` as the returned Design Doc path unchanged, apply Review Resolution to actionable conflicts, and report `SKIPPED` distinctly when only one Design Doc exists.
 

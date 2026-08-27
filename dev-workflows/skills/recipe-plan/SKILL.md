@@ -70,11 +70,11 @@ Invoke document-reviewer to review the work plan:
 - `subagent_type`: "dev-workflows:document-reviewer"
 - `description`: "Work plan review"
 - `prompt`: "doc_type: WorkPlan target: docs/plans/[plan-name].md. Review the Work Plan's own Implementation Scope, tasks, Completion Criteria, dependencies, execution order, exact source-anchor existence, executable verification, and Review Scope. Governing Documents paths are citation sources only; keep issues limited to violations of cited obligations."
-- Run the Review Resolution Gate through its correction re-review, escalation, and convergence transitions, using work-planner in update mode for rerouted corrections. Present the plan for approval only at its convergence condition.
+- Run the Review Resolution Gate through correction re-review, its parent requirement or authority exits, and convergence, using work-planner in update mode for rerouted corrections. Present the plan for approval only at its convergence condition.
 
 ### Step 5: Present for Approval
 - Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with the user's requested changes verbatim and re-run Step 4.
-- Highlight steps with unclear scope or external dependencies and ask the user to confirm
+- Record unresolved technical evidence or external dependencies in the plan with their affected task and verification boundary. Return to the requirements gate only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true without a user choice.
 
 ## Response at Completion
 

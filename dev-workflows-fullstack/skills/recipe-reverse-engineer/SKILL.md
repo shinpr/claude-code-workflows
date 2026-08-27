@@ -164,7 +164,7 @@ prompt: |
 
 #### Step 5: Revision (conditional)
 
-Pass `$STEP_3_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_4_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review, and unresolved `user_decision_required` stops for user input.
+Pass `$STEP_3_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_4_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review.
 
 **Agent tool invocation**:
 ```
@@ -186,7 +186,7 @@ prompt: |
 
 #### Unit Completion
 
-- [ ] No `apply` findings remain; every other review finding has a disposition and every `user_decision_required` item has a recorded user decision
+- [ ] No `apply` findings remain
 - [ ] Human review passed (if enabled in Step 0)
 
 **Next**: Proceed to next unit. After all units → Phase 2.
@@ -355,7 +355,7 @@ prompt: |
 
 #### Step 10: Revision (conditional)
 
-Pass `$STEP_8_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_9_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review, and unresolved `user_decision_required` stops for user input.
+Pass `$STEP_8_OUTPUT` to document-reviewer as verification evidence, then apply the Review Resolution Gate to `$STEP_9_OUTPUT`. Run revision only when at least one finding is `apply`; a decline-only result completes the review.
 
 **Agent tool invocation (per Design Doc)**:
 ```
@@ -377,7 +377,7 @@ prompt: |
 
 #### Unit Completion
 
-- [ ] No `apply` findings remain; every other review finding has a disposition and every `user_decision_required` item has a recorded user decision
+- [ ] No `apply` findings remain
 - [ ] Human review passed (if enabled in Step 0)
 
 **Next**: Proceed to next unit. After all units → Final Report.
