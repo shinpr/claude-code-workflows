@@ -115,7 +115,9 @@ For `prior_feedback`, re-check only the affected boundary and dependent consiste
 
 - `approved`: `issues` is empty.
 - `needs_revision`: One or more issues can be repaired inside approved scope.
-- `rejected`: Governing sources conflict, or repair requires changing an approved product or major design decision.
+- `rejected`: Confirmed outcome, desired-future requirements, and non-goals cannot all remain true and approval requires choosing which value changes.
+
+Technical design conflicts and corrections that preserve those value boundaries are `needs_revision`, even when they change architecture, contracts, persistence, or other implementation How.
 
 The reviewer determines readiness for approval; the user owns PRD, ADR, UI Spec, Design Doc, and Work Plan approval.
 

@@ -29,7 +29,7 @@ Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that rou
 
 ### Requirement Change Detection During Flow
 
-Treat new or changed behaviors, constraints, or technical requirements as requirement changes. Update the orchestrator-owned convergence record with the requirement change, identify which approved artifacts or task boundaries it invalidates, and resume from the earliest invalidated gate while preserving outputs that remain valid.
+Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change; update each invalidated technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
 
 ## Orchestration Principles
 
@@ -50,10 +50,10 @@ Pass the governing requirement source and the specialist's expected action. Inve
 4. Specialist judgment
 
 **Scope source classification**:
-- An explicit restriction in the user instruction or approved artifact is a hard boundary.
+- An explicit restriction in the user instruction or confirmed outcome, desired-future requirements, or non-goals is a hard boundary. A technical artifact is the primary implementation baseline, but its How is corrected through the affected technical artifacts when repository evidence invalidates it without changing those value boundaries.
 - Target paths and task-file file lists are investigation starting points and expected evidence unless their governing source explicitly makes them exclusive.
 - Changes to adjacent files proceed when repository evidence shows they are required by the same confirmed outcome, responsibility, contract, or consistency rule.
-- Unrelated improvements remain outside the active change. A changed product outcome, major approved design decision, user-held authority, or irreversible external action returns to the applicable user gate.
+- Unrelated improvements remain outside the active change. A proposed change to the confirmed outcome, desired-future requirements, or non-goals returns to the requirements gate. Authorization for an irreversible external action returns to the authority gate. Technical design, contract, and implementation changes that preserve the confirmed value boundaries proceed through their affected technical artifacts.
 
 Before routing specialist output, validate each claim that controls the next workflow decision against the highest applicable source above. Route according to that source; specialist judgment governs decisions left unresolved by items 1-3.
 
@@ -61,7 +61,7 @@ Before routing specialist output, validate each claim that controls the next wor
 
 Each specialist's agent definition owns its canonical result shape. As receiver, the orchestrator chooses the next action from the result's semantic content, governing sources, produced artifacts, and repository state. Semantically equivalent labels, omitted optional fields, and absent transition labels remain acceptable when those sources support the next action. Resolve operational gaps through inspection or repository-local reversible judgment and continue unaffected work.
 
-Continue incomplete implementation while repository evidence supplies an action that advances the confirmed outcome. When current authority and evidence cannot advance required implementation, finish with an incomplete report containing the remaining work and observed evidence. Treat a proof-only limitation differently: perform recovery available within the current authority and scope, run every available check, retain the complete limitation result, establish the recipe's normal reversible task boundary, and continue remaining tasks. Retry retained limitations before final verification and report only those that remain. Claim only the proof actually observed. User interaction is reserved for a changed product outcome, a major approved design change, authority held by the user, or an irreversible external action.
+Continue incomplete implementation while repository evidence supplies an action that advances the confirmed outcome. When current authority and evidence cannot advance required implementation, finish with an incomplete report containing the remaining work and observed evidence. Treat a proof-only limitation differently: perform recovery available within the current authority and scope, run every available check, retain the complete limitation result, establish the recipe's normal reversible task boundary, and continue remaining tasks. Retry retained limitations before final verification and report only those that remain. Claim only the proof actually observed. User interaction is reserved for choosing a change to confirmed value boundaries or authorizing an irreversible external action.
 
 ### Review Resolution
 
@@ -155,7 +155,7 @@ Rules:
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
 - `design-sync` is required whenever multiple Design Docs exist
 - `task-decomposer` begins only after work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) and batch approval
-- Work plan review runs Review Resolution through its correction re-review, escalation, and convergence transitions; batch approval is available only at its convergence condition
+- Work plan review runs Review Resolution through correction re-review, its parent requirement or authority exits, and convergence; batch approval is available only at its convergence condition
 
 Treat the applicable Structural Scale flow as an evidence-gated sequence. Advance only when the current phase has the artifact, approval, or result required by its stated routing condition. Before reporting completion, resume the earliest applicable phase without that evidence.
 
@@ -175,39 +175,40 @@ graph TD
     START[Batch approval] --> TD[task-decomposer]
     TD --> CYCLE[Per-task 4-step cycle, including commit]
     CYCLE -->|remaining tasks| CYCLE
-    CYCLE -->|all tasks complete| VERIFY[Initial verifier set or evidence-required reruns]
+    CYCLE -->|all tasks complete| REVIEW[Initial reviewer set or evidence-required reruns]
     CYCLE -->|recoverable or structurally incomplete result| CYCLE
-    CYCLE -->|user-owned block or requirement change| USER[Escalate or re-analyze]
-    VERIFY -->|passed| REPORT[Completion report]
-    VERIFY -->|actionable findings| RR[Review Resolution]
-    RR -->|apply| FIX[task-executor + quality-fixer]
-    FIX --> VERIFY
+    CYCLE -->|value-boundary choice or irreversible authorization| USER[Escalate or re-analyze]
+    REVIEW -->|passed| REPORT[Completion report]
+    REVIEW -->|actionable findings| RR[Review Resolution]
+    RR -->|apply| FIX[owning author or executor + applicable verification]
+    FIX --> REVIEW
     RR -->|all decline| REPORT
-    RR -->|user decision required| USER
 ```
 
-For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation verification, or task-file cleanup.
+For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation review, or task-file cleanup.
 
-### Post-Implementation Verification Status Routing (Medium/Large)
+### Post-Implementation Review Status Routing (Medium/Large)
 
-| Verifier | Complete: empty finding set | Enter Review Resolution | Blocked |
+| Reviewer | Complete: empty finding set | Enter Review Resolution | Blocked |
 |----------|---------------------------|-------------------------|---------|
-| code-verifier | `summary.status` is `consistent` | `summary.status` is `needs_review` or `inconsistent` | `summary.status` is `blocked` → Apply Specialist Result Acceptance |
+| code-reviewer | `verdict` is `pass` | `verdict` is `needs-improvement` or `needs-redesign` | `verdict` is `blocked` → Apply Specialist Result Acceptance |
 | security-reviewer | `status` is `approved` | `status` is `needs_revision` | `status` is `blocked` → Apply Specialist Result Acceptance |
 
-**Fix-cycle handoff**: Apply Review Resolution, then invoke each required executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added. Carry `prior_feedback` only to reconciliation reviewers.
+Reviewer findings are candidates. Create correction work only from the Review Resolution `apply` set.
 
-**Re-run rule**: After any applied post-implementation correction, re-run each verifier run with at least one correction applied from its latest result. Retain any other verifier result completed by Post-Implementation Verification Status Routing or Review Resolution only when repository evidence establishes that the correction preserved its verification boundary; otherwise re-run that verifier. After Specialist Result Acceptance recovers a blocked verifier's prerequisite, re-run that verifier. Review Resolution convergence governs acceptance and preserves resolved declines.
+**Fix-cycle handoff**: Apply Review Resolution and invoke each correction owner it selects. For an author-owned technical-artifact correction, invoke the layer-appropriate technical designer in update mode, run the artifact's existing document-reviewer and applicable design-sync gates, then re-run the originating reviewer. For an executor-owned correction, invoke the layer-appropriate executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added, then run the applicable quality gate. When both owners are required, Review Resolution's author-first re-evaluation controls the order. Carry `prior_feedback` only to reconciliation reviewers.
+
+**Re-run rule**: After any applied post-implementation correction, re-run each reviewer with at least one correction applied from its latest result. Retain any other reviewer result completed by Post-Implementation Review Status Routing or Review Resolution only when repository evidence establishes that the correction preserved its review boundary; otherwise re-run that reviewer. After Specialist Result Acceptance recovers a blocked review prerequisite, re-run that reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
 
 ### Conditions for Stopping Autonomous Execution
 
 | Trigger | Action |
 |---|---|
-| A valid `escalation_needed` or `blocked` result identifies a product, major design, authority, or irreversible-action decision owned by the user | Escalate its concrete decision and evidence to the user. |
+| Evidence shows the confirmed outcome, desired-future requirements, and non-goals cannot all remain true without a user choice | Apply Requirement Change Detection and ask which value boundary changes. |
+| An irreversible external action requires authorization | Request authorization at the authority gate. |
 | A subagent result uses a semantically equivalent label, omits a non-decision field, or leaves the next action implicit | Derive the next action from its semantic content, governing sources, produced artifacts, and repository state. |
 | Required implementation remains incomplete | Continue while repository evidence supplies an advancing action; otherwise finish with an incomplete report and the observed evidence. |
 | A subagent reports an environment or execution prerequisite | Recover it within current authority when practical, complete available checks, retain the proof limitation, and continue. Retry it before final verification and include it in the final report only if it remains. |
-| Review Resolution returns `user_decision_required` | Stop at the current gate and request that decision. |
 | A requirement changes | Apply Requirement Change Detection above. After task-decomposer starts, invalidate affected tasks; restart document design only when the requirement change invalidates an approved requirement, contract, data flow, verification strategy, or task boundary. |
 | The user stops or interrupts | Stop autonomous execution. |
 
@@ -218,7 +219,7 @@ For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or 
 Immediately before a workflow commit:
 1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change. `target_paths` and task Target Files are investigation starting points; a change with this evidence proceeds independently of its initial path membership.
 2. Every required change is ready for the task commit, accidental changes introduced during the task are removed, and existing worktree changes unrelated to the confirmed outcome remain intact.
-3. Commit the resulting change set. Apply Specialist Result Acceptance only when deciding whether a change belongs to the confirmed outcome requires a user-owned decision.
+3. Commit the resulting change set. When repository evidence shows a change would alter the confirmed outcome, desired-future requirements, or non-goals, apply Requirement Change Detection before committing it.
 
 For a `verification_incomplete` commit, append one trailer pair per retained limitation:
 
@@ -232,7 +233,7 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
 **Per-task cycle**:
 1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. **Branch on executor result**:
-   - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance; escalate only a valid user-owned block
+   - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance

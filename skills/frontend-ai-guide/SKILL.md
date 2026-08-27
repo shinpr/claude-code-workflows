@@ -8,7 +8,7 @@ description: Applies React/TypeScript-specific technical decision criteria, anti
 ## Value-First Engineering
 
 Inspect until the evidence identifies the lowest-total-complexity solution that delivers the required user or maintainer value while keeping the UI correct and maintainable.
-- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with evidence for a scope decision.
+- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with their owning boundary and evidence without expanding the active change.
 - Introduce state, props, variants, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
 - Treat behavior-preserving maintenance inside the confirmed responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
 

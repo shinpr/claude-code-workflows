@@ -87,7 +87,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
 - [ ] codebase-analyzer included before Design Doc creation (Medium/Large scale)
 - [ ] code-verifier included before document-reviewer for Design Doc review (Medium/Large scale)
 - [ ] **Environment check**: Can I execute per-task commit cycle?
-  - If commit capability unavailable → Escalate before autonomous mode
+  - If commit capability is unavailable → Apply Specialist Result Acceptance before autonomous mode
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
@@ -101,7 +101,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
 **Per-task cycle** (complete each task before starting next):
 1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`; pass `task_file: [path]` when one exists, otherwise pass `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. Check task-executor response:
-   - `status: escalation_needed` or `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance; escalate only a valid user-owned block
+   - `status: escalation_needed` or `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
      - `approved` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
@@ -114,19 +114,19 @@ After Structural Scale is determined, follow only that scale's applicable path. 
    - `approved` → Proceed to step 4
 4. git commit → Apply subagents-orchestration-guide Commit Boundary Check, then execute with Bash after `approved` or `verification_incomplete`; append its verification trailers for the latter
 
-### Post-Implementation Verification (Medium/Large, After All Tasks Complete)
+### Post-Implementation Review (Medium/Large, After All Tasks Complete)
 
-Apply subagents-orchestration-guide's retained verification limitation retry before the document-dependent verifiers. Continue after clearing or retaining each result and report only repeated limitations.
+Apply subagents-orchestration-guide's retained verification limitation retry before the document-dependent reviewers. Continue after clearing or retaining each result and report only repeated limitations.
 
-Resolve the Work Plan's readable Design Doc; missing input blocks verification.
+Resolve the Work Plan's readable Design Doc; missing input blocks review.
 
 Emit these Agent calls in one assistant message, then await both:
-- code-verifier (subagent_type: "dev-workflows-fullstack:code-verifier") → verify the completed implementation against the resolved `doc_type` and `document_path`
+- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved typed `governingDocuments`, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the same typed `governingDocuments`
 
-Apply subagents-orchestration-guide's Post-Implementation Verification status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete verification set reaches Review Resolution convergence.
+Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.
 
-For Small, skip this document-dependent verification. Retry a retained verification limitation once after the task commit; complete with observed `observable_verification` evidence and report any proof that remains unavailable.
+For Small, skip this document-dependent review. Retry a retained verification limitation once after the task commit; complete with observed `observable_verification` evidence and report any proof that remains unavailable.
 
 ### Final Cleanup
 

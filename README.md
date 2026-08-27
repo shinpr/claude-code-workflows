@@ -9,7 +9,7 @@
 
 Claude Code can explore a codebase deeply. On non-trivial work, the harder problem is convergence. While designing an account-recovery flow, Claude may find a real inconsistency in token handling and spend most of the design on it, leaving the requested recovery behavior vague.
 
-claude-code-workflows keeps that exploration pointed at an agreed result. It agrees on the outcome and exclusions before design, checks designs against the repository, verifies each task before commit, and, on larger changes, independently reviews the finished implementation for intended behavior and security. Within that scope, Claude chooses the implementation details from the codebase.
+claude-code-workflows keeps that exploration pointed at an agreed result. It agrees on the outcome and exclusions before design, checks designs against the repository, verifies each task before commit, and, on larger changes, independently reviews the finished implementation to make sure it delivers the agreed result, does not include unnecessary changes, and has no serious functional, reliability, or security problems. Within that scope, Claude chooses the implementation details from the codebase.
 
 Use Claude Code directly when the outcome and safe implementation boundary are already clear. Use these workflows when a change needs scope agreement, durable design decisions, a reliable handoff between contexts, or independent verification.
 
@@ -19,7 +19,7 @@ Use Claude Code directly when the outcome and safe implementation boundary are a
 
 The workflow adds agent calls and artifacts, so it should earn that cost. Use it when a real side finding could pull a larger change away from its intended result, a design could be internally consistent but miss the requested behavior, or a passing test could fail to observe what it claims to prove.
 
-Once the implementation scope is approved, Claude carries the tasks through focused verification, repository quality checks, commits, and final review without asking for routine implementation decisions. Product changes and major design changes return to the user; reversible implementation choices remain with Claude. Because the process is packaged as a Claude Code plugin, a team can apply the same controls across repositories without prescribing Claude's steps.
+Once the implementation scope is approved, Claude carries the tasks through focused verification, repository quality checks, commits, and final review without asking for routine implementation decisions. It asks the user only when the agreed product outcome or exclusions must change; Claude handles technical design and implementation choices. Because the process is packaged as a Claude Code plugin, a team can apply the same controls across repositories without prescribing Claude's steps.
 
 ---
 
@@ -35,7 +35,8 @@ Requires a Claude Code release with plugin marketplace support.
 | Design a backend or general change before implementation | `/recipe-design` | `dev-workflows` |
 | Design and build a React / TypeScript frontend | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | Deliver a backend and React frontend change together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
-| Review an implementation against its design | `/recipe-review` or `/recipe-front-review` | `dev-workflows` or `dev-workflows-frontend` |
+| Review a completed implementation against the agreed outcome | `/recipe-review` or `/recipe-front-review` | `dev-workflows` or `dev-workflows-frontend` |
+| Set repository-specific review standards | `/recipe-quality-profile` | Any workflow plugin |
 | Investigate a problem before choosing a fix | `/recipe-diagnose` | Any workflow plugin |
 | Document an existing system from its code | `/recipe-reverse-engineer` | `dev-workflows` or `dev-workflows-fullstack` |
 | A throwaway experiment or prototype | Use Claude Code directly | None |
@@ -114,7 +115,7 @@ UI Specs, ADRs, and integration or E2E test skeletons appear only when their dec
 
 Generating an artifact does not advance the workflow on its own. Decision-changing design premises are resolved with observable evidence before approval, using a bounded probe only when it is the smallest sufficient proof.
 
-The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews examine design consistency, observable coverage, and security.
+The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews check the whole change against the agreed outcome, look for unnecessary changes and serious functional or reliability problems, confirm observable coverage, and assess security.
 
 The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. An accepted correction returns through implementation and the affected verification gates.
 
@@ -129,7 +130,7 @@ Fresh contexts keep one phase's reasoning from silently becoming the next phase'
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation.
+The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation. `/recipe-quality-profile` can record repository-specific review standards and their sources in `docs/project-context/quality.yaml`; final reviewers use a confirmed profile alongside the approved sources.
 
 ### A real workflow run
 
@@ -144,7 +145,7 @@ After the first run, inspect the artifacts:
 - Did the agreed approach extend what already exists and give evidence for each addition?
 - Can you follow each requirement into a task and an observable verification method?
 - Did every completed task pass its focused and repository quality checks before commit?
-- Did final review compare the whole change with the intended behavior and security requirements?
+- Did final review confirm that the whole change delivers the agreed outcome without unnecessary changes or serious functional, reliability, or security problems?
 - When a reviewer proposed more work, did the report show why it was applied or declined?
 
 ---
@@ -192,13 +193,13 @@ Use `/recipe-fullstack-build` to continue from an existing full-stack work plan.
 <details>
 <summary>More workflow examples</summary>
 
-#### Review an implementation against its design
+#### Review a completed implementation
 
 ```bash
 /recipe-review
 ```
 
-The review workflow compares the implementation with its Design Docs and runs an independent security review. A fix that changes an approved decision returns to the relevant document instead of silently changing the contract.
+The review workflow checks the completed implementation against the agreed outcome and repository standards, then runs an independent security review. Accepted corrections return to the appropriate implementation or document owner and are reviewed again.
 
 #### Diagnose before choosing a fix
 
@@ -243,7 +244,8 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | `/recipe-design` | Create design documentation | Architecture planning |
 | `/recipe-plan` | Generate a work plan from design | Planning phase |
 | `/recipe-build` | Execute an existing work plan | Resume implementation |
-| `/recipe-review` | Verify code against Design Docs | Post-implementation check |
+| `/recipe-review` | Review a completed implementation against the agreed outcome | Post-implementation check |
+| `/recipe-quality-profile` | Set repository-specific review standards | Repository standards |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-reverse-engineer` | Derive PRDs and Design Docs from code | Existing-system documentation |
 | `/recipe-add-integration-tests` | Add integration or E2E tests | Coverage for existing code |
@@ -263,7 +265,8 @@ The frontend plugin adds React-specific analysis, component architecture, React 
 | `/recipe-front-plan` | Generate a frontend work plan | Component planning |
 | `/recipe-front-build` | Execute a frontend work plan | Resume React implementation |
 | `/recipe-front-adjust` | Adjust an implemented UI with external verification | Visual refinements |
-| `/recipe-front-review` | Verify code against frontend Design Docs | Post-implementation check |
+| `/recipe-front-review` | Review a completed frontend against the agreed outcome | Post-implementation check |
+| `/recipe-quality-profile` | Set repository-specific review standards | Repository standards |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
 | `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
@@ -293,7 +296,7 @@ These agents are shared by the backend, frontend, and full-stack workflow plugin
 | **task-decomposer** | Splits a work plan into commit-ready tasks |
 | **acceptance-test-generator** | Creates integration and E2E test skeletons from requirements |
 | **integration-test-reviewer** | Reviews integration and E2E tests against their intended coverage |
-| **code-reviewer** | Checks implementation against the Design Docs |
+| **code-reviewer** | Checks that the completed implementation matches the agreed outcome and repository standards |
 | **document-reviewer** | Checks a document for completeness and rule compliance |
 | **design-sync** | Detects conflicts across multiple Design Docs |
 | **investigator** | Maps execution paths and identifies possible failure points |
@@ -393,11 +396,7 @@ These plugins cover adjacent work without changing the core development workflow
 
 A: The quality-fixer agents handle test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract.
 
-The workflow stops only when a fix:
-
-- changes the product outcome, an approved contract, or a major design decision;
-- requires authority held by the user; or
-- performs an irreversible external action that the existing approval does not cover.
+The workflow asks the user only when keeping both the requested outcome and its exclusions is no longer possible, or when an irreversible external action needs approval. It handles technical design, contracts, UI, architecture, persistence, and implementation changes on its own as long as they do not change what the product delivers.
 
 **Q: Is there a version for OpenAI Codex CLI?**
 

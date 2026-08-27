@@ -35,7 +35,7 @@ Complete these steps in order before selecting an implementation strategy:
 3. **Targeted Comparison**: For each unmet condition, test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary before adding design surface. Compare viable choices by total complexity across the dimensions that materially differ: user decisions, settings, modes, concepts, outputs, persistent state, implementation paths, UX, runtime, implementation, testing, documentation, and maintenance. Select the lowest-total-complexity choice that satisfies the condition.
 4. **Subtraction Check**: Remove each proposed addition and re-test its governing condition. Retain it only when the confirmed outcome, a required boundary, or necessary proof becomes unmet.
 
-Classify supporting claims as observed, inferred, or unknown. When an unknown blocks the next step, stop at the current step and name the evidence or user decision required.
+Classify supporting claims as observed, inferred, or unknown. Route an unknown that blocks the next step as an exact evidence prerequisite; the caller's value-boundary and irreversible-action gates determine whether user interaction is required.
 
 Candidate paths and rejected additions remain active analysis. The durable output is the **Selected Design**: the complete chosen path plus evidence for each added design surface and the condition that fails when it is removed. An accepted ADR may retain alternatives as decision history. An implementer uses the same convergence check without producing a separate artifact.
 

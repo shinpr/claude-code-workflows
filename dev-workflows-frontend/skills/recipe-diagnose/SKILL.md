@@ -171,14 +171,9 @@ Branch on verifier output before invoking solver:
 
 Continue investigation while an available action can advance a material gap. Completion is determined by verifier-established semantic closure or by confirmation that no available action can advance the gap.
 
-### Step 5: Design Decision Gate
+### Step 5: Solution Boundary
 
-After coverage is closed, inspect the verified cause set. When resolving a confirmed failure point requires reconsidering ownership, a contract, or an approved design decision, including `causeCategory: design_gap`, use AskUserQuestion:
-"A verified design-level issue was detected. How should we proceed?"
-- A: Attempt fix within current design
-- B: Include design reconsideration
-
-Pass `includeRedesign: true` to solver only when the user selects B. This gate remains before solution selection; investigation and verification proceed independently of the choice.
+After coverage is closed, pass the complete verified cause set to solver. Ownership, contract, and technical design corrections are ordinary solution candidates when they preserve the confirmed outcome, desired-future requirements, and non-goals; detecting a design gap does not create a user decision. If evidence shows those value boundaries cannot all remain true, or a proposed remedy requires authorization for an irreversible external action, report that exact boundary with the solution evidence instead of inventing a choice.
 
 ### Step 6: Solution Derivation (solver)
 
@@ -193,7 +188,6 @@ Refuted failure points: [verifier's conclusion.refutedFailurePoints]
 Failure point relationships: [verifier's conclusion.failurePointRelationships]
 Impact analysis: [investigator's impactAnalysis]
 Coverage disposition: closed
-[When set by Step 5] Include redesign: true
 ```
 
 **Expected output**: Materially distinct feasible solutions derived from the complete verified cause set, tradeoff analysis, recommendation and implementation steps, residual risks

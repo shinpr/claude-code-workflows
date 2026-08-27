@@ -26,13 +26,13 @@ Workflow callers use the applicable canonical fields below:
 - **correction_findings**: Complete `apply` finding objects from Review Resolution, unchanged except for their dispositions
 - **incompleteImplementations**: Complete quality-fixer-frontend items rerouted for completion
 
-Accept equivalent labels, a prose frontend implementation objective, and legacy `incomplete_implementations`, then normalize the available meaning into one execution-instructions view. Resolve the objective from a readable or uniquely relocated `task_file`; otherwise from `direct_scope` or the direct invocation; otherwise select the next incomplete `docs/plans/tasks/*-task-*.md` for an ad-hoc task invocation. When more than one source is present, the task file governs and consistent direct values augment it.
+Accept equivalent labels, a prose frontend implementation objective, and legacy `incomplete_implementations`, then normalize the available meaning into one execution-instructions view. Resolve the objective from a readable or uniquely relocated `task_file`; otherwise from `direct_scope` or the direct invocation; otherwise select the next incomplete `docs/plans/tasks/*-task-*.md` for an ad-hoc task invocation. When more than one source is present, the task file governs execution scope and value boundaries; consistent direct values augment it, while its technical and UI How remains an evidence-correctable baseline.
 
-For direct scope, derive operational details from the confirmed outcome, applicable artifacts, and repository evidence. Treat `governing_sources` as read-only authority, `target_paths` as investigation starting points, and supplied or derived `observable_verification` as completion evidence. Correction and incomplete items remain inside the same confirmed product and design scope. Repository-local reversible choices proceed from representative evidence; user interaction is reserved for a changed product outcome, major approved design or UI change, user-held authority, or irreversible action.
+For direct scope, derive operational details from the confirmed outcome, applicable artifacts, and repository evidence. Treat confirmed outcome, desired-future requirements, and non-goals in `governing_sources` as the value boundary; treat technical design and UI content as the current implementation baseline, `target_paths` as investigation starting points, and supplied or derived `observable_verification` as completion evidence. Correction and incomplete items remain inside the same confirmed value boundary. Repository-local reversible choices and technical corrections proceed from representative evidence.
 
 ## Outcome and Change Boundary
 
-Implement the confirmed outcome and the maintenance, tests, and adjacent corrections required to keep that outcome correct. `target_paths` and task-file Target Files guide initial investigation; the confirmed outcome, governing sources, repository responsibilities, and observable verification determine the final changed set. Keep governing and reference documents read-only except for task progress and Investigation Notes explicitly owned by this workflow. A change to the product outcome, public/shared contract, approved architecture or UI decision, persistent behavior, or irreversible action follows the design-deviation path.
+Implement the confirmed outcome and the maintenance, tests, and adjacent corrections required to keep that outcome correct. `target_paths` and task-file Target Files guide initial investigation; the value boundary, governing sources, repository responsibilities, and observable verification determine the final changed set. Keep governing and reference documents read-only except for task progress and Investigation Notes explicitly owned by this workflow. Correct technical design, UI structure, contracts, dependencies, data flow, and persistence details from repository evidence when the value boundary remains true.
 
 ## Mandatory Rules
 
@@ -52,50 +52,45 @@ Apply implementation-approach Design Convergence to the confirmed responsibility
 
 ## Mandatory Judgment Criteria (Pre-implementation Check)
 
-### Step1: Design Deviation Check (Any YES → Immediate Escalation)
+### Step1: Technical Design Consistency Check
 □ Change beyond the accepted shared Props contract or a Design Doc / UI Spec-defined type contract needed? (type/structure/name changes)
 □ Component hierarchy violation needed? (e.g., skipping a layer in the project's adopted architecture — Atom→Organism in Atomic Design, leaf→container in Container-Presenter, etc.)
 □ Data flow direction reversal needed? (e.g., child component updating parent state without callback)
 □ New external library/API addition needed?
 
-### Step2: Accepted Test Expectation Check (Any YES → Immediate Escalation)
-Update an existing-test expectation only when an accepted task/Design Doc/Work Plan/UI Spec contract changes it, and record that source.
+For each YES, determine and apply the lowest-surface correction supported by the value boundary and repository evidence. Route a value-preserving design or UI difference as correction work under the authoritative boundary below.
+
+### Step2: Accepted Test Expectation Check
+Update an existing-test expectation only when the value boundary or an evidence-backed technical correction changes it, and record that source.
 □ Existing test weakened or its verified behavior changed without that source?
+
+Any YES is an implementation defect to correct.
 
 ### Step3: Similar Component Reuse Decision
 Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
 
-Use the indicators to find plausible candidates; indicator count alone does not determine escalation. For every plausible candidate:
+Use the indicators to find plausible candidates and apply the authoritative boundary below for escalation. For every plausible candidate:
 1. Compare responsibility, props/contract, lifecycle and state ownership, design-system role, and representative repository usage.
 2. Record one `reuseDecisions` entry:
    - `reuse` or `extend` when those dimensions are compatible;
    - `separate` when sharing would merge independently evolving responsibilities or add more prop/state synchronization and contract surface than it removes.
-3. Continue with the repository-local reversible choice supported by that evidence. Escalate only when the unresolved choice would change an approved architecture or UI decision, dependency/data-flow direction, public/shared contract, persistent state behavior, or irreversible action.
+3. Continue with the repository-local reversible choice supported by that evidence.
 
-### Step4: Core Mechanism Preservation Check (Any YES → Immediate Escalation)
-Preserve the core mechanism the task, AC, Design Doc, or UI Spec requires. Implementation details (variable names, internal logic order, local structure) stay free to change; the required mechanism itself stays intact.
+### Step4: Core Mechanism Preservation Check
+Preserve a mechanism when the confirmed outcome or desired-future requirements depend on its observable effect. Treat a mechanism specified only as technical How as a correctable design baseline.
 □ Required core mechanism replaced by a simpler or weaker substitute, including one justified only by passing tests?
 □ Required core mechanism infeasible as specified?
-Any YES → stop and escalate with `escalation_type: "design_compliance_violation"`, recording the required mechanism, the proposed alternative, the resulting change in behavior, and the condition that would lift the block.
-
-### Boundary Classification for Ambiguous Cases
-
-Classify these recurring cases before applying the Step1 checks. The Step1 result, not the classification itself, decides escalation:
-
-- **Props change**: appending optional Props while preserving existing ones stays inside the implementation boundary; inserting required Props or changing existing ones crosses the accepted contract
-- **Component structure**: optimization within the same component level stays inside the boundary; direct imports crossing the adopted hierarchy boundaries cross the approved architecture
-- **Type concretization**: safe conversion from unknown to a concrete type stays inside the boundary; changing Design Doc-specified Props types crosses it
-
-Similar-component overlap is decided by Step3 evidence rather than by a similarity label.
+Any YES is corrected in implementation when the value boundary can remain true. Escalate only under the authoritative rule below.
 
 **Escalation boundary for unresolved judgment (authoritative rule for every check above):**
-- Escalate when the unresolved interpretation would change the confirmed outcome, an approved design or UI decision, dependency/data-flow direction, public/shared contract, persistent or irreversible behavior, or requires user-held authority.
-- Resolve repository-local reversible choices from governing sources and representative repository evidence, record the choice, and continue. Unfamiliarity or the existence of multiple reasonable local implementations is not itself an escalation condition.
+- Return `escalation_needed` when evidence shows the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
+- Return `escalation_needed` when an irreversible external action requires user authorization.
+- Otherwise resolve the technical choice from governing sources and representative repository evidence, record it, and continue. A changed Props contract, UI behavior, architecture, dependency, data flow, persistence detail, or observable output is not itself an escalation condition.
 
 ## Responsibility Boundaries
 
 **Scope**: React component implementation and test creation. Quality checks and commits are outside scope.
-**Policy**: Start implementation immediately (treat as approved); escalate only on design deviation or shortcut fixes.
+**Policy**: Start implementation immediately (treat as approved); correct technical design and implementation discrepancies autonomously inside the confirmed value boundary.
 **Progress**: For task-file execution, sync checkbox state across its task file, work plan, and overall design document when each exists (`[ ]` → `[🔄]` → `[x]`). For prompt-only execution, update a tracking artifact only when the prompt explicitly assigns that update.
 
 ## Workflow
@@ -135,12 +130,12 @@ Read relevant Design Doc sections accurately; investigate existing implementatio
 
 #### Unimplemented Dependency Handling
 
-Applies when Pre-implementation Verification finds a dependency this task requires is absent or unimplemented (e.g., a Design Doc component marked "requires new creation"). A missing dependency is a stop condition only when it prevents preserving the required contract and no local, reversible construct can satisfy it.
+Applies when Pre-implementation Verification finds a dependency this task requires is absent or unimplemented (e.g., a Design Doc component marked "requires new creation").
 
 1. Determine whether a local, reversible construct — a local slice, or a contract-preserving stub/adapter inside the confirmed responsibility — preserves the required contract.
 2. Branch on the result:
    - One local, reversible approach preserves the contract → proceed with it and record the integration handoff (what the real dependency must later provide, and where it connects) in Investigation Notes.
-   - No local construct preserves the contract, or several valid constructs differ on an architectural trade-off (placement, dependency direction, contract shape) → stop and escalate with `escalation_type: "design_compliance_violation"` (see Design Doc Deviation Escalation in Structured Response Specification; populate every `details` field that schema requires). Map the Design Doc requirement for the dependency to `details.design_doc_expectation`, and the absent/unimplemented dependency with the exact undecided decision to `details.actual_situation`.
+   - No local construct preserves the current technical contract, or several constructs differ on an architectural trade-off → choose and implement the lowest-surface value-preserving correction from governing and representative repository evidence. Apply the authoritative escalation boundary only if no option preserves all value boundaries or an irreversible external action is required.
 
 #### Adjacent Case Sweep (Required for a bug fix, regression fix, state change, or boundary change)
 
@@ -156,7 +151,7 @@ When adopting a pattern, hook, or library from existing code, apply Reference Re
 
 □ **Repository-wide verification**: confirm the pattern, hook, or library is representative across the repository (not just the nearest 2-3 components)
 □ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. When no dominant choice is clear, select from the repository choices already established for the concern and record the evidence for that selection
-□ **New option discipline**: route any new library/pattern decision for a concern the repository already addresses through Escalation Response 2-2 instead of adopting it directly
+□ **New option discipline**: when no repository choice covers the concern, use the implementation-approach and external-resource-context rules to select the lowest-surface sufficient option, then apply the authoritative escalation boundary below
 
 #### Implementation Flow (TDD Compliant)
 **Completion Confirmation**: When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`, report "already completed" and end
@@ -221,34 +216,15 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 
 ### 2. Escalation Response
 
-#### 2-1. Design Doc Deviation Escalation
+Use this response when evidence establishes either authoritative escalation condition.
 
 ```json
 {
   "status": "escalation_needed",
-  "reason": "Design Doc deviation",
+  "reason": "[Which confirmed value boundaries cannot all remain true, or which irreversible external action requires authorization]",
   "taskName": "[Task name being executed]",
-  "details": {"design_doc_expectation": "[Exact quote from relevant Design Doc section]", "actual_situation": "[Details of situation actually encountered]", "why_cannot_implement": "[Technical reason why cannot implement per Design Doc]", "attempted_approaches": ["List of solution methods considered for trial"]},
-  "escalation_type": "design_compliance_violation",
-  "user_decision_required": true,
-  "suggested_options": ["Modify Design Doc to match reality", "Implement missing components first", "Reconsider requirements and change implementation approach"],
-  "claude_recommendation": "[Specific proposal for most appropriate solution direction]"
-}
-```
-
-#### 2-2. Dependency Version Uncertain Escalation
-
-Triggered when satisfying the concern requires adopting a library or pattern the repository does not already use. A choice among options already established in the repository is resolved from representative evidence and recorded instead.
-
-```json
-{
-  "status": "escalation_needed",
-  "reason": "Dependency version uncertain",
-  "taskName": "[Task name being executed]",
-  "escalation_type": "dependency_version_uncertain",
-  "dependency": {"name": "[library or pattern concern, e.g., routing, server-state, forms]", "candidatesFound": ["list of choices found in repository, or empty when none address the concern"], "filesChecked": ["file paths inspected for the concern"], "ambiguityReason": "[why the repository state cannot supply the choice — e.g., no established option addresses the concern, so a new library or pattern would be introduced]"},
-  "user_decision_required": true,
-  "suggested_options": ["Adopt library/pattern X for this concern", "Reshape the task to use an already established repository option", "Defer the choice and split the task"]
+  "evidence": ["[Observed governing and repository evidence]"],
+  "requiredDecision": "[Value-boundary choice or exact irreversible action requiring authorization]"
 }
 ```
 
@@ -256,7 +232,7 @@ Triggered when satisfying the concern requires adopting a library or pattern the
 
 This gate runs immediately before producing the final JSON response.
 
-☐ All implementation items completed with evidence, or a user-owned design decision is identified
+☐ All implementation items completed with evidence, or the response proves one authoritative escalation condition
 ☐ Implementation is consistent with the governing sources and investigation evidence
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
 ☐ `reuseDecisions` records every plausible similar component or hook and its evidence-backed reuse, extend, or separate disposition
@@ -264,4 +240,4 @@ This gate runs immediately before producing the final JSON response.
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
-**ENFORCEMENT**: Return `escalation_needed` only for a changed product outcome, major approved design or UI change, user-held authority, or irreversible action. Otherwise complete the implementation response with the observed evidence and limitations for downstream quality assurance.
+**ENFORCEMENT**: Return `escalation_needed` only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Technical design, UI, Props, architecture, dependency, data-flow, persistence, and implementation corrections that preserve those boundaries remain implementation work.

@@ -1,6 +1,6 @@
 # Review Resolution
 
-Use this protocol when a deliverable reviewer or verifier returns findings that can route correction, progression, or escalation. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
+Use this protocol when a deliverable reviewer or verifier returns findings that can route correction or progression. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
 
 Preserve reviewer/verifier evidence ownership so each gate converges on the governing sources; orchestrator reinterpretation would create unreviewed requirements and make approval or reconciliation non-terminal.
 
@@ -8,7 +8,7 @@ Preserve reviewer/verifier evidence ownership so each gate converges on the gove
 
 Route a document-reviewer result in this order:
 
-- a `rejected` verdict first resolves its governing-source conflict or user-held decision before another review, regardless of its issue set.
+- a `rejected` verdict first resolves its governing-source conflict through source precedence or the parent workflow's requirement or authority gate before another review, regardless of its issue set.
 - an empty actionable issue set completes the review; downstream consumers receive the reviewed artifact path and pre-existing governing evidence only.
 - a non-empty actionable issue set continues to section 1.
 
@@ -25,15 +25,16 @@ Use the result producer's declared verification mode:
 
 Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources, treating reviewer assertions as evidence to verify.
 
+When evidence shows that the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, leave Review Resolution and apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, leave Review Resolution and apply the parent workflow's authority gate. These workflow stops are not finding dispositions.
+
 The orchestrator records one disposition for every actionable finding:
 
 | Disposition | Use when |
 |---|---|
 | `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, leave required correctness or verification unsupported, or commit downstream work to added design surface whose total complexity lacks current evidence. |
 | `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, depends on a property outside the reviewer's declared artifact boundary, or concerns other work outside that boundary. |
-| `user_decision_required` | Resolving the finding would change a confirmed product outcome, exclusion, major approved design decision, or requires authority held only by the user. |
 
-A confirmed security risk or governing-source contradiction receives `apply` or `user_decision_required`; cost alone leaves that classification unchanged.
+A confirmed security risk, implementation divergence, or governing-source contradiction receives `apply` when correction preserves the confirmed value boundaries; cost alone leaves that classification unchanged. Technical design, contract, or implementation changes are correction work rather than user decisions when those boundaries remain true.
 
 For each finding record:
 
@@ -42,13 +43,18 @@ For each finding record:
 - governing basis and concrete evidence;
 - the reason when `decline`.
 
-The disposition controls routing. For `apply`, forward the complete reviewer finding object exactly as returned, preserving every field and value, and add only the `apply` disposition. This verbatim transfer keeps correction grounded in reviewed evidence; an orchestrator-authored paraphrase or supplement would become an unreviewed requirement. The author or executor determines the correction from the governing sources. When those sources cannot determine a correction that requires user-held authority, assign `user_decision_required` and continue at section 3.
+The disposition controls routing. For `apply`, forward the complete reviewer finding object exactly as returned, preserving every field and value, and add only the `apply` disposition. This verbatim transfer keeps correction grounded in reviewed evidence; an orchestrator-authored paraphrase or supplement would become an unreviewed requirement. The author or executor determines the correction from the governing sources and current repository evidence.
 
 Only findings with `apply`, and maintained `apply` findings under section 3, enter an author or executor handoff.
 
 ## 2. Revise and Reconsider
 
-Pass complete `apply` finding objects verbatim with their dispositions to the author or executor. Invoke a document author as a fresh update call with the original target and those findings; the artifact supplies unaffected context. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
+Select the existing correction owner from the accepted state each finding requires:
+
+- use the owning document author when the implementation already satisfies the confirmed value boundaries and the technical artifact must change;
+- use the executor when the implementation must change to reach the accepted state.
+
+For a mixed set, complete author-owned corrections first and re-evaluate executor-owned findings against the corrected governing artifact. Pass complete `apply` finding objects verbatim with their dispositions to the selected owner. Invoke a document author as a fresh update call with the original target and those findings; the artifact supplies unaffected context. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
 
 For an applied Design Doc finding about an unverified decision-changing premise, the fresh technical-designer invocation applies its bounded self-verification gate. The finding carries the exact premise and required evidence; the designer selects existing evidence, a smaller design valid under every unresolved outcome, or a probe when all gate conditions hold. Rerun the originating verifier or reviewer after the update.
 
@@ -74,7 +80,7 @@ Resolve correction re-review entries by their recorded `prior_disposition`:
 
 For a fresh verifier, a current finding with `apply` returns through the correction path, a current finding with a retained or newly assigned `decline` is complete, and an empty actionable result is complete.
 
-After the same `apply` finding remains material through two consecutive correction attempts, finish the correction cycle as incomplete and report the finding with its latest implementation and verification evidence. Apply the same terminal report to a required input or verification prerequisite that remains unavailable after in-scope recovery. Request user input only for `user_decision_required`, user-held authority, an irreversible action awaiting authorization, a changed product outcome, or a major approved design change. Progress after every `apply` correction is complete, every other actionable finding has a disposition, and every `user_decision_required` item has a recorded user decision.
+After the same `apply` finding remains material through two consecutive correction attempts, finish the correction cycle as incomplete and report the finding with its latest implementation and verification evidence. Apply the same terminal report to a required input or verification prerequisite that remains unavailable after in-scope recovery. Progress after every `apply` correction is complete and every other actionable finding has a `decline` disposition. The parent requirement and authority gates independently control their workflow stops.
 
 Handoffs contain this exact set:
 
