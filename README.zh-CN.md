@@ -9,7 +9,7 @@
 
 Claude Code能够深入探索代码库。但面对复杂任务时，真正困难的往往不是探索，而是让探索最终收敛。比如在设计账户恢复流程时，Claude可能发现令牌处理存在真实的不一致，并把大部分精力投入其中，结果反而没有说清用户真正需要的恢复行为。
 
-claude-code-workflows让探索始终围绕已经约定的结果展开。它在设计前确认目标和排除项，对照代码库检查设计，在提交前验证每个任务；对于较大的变更，还会独立审查最终实现是否符合预期行为和安全要求。在这个边界内，Claude根据代码库自行决定实现细节。
+claude-code-workflows让探索始终围绕已经约定的结果展开。它在设计前确认目标和排除项，对照代码库检查设计，在提交前验证每个任务；对于较大的变更，还会独立检查最终实现是否交付了约定结果、是否包含不必要的改动，以及是否存在严重的功能、可靠性或安全问题。在这个边界内，Claude根据代码库自行决定实现细节。
 
 如果目标和安全的实现边界已经清楚，直接使用Claude Code即可。如果变更需要先对范围达成一致、保留可追溯的设计决策、在不同上下文之间可靠交接，或进行独立验证，请使用这些工作流。
 
@@ -19,7 +19,7 @@ claude-code-workflows让探索始终围绕已经约定的结果展开。它在�
 
 工作流会增加Agent调用和文档产物，因此应该只在收益足以覆盖成本时使用。当一个实际发现的次要问题可能让大型变更偏离原目标、设计看似自洽却可能漏掉所需行为，或者通过的测试并未真正观察到它声称验证的内容时，这套工作流最有价值。
 
-实现范围获批后，Claude会完成每个任务的针对性验证、仓库质量检查、提交和最终审查，不会为常规实现决策反复询问。产品变更和重大设计变更会交回用户决定；可逆的实现选择由Claude处理。由于它以Claude Code插件形式提供，团队可以在不规定Claude具体步骤的前提下，在不同仓库中应用同一套控制机制。
+实现范围获批后，Claude会完成每个任务的针对性验证、仓库质量检查、提交和最终审查，不会为常规实现决策反复询问。只有在必须改变约定的产品结果或排除项时，才会交给用户决定；技术设计和实现选择由Claude处理。由于它以Claude Code插件形式提供，团队可以在不规定Claude具体步骤的前提下，在不同仓库中应用同一套控制机制。
 
 ---
 
@@ -35,7 +35,8 @@ claude-code-workflows让探索始终围绕已经约定的结果展开。它在�
 | 在实现前设计后端或通用变更 | `/recipe-design` | `dev-workflows` |
 | 设计并实现React / TypeScript前端 | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | 同时交付后端和React前端 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
-| 按照设计审查实现 | `/recipe-review` 或 `/recipe-front-review` | `dev-workflows` 或 `dev-workflows-frontend` |
+| 对照约定结果审查已完成的实现 | `/recipe-review` 或 `/recipe-front-review` | `dev-workflows` 或 `dev-workflows-frontend` |
+| 设置仓库特有的审查标准 | `/recipe-quality-profile` | 任意工作流插件 |
 | 在选择修复方案前调查问题 | `/recipe-diagnose` | 任意工作流插件 |
 | 根据代码记录现有系统 | `/recipe-reverse-engineer` | `dev-workflows` 或 `dev-workflows-fullstack` |
 | 一次性实验或原型 | 直接使用Claude Code | 无 |
@@ -114,7 +115,7 @@ flowchart LR
 
 仅仅生成文档并不会推动工作流继续。可能影响最终设计选择的前提必须在批准前用可验证的证据加以确认；只有当范围受限的能力验证是最简且充分的证明方式时，才会采用。
 
-Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审查，才能授权实现。每项任务只有通过针对当前任务的检查和适用的仓库检查后才会提交。分阶段实现完成后，独立审查会分别检查设计一致性、可观测行为的覆盖和安全性。
+Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审查，才能授权实现。每项任务只有通过针对当前任务的检查和适用的仓库检查后才会提交。分阶段实现完成后，独立审查会对照约定结果检查完整变更，查找不必要的改动和严重的功能或可靠性问题，确认所需行为确实得到验证，并评估安全性。
 
 主会话负责判断哪些发现属于当前目标，根据仓库解决实现问题，并让不受影响的工作继续进行。审查建议不会自动变成新任务。被接受的修正会返回实现阶段，并重新经过受影响的验证环节。
 
@@ -129,7 +130,7 @@ Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审�
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-[Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。
+[Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。`/recipe-quality-profile`可以把仓库特有的审查标准及其依据记录到`docs/project-context/quality.yaml`中；最终审查会将确认后的配置与已批准资料一同使用。
 
 ### 一次真实的工作流执行
 
@@ -142,7 +143,7 @@ Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审�
 - 约定的方法是否扩展了现有实现，并为每项新增内容提供依据？
 - 能否从每项需求追踪到任务和可观察的验证方法？
 - 每项已完成任务是否在提交前通过针对性检查和仓库质量检查？
-- 最终审查是否将整个变更与预期行为和安全要求进行了比较？
+- 最终审查是否确认完整变更交付了约定结果，且没有不必要的改动或严重的功能、可靠性、安全问题？
 - 审查者建议增加工作时，报告是否说明了采纳或拒绝的原因？
 
 ---
@@ -190,13 +191,13 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 <details>
 <summary>更多工作流示例</summary>
 
-#### 按照设计审查实现
+#### 审查已完成的实现
 
 ```bash
 /recipe-review
 ```
 
-审查工作流会将实现与Design Doc比较，并运行独立安全审查。如果修正会改变已批准的决策，它会返回相应文档，而不会悄悄修改契约。
+审查工作流会对照约定结果和仓库标准检查已完成的实现，然后运行独立安全审查。接受的修正会交回相应的实现或文档负责人，并再次接受审查。
 
 #### 选择修复方案前先调查问题
 
@@ -241,7 +242,8 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-design` | 创建设计文档 | 架构规划 |
 | `/recipe-plan` | 根据设计生成Work Plan | 规划阶段 |
 | `/recipe-build` | 执行已有Work Plan | 继续实现 |
-| `/recipe-review` | 按照Design Doc验证实现 | 实现后检查 |
+| `/recipe-review` | 对照约定结果审查已完成的实现 | 实现后检查 |
+| `/recipe-quality-profile` | 设置仓库特有的审查标准 | 仓库标准设置 |
 | `/recipe-diagnose` | 调查问题并比较解决方案 | 根因分析 |
 | `/recipe-reverse-engineer` | 根据代码生成PRD和Design Doc | 现有系统文档化 |
 | `/recipe-add-integration-tests` | 添加集成或E2E测试 | 为现有代码补充覆盖 |
@@ -261,7 +263,8 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-front-plan` | 生成前端Work Plan | 组件规划 |
 | `/recipe-front-build` | 执行前端Work Plan | 恢复React实现 |
 | `/recipe-front-adjust` | 借助外部验证调整已实现UI | 视觉细节调整 |
-| `/recipe-front-review` | 按照前端Design Doc验证实现 | 实现后检查 |
+| `/recipe-front-review` | 对照约定结果审查已完成的前端 | 实现后检查 |
+| `/recipe-quality-profile` | 设置仓库特有的审查标准 | 仓库标准设置 |
 | `/recipe-diagnose` | 调查问题并比较解决方案 | 根因分析 |
 | `/recipe-update-doc` | 更新并审查现有文档 | 需求或设计变更 |
 | `/recipe-task` | 直接运行遵循规则的任务 | 不需要分阶段交接的工作 |
@@ -291,7 +294,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | **task-decomposer** | 将Work Plan拆分为可提交的任务 |
 | **acceptance-test-generator** | 根据需求创建集成和E2E测试骨架 |
 | **integration-test-reviewer** | 检查集成和E2E测试是否覆盖预期边界 |
-| **code-reviewer** | 对照Design Doc检查实现 |
+| **code-reviewer** | 检查已完成的实现是否符合约定结果和仓库标准 |
 | **document-reviewer** | 检查文档完整性和规则合规性 |
 | **design-sync** | 发现多个Design Doc之间的冲突 |
 | **investigator** | 绘制执行路径并识别潜在故障点 |
@@ -391,11 +394,7 @@ Agent会在任务需要时加载这些skill。前端插件还包含React和TypeS
 
 答：quality-fixer Agent会在已批准目标的范围内处理测试、类型检查、lint和构建失败，包括同一职责或契约连带需要的改动。
 
-只有在以下情况下，工作流才会停止：
-
-- 修复会改变产品目标、已批准契约或重大设计决策；
-- 需要只有用户拥有的权限；
-- 必须执行现有授权不包含、且不可逆的外部操作。
+只有在无法同时保留用户要求的结果和排除项，或不可逆的外部操作需要授权时，工作流才会请用户决定。只要不改变产品最终交付的内容，技术设计、契约、UI、架构、持久化和实现变更都由Claude自行处理。
 
 **问：有适用于OpenAI Codex CLI的版本吗？**
 

@@ -9,7 +9,7 @@
 
 Claude Code puede explorar una base de código a fondo. En trabajos complejos, el verdadero reto no es explorar, sino llegar a una conclusión. Mientras diseña un flujo de recuperación de cuentas, Claude podría detectar una inconsistencia real en el manejo de tokens y dedicarle casi todo el diseño, dejando impreciso el comportamiento de recuperación que se había solicitado.
 
-claude-code-workflows mantiene esa exploración enfocada en un resultado acordado. Antes de diseñar, define el objetivo y lo que queda fuera de alcance; contrasta los diseños con el repositorio; verifica cada tarea antes de hacer commit y, en cambios grandes, somete la implementación terminada a revisiones independientes de comportamiento y seguridad. Dentro de esos límites, Claude decide los detalles de implementación a partir de la base de código.
+claude-code-workflows mantiene esa exploración enfocada en un resultado acordado. Antes de diseñar, define el objetivo y lo que queda fuera de alcance; contrasta los diseños con el repositorio; verifica cada tarea antes de hacer commit y, en cambios grandes, comprueba de forma independiente que la implementación terminada entregue el resultado acordado, no incluya cambios innecesarios y no tenga problemas graves de funcionamiento, fiabilidad o seguridad. Dentro de esos límites, Claude decide los detalles de implementación a partir de la base de código.
 
 Usa Claude Code directamente cuando el resultado y los límites seguros de implementación ya estén claros. Usa estos flujos cuando un cambio requiera acordar el alcance, conservar decisiones de diseño, transferir el trabajo entre contextos de forma confiable o contar con una verificación independiente.
 
@@ -19,7 +19,7 @@ Usa Claude Code directamente cuando el resultado y los límites seguros de imple
 
 El flujo añade llamadas a agentes y genera documentos, así que debe justificar ese costo. Resulta útil cuando un hallazgo secundario real puede desviar un cambio grande de su objetivo, cuando un diseño coherente podría no cubrir el comportamiento solicitado o cuando una prueba que pasa no observa en realidad aquello que afirma verificar.
 
-Una vez aprobado el alcance de implementación, Claude lleva las tareas por la verificación específica, los controles de calidad del repositorio, los commits y la revisión final, sin consultar decisiones rutinarias. Los cambios de producto y las decisiones importantes de diseño vuelven al usuario; Claude resuelve las decisiones de implementación reversibles. Al distribuirse como un plugin de Claude Code, un equipo puede aplicar los mismos controles en distintos repositorios sin imponerle a Claude una secuencia fija de pasos.
+Una vez aprobado el alcance de implementación, Claude lleva las tareas por la verificación específica, los controles de calidad del repositorio, los commits y la revisión final, sin consultar decisiones rutinarias. Solo pide una decisión al usuario cuando debe cambiar el resultado de producto acordado o lo que quedó fuera de alcance; Claude se ocupa de las decisiones de diseño técnico e implementación. Al distribuirse como un plugin de Claude Code, un equipo puede aplicar los mismos controles en distintos repositorios sin imponerle a Claude una secuencia fija de pasos.
 
 ---
 
@@ -35,7 +35,8 @@ Requiere una versión de Claude Code compatible con el marketplace de plugins.
 | Diseñar un cambio de backend o propósito general antes de implementarlo | `/recipe-design` | `dev-workflows` |
 | Diseñar e implementar un frontend en React / TypeScript | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | Entregar juntos un backend y un frontend React | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
-| Revisar una implementación contra su diseño | `/recipe-review` o `/recipe-front-review` | `dev-workflows` o `dev-workflows-frontend` |
+| Revisar una implementación terminada frente al resultado acordado | `/recipe-review` o `/recipe-front-review` | `dev-workflows` o `dev-workflows-frontend` |
+| Definir criterios de revisión propios del repositorio | `/recipe-quality-profile` | Cualquier plugin de flujos |
 | Investigar un problema antes de elegir una solución | `/recipe-diagnose` | Cualquier plugin de flujos |
 | Documentar un sistema existente a partir del código | `/recipe-reverse-engineer` | `dev-workflows` o `dev-workflows-fullstack` |
 | Hacer un experimento descartable o un prototipo | Usa Claude Code directamente | Ninguno |
@@ -114,7 +115,7 @@ Las UI Specs, los ADR y los esqueletos de pruebas de integración o E2E solo apa
 
 Generar un documento no hace avanzar el flujo por sí solo. Las premisas que podrían cambiar el diseño elegido deben resolverse con evidencia comprobable antes de aprobarlo; solo se recurre a una prueba acotada cuando sea la forma más sencilla y suficiente de obtenerla.
 
-El Work Plan se revisa para comprobar cobertura, orden de dependencias y verificaciones ejecutables antes de autorizar la implementación. Cada tarea se incorpora a un commit solo después de pasar sus controles específicos y los controles aplicables del repositorio. Al terminar la implementación por etapas, revisiones separadas examinan la coherencia con el diseño, la cobertura observable y la seguridad.
+El Work Plan se revisa para comprobar cobertura, orden de dependencias y verificaciones ejecutables antes de autorizar la implementación. Cada tarea se incorpora a un commit solo después de pasar sus controles específicos y los controles aplicables del repositorio. Al terminar la implementación por etapas, revisiones separadas comprueban el cambio completo frente al resultado acordado, buscan cambios innecesarios y problemas graves de funcionamiento o fiabilidad, confirman la cobertura observable y evalúan la seguridad.
 
 La sesión principal decide qué hallazgos pertenecen al resultado actual, resuelve preguntas de implementación a partir del repositorio y mantiene en marcha el trabajo no afectado. Las sugerencias de una revisión no se convierten automáticamente en tareas. Las correcciones aceptadas vuelven a implementación y atraviesan de nuevo los controles correspondientes.
 
@@ -129,7 +130,7 @@ Usar un contexto nuevo para cada fase evita que el razonamiento de una fase se c
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-La [plantilla de Task](skills/documentation-criteria/references/task-template.md) lleva a implementación las decisiones obligatorias y los valores observables de los contratos, cada uno con una comprobación de cumplimiento que se responde con sí o no. Después de ejecutar la tarea, los controles aplicables del repositorio se ejecutan sobre el cambio completo antes del commit. Los revisores finales leen las mismas fuentes aprobadas y el código terminado, en lugar de depender de la conversación de implementación.
+La [plantilla de Task](skills/documentation-criteria/references/task-template.md) lleva a implementación las decisiones obligatorias y los valores observables de los contratos, cada uno con una comprobación de cumplimiento que se responde con sí o no. Después de ejecutar la tarea, los controles aplicables del repositorio se ejecutan sobre el cambio completo antes del commit. Los revisores finales leen las mismas fuentes aprobadas y el código terminado, en lugar de depender de la conversación de implementación. `/recipe-quality-profile` permite registrar criterios de revisión propios del repositorio y sus fuentes en `docs/project-context/quality.yaml`; los revisores finales usan el perfil confirmado junto con las fuentes aprobadas.
 
 ### Una ejecución real
 
@@ -142,7 +143,7 @@ La ejecución comenzó con un Work Plan existente que hacía referencia a un ADR
 - ¿El enfoque acordado amplía lo que ya existe y aporta evidencia para cada añadido?
 - ¿Puedes seguir cada requisito hasta una tarea y un método de verificación observable?
 - ¿Cada tarea terminada pasó los controles específicos y del repositorio antes del commit?
-- ¿La revisión final comparó el cambio completo con el comportamiento esperado y los requisitos de seguridad?
+- ¿La revisión final confirmó que el cambio completo entrega el resultado acordado sin cambios innecesarios ni problemas graves de funcionamiento, fiabilidad o seguridad?
 - Cuando un revisor propuso más trabajo, ¿el informe explica por qué se aplicó o se descartó?
 
 ---
@@ -190,13 +191,13 @@ Usa `/recipe-fullstack-build` para continuar desde un Work Plan full stack exist
 <details>
 <summary>Más ejemplos de flujos</summary>
 
-#### Revisar una implementación contra su diseño
+#### Revisar una implementación terminada
 
 ```bash
 /recipe-review
 ```
 
-El flujo de revisión compara la implementación con los Design Docs y ejecuta una revisión de seguridad independiente. Una corrección que cambie una decisión aprobada vuelve al documento correspondiente en vez de modificar el contrato de forma silenciosa.
+El flujo de revisión contrasta la implementación terminada con el resultado acordado y los criterios del repositorio, y después ejecuta una revisión de seguridad independiente. Las correcciones aceptadas vuelven al responsable de la implementación o del documento correspondiente y se revisan de nuevo.
 
 #### Investigar antes de elegir una solución
 
@@ -241,7 +242,8 @@ Todos los puntos de entrada usan el prefijo `recipe-`. Escribe `/recipe-` y usa 
 | `/recipe-design` | Crear documentación de diseño | Planificación de arquitectura |
 | `/recipe-plan` | Generar un Work Plan a partir del diseño | Fase de planificación |
 | `/recipe-build` | Ejecutar un Work Plan existente | Retomar una implementación |
-| `/recipe-review` | Verificar la implementación contra los Design Docs | Comprobación posterior a la implementación |
+| `/recipe-review` | Revisar una implementación terminada frente al resultado acordado | Comprobación posterior a la implementación |
+| `/recipe-quality-profile` | Definir criterios de revisión propios del repositorio | Criterios del repositorio |
 | `/recipe-diagnose` | Investigar un problema y comparar soluciones | Análisis de causa raíz |
 | `/recipe-reverse-engineer` | Derivar PRD y Design Docs del código | Documentación de sistemas existentes |
 | `/recipe-add-integration-tests` | Añadir pruebas de integración o E2E | Cobertura de código existente |
@@ -261,7 +263,8 @@ El plugin de frontend añade análisis específico de React, arquitectura de com
 | `/recipe-front-plan` | Generar un Work Plan de frontend | Planificación de componentes |
 | `/recipe-front-build` | Ejecutar el Work Plan de frontend | Retomar una implementación React |
 | `/recipe-front-adjust` | Ajustar una UI implementada con verificación externa | Mejoras visuales |
-| `/recipe-front-review` | Verificar la implementación contra los Design Docs de frontend | Comprobación posterior a la implementación |
+| `/recipe-front-review` | Revisar un frontend terminado frente al resultado acordado | Comprobación posterior a la implementación |
+| `/recipe-quality-profile` | Definir criterios de revisión propios del repositorio | Criterios del repositorio |
 | `/recipe-diagnose` | Investigar un problema y comparar soluciones | Análisis de causa raíz |
 | `/recipe-update-doc` | Actualizar y revisar documentos existentes | Cambios de requisitos o diseño |
 | `/recipe-task` | Ejecutar directamente una tarea guiada por reglas | Trabajo que no requiere traspasos entre etapas |
@@ -291,7 +294,7 @@ Estos agentes se comparten entre los plugins de backend, frontend y full stack:
 | **task-decomposer** | Divide un Work Plan en tareas listas para commit |
 | **acceptance-test-generator** | Crea esqueletos de pruebas de integración y E2E a partir de requisitos |
 | **integration-test-reviewer** | Revisa las pruebas de integración y E2E contra la cobertura prevista |
-| **code-reviewer** | Comprueba la implementación contra los Design Docs |
+| **code-reviewer** | Comprueba que la implementación terminada corresponda al resultado acordado y cumpla los criterios del repositorio |
 | **document-reviewer** | Comprueba la integridad del documento y el cumplimiento de las reglas |
 | **design-sync** | Detecta conflictos entre varios Design Docs |
 | **investigator** | Traza rutas de ejecución e identifica posibles puntos de fallo |
@@ -391,11 +394,7 @@ Estos plugins cubren funciones relacionadas sin cambiar el flujo principal:
 
 R: Los agentes quality-fixer resuelven fallos de pruebas, tipos, lint y build dentro del resultado aprobado, incluidos los cambios adyacentes necesarios para la misma responsabilidad o contrato.
 
-El flujo solo se detiene cuando una corrección:
-
-- cambia el resultado de producto, un contrato aprobado o una decisión importante de diseño;
-- requiere una autorización que solo tiene el usuario;
-- realiza una acción externa irreversible que no está cubierta por la autorización existente.
+El flujo solo consulta al usuario cuando ya no es posible conservar a la vez el resultado solicitado y lo que quedó fuera de alcance, o cuando una acción externa irreversible necesita autorización. Mientras no cambie lo que entrega el producto, resuelve por su cuenta los cambios de diseño técnico, contratos, interfaz, arquitectura, persistencia e implementación.
 
 **P: ¿Existe una versión para OpenAI Codex CLI?**
 
