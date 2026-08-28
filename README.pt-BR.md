@@ -36,7 +36,7 @@ Requer uma versão do Claude Code com suporte ao marketplace de plugins.
 | Projetar e implementar um frontend React / TypeScript | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | Entregar backend e frontend React juntos | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | Revisar uma implementação concluída em relação ao resultado combinado | `/recipe-review` ou `/recipe-front-review` | `dev-workflows` ou `dev-workflows-frontend` |
-| Definir critérios de revisão específicos do repositório | `/recipe-quality-profile` | Qualquer plugin de fluxo |
+| Definir regras de qualidade específicas do repositório | `/recipe-quality-profile` | Qualquer plugin de fluxo |
 | Investigar um problema antes de escolher a correção | `/recipe-diagnose` | Qualquer plugin de fluxo |
 | Documentar um sistema existente a partir do código | `/recipe-reverse-engineer` | `dev-workflows` ou `dev-workflows-fullstack` |
 | Fazer um experimento descartável ou protótipo | Use o Claude Code diretamente | Nenhum |
@@ -130,7 +130,7 @@ Um novo contexto em cada fase evita que o raciocínio de uma fase vire, silencio
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-O [modelo de Task](skills/documentation-criteria/references/task-template.md) leva para a implementação as decisões obrigatórias e os valores observáveis dos contratos, cada um com uma verificação de conformidade que pode ser respondida com sim ou não. Depois da execução, os controles aplicáveis do repositório rodam sobre a mudança completa antes do commit. Os revisores finais leem as mesmas fontes aprovadas e o código concluído, em vez de depender da conversa de implementação. `/recipe-quality-profile` permite registrar critérios de revisão específicos do repositório e suas fontes em `docs/project-context/quality.yaml`; os revisores finais usam o perfil confirmado junto com as fontes aprovadas.
+O [modelo de Task](skills/documentation-criteria/references/task-template.md) leva para a implementação as decisões obrigatórias e os valores observáveis dos contratos, cada um com uma verificação de conformidade que pode ser respondida com sim ou não. Depois da execução, os controles aplicáveis do repositório rodam sobre a mudança completa antes do commit. Os revisores finais leem as mesmas fontes aprovadas e o código concluído, em vez de depender da conversa de implementação. `/recipe-quality-profile` permite registrar regras de qualidade específicas do repositório e suas fontes em `docs/project-context/quality.yaml`; os executores de implementação e os revisores finais usam o perfil confirmado junto com as fontes aprovadas.
 
 ### Uma execução real
 
@@ -243,7 +243,7 @@ Todos os pontos de entrada usam o prefixo `recipe-`. Digite `/recipe-` e use Tab
 | `/recipe-plan` | Gerar um Work Plan a partir do design | Etapa de planejamento |
 | `/recipe-build` | Executar um Work Plan existente | Retomar uma implementação |
 | `/recipe-review` | Revisar uma implementação concluída em relação ao resultado combinado | Verificação após a implementação |
-| `/recipe-quality-profile` | Definir critérios de revisão específicos do repositório | Critérios do repositório |
+| `/recipe-quality-profile` | Definir regras de qualidade específicas do repositório | Regras de qualidade |
 | `/recipe-diagnose` | Investigar um problema e comparar soluções | Análise de causa raiz |
 | `/recipe-reverse-engineer` | Derivar PRDs e Design Docs do código | Documentação de sistemas existentes |
 | `/recipe-add-integration-tests` | Adicionar testes de integração ou E2E | Cobertura para código existente |
@@ -264,7 +264,7 @@ O plugin de frontend acrescenta análise específica de React, arquitetura de co
 | `/recipe-front-build` | Executar o Work Plan de frontend | Retomar a implementação React |
 | `/recipe-front-adjust` | Ajustar uma UI implementada com verificação externa | Refinamentos visuais |
 | `/recipe-front-review` | Revisar um frontend concluído em relação ao resultado combinado | Verificação após a implementação |
-| `/recipe-quality-profile` | Definir critérios de revisão específicos do repositório | Critérios do repositório |
+| `/recipe-quality-profile` | Definir regras de qualidade específicas do repositório | Regras de qualidade |
 | `/recipe-diagnose` | Investigar um problema e comparar soluções | Análise de causa raiz |
 | `/recipe-update-doc` | Atualizar e revisar documentos existentes | Mudanças de requisitos ou design |
 | `/recipe-task` | Executar diretamente uma tarefa guiada por regras | Trabalho que não precisa de passagem de contexto entre etapas |

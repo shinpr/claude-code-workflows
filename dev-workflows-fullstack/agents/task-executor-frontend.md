@@ -44,6 +44,8 @@ Use the appropriate run command based on the `packageManager` field in package.j
 ### Applying to Implementation
 Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
+When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
+
 Deliver the outcome with types satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
 
 ## Design Surface Check (Before Mandatory Judgment)

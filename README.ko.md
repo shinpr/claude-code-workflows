@@ -36,7 +36,7 @@ claude-code-workflows는 탐색이 합의된 결과를 향하도록 유지합니
 | React / TypeScript 프런트엔드를 설계하고 구현 | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | 백엔드와 React 프런트엔드를 함께 구현 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 완성된 구현이 합의한 결과에 맞는지 검토 | `/recipe-review` 또는 `/recipe-front-review` | `dev-workflows` 또는 `dev-workflows-frontend` |
-| 저장소별 검토 기준 설정 | `/recipe-quality-profile` | 모든 워크플로 플러그인 |
+| 저장소별 품질 규칙 설정 | `/recipe-quality-profile` | 모든 워크플로 플러그인 |
 | 수정 방법을 정하기 전에 문제를 조사 | `/recipe-diagnose` | 모든 워크플로 플러그인 |
 | 코드에서 기존 시스템 문서를 생성 | `/recipe-reverse-engineer` | `dev-workflows` 또는 `dev-workflows-fullstack` |
 | 일회성 실험이나 프로토타입 | Claude Code를 직접 사용 | 없음 |
@@ -130,7 +130,7 @@ Work Plan은 구현을 승인하기 전에 범위, 의존성 순서, 실행 가�
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-[Task 템플릿](skills/documentation-criteria/references/task-template.md)은 구현을 구속하는 결정과 외부에서 확인할 수 있는 계약상의 값을 전달하며, 각 항목에 예/아니요로 답할 수 있는 준수 검사를 둡니다. 실행 후에는 커밋 전에 전체 작업 변경에 해당 저장소 검사를 적용합니다. 최종 검토자는 구현 대화에 의존하지 않고 같은 승인 자료와 완성된 코드를 읽습니다. `/recipe-quality-profile`을 사용하면 저장소별 검토 기준과 근거를 `docs/project-context/quality.yaml`에 기록할 수 있습니다. 최종 검토자는 확인된 프로필을 승인 자료와 함께 사용합니다.
+[Task 템플릿](skills/documentation-criteria/references/task-template.md)은 구현을 구속하는 결정과 외부에서 확인할 수 있는 계약상의 값을 전달하며, 각 항목에 예/아니요로 답할 수 있는 준수 검사를 둡니다. 실행 후에는 커밋 전에 전체 작업 변경에 해당 저장소 검사를 적용합니다. 최종 검토자는 구현 대화에 의존하지 않고 같은 승인 자료와 완성된 코드를 읽습니다. `/recipe-quality-profile`을 사용하면 저장소별 품질 규칙과 근거를 `docs/project-context/quality.yaml`에 기록할 수 있습니다. 구현 실행자와 최종 검토자는 확인된 프로필을 승인 자료와 함께 사용합니다.
 
 ### 실제 워크플로 실행 사례
 
@@ -243,7 +243,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 | `/recipe-plan` | 설계에서 Work Plan 생성 | 계획 단계 |
 | `/recipe-build` | 기존 Work Plan 실행 | 구현 재개 |
 | `/recipe-review` | 완성된 구현이 합의한 결과에 맞는지 검토 | 구현 후 확인 |
-| `/recipe-quality-profile` | 저장소별 검토 기준 설정 | 저장소 기준 설정 |
+| `/recipe-quality-profile` | 저장소별 품질 규칙 설정 | 품질 규칙 설정 |
 | `/recipe-diagnose` | 문제를 조사하고 해결책 비교 | 근본 원인 분석 |
 | `/recipe-reverse-engineer` | 코드에서 PRD와 Design Doc 생성 | 기존 시스템 문서화 |
 | `/recipe-add-integration-tests` | 통합 또는 E2E 테스트 추가 | 기존 코드의 커버리지 확보 |
@@ -264,7 +264,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 | `/recipe-front-build` | 프런트엔드 Work Plan 실행 | React 구현 재개 |
 | `/recipe-front-adjust` | 외부 검증으로 구현된 UI 조정 | 시각적 개선 |
 | `/recipe-front-review` | 완성된 프런트엔드가 합의한 결과에 맞는지 검토 | 구현 후 확인 |
-| `/recipe-quality-profile` | 저장소별 검토 기준 설정 | 저장소 기준 설정 |
+| `/recipe-quality-profile` | 저장소별 품질 규칙 설정 | 품질 규칙 설정 |
 | `/recipe-diagnose` | 문제를 조사하고 해결책 비교 | 근본 원인 분석 |
 | `/recipe-update-doc` | 기존 문서 업데이트 및 검토 | 요구 사항 또는 설계 변경 |
 | `/recipe-task` | 규칙을 따르는 작업을 직접 실행 | 단계별 인계가 필요 없는 작업 |

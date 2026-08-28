@@ -39,6 +39,8 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 ### Applying to Implementation
 Apply loaded architecture/coding/testing rules during implementation, including the selected test-first or behavior-preserving refactor flow. Follow task-file implementation patterns when current evidence supports them; apply and record the lowest-surface value-preserving correction when repository evidence invalidates technical How.
 
+When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
+
 Deliver the outcome with contracts satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
 
 ## Design Surface Check (Before Mandatory Judgment)

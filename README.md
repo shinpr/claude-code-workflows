@@ -36,7 +36,7 @@ Requires a Claude Code release with plugin marketplace support.
 | Design and build a React / TypeScript frontend | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | Deliver a backend and React frontend change together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | Review a completed implementation against the agreed outcome | `/recipe-review` or `/recipe-front-review` | `dev-workflows` or `dev-workflows-frontend` |
-| Set repository-specific review standards | `/recipe-quality-profile` | Any workflow plugin |
+| Set repository-specific quality rules | `/recipe-quality-profile` | Any workflow plugin |
 | Investigate a problem before choosing a fix | `/recipe-diagnose` | Any workflow plugin |
 | Document an existing system from its code | `/recipe-reverse-engineer` | `dev-workflows` or `dev-workflows-fullstack` |
 | A throwaway experiment or prototype | Use Claude Code directly | None |
@@ -130,7 +130,7 @@ Fresh contexts keep one phase's reasoning from silently becoming the next phase'
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation. `/recipe-quality-profile` can record repository-specific review standards and their sources in `docs/project-context/quality.yaml`; final reviewers use a confirmed profile alongside the approved sources.
+The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation. `/recipe-quality-profile` can record repository-specific quality rules and their sources in `docs/project-context/quality.yaml`; implementation executors and final reviewers use a confirmed profile alongside the approved sources.
 
 ### A real workflow run
 
@@ -245,7 +245,7 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | `/recipe-plan` | Generate a work plan from design | Planning phase |
 | `/recipe-build` | Execute an existing work plan | Resume implementation |
 | `/recipe-review` | Review a completed implementation against the agreed outcome | Post-implementation check |
-| `/recipe-quality-profile` | Set repository-specific review standards | Repository standards |
+| `/recipe-quality-profile` | Set repository-specific quality rules | Repository quality rules |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-reverse-engineer` | Derive PRDs and Design Docs from code | Existing-system documentation |
 | `/recipe-add-integration-tests` | Add integration or E2E tests | Coverage for existing code |
@@ -266,7 +266,7 @@ The frontend plugin adds React-specific analysis, component architecture, React 
 | `/recipe-front-build` | Execute a frontend work plan | Resume React implementation |
 | `/recipe-front-adjust` | Adjust an implemented UI with external verification | Visual refinements |
 | `/recipe-front-review` | Review a completed frontend against the agreed outcome | Post-implementation check |
-| `/recipe-quality-profile` | Set repository-specific review standards | Repository standards |
+| `/recipe-quality-profile` | Set repository-specific quality rules | Repository quality rules |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
 | `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
