@@ -36,7 +36,7 @@ claude-code-workflowsは、探索を合意済みの成果へ向け続けるた�
 | React / TypeScriptフロントエンドを設計・実装する | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | バックエンドとReactフロントエンドをまとめて実装する | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 完成した実装を合意した成果に照らしてレビューする | `/recipe-review` または `/recipe-front-review` | `dev-workflows` または `dev-workflows-frontend` |
-| リポジトリ固有のレビュー基準を定める | `/recipe-quality-profile` | 任意のワークフロープラグイン |
+| リポジトリ固有の品質ルールを定める | `/recipe-quality-profile` | 任意のワークフロープラグイン |
 | 修正を決める前に問題を調査する | `/recipe-diagnose` | 任意のワークフロープラグイン |
 | コードから既存システムを文書化する | `/recipe-reverse-engineer` | `dev-workflows` または `dev-workflows-fullstack` |
 | 使い捨ての実験やプロトタイプを作る | Claude Codeを直接使う | なし |
@@ -130,7 +130,7 @@ UI仕様、ADR、結合テストやE2Eテストのスケルトンは、それぞ
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-[タスクテンプレート](skills/documentation-criteria/references/task-template.md)は、実装を拘束する判断と外部から確認できる契約上の値を引き継ぎ、それぞれにYes/Noで判定できる準拠チェックを持たせます。実行後、コミット前にタスク全体の変更へ該当するリポジトリチェックを行います。最終レビュアーは実装時の会話ではなく、同じ承認済みソースと完成したコードを読みます。`/recipe-quality-profile`を使うと、リポジトリ固有のレビュー基準とその根拠を`docs/project-context/quality.yaml`に記録でき、最終レビューでは確認済みの設定を承認済みソースとあわせて使います。
+[タスクテンプレート](skills/documentation-criteria/references/task-template.md)は、実装を拘束する判断と外部から確認できる契約上の値を引き継ぎ、それぞれにYes/Noで判定できる準拠チェックを持たせます。実行後、コミット前にタスク全体の変更へ該当するリポジトリチェックを行います。最終レビュアーは実装時の会話ではなく、同じ承認済みソースと完成したコードを読みます。`/recipe-quality-profile`を使うと、リポジトリ固有の品質ルールとその根拠を`docs/project-context/quality.yaml`に記録でき、実装担当と最終レビュアーは確認済みの設定を承認済みソースとあわせて使います。
 
 ### 実際のワークフロー実行例
 
@@ -243,7 +243,7 @@ UI仕様、ADR、結合テストやE2Eテストのスケルトンは、それぞ
 | `/recipe-plan` | 設計から作業計画を作成 | 計画フェーズ |
 | `/recipe-build` | 既存の作業計画を実行 | 実装の再開 |
 | `/recipe-review` | 完成した実装を合意した成果に照らしてレビュー | 実装後の確認 |
-| `/recipe-quality-profile` | リポジトリ固有のレビュー基準を設定 | リポジトリ基準の設定 |
+| `/recipe-quality-profile` | リポジトリ固有の品質ルールを設定 | 品質ルールの設定 |
 | `/recipe-diagnose` | 問題を調査し、解決策を比較 | 根本原因の分析 |
 | `/recipe-reverse-engineer` | コードからPRDと設計ドキュメントを作成 | 既存システムの文書化 |
 | `/recipe-add-integration-tests` | 結合テストまたはE2Eテストを追加 | 既存コードのカバレッジ |
@@ -264,7 +264,7 @@ UI仕様、ADR、結合テストやE2Eテストのスケルトンは、それぞ
 | `/recipe-front-build` | フロントエンド作業計画を実行 | React実装の再開 |
 | `/recipe-front-adjust` | 外部検証を使って実装済みUIを調整 | 見た目の調整 |
 | `/recipe-front-review` | 完成したフロントエンドを合意した成果に照らしてレビュー | 実装後の確認 |
-| `/recipe-quality-profile` | リポジトリ固有のレビュー基準を設定 | リポジトリ基準の設定 |
+| `/recipe-quality-profile` | リポジトリ固有の品質ルールを設定 | 品質ルールの設定 |
 | `/recipe-diagnose` | 問題を調査し、解決策を比較 | 根本原因の分析 |
 | `/recipe-update-doc` | 既存ドキュメントを更新・レビュー | 要件または設計の変更 |
 | `/recipe-task` | ルールに従うタスクを直接実行 | 段階的な引き継ぎが不要な作業 |

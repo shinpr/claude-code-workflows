@@ -1,6 +1,6 @@
 ---
 name: recipe-quality-profile
-description: Proposes repository-specific review policy and, after confirmation, creates or updates docs/project-context/quality.yaml. Use when asked to create or update a repository quality profile.
+description: Proposes repository-specific quality policy for implementation and review and, after confirmation, creates or updates docs/project-context/quality.yaml. Use when asked to create or update a repository quality profile.
 disable-model-invocation: true
 ---
 
@@ -9,7 +9,7 @@ Execute Skill: coding-principles to distinguish repository-owned policy from gen
 
 ## Purpose
 
-Establish repository-specific code-review acceptance conditions with the user, then create or update `docs/project-context/quality.yaml`.
+Establish repository-specific implementation and code-review acceptance conditions with the user, then create or update `docs/project-context/quality.yaml`.
 
 Requested policy change: $ARGUMENTS
 
@@ -25,7 +25,7 @@ review_dimensions:
       - "repository/path: section, identifier, or contract"
 ```
 
-Each dimension owns one repository-specific review decision. `applies_when` limits its review surface, `pass` defines the accepted state, and `evidence` identifies why the repository owns the rule.
+Each dimension owns one repository-specific quality decision. `applies_when` limits its implementation and review surface, `pass` defines the accepted state, and `evidence` identifies why the repository owns the rule.
 
 ## Authoring Flow
 
@@ -33,7 +33,7 @@ Each dimension owns one repository-specific review decision. `applies_when` limi
 2. Build candidates from acceptance conditions expressed or enforced by repository instructions, contributor documentation, CI, manifests and scripts, schemas and public contracts, tests, or representative implementation patterns. For an update, derive candidates only from the requested policy change and preserve unrelated dimensions.
 3. For each candidate, inspect supporting and contradicting evidence wherever it can change the candidate's applicability, accepted state, or repository ownership. Separate observed repository facts from policy choices that require user confirmation.
 4. Retain a candidate only when failing its `pass` condition would change implementation acceptance and every repository fact it depends on has cited evidence. Give it the narrowest useful `applies_when`, one positive observable `pass` condition, and consolidate candidates that would produce the same finding and correction. Omit a candidate when required repository evidence is unavailable and report the exact evidence needed.
-5. Present proposed additions, changes, and removals, confirm that other dimensions remain unchanged, show the supporting and contradicting evidence, and state unresolved policy choices with their effect on review acceptance. Obtain explicit user confirmation of a proposal with no unresolved choices before writing.
+5. Present proposed additions, changes, and removals, confirm that other dimensions remain unchanged, show the supporting and contradicting evidence, and state unresolved policy choices with their effect on implementation and review acceptance. Obtain explicit user confirmation of a proposal with no unresolved choices before writing.
 6. Write only the confirmed profile content. Read the result and verify version `1`, unique IDs, all required fields, observable conditions, readable evidence references, and consistency with the confirmed proposal.
 
 When no repository-specific dimension remains and no profile exists, report that repository evidence supports no profile content and leave the repository unchanged.
@@ -45,7 +45,7 @@ Before confirmation, report:
 - proposed additions, changes, and removals, plus the unchanged remainder;
 - supporting and contradicting evidence for each modification;
 - omitted candidates and the exact missing evidence;
-- policy choices requiring the user's decision and their effect on review acceptance.
+- policy choices requiring the user's decision and their effect on implementation and review acceptance.
 
 After confirmation, report:
 
@@ -56,7 +56,7 @@ After confirmation, report:
 
 ## Completion Check
 
-- [ ] Every retained dimension changes a review decision and cites repository or user-confirmed policy evidence
+- [ ] Every retained dimension changes an implementation or review decision and cites repository or user-confirmed policy evidence
 - [ ] Conditions are positive, observable, and limited by `applies_when`
 - [ ] The profile contains repository-specific acceptance conditions only
 - [ ] Supporting and contradicting evidence were compared where they could change the proposal

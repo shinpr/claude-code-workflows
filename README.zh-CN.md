@@ -36,7 +36,7 @@ claude-code-workflows让探索始终围绕已经约定的结果展开。它在�
 | 设计并实现React / TypeScript前端 | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | 同时交付后端和React前端 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 对照约定结果审查已完成的实现 | `/recipe-review` 或 `/recipe-front-review` | `dev-workflows` 或 `dev-workflows-frontend` |
-| 设置仓库特有的审查标准 | `/recipe-quality-profile` | 任意工作流插件 |
+| 设置仓库特有的质量规则 | `/recipe-quality-profile` | 任意工作流插件 |
 | 在选择修复方案前调查问题 | `/recipe-diagnose` | 任意工作流插件 |
 | 根据代码记录现有系统 | `/recipe-reverse-engineer` | `dev-workflows` 或 `dev-workflows-fullstack` |
 | 一次性实验或原型 | 直接使用Claude Code | 无 |
@@ -130,7 +130,7 @@ Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审�
 | docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
 ```
 
-[Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。`/recipe-quality-profile`可以把仓库特有的审查标准及其依据记录到`docs/project-context/quality.yaml`中；最终审查会将确认后的配置与已批准资料一同使用。
+[Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。`/recipe-quality-profile`可以把仓库特有的质量规则及其依据记录到`docs/project-context/quality.yaml`中；实现执行者和最终审查者会将确认后的配置与已批准资料一同使用。
 
 ### 一次真实的工作流执行
 
@@ -243,7 +243,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-plan` | 根据设计生成Work Plan | 规划阶段 |
 | `/recipe-build` | 执行已有Work Plan | 继续实现 |
 | `/recipe-review` | 对照约定结果审查已完成的实现 | 实现后检查 |
-| `/recipe-quality-profile` | 设置仓库特有的审查标准 | 仓库标准设置 |
+| `/recipe-quality-profile` | 设置仓库特有的质量规则 | 质量规则设置 |
 | `/recipe-diagnose` | 调查问题并比较解决方案 | 根因分析 |
 | `/recipe-reverse-engineer` | 根据代码生成PRD和Design Doc | 现有系统文档化 |
 | `/recipe-add-integration-tests` | 添加集成或E2E测试 | 为现有代码补充覆盖 |
@@ -264,7 +264,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-front-build` | 执行前端Work Plan | 恢复React实现 |
 | `/recipe-front-adjust` | 借助外部验证调整已实现UI | 视觉细节调整 |
 | `/recipe-front-review` | 对照约定结果审查已完成的前端 | 实现后检查 |
-| `/recipe-quality-profile` | 设置仓库特有的审查标准 | 仓库标准设置 |
+| `/recipe-quality-profile` | 设置仓库特有的质量规则 | 质量规则设置 |
 | `/recipe-diagnose` | 调查问题并比较解决方案 | 根因分析 |
 | `/recipe-update-doc` | 更新并审查现有文档 | 需求或设计变更 |
 | `/recipe-task` | 直接运行遵循规则的任务 | 不需要分阶段交接的工作 |
