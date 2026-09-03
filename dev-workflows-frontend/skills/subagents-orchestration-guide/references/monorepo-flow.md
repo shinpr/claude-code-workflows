@@ -62,6 +62,7 @@ confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged c
 ui_analysis: [UI analyzer JSON]
 codebase_analysis: [applicable frontend codebase evidence]
 prototype_path: [decision-relevant path or absent]
+prototype_reference_strength: [binding | reference, present with a prototype_path]
 external_resource_refs: [selected references or []]
 ```
 

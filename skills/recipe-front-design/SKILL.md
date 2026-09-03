@@ -100,6 +100,7 @@ confirmed_requirement_context: [the value fixed in Step 1]
 ui_analysis: [complete Step 3 UI analyzer JSON unchanged]
 codebase_analysis: [complete Step 2 codebase-analyzer JSON unchanged]
 prototype_path: [decision-relevant path from Step 3 exactly, or absent]
+prototype_reference_strength: [binding | reference, present with a prototype_path]
 external_resource_refs: [selected Step 3 reference records unchanged, or []]
 ```
 

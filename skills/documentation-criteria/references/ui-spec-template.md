@@ -20,7 +20,8 @@ Prototype code is an **attachment** to this UI Spec. The canonical specification
 - **Attachment path**: [docs/ui-spec/assets/{feature-name}/]
 - **Version identification**: [commit SHA / tag]
 - **Compliance premise**: [e.g., design system compliance, component library usage]
-- **Relationship to canonical spec**: Differences between prototype and this spec are resolved in favor of this document. Prototype serves as visual/behavioral reference only.
+- **Reference strength**: [`binding` — implementation follows the attachment's rendering except where this document states otherwise | `reference` — only what this document records reaches implementation]
+- **Relationship to canonical spec**: Differences between prototype and this spec are resolved in favor of this document under either strength.
 
 ## External Resources Used
 

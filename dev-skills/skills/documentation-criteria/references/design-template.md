@@ -207,6 +207,8 @@ Use `None — existing design surface is sufficient` when the selected design ad
 
 ### Data Contracts
 
+When a UI Spec states that a surface displays a value, the contract feeding that surface carries it. A field set that cannot render a specified display is incomplete, not a simplification.
+
 #### [Component or Boundary] (repeat per component/boundary)
 
 ```yaml
