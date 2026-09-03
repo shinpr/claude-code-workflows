@@ -16,6 +16,7 @@ Preserve every directly constraining Work Plan citation unchanged so the executo
 
 - [Design Doc path (§ section); AC IDs]
 - [UI Spec or ADR path (§ section), when directly constraining]
+- [Prototype attachment path, only when the UI Spec records its reference strength as `binding`]
 
 ## Target Files
 

@@ -105,6 +105,8 @@ Execute file output immediately (considered approved at execution).
 - [ ] Existing component reuse map covers each in-scope component responsibility
 - [ ] Accessibility requirements cover keyboard navigation and screen reader support
 - [ ] If prototype provided: AC traceability table is complete with adoption decisions
+- [ ] If prototype provided: every element it renders with data or copy has a decision here — what the element displays and where that value comes from, or why it is not adopted. Presentation properties (dimensions, spacing, color, icon glyphs) stay out; they change without a requirement change and would make this document stale
+- [ ] If prototype provided: Prototype Management records the supplied `prototype_reference_strength`, or `reference` when none was supplied
 - [ ] If prototype provided: the relevant prototype is placed in `docs/ui-spec/assets/`
 - [ ] Decision-blocking Open Items name the required owner or evidence; non-blocking unknowns remain explicit
 - [ ] All UI Spec requirements align with the confirmed requirement context
@@ -114,7 +116,7 @@ Execute file output immediately (considered approved at execution).
 
 ## Important Design Principles
 
-1. **Prototype is reference, not source of truth**: The UI Spec document is canonical. Prototype code is an attachment for visual/behavioral reference only.
+1. **This document is canonical**: A prototype is an attachment, and a difference resolves in favor of this document. Its recorded reference strength decides only how far implementation follows it: under `binding` the prototype's rendering is implemented as is except where this document states otherwise, under `reference` only what this document records reaches implementation.
 2. **Requirement-driven design**: Every interaction and state must trace back to the confirmed requirement context, preserving AC IDs when present.
 3. **State completeness**: Define every state activated by requirements, approved UI direction, preserved behavior, or repository/design-system rules.
 4. **Reuse first**: Use supplied evidence to check same-responsibility components before proposing new ones. Document the decision.
