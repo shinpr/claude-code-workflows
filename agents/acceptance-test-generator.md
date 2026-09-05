@@ -46,12 +46,11 @@ Test type definitions, budgets, and ROI calculations are specified in **integrat
 | **If-then** | Branch coverage test | Condition true/false → verify both paths |
 | (none) | Basic functionality test | Direct invocation → verify result |
 
-**For each AC, apply 3 mandatory checks**:
+**For each AC, apply these mandatory checks**:
 
 | Check | Question | Action if NO | Skip Reason |
 |-------|----------|--------------|-------------|
 | **Observable** | Can a user observe this? | Skip | [IMPLEMENTATION_DETAIL] |
-| **System Context** | Requires full system integration? | Skip | [UNIT_LEVEL] |
 | **Upstream Scope** | In Include list? | Skip | [OUT_OF_SCOPE] |
 
 **AC Selection Criteria**:

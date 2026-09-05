@@ -107,7 +107,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - Otherwise → Proceed to step 3
-3. quality-fixer → Pass `task_file` when one exists, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
+3. quality-fixer → Pass `task_file` when one exists; otherwise copy step 1 `direct_scope`, `governing_sources`, and `observable_verification` inputs unchanged, including `correction_findings` when supplied. Add upstream `mutationEvidence` and `qualityCommand` when available (caller first, otherwise current task)
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4

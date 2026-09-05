@@ -239,7 +239,7 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - Otherwise → Proceed to step 3
-3. **Quality-fix**: invoke quality-fixer with upstream `mutationEvidence`, plus `task_file` when available and `qualityCommand` from the caller first or task otherwise
+3. **Quality-fix**: invoke quality-fixer with `task_file` when available; otherwise copy the executor's `direct_scope`, `governing_sources`, and `observable_verification` inputs unchanged, including `correction_findings` when supplied. Add upstream `mutationEvidence` and `qualityCommand` from the caller first or task otherwise
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4

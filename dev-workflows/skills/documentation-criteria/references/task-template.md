@@ -46,7 +46,7 @@ Read the smallest representative set needed to implement the task:
 
 - **Verification method**: [Governing verification method or repository command]
 - **Success criteria**: [Observable result tied to cited ACs]
-- **Verification level**: [L1 unit/local | L2 integration | L3 end-to-end]
+- **Verification level**: [L1 functional operation | L2 passing tests | L3 successful build — per implementation-approach]
 
 ## Verification Focus
 

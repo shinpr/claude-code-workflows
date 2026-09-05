@@ -15,7 +15,7 @@ description: Integration and E2E test design principles, ROI calculation, test s
 |-----------|---------|-------|---------------|-------------------|----------------------|
 | Integration | Verify component interactions in-process | Partial system integration (in-process modules; for UI components, the framework's in-process renderer e.g., RTL+MSW for React/TS) | Mocked or in-process | MAX 3 | Created alongside implementation |
 | fixture-e2e | Verify UI behavior in a browser with deterministic fixtures | Full UI flow with mocked backend / fixture-driven state | Mocked / fixture only — no live services | MAX 3 | Created alongside the UI feature |
-| service-integration-e2e | Verify critical user journeys against a running local stack | Full system across services | Live local services or stubs | MAX 1-2 | Executed only in the final phase |
+| service-integration-e2e | Verify critical user journeys against a running local stack | Full system across services | Live local services or stubs | MAX 1-2 | Earliest task where the proof boundary and required services are executable |
 
 **Lane selection (E2E only)**:
 - Default lane for user-facing UI journeys is **fixture-e2e** — it runs a real browser against deterministic fixtures, catches the bugs that unit/integration tests miss (button no-op, state never updates, navigation breaks), and runs in CI without infrastructure setup

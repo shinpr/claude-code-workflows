@@ -31,7 +31,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 - **ui_analysis**: UI analyzer JSON for existing UI behavior and external evidence (required)
 - **codebase_analysis**: Applicable codebase-analyzer evidence (optional)
 - **prototype_path**: Decision-relevant prototype path (optional, placed in `docs/ui-spec/assets/{feature-name}/`)
-- **prototype_reference_strength**: `binding` or `reference`, accompanying `prototype_path`
+- **prototype_reference_strength**: `binding` or `reference`, accompanying `prototype_path`. When a prototype is provided without a strength, use the confirmed requirement context if it establishes the strength; otherwise record the unresolved strength in Prototype Management and the existing decision-blocking Open Items, and continue work independent of that decision.
 - **external_resource_refs**: Selected external-resource records or an empty array (optional)
 
 ## Mandatory Process Before UI Spec Creation

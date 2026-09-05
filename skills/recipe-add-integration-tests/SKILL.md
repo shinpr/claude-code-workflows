@@ -112,8 +112,9 @@ Invoke quality-fixer for the current layer:
 - Backend or single-layer → `subagent_type`: "dev-workflows:quality-fixer"
 - Frontend → `subagent_type`: "dev-workflows-frontend:quality-fixer-frontend"
 - `description`: "Final quality assurance"
+- Copy Step 3 `direct_scope`, `governing_sources`, and `observable_verification` inputs unchanged.
+- Include the latest executor's `correction_findings` input unchanged when supplied.
 - Pass the latest executor's `mutationEvidence`.
-- `prompt`: "Run the repository-configured quality checks applicable to the test files added in this workflow and verify their intended observable behavior."
 
 **Expected output**: `status` (`approved`, `stub_detected`, `verification_incomplete`, or `blocked`)
 
