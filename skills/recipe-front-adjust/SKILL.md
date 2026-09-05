@@ -21,7 +21,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 ## Execution Gate
 
-Complete Steps 1-7 in order for each adjustment unit. Advance only through the current step's stated evidence, quality result, or user stop; skip work only when its stated condition is false. Report completion after every applicable Completion Criterion and retained-limitation retry is satisfied.
+Complete Steps 1-7 in order for the confirmed adjustment outcome. Advance only through the current step's stated evidence, quality result, or user stop; skip work only when its stated condition is false. Report completion after every applicable Completion Criterion and retained-limitation retry is satisfied.
 
 ## Workflow Overview
 
@@ -49,9 +49,9 @@ Adjustment request → conditional external resource evidence
 - Structural boundary judgment via documentation-criteria
 - Adjustment edits and verification against the design source (run in this session)
 - Quality verification via quality-fixer-frontend
-- Commit per adjustment unit
+- Commit the confirmed adjustment outcome
 
-**Responsibility Boundary**: This skill completes when each adjustment is committed after its quality cycle and any retained proof limitation receives its final retry. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
+**Responsibility Boundary**: This skill completes when the confirmed adjustment is committed after its quality cycle and any retained proof limitation receives its final retry. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
 
 **Escalation Boundary**: Escalate to the full frontend design phase when the request crosses a responsibility or approved UI boundary, requires a complete Design Doc, or contains a technical choice that passes documentation-criteria's Choice and Durability filters.
 
@@ -96,7 +96,7 @@ Execute Skill: typescript-rules before planning or applying adjustment edits.
 Execute Skill: implementation-approach before planning or applying adjustment edits.
 Execute Skill: test-implement before adding or changing tests.
 
-For each file in the confirmed adjustment context:
+Implement the confirmed adjustment outcome across its affected files:
 1. **Plan the edit** from the confirmed adjustment context and relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
 3. **Verify against external sources** using whichever access method `docs/project-context/external-resources.md` declares for each axis:
@@ -104,33 +104,31 @@ For each file in the confirmed adjustment context:
    - Visual rendering: capture screenshot or run a smoke check via the declared visual verification method (e.g., browser MCP, E2E test runner CLI invoked via Bash, dev-server URL inspection, Storybook URL)
    - Design system tokens / variants: confirm against the declared design system source (e.g., design-system MCP, package import, Storybook URL, internal documentation path)
 4. **Refine and re-verify** until the adjustment matches the design source, or matches the user-confirmed adjustment target when no separate design source exists.
-5. When the adjustment unit converges, proceed to Step 6 for that unit.
+5. When the complete adjustment matches the confirmed target, proceed to Step 6.
 
 When the project-tier file declares no automated verification mechanism for an axis, ask the user to confirm the result manually, or use file-based comparison when a specification file is available.
 
-### Step 6: Quality Verification (per adjustment unit)
+### Step 6: Quality Verification
 
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
-  - `description: "Quality verification for adjustment unit"`
-  - `direct_scope`: Copy the current unit's confirmed adjustment request and preserved visible behavior from Step 4 unchanged.
-  - `governing_sources`: Pass the existing UI and design source references used for this unit unchanged.
-  - `observable_verification`: Copy the verification criteria used for this unit in Step 5 unchanged.
+  - `description: "Quality verification for confirmed adjustment"`
+  - `direct_scope`: Copy the confirmed adjustment request and preserved visible behavior from Step 4 unchanged.
+  - `governing_sources`: Pass the existing UI and design source references used for the adjustment unchanged.
+  - `observable_verification`: Pass the confirmed adjustment request from Step 4 and applicable acceptance criteria from the governing sources unchanged.
   - Pass `qualityCommand` when available (caller first, otherwise current task).
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7
-  - `stub_detected` → return to Step 5 to complete the implementation for this unit, then re-invoke quality-fixer-frontend
+  - `stub_detected` → return to Step 5 to complete the confirmed adjustment, then re-invoke quality-fixer-frontend
   - `verification_incomplete` → retain the complete result for final retry and proceed to Step 7
   - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance using the result's semantic evidence, changed files, and repository state
 
-### Step 7: Commit (per adjustment unit)
-Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the unit commit, accidental changes introduced during the unit are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.
+### Step 7: Commit
+Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the adjustment commit, accidental changes introduced during the adjustment are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.
 
-Commit the adjustment unit after `approved` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
+Commit the confirmed adjustment after `approved` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
 
-Then loop back to Step 5 for the next file until all units are committed.
-
-On continuation, reconstruct retained limitations from the verification trailers on adjustment-unit commits already completed for this request. After all units are committed, retry each retained verification limitation once with quality-fixer-frontend. Clear an `approved` result, commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
+On continuation, reconstruct retained limitations from the verification trailers on commits already completed for this request. After the adjustment is committed, retry each retained verification limitation once with quality-fixer-frontend. Clear an `approved` result, commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
 
 ## Completion Criteria
 
@@ -138,9 +136,9 @@ On continuation, reconstruct retained limitations from the verification trailers
 - [ ] UI Spec applicability and the candidate write set were determined from the requested UI and sufficient repository evidence
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context, including the affected files, was presented and confirmed once
-- [ ] All adjustment units edited; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
-- [ ] Each adjustment unit completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
-- [ ] Each adjustment unit committed
+- [ ] The confirmed adjustment outcome is implemented; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
+- [ ] The confirmed adjustment completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
+- [ ] The confirmed adjustment is committed
 
 ## Output Example
 
@@ -149,6 +147,6 @@ Frontend adjustment completed.
 - External resources: docs/project-context/external-resources.md (updated|unchanged)
 - UI evidence: existing pattern [path], external sources [fetched|partial|not_recorded]
 - Scale: direct existing-pattern adjustment
-- Adjustment units committed: [count]
+- Adjustment commit: [commit hash]
 - Quality status: all passed | [remaining proof limitations]
 ```

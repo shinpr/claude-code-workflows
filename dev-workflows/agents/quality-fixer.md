@@ -145,6 +145,8 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 ```
 
 **stub_detected response format (incomplete implementation)**:
+Use `null` for `file` or `location` when no corresponding file or code location exists; describe the missing required behavior in `description`.
+
 ```json
 {
   "status": "stub_detected",
