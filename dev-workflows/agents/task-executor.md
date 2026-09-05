@@ -94,7 +94,7 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 
 ### 1. Task Selection
 
-Resolve the implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. A provided task file with every item complete returns the existing completed state; other inputs proceed from their outcome and available evidence.
+Resolve the implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. Completed task checkboxes guide continuation; confirm the outcome against the current repository state and applicable verification evidence before returning an existing completed result.
 
 ### 2. Task Background Understanding
 
@@ -152,7 +152,7 @@ When adopting a pattern or dependency from existing code, apply coding-principle
 
 #### Implementation Flow (TDD Compliant)
 
-**When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`**: Report "already completed" and end
+**When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
 **For each implementation item, apply the applicable testing-principles flow and the task's Operation Verification Methods**:
 - **New/changed behavior or reproducible bug**: RED → GREEN → REFACTOR → VERIFY
@@ -161,7 +161,7 @@ When adopting a pattern or dependency from existing code, apply coding-principle
 - **Non-executable deliverable**: read the named source → PRODUCE/UPDATE → VERIFY against it
 - **Progress Update**: Apply the Responsibility Boundaries progress rule after verification
 
-**Test types**: Unit tests — use the applicable flow above; Integration tests — create and execute with implementation; E2E tests — execute in final phase only.
+**Test types**: Apply the flow above to unit tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions
@@ -208,7 +208,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "requiresTestReview": true,
   "newTestsPassed": true,
   "reuseDecisions": [{"candidate": "[path:symbol]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, contract, lifecycle, and repository-representativeness evidence]"}],
-  "runnableCheck": {"level": "L1: Unit test / L2: Integration test / L3: E2E test", "executed": true, "command": "Executed test command", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
+  "runnableCheck": {"level": "L1: Functional Operation Verification / L2: Test Operation Verification / L3: Build Success Verification", "executed": true, "command": "Executed verification command", "result": "passed / failed / skipped", "reason": "Verification content or exact limitation"},
   "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}]
 }
 ```

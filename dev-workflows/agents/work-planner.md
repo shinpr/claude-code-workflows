@@ -59,7 +59,7 @@ Apply the Design Doc's implementation approach and dependency order.
 1. Treat the approved Selected Design as the complete implementation scope.
 2. Group source, tests, repository configuration, wiring, and documentation that become complete at the same observable verification point.
 3. Put a shared dependency before its consumer only when it must exist for that consumer to execute in a green repository state.
-4. Use each skeleton's `@lane` as its placement rule: assign `integration` to the earliest task where its declared boundary becomes executable, `fixture-e2e` alongside the owning UI feature, and `service-integration-e2e` to the final implementation phase after its services are executable. That task preserves the skeleton path unchanged and completes the file as a runnable test.
+4. Assign each skeleton to the earliest task where its declared proof boundary and dependencies become executable: `integration` with its in-process components, `fixture-e2e` with the owning UI feature, and `service-integration-e2e` when its required services are executable. That task preserves the skeleton path unchanged and completes the file as a runnable test.
 5. Repeat until every implementation obligation is covered.
 
 Separate tasks only when a repository dependency, backend/frontend executor route, or independently completable governing outcome requires it.

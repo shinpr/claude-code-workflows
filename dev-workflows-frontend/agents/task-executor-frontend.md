@@ -99,7 +99,7 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 
 ### 1. Task Selection
 
-Resolve the frontend implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. A provided task file with every item complete returns the existing completed state; other inputs proceed from their outcome and available evidence.
+Resolve the frontend implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. Completed task checkboxes guide continuation; confirm the outcome against the current repository state and applicable verification evidence before returning an existing completed result.
 
 ### 2. Task Background Understanding
 
@@ -156,14 +156,14 @@ When adopting a pattern, hook, or library from existing code, apply Reference Re
 □ **New option discipline**: when no repository choice covers the concern, use the implementation-approach and external-resource-context rules to select the lowest-surface sufficient option, then apply the authoritative escalation boundary below
 
 #### Implementation Flow (TDD Compliant)
-**Completion Confirmation**: When the execution scope is supplied as a task file or Work Plan and all relevant checkboxes are already `[x]`, report "already completed" and end
+**When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
 **Apply the applicable testing-principles flow and the task's Operation Verification Methods**:
 - **New/changed behavior or reproducible bug**: RED → GREEN → REFACTOR → VERIFY
 - **Behavior-preserving refactor**: BASELINE → REFACTOR → VERIFY the same evidence
 - **Non-reproducible bug**: record the reproduction blocker and alternate evidence → FIX → VERIFY that evidence
 - **Non-executable deliverable**: read the named source → PRODUCE/UPDATE → VERIFY against it
-- For integration tests (multiple components), create and execute them with implementation; execute E2E tests in the final phase only
+- Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks.
 - **Progress Update [MANDATORY]**: Apply the Responsibility Boundaries progress rule after verification
 
 #### Operation Verification
@@ -211,7 +211,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "requiresTestReview": false,
   "newTestsPassed": true,
   "reuseDecisions": [{"candidate": "[path:component-or-hook]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, props/contract, lifecycle/state ownership, design-system role, and repository-representativeness evidence]"}],
-  "runnableCheck": {"level": "L1: Unit test (React Testing Library) / L2: Integration test / L3: E2E test", "executed": true, "command": "test -- Button.test.tsx", "result": "passed / failed / skipped", "reason": "Test execution reason/verification content"},
+  "runnableCheck": {"level": "L1: Functional Operation Verification / L2: Test Operation Verification / L3: Build Success Verification", "executed": true, "command": "Executed verification command", "result": "passed / failed / skipped", "reason": "Verification content or exact limitation"},
   "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}]
 }
 ```

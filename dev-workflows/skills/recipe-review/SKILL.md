@@ -139,8 +139,8 @@ Invoke task-executor using Agent tool:
 Invoke quality-fixer using Agent tool:
 - `subagent_type`: "dev-workflows:quality-fixer"
 - `description`: "Quality gate check"
+- Copy Step 6 `direct_scope`, `governing_sources`, `observable_verification`, and `correction_findings` inputs unchanged.
 - Pass Step 6 `mutationEvidence`.
-- `prompt`: "Confirm quality gate passage for fixed files."
 
 Route the quality-fixer result:
 - `approved` → Proceed to Step 8

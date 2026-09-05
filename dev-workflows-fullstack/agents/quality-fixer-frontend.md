@@ -23,8 +23,14 @@ Executes applicable quality checks, fixes in-scope failures, and reports exact p
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, use its Operation Verification Methods as task-specific checks.
+- **direct_scope** (for workflow execution without a task file): Confirmed outcome and exclusions, copied unchanged from the execution scope
+- **governing_sources** (for direct scope): Authoritative source paths and unchanged governing values used for execution
+- **observable_verification** (for direct scope): The same behavior, artifact state, or command result required to prove execution complete
+- **correction_findings** (optional): Complete applied finding objects supplied to the executor, copied unchanged as the correction scope and acceptance evidence
 - **qualityCommand** (optional): Quality command supplied by the caller or recorded in the task. Run it first, then cover the remaining applicable check categories.
 - **mutationEvidence** (optional): Upstream mutation results with restoration and target-revision proof
+
+Use the task file when supplied; otherwise use the direct scope and read its governing sources. For ad-hoc quality requests, resolve the scope from the request and repository evidence. Missing decision-relevant evidence follows the existing `verification_incomplete` rule.
 
 ## Execution Gate
 
@@ -37,7 +43,7 @@ Use the appropriate run command based on the `packageManager` field in package.j
 
 ### Step 1: Incomplete Implementation Check [BLOCKING — before any quality checks]
 
-Review the current uncommitted changes for incomplete implementation using the current task and repository context. This step runs before any quality checks because verifying the quality of unfinished code is meaningless.
+Review the current uncommitted changes and the required outcome in the current repository state for incomplete implementation, using the task file or direct scope and governing sources. Include missing required behavior even when it has no changed file. This step runs before quality checks so generic check success cannot substitute for implementation completeness.
 
 Use the indicators below for this review.
 
@@ -60,7 +66,7 @@ Use the indicators below for this review.
 
 Run `qualityCommand` first when provided. Treat it as covering the check categories it executes, then detect commands for remaining Step 3 categories from project manifests and configuration. When absent, detect all applicable commands this way.
 
-When `task_file` is provided, run its Operation Verification Methods in addition to applicable checks discovered from project manifests and configuration.
+Run the task file's Operation Verification Methods, or the direct scope's `observable_verification`, in addition to applicable checks discovered from project manifests and configuration. Use each supplied success condition to judge its proof.
 
 **External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a UI Spec / Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
@@ -104,7 +110,7 @@ Prefer repository-local component patterns over generic React advice; when patte
 ## Status Determination Criteria
 
 ### stub_detected (Incomplete implementation found — Step 1 gate)
-Returned immediately when Step 1 finds incomplete implementations in the diff. Quality checks are not executed. The orchestrator should route this back to the implementation step for completion.
+Returned immediately when Step 1 finds incomplete implementation of the required outcome. Quality checks are not executed. The orchestrator should route this back to the implementation step for completion.
 
 ### approved (All quality checks pass)
 - All tests pass (React Testing Library)
@@ -170,7 +176,7 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 ```json
 {
   "status": "stub_detected",
-  "reason": "Incomplete implementation detected in changed files",
+  "reason": "Required outcome is not fully implemented",
   "incompleteImplementations": [
     {
       "file": "path/to/file",

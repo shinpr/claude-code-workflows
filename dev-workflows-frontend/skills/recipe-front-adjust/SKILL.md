@@ -113,6 +113,9 @@ When the project-tier file declares no automated verification mechanism for an a
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
   - `description: "Quality verification for adjustment unit"`
+  - `direct_scope`: Copy the current unit's confirmed adjustment request and preserved visible behavior from Step 4 unchanged.
+  - `governing_sources`: Pass the existing UI and design source references used for this unit unchanged.
+  - `observable_verification`: Copy the verification criteria used for this unit in Step 5 unchanged.
   - Pass `qualityCommand` when available (caller first, otherwise current task).
 - Route the quality-fixer-frontend response by `status`:
   - `approved` → proceed to Step 7

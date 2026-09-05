@@ -139,8 +139,8 @@ Invoke task-executor-frontend using Agent tool:
 Invoke quality-fixer-frontend using Agent tool:
 - `subagent_type`: "dev-workflows-fullstack:quality-fixer-frontend"
 - `description`: "Quality gate check"
+- Copy Step 6 `direct_scope`, `governing_sources`, `observable_verification`, and `correction_findings` inputs unchanged.
 - Pass Step 6 `mutationEvidence`.
-- `prompt`: "Confirm quality gate passage for fixed files."
 
 Route the quality-fixer-frontend result:
 - `approved` → Proceed to Step 8
