@@ -25,7 +25,7 @@ Pause the affected decision and review the design when detecting the following p
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
-7. **Type assertions standing in for a guarantee** - Declaring a type the code does not check or a contract does not establish
+7. **Type assertions standing in for a guarantee** - Declaring a type established by neither a check nor an existing contract
 8. **Pass-through prop chains that obscure state ownership** - Use composition, Context, or the project's state layer when intermediate components only forward values and a broader owner is clearer; retain explicit props when they preserve local ownership and broader state ownership would add coordination while responsibility remains local
 9. **Components mixing independently changing responsibilities** - Split when rendering, state/data ownership, or reusable/testable behavior forms an independent responsibility; retain cohesive components when splitting would add avoidable prop/state synchronization
 
