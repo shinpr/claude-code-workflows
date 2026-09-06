@@ -253,7 +253,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Split components when independent rendering, state, data, or test responsibilities create material coupling or verification cost; retain a cohesive component when splitting would add avoidable prop/state synchronization
   - Refactor deeply nested conditionals
 - **Type Error Fixes**
-  - Handle external API responses with unknown type and type guards
+  - Resolve external API response types by the typescript-rules boundary validation policy
   - Add necessary Props type definitions
   - Flexibly handle with generics or union types
 
@@ -261,7 +261,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 
 ### TypeScript Errors
 - **Props type definition**: Add explicit type definitions for all component Props
-- **Unknown API responses**: Use `unknown` type with type guards for external data
 - **Event handlers**: Use proper React event types (`React.ChangeEvent`, `React.MouseEvent`)
 - **Refs**: Use `React.RefObject<T>` or `React.MutableRefObject<T>`
 

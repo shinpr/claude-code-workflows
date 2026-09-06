@@ -25,7 +25,7 @@ Pause the affected decision and review the design when detecting the following p
 4. **Making changes without checking dependencies** - Potential for unexpected impacts
 5. **Disabling code with comments** - Should use version control
 6. **Error suppression** - Hiding problems creates technical debt
-7. **Excessive use of type assertions (as)** - Abandoning type safety
+7. **Type assertions standing in for a guarantee** - Declaring a type established by neither a check nor an existing contract
 8. **Pass-through prop chains that obscure state ownership** - Use composition, Context, or the project's state layer when intermediate components only forward values and a broader owner is clearer; retain explicit props when they preserve local ownership and broader state ownership would add coordination while responsibility remains local
 9. **Components mixing independently changing responsibilities** - Split when rendering, state/data ownership, or reusable/testable behavior forms an independent responsibility; retain cohesive components when splitting would add avoidable prop/state synchronization
 
@@ -79,10 +79,10 @@ Keep concrete implementations separate while their similarity is accidental or t
 **Cause**: Surface-level fixes without understanding root cause
 **Avoidance**: Identify root cause with 5 Whys before fixing
 
-### Pattern 2: Abandoning Type Safety
-**Symptom**: Excessive use of any type or as
+### Pattern 2: Circumventing Type Guarantees
+**Symptom**: `any` or `as` declares a type that no check or contract establishes
 **Cause**: Impulse to avoid type errors
-**Avoidance**: Handle safely with unknown type and type guards
+**Avoidance**: Back the declared type with a check or an existing contract that guarantees it, at the boundary where that guarantee holds
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation
