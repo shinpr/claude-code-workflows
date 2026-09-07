@@ -121,7 +121,7 @@ Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the s
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 
-Review the Work Plan with `doc_type: WorkPlan`, apply Review Resolution through work-planner, and stop for batch approval only after the review converges.
+When creating or materially updating the Work Plan, review it with `doc_type: WorkPlan`, apply Review Resolution through work-planner, and stop for batch approval only after the review converges. Existing-plan build entry follows the parent guide's phase acceptance rule.
 
 ## Task Materialization and Execution
 
