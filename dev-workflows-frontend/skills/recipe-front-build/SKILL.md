@@ -20,11 +20,11 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 **Execution Protocol**:
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
-2. **Follow the 4-step task cycle exactly**: execute → branch on executor result → quality-fix → commit
+2. **Follow the 4-step task cycle exactly for each task in the Consumed Task Set**: execute → branch on executor result → quality-fix → commit. Corrections produced outside that cycle reuse its executor-result branching and quality gate, and defer only the commit to their own phase's rule
 3. **Enter autonomous mode** when the user provides execution instruction with an existing Work Plan or task files — this IS the batch approval
 4. **Scope**: Complete consumed task-set execution, post-implementation verification, consumed-task cleanup, and completion reporting in order, or stop autonomous execution at the current phase for a valid user-owned escalation. Advance only when the current phase's stated transition condition is satisfied.
 
-**CRITICAL**: Run quality-fixer-frontend before every commit.
+**CRITICAL**: Commit only after quality-fixer-frontend returns `approved` or `verification_incomplete`. A quality-fixer-frontend pass authorizes a commit at a defined commit point; it does not create one.
 
 Work plan: $ARGUMENTS
 
@@ -81,7 +81,7 @@ Recompute the Consumed Task Set using the same restricted pattern from the Consu
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 ## Task Execution Cycle (4-Step Cycle)
-**MANDATORY EXECUTION CYCLE**: `execute → branch on executor result → quality-fix → commit`
+**MANDATORY EXECUTION CYCLE** (per task in the Consumed Task Set): `execute → branch on executor result → quality-fix → commit`
 
 For EACH task in the Consumed Task Set, YOU MUST:
 1. **EXECUTE**: invoke Agent tool (subagent_type: "dev-workflows-frontend:task-executor-frontend") → Record the current HEAD as `diffBase`, pass `task_file: [path]`, and receive the structured response
@@ -117,7 +117,7 @@ Apply subagents-orchestration-guide's Post-Implementation Review status-routing 
 
 ## Final Cleanup
 
-Before the completion report, delete the implementation task files this recipe consumed. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
+Before the completion report, commit the post-review corrections applied at Review Resolution convergence when any remain uncommitted, applying subagents-orchestration-guide Commit Boundary Check, then delete the implementation task files this recipe consumed. Their work is then committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
 
 - Delete every file in the Consumed Task Set
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
