@@ -91,7 +91,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
-- Run quality-fixer before every commit
+- Commit only after quality-fixer returns `approved` or `verification_incomplete`; a quality-fixer pass authorizes a commit at a defined commit point rather than creating one
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
 ## Mandatory Orchestrator Responsibilities
@@ -130,7 +130,7 @@ For Small, skip this document-dependent review. Retry a retained verification li
 
 ### Final Cleanup
 
-For Medium/Large, before the completion report, delete the implementation task files this recipe consumed. Their work is committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
+For Medium/Large, before the completion report, commit the post-review corrections applied at Review Resolution convergence when any remain uncommitted, applying subagents-orchestration-guide Commit Boundary Check, then delete the implementation task files this recipe consumed. Their work is then committed; `docs/plans/` is ephemeral working state and is not retained between recipe runs:
 
 - Delete every file matching `docs/plans/tasks/{plan-name}-task-*.md` (the `{plan-name}` derived from the work plan path used in this run)
 - Preserve the work plan itself (`docs/plans/{plan-name}.md`) — the user decides whether to delete it after final review
