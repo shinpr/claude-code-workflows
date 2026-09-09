@@ -117,7 +117,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
    - `subagent_type`: "dev-workflows:design-sync"
    - `description`: "Cross-DD consistency check"
    - `prompt`: "source_design: [updated DD path]"
-   - When `sync_status: CONFLICTS_FOUND`, apply the Review Resolution Gate using design-sync as a fresh verifier. Send the `apply` conflicts to the owning technical-designer, rerun design-sync after correction, and retain evidenced declines as complete.
+   - When `sync_status: CONFLICTS_FOUND`, apply the Review Resolution Gate and follow its bounded verifier handoff and convergence rules.
 
 4. After Step 5 completes:
    - If the user selected `d` for all findings (no `c` routes) → skip Steps 6-7, proceed to Step 8 for re-validation

@@ -85,7 +85,7 @@ Workflow coordination is flat: the orchestrator issues every specialist call and
 Apply these approval stops when producing or materially revising an artifact in the current workflow. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
 **Use AskUserQuestion to present confirmations and questions.**
 
-Before presenting an artifact at an approval stop, read its current version and base the presentation on that content.
+Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes in the approval presentation.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
@@ -195,9 +195,9 @@ For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or 
 
 Reviewer findings are candidates. Create correction work only from the Review Resolution `apply` set.
 
-**Fix-cycle handoff**: Apply Review Resolution and invoke each correction owner it selects. For an author-owned technical-artifact correction, invoke the layer-appropriate technical designer in update mode, run the artifact's existing document-reviewer and applicable design-sync gates, then re-run the originating reviewer. For an executor-owned correction, invoke the layer-appropriate executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added, then branch on the executor result through the per-task cycle's step 2, including its conditional integration-test-reviewer path, and run the applicable quality gate. When both owners are required, Review Resolution's author-first re-evaluation controls the order. Carry `prior_feedback` only to reconciliation reviewers. Post-implementation corrections stay uncommitted through this cycle: the reviewers read the current working tree, so run the applicable quality gate and re-run the originating reviewer on the uncommitted changes, and commit the applied corrections once through Commit Boundary Check after the complete review set reaches Review Resolution convergence.
+**Fix-cycle handoff**: Apply Review Resolution and invoke each correction owner it selects. For an author-owned technical-artifact correction, invoke the layer-appropriate technical designer in update mode, run the artifact's existing document-reviewer and applicable design-sync gates, then re-run the originating reviewer. For an executor-owned correction, invoke the layer-appropriate executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added, then branch on the executor result through the per-task cycle's step 2, including its conditional integration-test-reviewer path, and run the applicable quality gate. When both owners are required, Review Resolution's author-first re-evaluation controls the order. Carry `prior_feedback` only to a reviewer or verifier being rechecked. Post-implementation corrections stay uncommitted through this cycle: the reviewers read the current working tree, so run the applicable quality gate and re-run the originating reviewer on the uncommitted changes, and commit the applied corrections once through Commit Boundary Check after the complete review set reaches Review Resolution convergence.
 
-**Re-run rule**: After any applied post-implementation correction, re-run each reviewer with at least one correction applied from its latest result. Retain any other reviewer result completed by Post-Implementation Review Status Routing or Review Resolution only when repository evidence establishes that the correction preserved its review boundary; otherwise re-run that reviewer. After Specialist Result Acceptance recovers a blocked review prerequisite, re-run that reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
+**Re-run rule**: After an applied post-implementation correction, re-run only the reviewer that owns a corrected finding from its latest result. Retain every passed reviewer result, including after another reviewer's correction. Pass the previous complete result, dispositions, and correction diff or paths to the rerun. After Specialist Result Acceptance recovers a blocked review prerequisite, re-run that reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
 
 ### Conditions for Stopping Autonomous Execution
 
@@ -265,8 +265,8 @@ Before post-implementation verifiers, collect retained verification limitations 
 - For a Design Doc, pass the codebase-analyzer JSON unchanged as `codebase_analysis`; accepted artifact paths and unchanged evidence keep the Design Doc traceable to reviewed sources rather than an orchestrator-authored shadow interpretation. Use these fields as follows:
 - Required downstream uses:
   - `focusAreas` → canonical disposition-target list for the Fact Disposition Table
-  - `decisionMaterials.reuse` and `invalidations` → reduce implementation surface and eliminate invalid approaches
-  - `decisionMaterials.candidateDecisionPoints` → orchestrator first resolves them against the governing source, `reuse`, and `invalidations`, then applies ADR Choice and Durability filters
+  - `simplifications`, `decisionMaterials.reuse`, and `invalidations` → reduce implementation surface and eliminate invalid approaches when their evidence and conditions apply
+  - `decisionMaterials.candidateDecisionPoints` → orchestrator first resolves them against the governing source, `simplifications`, `reuse`, and `invalidations`, then applies ADR Choice and Durability filters
   - `decisionMaterials.verification` → required proof boundaries
   - `dataModel`, `dataTransformationPipelines`, `qualityAssurance` → Existing Codebase Analysis / Verification Strategy / Quality Assurance sections
 
@@ -280,7 +280,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.
-- Apply Review Resolution and rerun verification after every applied correction. Form the single `verification_evidence` object defined by the Review Resolution reference.
+- Apply Review Resolution and rerun verification after every applied correction, passing the previous complete verifier result, dispositions, and correction diff or paths as `prior_feedback`. Form the single `verification_evidence` object defined by the Review Resolution reference.
 - Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and the same `confirmed_requirement_context` supplied at the owning designer invocation.
 - Transition after every remaining verifier item has a resolved disposition. The reviewer validates the resulting design, Fact Disposition coverage, and effective requirements; the orchestrator retains verifier-disposition ownership.
 

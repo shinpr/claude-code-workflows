@@ -1,6 +1,6 @@
 # Review Resolution
 
-Use this protocol when a deliverable reviewer or verifier returns findings that can route correction or progression. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
+Use this protocol when a deliverable reviewer or verifier returns findings that can route correction or progression. Correct evidenced defects within confirmed requirements, accepted design decisions, exclusions, and compatibility obligations, using existing responsibilities. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
 
 Preserve reviewer/verifier evidence ownership so each gate converges on the governing sources; orchestrator reinterpretation would create unreviewed requirements and make approval or reconciliation non-terminal.
 
@@ -19,13 +19,13 @@ For verifier, design-sync, code-reviewer, security-reviewer, and integration-tes
 Use the result producer's declared verification mode:
 
 - **Reconciliation reviewer**: document-reviewer, code-reviewer, security-reviewer, and integration-test-reviewer accept `prior_feedback` and return `prior_feedback_reconciliation` after correction.
-- **Fresh verifier**: code-verifier and design-sync independently report the current state from their original inputs. After a correction is applied from a fresh verifier's result, rerun that verifier and adjudicate the current result; a decline-only result is complete.
+- **Bounded verifier**: code-verifier and design-sync accept the previous complete result, dispositions, and correction diff or paths as `prior_feedback`; code-verifier reruns with `unit_inventory` use full verification instead. Recheck the prior findings and inconsistencies directly introduced by the correction, and preserve unaffected evidence. A decline-only result is complete.
 
 ## 1. Assess Every Finding
 
 Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources, treating reviewer assertions as evidence to verify.
 
-When evidence shows that the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, leave Review Resolution and apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, leave Review Resolution and apply the parent workflow's authority gate. These workflow stops are not finding dispositions.
+When a proposed correction remains within the agreed boundary above, select it from current evidence without expanding scope. When evidence shows the confirmed outcome cannot be achieved within accepted design decisions and existing responsibilities, leave Review Resolution and apply the parent workflow's existing design or requirement gate before changing them. When the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, apply the parent workflow's authority gate. These workflow exits are not finding dispositions; an optional expansion receives `decline`.
 
 The orchestrator records one disposition for every actionable finding:
 
@@ -68,7 +68,7 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-For a fresh verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule requires a current-state result. The latest result replaces the prior current-state result for corrected items. Retain a prior decline when the latest result reports the materially same claim or conflict with unchanged governing evidence; adjudicate new or materially changed findings before routing. Match materially identical findings by their claim/conflict and cited source/target evidence rather than relying only on a regenerated positional ID.
+For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction.
 
 ## 3. Converge or Report
 
@@ -78,7 +78,7 @@ Resolve correction re-review entries by their recorded `prior_disposition`:
 - `maintained` with `prior_disposition: apply` returns the original finding and the complete reconciliation entry verbatim through the same author or executor path, followed by another correction re-review;
 - `maintained` with `prior_disposition: decline` retains that decline and does not reopen the correction cycle.
 
-For a fresh verifier, a current finding with `apply` returns through the correction path, a current finding with a retained or newly assigned `decline` is complete, and an empty actionable result is complete.
+For a bounded verifier, a current finding with `apply` returns through the correction path, a current finding with a retained or newly assigned `decline` is complete, and an empty actionable result is complete.
 
 After the same `apply` finding remains material through two consecutive correction attempts, finish the correction cycle as incomplete and report the finding with its latest implementation and verification evidence. Apply the same terminal report to a required input or verification prerequisite that remains unavailable after in-scope recovery. Progress after every `apply` correction is complete and every other actionable finding has a `decline` disposition. The parent requirement and authority gates independently control their workflow stops.
 
@@ -88,7 +88,8 @@ Handoffs contain this exact set:
 - initial reviewer or verifier inputs unchanged when rechecking;
 - complete `apply` finding objects verbatim, with only their orchestrator dispositions added;
 - the complete reconciliation entry when a maintained `apply` finding returns to its author or executor;
-- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation; for a fresh verifier, retain those dispositions in orchestrator state and compare them with the latest result as described above.
+- declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation;
+- for a bounded verifier, the previous complete result and correction diff or paths in the same `prior_feedback` handoff.
 
 An author handoff contains no other orchestrator-authored semantic content.
 

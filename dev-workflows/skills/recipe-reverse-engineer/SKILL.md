@@ -182,7 +182,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
+**Re-validation**: After each revision, re-run code-verifier on the revised document with the original `unit_inventory`, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
 
 #### Unit Completion
 
@@ -373,7 +373,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
+**Re-validation**: After each revision, re-run code-verifier on the revised document with the original `unit_inventory`, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
 
 #### Unit Completion
 
