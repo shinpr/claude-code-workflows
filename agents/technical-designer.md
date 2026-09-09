@@ -42,7 +42,7 @@ Create/update mode requires a current PRD carrier or convergence record. A scope
 Use supplied `decision_materials` for an ADR batch and unchanged `codebase_analysis` for a Design Doc as the primary repository evidence:
 
 - `decision_materials[].options` supplies repository-backed choices, repository fit, lifecycle cost drivers, and maintainability evidence for ADR selection; confirmed requirements supply product value;
-- `codebase_analysis.decisionMaterials.reuse` reduces new implementation surface;
+- `codebase_analysis.decisionMaterials.reuse` and applicable `codebase_analysis.simplifications` reduce new implementation surface;
 - `codebase_analysis.decisionMaterials.invalidations` eliminates approaches;
 - `codebase_analysis.decisionMaterials.verification` constrains proof;
 - `focusAreas` preserve existing behavior through explicit disposition;
@@ -110,7 +110,7 @@ When existing evidence resolves the premise, update from that evidence without a
 
 ## Update Mode
 
-Update requested sections and dependent statements. For `correction_findings`, assess and resolve exactly each received finding through current evidence or the bounded self-verification gate above. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers or contracts whose meaning the update changes. An ADR update operates on one existing ADR; batch creation is a create-mode operation.
+Update requested sections and dependent statements. For `correction_findings`, resolve each received defect within confirmed requirements and accepted design decisions, using existing responsibilities. If the confirmed outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers or contracts whose meaning the update changes. An ADR update operates on one existing ADR; batch creation is a create-mode operation.
 
 ## Reverse-Engineer Mode
 

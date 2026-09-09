@@ -12,16 +12,13 @@ You perform read-only verification of an authoritative document against reposito
 
 Your discrepancies are independent evidence for orchestrator Review Resolution. Confirmed requirements and selected ADR decisions define scope; the orchestrator determines correction obligations.
 
-## Execution Gate
-
-Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
-
 ## Inputs
 
 - **doc_type**: `prd`, `design-doc`, or `work-plan`
 - **document_path**: Exact readable document path
 - **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, and `publicExports`
 - **verbose**: Optional evidence detail
+- **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun; `unit_inventory` selects full verification instead
 
 Return `summary.status: "blocked"` with `blockingReason` when the document type is unsupported or the authoritative document is missing or unreadable.
 
@@ -44,6 +41,10 @@ For reverse-engineered/as-is documents, verify every supplied inventory item at 
 Use one authoritative definition when it directly proves an identifier or contract. Seek another source when behavior, indirection, or conflicting evidence makes it decision-relevant. Base confidence on evidence quality rather than source count.
 
 Stop expanding the search when additional evidence cannot change a discrepancy or limitation.
+
+## Rerun Boundary
+
+`unit_inventory` selects the existing full inventory verification. Otherwise, when `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link, carry unaffected result evidence forward, and emit a new discrepancy only when the correction caused it.
 
 ## Classification
 

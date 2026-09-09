@@ -67,8 +67,10 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 Use `ui_analysis` and applicable `codebase_analysis` as the primary evidence. Inspect repository gaps only when they can change reuse, an in-scope component/state contract, or verification.
 
+Apply evidenced `simplifications` when their recorded condition holds; otherwise leave them as candidates rather than adding UI scope.
+
 1. **Identify reusable components**
-   - Use the supplied focus areas, component structure, and representative same-responsibility components
+   - Use the supplied focus areas and representative same-responsibility components
    - Expand repository search only when supplied evidence cannot decide reuse/extend/new
 
 2. **Record reuse decisions**
@@ -96,6 +98,8 @@ Use `ui_analysis` and applicable `codebase_analysis` as the primary evidence. In
 ## Output Policy
 
 Execute file output immediately (considered approved at execution).
+
+When revising from review findings, resolve only the supplied defects within the confirmed UI outcome and accepted UI decisions. Return the conflicting evidence before changing that boundary.
 
 ## Quality Checklist
 

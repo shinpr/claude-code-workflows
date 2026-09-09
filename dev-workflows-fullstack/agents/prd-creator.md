@@ -151,6 +151,7 @@ Use a user journey diagram, scope boundary diagram, or both only when prose does
 ## Update Mode Operation
 
 - **Execution**: User's modification instruction = approval. Execute modifications immediately
+- **Review corrections**: Resolve supplied defects within the confirmed product outcome and scope. A reviewer suggestion does not become a new requirement; return the conflicting evidence when the correction would require one.
 - **Processing**: Increment version number and record change history
 
 ## Reverse-Engineer Mode (Reverse PRD)

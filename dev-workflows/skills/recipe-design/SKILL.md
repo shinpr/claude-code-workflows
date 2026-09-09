@@ -67,7 +67,7 @@ Judge all four convergence fields. Assign `cost` from Step 2 structural evidence
 
 Determine Structural Scale from outcomes and responsibility boundaries. File count is supporting evidence only.
 
-Resolve `decisionMaterials.candidateDecisionPoints` against the governing requirement source, `reuse`, and `invalidations`. Remove a point when that evidence already converges on one sufficient approach. For each remaining item, apply documentation-criteria filters in order:
+Resolve `decisionMaterials.candidateDecisionPoints` against the governing requirement source, applicable `simplifications`, `reuse`, and `invalidations`. Remove a point when that evidence already converges on one sufficient approach. For each remaining item, apply documentation-criteria filters in order:
 
 1. Choice requires judgment between at least two credible, materially distinct options inside confirmed scope.
 2. The selection has durable material impact.
@@ -80,6 +80,7 @@ Present:
 - cost band, structural evidence, and remaining unknowns;
 - exclusions;
 - target responsibilities and strongest file evidence;
+- applicable simplifications and their conditions;
 - Structural Scale and its boundary rationale;
 - each qualifying ADR decision point with filter evidence, or `none`;
 - material unknowns whose answers change the confirmed outcome or scope.
@@ -116,7 +117,7 @@ Keep verifier observations unchanged so corrections remain traceable to observed
 
 Invoke `dev-workflows:code-verifier` with `doc_type: design-doc` and the Design Doc path to verify current premises and feasibility while treating planned behavior as intent.
 
-Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to a fresh technical-designer update invocation with `Operation Mode: update`, `Existing Document: [Design Doc path]`, and `correction_findings: [complete findings unchanged except for their dispositions]`. The designer applies its review-triggered bounded self-verification gate when a finding names an unverified decision-changing premise; this fresh designer is the sole correction specialist and selects the evidence route. Rerun code-verifier after a correction. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
+Apply Review Resolution to every discrepancy before document review. Send only `apply` findings to a fresh technical-designer update invocation with `Operation Mode: update`, `Existing Document: [Design Doc path]`, and `correction_findings: [complete findings unchanged except for their dispositions]`. The designer applies its review-triggered bounded self-verification gate when a finding names an unverified decision-changing premise; this fresh designer is the sole correction specialist and selects the evidence route. Rerun code-verifier after a correction with the previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Build the single `verification_evidence` object defined by Review Resolution from the latest result and continue at its convergence condition.
 
 ## Step 7: Review and Approve
 

@@ -68,7 +68,7 @@ external_resource_refs: [selected references or []]
 
 ## ADR Qualification and Batch
 
-After scope and any applicable UI Spec approval, resolve candidate decision points from the codebase analysis against the governing source, `reuse`, and `invalidations`. Use applicable UI analysis as supporting or contradicting evidence, not as a source of technical options. Apply documentation-criteria Choice then Durability filters only to the remaining points.
+After scope and any applicable UI Spec approval, resolve candidate decision points from the codebase analysis against the governing source, applicable `simplifications`, `reuse`, and `invalidations`. Use applicable UI analysis as supporting or contradicting evidence, not as a source of technical options. Apply documentation-criteria Choice then Durability filters only to the remaining points.
 
 - Route layer-owned decision points to the matching technical designer.
 - Route cross-layer points to technical-designer.
@@ -111,7 +111,7 @@ Apply `code:` and `ui:` prefixes to respective Fact Disposition IDs. The fronten
 
 ## Verification Resolution
 
-Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by the orchestration guide.
+Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier with its previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by the orchestration guide.
 
 After both document reviews permit approval, invoke design-sync with `source_design` as the frontend Design Doc path because it consumes backend integration contracts. Apply Review Resolution to actionable conflicts before the design approval stop.
 

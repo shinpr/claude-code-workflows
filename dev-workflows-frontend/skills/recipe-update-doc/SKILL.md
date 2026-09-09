@@ -173,7 +173,7 @@ description: "Verify consistency"
 prompt: "source_design: [path from Step 1]"
 ```
 
-When conflicts are detected, apply the Review Resolution Gate using design-sync as a fresh verifier. Return `apply` conflicts to Step 4 for the owning document, rerun design-sync after correction, and retain evidenced declines as complete.
+When conflicts are detected, apply the Review Resolution Gate and follow its bounded verifier handoff and convergence rules, returning selected corrections to Step 4 for the owning document.
 
 **For every document type**, present the updated document, the review outcome, any resolved declines, and the sync result when one ran. This is the only approval gate in the flow: wait for the user's decision before completing.
 

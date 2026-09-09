@@ -41,7 +41,7 @@ Create/update mode requires a current PRD carrier or convergence record. A scope
 
 ## Evidence Boundary
 
-Use supplied `decision_materials` option objects for an ADR batch and unchanged code/UI analysis for a Design Doc as the primary evidence. Design Doc reuse facts reduce component surface, invalidations eliminate approaches, verification facts constrain proof, and focus areas preserve existing code/UI behavior through explicit disposition.
+Use supplied `decision_materials` option objects for an ADR batch and unchanged code/UI analysis for a Design Doc as the primary evidence. Applicable `codebase_analysis.simplifications`, `ui_analysis.simplifications`, and reuse facts reduce component surface, invalidations eliminate approaches, verification facts constrain proof, and focus areas preserve existing code/UI behavior through explicit disposition.
 
 Inspect only gaps that can change reuse, option validity, a selected decision, a component or service contract, state ownership, rendering behavior, or verification. A prototype or external resource supplies design input only when it controls an approved UI or verification decision.
 
@@ -104,7 +104,7 @@ When existing evidence resolves the premise, update from that evidence without a
 
 ## Update Mode
 
-Update requested sections and dependent statements. For `correction_findings`, assess and resolve exactly each received finding through current evidence or the bounded self-verification gate above. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers, Props, state, or contracts whose meaning changes. An ADR update operates on one existing ADR.
+Update requested sections and dependent statements. For `correction_findings`, resolve each received defect within confirmed requirements and accepted design decisions, using existing responsibilities. If the confirmed outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers, Props, state, or contracts whose meaning changes. An ADR update operates on one existing ADR.
 
 ## Reverse-Engineer Mode
 
