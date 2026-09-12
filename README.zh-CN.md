@@ -248,7 +248,6 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-reverse-engineer` | 根据代码生成PRD和Design Doc | 现有系统文档化 |
 | `/recipe-add-integration-tests` | 添加集成或E2E测试 | 为现有代码补充覆盖 |
 | `/recipe-update-doc` | 更新并审查现有文档 | 需求或设计变更 |
-| `/recipe-task` | 直接运行遵循规则的任务 | 不需要分阶段交接的工作 |
 
 </details>
 
@@ -267,7 +266,6 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | `/recipe-quality-profile` | 设置仓库特有的质量规则 | 质量规则设置 |
 | `/recipe-diagnose` | 调查问题并比较解决方案 | 根因分析 |
 | `/recipe-update-doc` | 更新并审查现有文档 | 需求或设计变更 |
-| `/recipe-task` | 直接运行遵循规则的任务 | 不需要分阶段交接的工作 |
 
 </details>
 
@@ -301,7 +299,6 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 | **verifier** | 质疑疑似故障点并检查路径覆盖 |
 | **solver** | 比较解决方案及其取舍 |
 | **security-reviewer** | 审查已完成实现中的安全问题 |
-| **rule-advisor** | 选择与任务相关的编码规则 |
 
 ### 后端专用Agent
 

@@ -30,8 +30,6 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**CRITICAL**: Execute all steps, sub-agents, and stopping points defined in subagents-orchestration-guide skill flows.
-
 ## Execution Decision Flow
 
 ### 1. Current Situation Assessment

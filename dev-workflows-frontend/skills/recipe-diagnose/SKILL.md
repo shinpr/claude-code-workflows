@@ -39,33 +39,18 @@ At each Agent invocation below, build the prompt as a mechanical extraction: cop
 | Change Failure | Indicates some change occurred before the problem appeared |
 | New Discovery | No relation to changes is indicated |
 
-If uncertain, ask the user whether any changes were made right before the problem occurred.
+If uncertain, keep the type provisional and let repository history and investigation evidence resolve it.
 
 ### 0.2 Information Supplementation for Change Failures
 
-If the following are unclear, **ask with AskUserQuestion** before proceeding:
+For change failures, resolve the following from the reported problem and repository evidence when available:
 - What was changed (cause change)
 - What broke (affected area)
 - Relationship between both (shared components, etc.)
 
-### 0.3 Problem Essence Understanding
+Carry unresolved details into the investigator prompt as investigation targets and continue.
 
-**Invoke rule-advisor via Agent tool**:
-```
-subagent_type: rule-advisor
-description: "Problem essence analysis"
-prompt: Identify the essence and required rules for this problem: [user-reported problem verbatim]
-```
-
-Confirm from rule-advisor output:
-- `taskAnalysis.essence`: Primary purpose of the diagnosis
-- `metaCognitiveGuidance.taskEssence`: Root problem beyond surface symptoms
-- `selectedRules`: Applicable skill and section names
-- `warningPatterns`: Patterns to avoid
-
-Execute each selected skill by its `skill` name and apply the named sections in the context of the complete skill before constructing the investigator prompt.
-
-### 0.4 Diagnosis Scope Envelope
+### 0.3 Diagnosis Scope Envelope
 
 Before investigation, define a semantic scope envelope from the confirmed problem and repository evidence by recording:
 
@@ -102,15 +87,12 @@ prompt: |
   Comprehensively collect information related to the following phenomenon.
 
   Phenomenon: [Problem reported by user verbatim]
-  Problem essence: [exact `metaCognitiveGuidance.taskEssence` from Step 0.3]
-  diagnosisScopeEnvelope: [Step 0.4 semantic scope envelope]
-  Selected rules: [complete `selectedRules` from Step 0.3]
-  Warning patterns: [complete `warningPatterns` from Step 0.3]
+  diagnosisScopeEnvelope: [Step 0.3 semantic scope envelope]
 
   [For change failures, additionally include:]
-  Change details: [user-confirmed change-details statement verbatim]
-  Affected area: [user-confirmed affected-area statement verbatim]
-  Stated relationship: [user-confirmed relationship statement verbatim]
+  Change details: [resolved change-details statement, or the unresolved item as an investigation target]
+  Affected area: [resolved affected-area statement, or the unresolved item as an investigation target]
+  Stated relationship: [resolved relationship statement, or the unresolved item as an investigation target]
 ```
 
 **Expected output**: scopeAccounting, pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
@@ -125,7 +107,6 @@ Review investigation output:
 - [ ] Each failure point has `comparisonAnalysis` (normalImplementation found or explicitly null)
 - [ ] `causeCategory` for each failure point is one of: typo / logic_error / missing_constraint / design_gap / external_factor
 - [ ] `investigationSources` covers at least 3 distinct source types (code, history, dependency, config, document, external)
-- [ ] Investigation accounts for each supplied `warningPatterns` item
 - [ ] All nodes on mapped paths have been checked (no path was abandoned after finding the first fault)
 - [ ] `scopeAccounting` accounts for every scope-envelope item as investigated, excluded with governing evidence, or unavailable with its potential effect
 
@@ -149,7 +130,7 @@ subagent_type: verifier
 description: "Verify investigation results"
 prompt: Verify the following investigation results against the semantic diagnosis scope envelope.
 
-diagnosisScopeEnvelope: [Step 0.4 semantic scope envelope]
+diagnosisScopeEnvelope: [Step 0.3 semantic scope envelope]
 Investigation results: [Investigation JSON output]
 ```
 

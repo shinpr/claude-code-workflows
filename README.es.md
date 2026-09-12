@@ -248,7 +248,6 @@ Todos los puntos de entrada usan el prefijo `recipe-`. Escribe `/recipe-` y usa 
 | `/recipe-reverse-engineer` | Derivar PRD y Design Docs del código | Documentación de sistemas existentes |
 | `/recipe-add-integration-tests` | Añadir pruebas de integración o E2E | Cobertura de código existente |
 | `/recipe-update-doc` | Actualizar y revisar documentos existentes | Cambios de requisitos o diseño |
-| `/recipe-task` | Ejecutar directamente una tarea guiada por reglas | Trabajo que no requiere traspasos entre etapas |
 
 </details>
 
@@ -267,7 +266,6 @@ El plugin de frontend añade análisis específico de React, arquitectura de com
 | `/recipe-quality-profile` | Definir reglas de calidad propias del repositorio | Reglas de calidad |
 | `/recipe-diagnose` | Investigar un problema y comparar soluciones | Análisis de causa raíz |
 | `/recipe-update-doc` | Actualizar y revisar documentos existentes | Cambios de requisitos o diseño |
-| `/recipe-task` | Ejecutar directamente una tarea guiada por reglas | Trabajo que no requiere traspasos entre etapas |
 
 </details>
 
@@ -301,7 +299,6 @@ Estos agentes se comparten entre los plugins de backend, frontend y full stack:
 | **verifier** | Cuestiona los puntos de fallo sospechosos y comprueba la cobertura de rutas |
 | **solver** | Compara soluciones y sus trade-offs |
 | **security-reviewer** | Revisa la implementación terminada en busca de problemas de seguridad |
-| **rule-advisor** | Selecciona las reglas de desarrollo pertinentes para la tarea |
 
 ### Agentes específicos de backend
 
