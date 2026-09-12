@@ -248,7 +248,6 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 | `/recipe-reverse-engineer` | 코드에서 PRD와 Design Doc 생성 | 기존 시스템 문서화 |
 | `/recipe-add-integration-tests` | 통합 또는 E2E 테스트 추가 | 기존 코드의 커버리지 확보 |
 | `/recipe-update-doc` | 기존 문서 업데이트 및 검토 | 요구 사항 또는 설계 변경 |
-| `/recipe-task` | 규칙을 따르는 작업을 직접 실행 | 단계별 인계가 필요 없는 작업 |
 
 </details>
 
@@ -267,7 +266,6 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 | `/recipe-quality-profile` | 저장소별 품질 규칙 설정 | 품질 규칙 설정 |
 | `/recipe-diagnose` | 문제를 조사하고 해결책 비교 | 근본 원인 분석 |
 | `/recipe-update-doc` | 기존 문서 업데이트 및 검토 | 요구 사항 또는 설계 변경 |
-| `/recipe-task` | 규칙을 따르는 작업을 직접 실행 | 단계별 인계가 필요 없는 작업 |
 
 </details>
 
@@ -301,7 +299,6 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 | **verifier** | 의심되는 실패 지점을 검증하고 경로 커버리지 확인 |
 | **solver** | 해결책과 장단점 비교 |
 | **security-reviewer** | 완성된 구현의 보안 문제 검토 |
-| **rule-advisor** | 작업에 관련된 개발 규칙 선택 |
 
 ### 백엔드 전용 Agent
 

@@ -250,7 +250,6 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 | `/recipe-reverse-engineer` | Derive PRDs and Design Docs from code | Existing-system documentation |
 | `/recipe-add-integration-tests` | Add integration or E2E tests | Coverage for existing code |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
-| `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
 
 </details>
 
@@ -269,7 +268,6 @@ The frontend plugin adds React-specific analysis, component architecture, React 
 | `/recipe-quality-profile` | Set repository-specific quality rules | Repository quality rules |
 | `/recipe-diagnose` | Investigate a problem and compare solutions | Root cause analysis |
 | `/recipe-update-doc` | Update and review existing documents | Requirement or design changes |
-| `/recipe-task` | Run a rule-guided task directly | Work that does not need staged workflow handoffs |
 
 </details>
 
@@ -303,7 +301,6 @@ These agents are shared by the backend, frontend, and full-stack workflow plugin
 | **verifier** | Challenges suspected failure points and checks path coverage |
 | **solver** | Compares solutions and their trade-offs |
 | **security-reviewer** | Reviews the completed implementation for security issues |
-| **rule-advisor** | Selects the coding rules relevant to the task |
 
 ### Backend-specific agents
 
