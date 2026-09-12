@@ -30,29 +30,9 @@ At each Agent invocation below, build the prompt as a mechanical extraction: cop
 
 **Execution Gate**: Each step below establishes evidence required by the next decision. Complete Steps 0-7 in order, including every required investigation and verification retry. Advance only through the current step's stated quality or coverage condition; invoke solver only after coverage is closed.
 
-## Step 0: Problem Structuring (Before investigator invocation)
+## Step 0: Diagnosis Scope Envelope (Before investigator invocation)
 
-### 0.1 Problem Type Determination
-
-| Type | Criteria |
-|------|----------|
-| Change Failure | Indicates some change occurred before the problem appeared |
-| New Discovery | No relation to changes is indicated |
-
-If uncertain, keep the type provisional and let repository history and investigation evidence resolve it.
-
-### 0.2 Information Supplementation for Change Failures
-
-For change failures, resolve the following from the reported problem and repository evidence when available:
-- What was changed (cause change)
-- What broke (affected area)
-- Relationship between both (shared components, etc.)
-
-Carry unresolved details into the investigator prompt as investigation targets and continue.
-
-### 0.3 Diagnosis Scope Envelope
-
-Before investigation, define a semantic scope envelope from the confirmed problem and repository evidence by recording:
+Define a semantic scope envelope from the reported problem and repository evidence by recording:
 
 - phenomenon and occurrence conditions to explain
 - symptom-reachable execution paths and adjacent cases that share the same path, contract, persisted state, or external boundary
@@ -87,12 +67,7 @@ prompt: |
   Comprehensively collect information related to the following phenomenon.
 
   Phenomenon: [Problem reported by user verbatim]
-  diagnosisScopeEnvelope: [Step 0.3 semantic scope envelope]
-
-  [For change failures, additionally include:]
-  Change details: [resolved change-details statement, or the unresolved item as an investigation target]
-  Affected area: [resolved affected-area statement, or the unresolved item as an investigation target]
-  Stated relationship: [resolved relationship statement, or the unresolved item as an investigation target]
+  diagnosisScopeEnvelope: [Step 0 semantic scope envelope]
 ```
 
 **Expected output**: scopeAccounting, pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
@@ -130,7 +105,7 @@ subagent_type: verifier
 description: "Verify investigation results"
 prompt: Verify the following investigation results against the semantic diagnosis scope envelope.
 
-diagnosisScopeEnvelope: [Step 0.3 semantic scope envelope]
+diagnosisScopeEnvelope: [Step 0 semantic scope envelope]
 Investigation results: [Investigation JSON output]
 ```
 
