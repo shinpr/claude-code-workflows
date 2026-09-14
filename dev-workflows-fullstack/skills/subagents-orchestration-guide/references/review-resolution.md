@@ -23,7 +23,7 @@ Use the result producer's declared verification mode:
 
 ## 1. Assess Every Finding
 
-Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources, treating reviewer assertions as evidence to verify.
+Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources. Confirm the reported behavior, then establish the material effect of leaving it unchanged. A material effect changes the confirmed outcome, a binding constraint, downstream behavior, decisions, or required verification, or is an evidenced lifecycle cost whose frequency or magnitude is observable. For a discretionary response, compare that effect with the full cost of implementing, verifying, and retaining the response, including review attention.
 
 When a proposed correction remains within the agreed boundary above, select it from current evidence without expanding scope. When evidence shows the confirmed outcome cannot be achieved within accepted design decisions and existing responsibilities, leave Review Resolution and apply the parent workflow's existing design or requirement gate before changing them. When the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, apply the parent workflow's authority gate. These workflow exits are not finding dispositions; an optional expansion receives `decline`.
 
@@ -31,8 +31,8 @@ The orchestrator records one disposition for every actionable finding:
 
 | Disposition | Use when |
 |---|---|
-| `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, leave required correctness or verification unsupported, or commit downstream work to added design surface whose total complexity lacks current evidence. |
-| `decline` | Leaving the current deliverable unchanged still achieves the confirmed outcome and satisfies binding constraints and required correctness and verification; the finding instead proposes added scope, a reversed exclusion, optional hardening or generic cleanup, duplicate proof, depends on a property outside the reviewer's declared artifact boundary, or concerns other work outside that boundary. |
+| `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, leave required correctness or verification unsupported, or commit downstream work to added design surface whose total complexity lacks current evidence. Otherwise, apply only when the material effect exceeds the response cost. |
+| `decline` | No material effect is established; the finding is outside the agreed boundary above or the reviewer's declared artifact boundary, or reverses an exclusion; or the response cost equals or exceeds the material effect. |
 
 A confirmed security risk, implementation divergence, or governing-source contradiction receives `apply` when correction preserves the confirmed value boundaries; cost alone leaves that classification unchanged. Technical design, contract, or implementation changes are correction work rather than user decisions when those boundaries remain true.
 
