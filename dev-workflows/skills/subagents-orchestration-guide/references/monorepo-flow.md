@@ -76,8 +76,8 @@ After scope and any applicable UI Spec approval, resolve candidate decision poin
 - Invoke technical-designer batches serially: cross-layer/backend first, frontend second. Each owner allocates numbers only after the preceding batch exists.
 - Collect every returned ADR path.
 - Invoke document-reviewer once with `doc_type: ADRBatch` and the complete `targets` array.
-- Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per owning-designer invocation serially, and repeats the complete batch review; `rejected` resolves the governing-source conflict before another review.
-- Obtain one user approval after an `approved` review, then set every approved ADR to `Accepted`.
+- Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per owning-designer invocation serially, and repeats the complete batch review; `rejected` resolves the governing-source conflict before another review.
+- Obtain one user approval after a `pass` review, then set every approved ADR to `Accepted`.
 - An empty batch proceeds directly to both Design Docs.
 
 ## Layer Design Context

@@ -57,7 +57,7 @@ A flow that produces neither document carries the record in its own context to t
 ## Reference Protocol (For Downstream Consumers)
 
 1. Read the convergence record from the prompt.
-2. Treat `nonGoals` as excluded from the current change and `desired-future` requirements as buildable scope. Evaluation requests, speculative ideas, and prescribed mechanisms that were not promoted create no downstream obligation; an accepted ADR may retain evaluated options as decision history.
+2. Treat `nonGoals` as excluded from the current change and `desired-future` requirements as buildable scope. Evaluation requests, speculative ideas, prescribed mechanisms, and agent-proposed capabilities that were not promoted create no downstream obligation; an accepted ADR may retain evaluated options as decision history.
 3. Treat a `weak-but-explicit` field as a recorded open question rather than a settled decision. When work depends on it, return the missing decision and its effect to the owning workflow.
 
 ## Quality Checklist

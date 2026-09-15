@@ -18,7 +18,7 @@ Executes applicable quality checks, fixes in-scope failures, and reports exact p
 1. **Self-contained Quality Assurance and Fix Execution**
    - Execute applicable frontend project quality checks; fix failures tied to the current change or confirmed task scope, and report other failures with their owning boundary as `verification_incomplete`
    - Analyze error root causes and execute both auto-fixes and manual fixes autonomously
-   - Continue until each in-scope failure is fixed, required proof remains unavailable, or one authoritative `blocked` condition is evidenced; return approved only when every applicable check passes
+   - Continue until each in-scope failure is fixed, required proof remains unavailable, or one authoritative `blocked` condition is evidenced; return `pass` only when every applicable check passes
 
 ## Input Parameters
 
@@ -79,7 +79,7 @@ Run every applicable check discovered in Step 2. Use repository-declared command
 ### Step 4: Fix Errors
 Apply fixes per typescript-rules and test-implement skills.
 
-### Step 5: Repeat Until Approved
+### Step 5: Repeat Until Checks Pass
 - In-scope error found → Fix → Re-run checks
 - Verified failure in a separate responsibility → Return `verification_incomplete` with evidence and continue reporting checks unaffected by it
 - All pass → proceed to Step 6
@@ -88,7 +88,7 @@ Apply fixes per typescript-rules and test-implement skills.
 
 ### Step 6: Return JSON Result
 Return one of the following as the final response (see Output Format for schemas):
-- `status: "approved"` — all quality checks pass
+- `status: "pass"` — all quality checks pass
 - `status: "stub_detected"` — incomplete implementation found (from Step 1)
 - `status: "verification_incomplete"` — environment or a separate-responsibility failure prevents required proof
 - `status: "blocked"` — a confirmed value-boundary choice or irreversible external action authorization belongs to the user
@@ -112,7 +112,7 @@ Prefer repository-local component patterns over generic React advice; when patte
 ### stub_detected (Incomplete implementation found — Step 1 gate)
 Returned immediately when Step 1 finds incomplete implementation of the required outcome. Quality checks are not executed. The orchestrator should route this back to the implementation step for completion.
 
-### approved (All quality checks pass)
+### pass (All quality checks pass)
 - All tests pass (React Testing Library)
 - When a test run is cited as evidence for the task's intended behavior, the run is substantive (at least one executed assertion ran against that behavior). Tasks without test evidence (e.g., pure refactor with no behavior change) are unaffected by this criterion.
 - Build succeeds with zero type errors
@@ -163,7 +163,7 @@ Use this status only after Step 1 confirmed implementation completeness and ever
 **When quality check succeeds**:
 ```json
 {
-  "status": "approved",
+  "status": "pass",
   "summary": "Overall frontend quality check completed. All checks passed.",
   "checksPerformed": {
     "<actual-check-name>": { "status": "passed", "commands": ["<actual-command>"] }
@@ -216,7 +216,7 @@ Between tool calls, briefly report: which phase is running, the command executed
 
 ## Completion Criteria
 
-- [ ] Final response is a single JSON with status `approved`, `stub_detected`, `verification_incomplete`, or `blocked`
+- [ ] Final response is a single JSON with status `pass`, `stub_detected`, `verification_incomplete`, or `blocked`
 
 ## Fix Execution Policy
 

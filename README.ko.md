@@ -117,17 +117,20 @@ UI Spec, ADR, 통합 또는 E2E 테스트 스켈레톤은 해당 결정이나 �
 
 Work Plan은 구현을 승인하기 전에 범위, 의존성 순서, 실행 가능한 검증 방법을 검토합니다. 각 작업은 작업별 검사와 해당 저장소 검사를 통과한 뒤에만 커밋합니다. 단계별 구현이 끝나면 별도의 검토에서 전체 변경이 합의한 결과에 맞는지 확인하고, 불필요한 변경과 심각한 동작 오류나 신뢰성 문제를 찾고, 필요한 동작을 실제로 검증했는지와 보안을 확인합니다.
 
-메인 세션은 어떤 발견이 현재 목표에 포함되는지 판단하고, 저장소를 근거로 구현 질문을 해결하며, 영향을 받지 않는 작업을 계속 진행합니다. 검토 제안이 자동으로 작업이 되지는 않습니다. 수락된 수정은 구현 단계로 돌아가 영향을 받는 검증 관문을 다시 거칩니다.
+메인 세션은 어떤 발견이 현재 목표에 포함되는지 판단하고, 저장소를 근거로 구현 질문을 해결하며, 영향을 받지 않는 작업을 계속 진행합니다. 검토 제안이 자동으로 작업이 되지는 않습니다. 수정을 배정하기 전에 그대로 두기, 제거하거나 좁히기, 기존 동작 재사용을 먼저 검토합니다. 메커니즘을 남기거나 새로 더하는 수정은 그보다 작은 대응으로는 얻을 수 없는 결과를 제시해야 합니다. 그래서 수정이 앞선 Design Doc이나 ADR이 골랐던 수단을 걷어내는 일이 될 수도 있으며, 이때는 문서도 함께 갱신합니다. 수락된 수정은 구현 단계로 돌아가 영향을 받는 검증 관문을 다시 거칩니다.
 
 ### 새로운 컨텍스트에도 결정을 유지하는 방법
 
-단계마다 새로운 컨텍스트를 사용하면 한 단계의 추론이 다음 단계에서 암묵적인 권한으로 바뀌는 일을 막을 수 있습니다. 포함된 [Work Plan 템플릿](skills/documentation-criteria/references/plan-template.md)은 Design Doc에서 승인된 모든 기술 요구 사항에 대응 작업이나 명시적인 누락 표시가 있도록 요구합니다. 문서의 모든 절이나 검토 제안을 작업으로 바꾸지는 않습니다. 누락은 승인된 요구 사항에 아직 구현 또는 검증 작업이 없다는 뜻입니다.
+단계마다 새로운 컨텍스트를 사용하면 한 단계의 추론이 다음 단계에서 암묵적인 권한으로 바뀌는 일을 막을 수 있습니다. 포함된 [Work Plan 템플릿](skills/documentation-criteria/references/plan-template.md)에서는 각 작업이 자신을 제약하는 Design Doc, ADR, UI Spec의 절과 승인 기준을 밝히고, 구현에 필요한 Design Doc의 의무가 모두 최소 한 개의 작업에 담겼을 때 비로소 계획이 완성됩니다. 문서의 모든 절이나 검토 제안을 작업으로 바꾸지는 않습니다. 담기지 않은 의무는 계획의 누락이므로, 판단을 사용자에게 되돌리지 않고 작업을 더하거나 조정합니다.
 
 ```markdown
-| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|---|
-| docs/design/example.md | API contract | Preserve the error response shape | contract-change | Phase 2 Task 1 | covered | |
-| docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
+- [ ] **P1-T1: Preserve the error response shape in the new handler**
+  - **Source**: docs/design/example.md — API contract; AC-03
+  - **Scope**: request handling for the affected endpoint
+  - **Depends on**: none
+  - **Executor lane**: backend
+  - **Rollback boundary**: the handler change reverts with this task
+  - **Verification**: existing contract test for the error path
 ```
 
 [Task 템플릿](skills/documentation-criteria/references/task-template.md)은 구현을 구속하는 결정과 외부에서 확인할 수 있는 계약상의 값을 전달하며, 각 항목에 예/아니요로 답할 수 있는 준수 검사를 둡니다. 실행 후에는 커밋 전에 전체 작업 변경에 해당 저장소 검사를 적용합니다. 최종 검토자는 구현 대화에 의존하지 않고 같은 승인 자료와 완성된 코드를 읽습니다. `/recipe-quality-profile`을 사용하면 저장소별 품질 규칙과 근거를 `docs/project-context/quality.yaml`에 기록할 수 있습니다. 구현 실행자와 최종 검토자는 확인된 프로필을 승인 자료와 함께 사용합니다.

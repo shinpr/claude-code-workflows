@@ -1,6 +1,6 @@
 # Review Resolution
 
-Use this protocol when a deliverable reviewer or verifier returns findings that can route correction or progression. Correct evidenced defects within confirmed requirements, accepted design decisions, exclusions, and compatibility obligations, using existing responsibilities. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
+Use this protocol when a deliverable reviewer or verifier returns findings that can route correction or progression. Correct evidenced defects while preserving confirmed requirements, exclusions, and compatibility obligations, using existing responsibilities. Accepted design decisions are the currently selected means: a correction may remove or narrow one while those boundaries remain true. Verification output used as evidence by a downstream specialist remains part of that specialist handoff.
 
 Preserve reviewer/verifier evidence ownership so each gate converges on the governing sources; orchestrator reinterpretation would create unreviewed requirements and make approval or reconciliation non-terminal.
 
@@ -12,7 +12,7 @@ Route a document-reviewer result in this order:
 - an empty actionable issue set completes the review; downstream consumers receive the reviewed artifact path and pre-existing governing evidence only.
 - a non-empty actionable issue set continues to section 1.
 
-After `rejected` precedence, issue evidence governs routing when `approved` or `needs_revision` differs from the issue set. A completed review creates no author correction or downstream semantic input.
+After `rejected` precedence, issue evidence governs routing when `pass` or `needs_revision` differs from the issue set. A completed review creates no author correction or downstream semantic input.
 
 For verifier, design-sync, code-reviewer, security-reviewer, and integration-test-reviewer results, enter section 1 only for the status or findings that their caller contract routes to correction.
 
@@ -25,7 +25,9 @@ Use the result producer's declared verification mode:
 
 Before assigning a disposition, inspect the relevant parts of the current deliverable, cited repository evidence, and governing sources. Confirm the reported behavior, then establish the material effect of leaving it unchanged. A material effect changes the confirmed outcome, a binding constraint, downstream behavior, decisions, or required verification, or is an evidenced lifecycle cost whose frequency or magnitude is observable. For a discretionary response, compare that effect with the full cost of implementing, verifying, and retaining the response, including review attention.
 
-When a proposed correction remains within the agreed boundary above, select it from current evidence without expanding scope. When evidence shows the confirmed outcome cannot be achieved within accepted design decisions and existing responsibilities, leave Review Resolution and apply the parent workflow's existing design or requirement gate before changing them. When the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, apply the parent workflow's authority gate. These workflow exits are not finding dispositions; an optional expansion receives `decline`.
+Order the candidate responses before recording a disposition: no change, then removal or narrowing, then reuse of existing behavior, then a repair that retains or adds a mechanism. A retaining or additive response names the required result the earlier candidates cannot deliver. This is a selection condition, not an obligation to enumerate alternatives for every finding.
+
+When a proposed correction remains within the agreed boundary above, select it from current evidence without expanding scope. When evidence shows the confirmed outcome cannot be achieved within existing responsibilities, leave Review Resolution and apply the parent workflow's existing design or requirement gate before changing them. When the confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which value boundary changes, apply the parent workflow's Requirement Change Detection. When correction requires authorization for an irreversible external action, apply the parent workflow's authority gate. These workflow exits are not finding dispositions; an optional expansion receives `decline`.
 
 The orchestrator records one disposition for every actionable finding:
 

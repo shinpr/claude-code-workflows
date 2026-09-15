@@ -27,7 +27,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 2. **Execute update flow**:
    - Identify target → Clarify changes → Update document → Review → Consistency check
    - **Stop at the `[Stop: Final approval]` marker** → Wait for user approval before completing
-3. **Scope**: Complete when updated document receives approval
+3. **Scope**: Complete when the user approves completing the update
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
@@ -58,7 +58,7 @@ Target document → change clarification
 - New requirement analysis
 - Work planning or implementation
 
-**Responsibility Boundary**: This skill completes with updated document approval.
+**Responsibility Boundary**: This skill completes when the user approves completing the update.
 
 Target document: $ARGUMENTS
 
@@ -147,7 +147,7 @@ For each type, review consistency of the changed sections and their dependent st
 **Store output as**: `$STEP_5_OUTPUT`
 
 **On review result**:
-- Approved → Proceed to Step 6
+- Pass → Proceed to Step 6
 - Needs revision → Apply the Review Resolution Gate. Return to Step 4 when `apply` findings exist, using the following prompt:
   ```
   subagent_type: [Update Agent from Step 2]
@@ -192,11 +192,11 @@ When conflicts are detected, apply the Review Resolution Gate and follow its bou
 - [ ] Executed code-verifier before document-reviewer (Design Doc only)
 - [ ] Executed document-reviewer and addressed feedback
 - [ ] Executed design-sync for consistency verification (Design Doc only)
-- [ ] Obtained user approval for updated document
+- [ ] Obtained user approval to complete the update
 
 ## Output Example
 Document update completed.
 - Updated document: docs/design/[document-name].md
-- Approval status: User approved
+- Approval: user approved completing the update
 
 When findings were declined during review, append their IDs, governing reasons, and evidence to this completion response.

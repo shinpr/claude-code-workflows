@@ -117,17 +117,20 @@ flowchart LR
 
 Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审查，才能授权实现。每项任务只有通过针对当前任务的检查和适用的仓库检查后才会提交。分阶段实现完成后，独立审查会对照约定结果检查完整变更，查找不必要的改动和严重的功能或可靠性问题，确认所需行为确实得到验证，并评估安全性。
 
-主会话负责判断哪些发现属于当前目标，根据仓库解决实现问题，并让不受影响的工作继续进行。审查建议不会自动变成新任务。被接受的修正会返回实现阶段，并重新经过受影响的验证环节。
+主会话负责判断哪些发现属于当前目标，根据仓库解决实现问题，并让不受影响的工作继续进行。审查建议不会自动变成新任务。指派修正之前，先依次考虑不做改动、删除或收窄、复用已有行为；保留或新增机制的修正，必须说明更小的做法交付不了什么结果。因此修正也可能是删掉先前Design Doc或ADR选定的手段，此时文档会一并更新。被接受的修正会返回实现阶段，并重新经过受影响的验证环节。
 
 ### 如何在新上下文中保留决策
 
-每个阶段使用新的上下文，避免上一阶段的推理在下一阶段悄悄变成权威。内置的[Work Plan模板](skills/documentation-criteria/references/plan-template.md)要求Design Doc中每条已批准的技术需求都有对应任务，或被明确标记为缺口。它不会把文档的每个章节或每条审查建议都转成任务。缺口表示某项已批准需求还没有实现或验证任务。
+每个阶段使用新的上下文，避免上一阶段的推理在下一阶段悄悄变成权威。在内置的[Work Plan模板](skills/documentation-criteria/references/plan-template.md)里，每个任务都写明约束它的Design Doc、ADR或UI Spec章节与验收标准；只有实现所需的每条Design Doc义务都落到至少一个任务上，计划才算完成。它不会把文档的每个章节或每条审查建议都转成任务。没被覆盖的义务属于计划的疏漏，因此补上或调整任务，而不是把问题退回给用户。
 
 ```markdown
-| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|---|
-| docs/design/example.md | API contract | Preserve the error response shape | contract-change | Phase 2 Task 1 | covered | |
-| docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
+- [ ] **P1-T1: Preserve the error response shape in the new handler**
+  - **Source**: docs/design/example.md — API contract; AC-03
+  - **Scope**: request handling for the affected endpoint
+  - **Depends on**: none
+  - **Executor lane**: backend
+  - **Rollback boundary**: the handler change reverts with this task
+  - **Verification**: existing contract test for the error path
 ```
 
 [Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。`/recipe-quality-profile`可以把仓库特有的质量规则及其依据记录到`docs/project-context/quality.yaml`中；实现执行者和最终审查者会将确认后的配置与已批准资料一同使用。

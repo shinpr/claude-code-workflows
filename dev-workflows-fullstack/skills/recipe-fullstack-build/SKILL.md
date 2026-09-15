@@ -106,7 +106,7 @@ For EACH task, YOU MUST:
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `approved` → Proceed to step 3
+     - `pass` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - `status: completed` → Proceed to step 3
@@ -114,8 +114,8 @@ For EACH task, YOU MUST:
    - `stub_detected` → Return to step 1 with the layer quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
-   - `approved` → Proceed to step 4
-4. **COMMIT**: Apply subagents-orchestration-guide Commit Boundary Check, then execute git commit after the layer-appropriate quality-fixer returns `approved` or `verification_incomplete`; append its verification trailers for the latter
+   - `pass` → Proceed to step 4
+4. **COMMIT**: Apply subagents-orchestration-guide Commit Boundary Check, then execute git commit after the layer-appropriate quality-fixer returns `pass` or `verification_incomplete`; append its verification trailers for the latter
 
 Use each subagent's semantic result and repository evidence through Specialist Result Acceptance; canonical status fields provide the normal routing shortcut. Proceed to the next task after step 4 and retain any verification limitation with its status kept proof-limited.
 

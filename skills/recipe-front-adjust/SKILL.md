@@ -118,7 +118,7 @@ When the project-tier file declares no automated verification mechanism for an a
   - `observable_verification`: Pass the confirmed adjustment request from Step 4 and applicable acceptance criteria from the governing sources unchanged.
   - Pass `qualityCommand` when available (caller first, otherwise current task).
 - Route the quality-fixer-frontend response by `status`:
-  - `approved` → proceed to Step 7
+  - `pass` → proceed to Step 7
   - `stub_detected` → return to Step 5 to complete the confirmed adjustment, then re-invoke quality-fixer-frontend
   - `verification_incomplete` → retain the complete result for final retry and proceed to Step 7
   - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance using the result's semantic evidence, changed files, and repository state
@@ -126,9 +126,9 @@ When the project-tier file declares no automated verification mechanism for an a
 ### Step 7: Commit
 Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the adjustment commit, accidental changes introduced during the adjustment are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.
 
-Commit the confirmed adjustment after `approved` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
+Commit the confirmed adjustment after `pass` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
 
-On continuation, reconstruct retained limitations from the verification trailers on commits already completed for this request. After the adjustment is committed, retry each retained verification limitation once with quality-fixer-frontend. Clear an `approved` result, commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
+On continuation, reconstruct retained limitations from the verification trailers on commits already completed for this request. After the adjustment is committed, retry each retained verification limitation once with quality-fixer-frontend. When the retry returns `pass`, remove that limitation from retained state. Commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
 
 ## Completion Criteria
 

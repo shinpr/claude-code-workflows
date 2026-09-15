@@ -40,7 +40,7 @@ Acceptance-test-generator is part of this planning flow and may return no select
 - Work plan review with document-reviewer
 - Plan approval obtainment
 
-**Responsibility Boundary**: This skill completes with work plan approval.
+**Responsibility Boundary**: This skill completes when the user authorizes implementation of the reviewed plan.
 
 Follow the planning process below:
 
@@ -88,7 +88,7 @@ Invoke document-reviewer to review the work plan:
 ```
 Frontend planning phase completed.
 - Work plan: docs/plans/[plan-name].md
-- Status: Approved
+- Implementation authorization: granted for this task set
 
 Please provide separate instructions for implementation.
 ```

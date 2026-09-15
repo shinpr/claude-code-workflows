@@ -92,12 +92,12 @@ Invoke integration-test-reviewer using Agent tool:
 - `description`: "Review test quality"
 - `prompt`: "Review test quality. changedTestFiles: [confirmed changed integration/E2E test paths]. diffBase: [revision recorded before Step 3]. skeletonFiles: [layer-specific paths from Step 2 generatedFiles]. mutationEvidence: [Step 3 mutationEvidence]."
 
-**Expected output**: `status` (approved/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`; correction re-review also returns `prior_feedback_reconciliation`
+**Expected output**: `status` (pass/needs_revision/blocked), `testFiles`, `reviewBasis`, `qualityIssues`; correction re-review also returns `prior_feedback_reconciliation`
 
 ### Step 5: Apply Review Fixes
 
 Check Step 4 result:
-- `status: approved` → Mark complete, proceed to Step 6
+- `status: pass` → Mark complete, proceed to Step 6
 - `status: blocked` → Apply Specialist Result Acceptance
 - `status: needs_revision` → Pass Step 4 `qualityIssues` unchanged into the Review Resolution Gate; invoke task-executor for rerouted corrections, return to Step 4, and derive convergence from `prior_feedback_reconciliation`
 
@@ -116,19 +116,19 @@ Invoke quality-fixer for the current layer:
 - Include the latest executor's `correction_findings` input unchanged when supplied.
 - Pass the latest executor's `mutationEvidence`.
 
-**Expected output**: `status` (`approved`, `stub_detected`, `verification_incomplete`, or `blocked`)
+**Expected output**: `status` (`pass`, `stub_detected`, `verification_incomplete`, or `blocked`)
 
 Check quality-fixer response:
 - `stub_detected` → Return to Step 3 with the quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field, then re-execute Steps 3→4→5→6
 - `blocked` → Apply Specialist Result Acceptance
 - `verification_incomplete` → Retain the complete result for one final retry and proceed to Step 7
-- `approved` → Proceed to Step 7
+- `pass` → Proceed to Step 7
 
 ### Step 7: Commit
 
-On `approved` or `verification_incomplete` from quality-fixer:
+On `pass` or `verification_incomplete` from quality-fixer:
 - Apply subagents-orchestration-guide Commit Boundary Check, then commit test files using Bash with message format: "test: add [layer] integration tests for [feature name]". Append its verification trailers for `verification_incomplete`.
 
-After every layer has a clean commit boundary, retry each retained verification limitation once with the same layer quality-fixer inputs. Clear an `approved` result, route newly discovered incomplete implementation through Steps 3→6, and retain a repeated limitation for the completion report while continuing the workflow.
+After every layer has a clean commit boundary, retry each retained verification limitation once with the same layer quality-fixer inputs. When the retry returns `pass`, remove that limitation from retained state. Route newly discovered incomplete implementation through Steps 3→6, and retain a repeated limitation for the completion report while continuing the workflow.
 
 In the completion report, list each repeated verification limitation and each declined actionable finding with its ID, governing reason, and evidence when any occurred.

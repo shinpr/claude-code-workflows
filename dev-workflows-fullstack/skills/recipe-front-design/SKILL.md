@@ -104,7 +104,7 @@ prototype_reference_strength: [binding | reference, present with a prototype_pat
 external_resource_refs: [selected Step 3 reference records unchanged, or []]
 ```
 
-Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: UISpec` and `target` as the UI Spec path returned by ui-spec-designer, unchanged. `approved` presents the UI Spec with `issues: []`; `needs_revision` applies Review Resolution and re-reviews after correction; `rejected` resolves the governing-source conflict before another review. `[Stop: UI Spec approval]`.
+Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: UISpec` and `target` as the UI Spec path returned by ui-spec-designer, unchanged. `pass` presents the UI Spec with `issues: []`; `needs_revision` applies Review Resolution and re-reviews after correction; `rejected` resolves the governing-source conflict before another review. `[Stop: UI Spec approval]`.
 
 ## Step 6: Create and Approve an ADR Batch When Needed
 
@@ -112,8 +112,8 @@ When `adrDecisionPoints` is non-empty:
 
 1. Route shared/backend-owned points to technical-designer first, then frontend-owned points to technical-designer-frontend. Invoke each owner with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; its ordered `decision_points` confirmed in Step 4, unchanged; `decision_materials` as the corresponding Step 2 `decisionMaterials.candidateDecisionPoints` objects copied unchanged in that order; and `ui_spec_path` only when the approved UI Spec constrains that owner's decision. Run owner batches serially so each batch allocates ADR numbers after the preceding batch exists.
 2. Collect all returned paths and invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all paths]`, and `confirmed_requirement_context`. The reviewer follows the approved UI Spec cited by the ADRs when it can change the decision review.
-3. Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
-4. Present one batch decision only after an `approved` review. `[Stop: ADR batch approval]`.
+3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
+4. Present one batch decision only after a `pass` review. `[Stop: ADR batch approval]`.
 5. After user approval, set every ADR status to `Accepted` and verify the status update.
 
 ## Step 7: Create the Frontend Design Doc
@@ -140,7 +140,7 @@ Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and `
 
 Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`; `target` as the returned Design Doc path unchanged; `review_context: creation`; original user requirements unchanged as `requirements_verbatim`; the Step 1 `confirmed_requirement_context` unchanged; the same unchanged `codebase_analysis` and optional `ui_analysis` supplied to the designer; and Step 8 `verification_evidence` unchanged. The reviewer follows an applicable UI Spec and accepted ADR paths cited by the Design Doc only when they can change an in-scope finding.
 
-- `approved`: continue.
+- `pass`: continue.
 - `needs_revision`: apply Review Resolution, update through a fresh technical-designer-frontend invocation using the existing path and complete applied findings, and rerun verification/review for the affected boundary.
 - `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
