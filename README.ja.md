@@ -117,17 +117,20 @@ UI仕様、ADR、結合テストやE2Eテストのスケルトンは、それぞ
 
 作業計画は、実装を許可する前に、範囲、依存順序、実行可能な検証方法についてレビューされます。各タスクはそのタスクに絞ったチェックと該当するリポジトリチェックを通過してからコミットされます。段階的な実装が完了すると、実装全体が合意した成果に沿っているか、不要な機能や変更、重大な動作不良や信頼性の問題がないか、必要な動作を確認できているか、セキュリティ上の問題がないかを個別のレビューで確認します。
 
-メインセッションは、どの発見が現在の成果に含まれるかを判断し、リポジトリを根拠に実装上の疑問を解決し、影響を受けない作業を止めずに進めます。レビューの提案が自動的に作業項目になることはありません。受け入れた修正は実装へ戻され、影響する検証ゲートを再度通過します。
+メインセッションは、どの発見が現在の成果に含まれるかを判断し、リポジトリを根拠に実装上の疑問を解決し、影響を受けない作業を止めずに進めます。レビューの提案が自動的に作業項目になることはありません。修正を割り当てる前に、まず変更しない、削除または縮小する、既存の挙動を再利用する、という順で検討します。機構を残す修正や新たに加える修正には、それらでは満たせない結果を示すことが求められます。そのため修正が、前のフェーズの設計ドキュメントやADRで選んだ手段の削除になることもあり、その場合はドキュメントも合わせて更新します。受け入れた修正は実装へ戻され、影響する検証ゲートを再度通過します。
 
 ### 新しいコンテキストへ判断を引き継ぐ仕組み
 
-フェーズごとに新しいコンテキストを使うことで、前のフェーズの推論が、次のフェーズで暗黙の権限になることを防ぎます。同梱の[作業計画テンプレート](skills/documentation-criteria/references/plan-template.md)では、設計ドキュメントで承認されたすべての技術要件について、対応するタスクまたは明示的なギャップが必要です。ドキュメントの全セクションやレビュー提案を、無条件にタスクへ変換するものではありません。ギャップとは、承認済み要件に実装タスクまたは検証タスクがまだない状態を指します。
+フェーズごとに新しいコンテキストを使うことで、前のフェーズの推論が、次のフェーズで暗黙の権限になることを防ぎます。同梱の[作業計画テンプレート](skills/documentation-criteria/references/plan-template.md)では、各タスクが自らを拘束する設計ドキュメント・ADR・UI仕様のセクションと受け入れ基準を明示し、実装に必要な設計ドキュメント上の義務がすべて少なくとも1つのタスクで扱われて初めて、計画が完成したとみなされます。ドキュメントの全セクションやレビュー提案を、無条件にタスクへ変換するものではありません。扱われていない義務があれば計画側の漏れとして扱い、ユーザーに判断を戻すのではなくタスクを追加または調整します。
 
 ```markdown
-| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|---|
-| docs/design/example.md | API contract | Preserve the error response shape | contract-change | Phase 2 Task 1 | covered | |
-| docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
+- [ ] **P1-T1: Preserve the error response shape in the new handler**
+  - **Source**: docs/design/example.md — API contract; AC-03
+  - **Scope**: request handling for the affected endpoint
+  - **Depends on**: none
+  - **Executor lane**: backend
+  - **Rollback boundary**: the handler change reverts with this task
+  - **Verification**: existing contract test for the error path
 ```
 
 [タスクテンプレート](skills/documentation-criteria/references/task-template.md)は、実装を拘束する判断と外部から確認できる契約上の値を引き継ぎ、それぞれにYes/Noで判定できる準拠チェックを持たせます。実行後、コミット前にタスク全体の変更へ該当するリポジトリチェックを行います。最終レビュアーは実装時の会話ではなく、同じ承認済みソースと完成したコードを読みます。`/recipe-quality-profile`を使うと、リポジトリ固有の品質ルールとその根拠を`docs/project-context/quality.yaml`に記録でき、実装担当と最終レビュアーは確認済みの設定を承認済みソースとあわせて使います。

@@ -25,7 +25,7 @@ Capabilities deliberately excluded from this change, authored by the user.
 
 Present the cost band and its unknowns first, then ask what to leave out. `userAgreedNone` records that the user considered exclusions and found none — an agent cannot set it.
 
-An adjacent capability the agent noticed is a question for the user, not a non-goal.
+An adjacent capability the agent noticed stays out of both `requirements[]` and the exclusion hearing. The user need not reject a capability they did not request.
 
 ## cost
 

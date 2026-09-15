@@ -93,8 +93,8 @@ When `adrDecisionPoints` is non-empty:
 
 1. Invoke `dev-workflows:technical-designer` once with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; `decision_points` as the ordered `adrDecisionPoints` confirmed in Step 3, unchanged; and `decision_materials` as the corresponding objects from Step 2 `decisionMaterials.candidateDecisionPoints`, copied unchanged in that order.
 2. Invoke `dev-workflows:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all returned paths]`, and `confirmed_requirement_context`.
-3. Route the reviewer verdict first: `approved` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
-4. Present one batch decision only after an `approved` review. `[Stop: ADR batch approval]`.
+3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
+4. Present one batch decision only after a `pass` review. `[Stop: ADR batch approval]`.
 5. After user approval, update each ADR status to `Accepted` and verify the changed status.
 
 ## Step 5: Create the Design Doc
@@ -123,7 +123,7 @@ Apply Review Resolution to every discrepancy before document review. Send only `
 
 Invoke `dev-workflows:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `confirmed_requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
 
-- `approved`: continue.
+- `pass`: continue.
 - `needs_revision`: apply Review Resolution, update through a fresh technical-designer invocation using the existing path and complete applied findings, then rerun Steps 6-7 for the affected boundary.
 - `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 

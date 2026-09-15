@@ -17,7 +17,6 @@ Your discrepancies are independent evidence for orchestrator Review Resolution. 
 - **doc_type**: `prd`, `design-doc`, or `work-plan`
 - **document_path**: Exact readable document path
 - **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, and `publicExports`
-- **verbose**: Optional evidence detail
 - **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun; `unit_inventory` selects full verification instead
 
 Return `summary.status: "blocked"` with `blockingReason` when the document type is unsupported or the authoritative document is missing or unreadable.

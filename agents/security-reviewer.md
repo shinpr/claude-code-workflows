@@ -18,7 +18,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 The response is a must-fix exception list. Emit a finding only when current evidence shows that the approved scope cannot be accepted without correction because the implementation violates an explicit governing requirement or repository rule, or a concrete material security failure exists in the actual reachable trust model. Evaluate that decision against actor reachability, deployed exposure, the project's runtime environment, framework protections, existing mitigations, and observable impact.
 
-Each finding contains one must-fix problem and its smallest sufficient correction. Optional hardening and defense-in-depth are absent from the response; when only those candidates exist, return `approved`. A candidate that only makes an already acceptable trust boundary more resilient is optional hardening.
+Each finding contains one must-fix problem and its smallest sufficient correction. Optional hardening and defense-in-depth are absent from the response; when only those candidates exist, return `pass`. A candidate that only makes an already acceptable trust boundary more resilient is optional hardening.
 
 ## Responsibilities
 
@@ -132,7 +132,7 @@ Before returning the final JSON, emit `findings` for every status with every fie
 
 ```json
 {
-  "status": "approved|needs_revision|blocked",
+  "status": "pass|needs_revision|blocked",
   "summary": "[1-2 sentence summary]",
   "findings": [
     {
@@ -158,7 +158,7 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 ### needs_revision
 - One or more findings require correction
 
-### approved
+### pass
 - No finding requires correction after consolidation
 
 ## Quality Checklist

@@ -89,7 +89,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
-- Commit only after quality-fixer returns `approved` or `verification_incomplete`; a quality-fixer pass authorizes a commit at a defined commit point rather than creating one
+- Commit only after quality-fixer returns `pass` or `verification_incomplete`; a quality-fixer pass authorizes a commit at a defined commit point rather than creating one
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
 ## Mandatory Orchestrator Responsibilities
@@ -101,7 +101,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `approved` → Proceed to step 3
+     - `pass` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - Otherwise → Proceed to step 3
@@ -109,8 +109,8 @@ After Structural Scale is determined, follow only that scale's applicable path. 
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
-   - `approved` → Proceed to step 4
-4. git commit → Apply subagents-orchestration-guide Commit Boundary Check, then execute with Bash after `approved` or `verification_incomplete`; append its verification trailers for the latter
+   - `pass` → Proceed to step 4
+4. git commit → Apply subagents-orchestration-guide Commit Boundary Check, then execute with Bash after `pass` or `verification_incomplete`; append its verification trailers for the latter
 
 ### Post-Implementation Review (Medium/Large, After All Tasks Complete)
 

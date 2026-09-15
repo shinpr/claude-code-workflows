@@ -24,7 +24,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 3. **Enter autonomous mode** when the user provides execution instruction with an existing Work Plan or task files — this IS the batch approval
 4. **Scope**: Complete consumed task-set execution, post-implementation verification, consumed-task cleanup, and completion reporting in order, or stop autonomous execution at the current phase for a valid user-owned escalation. Advance only when the current phase's stated transition condition is satisfied.
 
-**CRITICAL**: Commit only after quality-fixer returns `approved` or `verification_incomplete`. A quality-fixer pass authorizes a commit at a defined commit point; it does not create one.
+**CRITICAL**: Commit only after quality-fixer returns `pass` or `verification_incomplete`. A quality-fixer pass authorizes a commit at a defined commit point; it does not create one.
 
 Work plan: $ARGUMENTS
 
@@ -88,7 +88,7 @@ For EACH task in the Consumed Task Set, YOU MUST:
 2. **BRANCH ON EXECUTOR RESULT**:
    - `status: "escalation_needed"` or `"blocked"` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `approved` → Proceed to step 3
+     - `pass` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate; return to step 1 for rerouted corrections and derive convergence from correction re-review `prior_feedback_reconciliation`
    - `status: completed` → Proceed to step 3
@@ -96,8 +96,8 @@ For EACH task in the Consumed Task Set, YOU MUST:
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
-   - `approved` → Proceed to step 4
-4. **COMMIT**: Apply subagents-orchestration-guide Commit Boundary Check, then execute git commit after quality-fixer returns `approved` or `verification_incomplete`; append its verification trailers for the latter
+   - `pass` → Proceed to step 4
+4. **COMMIT**: Apply subagents-orchestration-guide Commit Boundary Check, then execute git commit after quality-fixer returns `pass` or `verification_incomplete`; append its verification trailers for the latter
 
 Use each subagent's semantic result and repository evidence through Specialist Result Acceptance; canonical status fields provide the normal routing shortcut. Proceed to the next task after step 4 and retain any verification limitation with its status kept proof-limited.
 

@@ -86,7 +86,6 @@ prompt: |
 - No units discovered → ask user for hints
 - `$STEP_1_OUTPUT.prdUnits` exists
 - All `sourceUnits` across `prdUnits` (flattened, deduplicated) match the set of `discoveredUnits` IDs — no unit missing, no unit duplicated
-- Each discovered unit's `unitInventory` has at least one non-empty category (routes, testFiles, or publicExports). Units with all three empty indicate incomplete discovery — re-run scope-discoverer with focus on that unit's relatedFiles
 
 **Human Review Point** (if enabled): Present `$STEP_1_OUTPUT.prdUnits` with their source unit mapping. The user confirms, adjusts grouping, or excludes units from scope. This is the most important review point — incorrect grouping cascades into all downstream documents.
 
@@ -132,7 +131,6 @@ prompt: |
   doc_type: prd
   document_path: $STEP_2_OUTPUT
   unit_inventory: [the current unit's Step 1 unitInventory]
-  verbose: false
 ```
 
 `unit_inventory` supplies the completeness baseline while repository evidence supplies the search scope.
@@ -317,7 +315,6 @@ prompt: |
   doc_type: design-doc
   document_path: $STEP_7_OUTPUT (or $STEP_7a_OUTPUT / $STEP_7b_OUTPUT)
   unit_inventory: [the current Design Doc target's Step 6 unitInventory]
-  verbose: false
 ```
 
 **Store output as**: `$STEP_8_OUTPUT`

@@ -98,7 +98,7 @@ When user responds to questions:
   - Other environments (tests, quality tools) → Quality agents retain proof limitations while the task cycle continues
 
 **Required Flow Compliance**:
-- Commit only after the layer-appropriate quality-fixer returns `approved` or `verification_incomplete`; a quality-fixer pass authorizes a commit at a defined commit point rather than creating one
+- Commit only after the layer-appropriate quality-fixer returns `pass` or `verification_incomplete`; a quality-fixer pass authorizes a commit at a defined commit point rather than creating one
 - Obtain user approval before Edit/Write/MultiEdit outside autonomous mode
 
 ## Mandatory Orchestrator Responsibilities
@@ -114,7 +114,7 @@ When user responds to questions:
 **Rules**:
 1. Execute ONE task completely before starting next (each task goes through the full 4-step cycle via Agent tool, using the correct executor per filename pattern)
 2. Check executor status before quality-fixer (escalation check). When `requiresTestReview` is `true`, identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, `taskFile`, prompt claims, and `mutationEvidence`, then branch on its status:
-   - `approved` → Continue to rule 3
+   - `pass` → Continue to rule 3
    - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `needs_revision` → Pass `qualityIssues` unchanged into the Review Resolution Gate, return rerouted corrections to the layer executor, and continue to rule 3 only when correction re-review `prior_feedback_reconciliation` establishes convergence
 3. Run the layer quality-fixer after the executor and any required test-review loop completes, passing `task_file`, upstream `mutationEvidence`, and `qualityCommand` when available (caller first, otherwise current task)
@@ -122,7 +122,7 @@ When user responds to questions:
    - `stub_detected` → Return to executor with the layer quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to commit
-   - `approved` → Proceed to commit
+   - `pass` → Proceed to commit
 5. Apply subagents-orchestration-guide Commit Boundary Check before each commit; append its verification trailers when the quality-fixer result is `verification_incomplete`
 
 ### Post-Implementation Review (After All Tasks Complete)

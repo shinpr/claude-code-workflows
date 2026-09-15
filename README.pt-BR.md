@@ -117,17 +117,20 @@ Gerar um documento, por si só, não faz o fluxo avançar. Premissas que podem a
 
 O Work Plan é revisado quanto à cobertura, à ordem das dependências e à viabilidade das verificações antes de autorizar a implementação. Cada tarefa só entra em um commit depois de passar pelas verificações específicas e pelos controles aplicáveis do repositório. Ao fim da implementação em etapas, revisões separadas comparam a mudança completa com o resultado combinado, procuram mudanças desnecessárias e falhas graves de funcionamento ou confiabilidade, confirmam a cobertura observável e avaliam a segurança.
 
-A sessão principal decide quais descobertas pertencem ao resultado atual, resolve dúvidas de implementação com base no repositório e mantém em andamento o trabalho que não foi afetado. Sugestões de revisão não viram tarefas automaticamente. Correções aceitas retornam à implementação e passam novamente pelos controles afetados.
+A sessão principal decide quais descobertas pertencem ao resultado atual, resolve dúvidas de implementação com base no repositório e mantém em andamento o trabalho que não foi afetado. Sugestões de revisão não viram tarefas automaticamente. Antes de designar um ajuste, pesam-se nesta ordem não mexer em nada, remover ou estreitar o que existe e reaproveitar o comportamento atual; um ajuste que mantém ou acrescenta um mecanismo precisa dizer qual resultado as respostas menores não entregam. Por isso uma correção pode ser a remoção de algo escolhido por um Design Doc ou ADR anterior, e nesse caso o documento é atualizado junto com o código. Correções aceitas retornam à implementação e passam novamente pelos controles afetados.
 
 ### Como as decisões sobrevivem a novos contextos
 
-Um novo contexto em cada fase evita que o raciocínio de uma fase vire, silenciosamente, a autoridade da seguinte. O [modelo de Work Plan](skills/documentation-criteria/references/plan-template.md) incluído exige que todo requisito técnico aprovado em um Design Doc tenha uma tarefa correspondente ou uma lacuna explícita. Ele não transforma cada seção do documento nem cada sugestão de revisão em tarefa. Uma lacuna significa que um requisito aprovado ainda não tem uma tarefa de implementação ou verificação.
+Um novo contexto em cada fase evita que o raciocínio de uma fase vire, silenciosamente, a autoridade da seguinte. No [modelo de Work Plan](skills/documentation-criteria/references/plan-template.md) incluído, cada tarefa cita as seções do Design Doc, do ADR ou do UI Spec e os critérios de aceitação que a limitam, e o plano só fica pronto quando toda obrigação do Design Doc exigida pela implementação está coberta por pelo menos uma tarefa. Ele não transforma cada seção do documento nem cada sugestão de revisão em tarefa. Uma obrigação sem cobertura é uma falha do plano, então se acrescenta ou ajusta uma tarefa em vez de devolver a pergunta ao usuário.
 
 ```markdown
-| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|---|
-| docs/design/example.md | API contract | Preserve the error response shape | contract-change | Phase 2 Task 1 | covered | |
-| docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
+- [ ] **P1-T1: Preserve the error response shape in the new handler**
+  - **Source**: docs/design/example.md — API contract; AC-03
+  - **Scope**: request handling for the affected endpoint
+  - **Depends on**: none
+  - **Executor lane**: backend
+  - **Rollback boundary**: the handler change reverts with this task
+  - **Verification**: existing contract test for the error path
 ```
 
 O [modelo de Task](skills/documentation-criteria/references/task-template.md) leva para a implementação as decisões obrigatórias e os valores observáveis dos contratos, cada um com uma verificação de conformidade que pode ser respondida com sim ou não. Depois da execução, os controles aplicáveis do repositório rodam sobre a mudança completa antes do commit. Os revisores finais leem as mesmas fontes aprovadas e o código concluído, em vez de depender da conversa de implementação. `/recipe-quality-profile` permite registrar regras de qualidade específicas do repositório e suas fontes em `docs/project-context/quality.yaml`; os executores de implementação e os revisores finais usam o perfil confirmado junto com as fontes aprovadas.

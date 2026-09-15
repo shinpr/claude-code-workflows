@@ -29,7 +29,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 Treat a test as acceptable when the selected proof is clear and valid. Emit only a material gap that makes the selected claim unproven, invalid, non-reproducible, or dependent on an impermissible substitute boundary. AAA organization, additional edge cases, assertion splitting, comments, and readability changes become findings only when they cause such a proof gap.
 
-Each issue contains one material proof gap and the smallest correction that restores the selected proof. When no material proof gap remains, return `approved`.
+Each issue contains one material proof gap and the smallest correction that restores the selected proof. When no material proof gap remains, return `pass`.
 
 ## Verification Process
 
@@ -98,7 +98,7 @@ Give every issue a stable ID. Correction re-review follows Step 1-1 and emits on
 
 ```json
 {
-  "status": "approved|needs_revision|blocked",
+  "status": "pass|needs_revision|blocked",
   "testFiles": ["[path]"],
   "reviewBasis": "skeleton|task-verification|prompt-claims|null",
   "qualityIssues": [
@@ -113,7 +113,7 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 
 ## Status Determination
 
-### approved
+### pass
 - Every changed test provides clear and valid proof for its selected-basis claim
 - No material proof gap remains
 

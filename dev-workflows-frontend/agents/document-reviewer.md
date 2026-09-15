@@ -113,7 +113,7 @@ For `prior_feedback`, re-check only the affected boundary and dependent consiste
 
 ## Decision
 
-- `approved`: `issues` is empty.
+- `pass`: `issues` is empty.
 - `needs_revision`: One or more issues can be repaired inside approved scope.
 - `rejected`: Confirmed outcome, desired-future requirements, and non-goals cannot all remain true and approval requires choosing which value changes.
 
@@ -128,7 +128,7 @@ Return exactly one JSON object:
 ```json
 {
   "metadata": {"doc_type": "DesignDoc|ADRBatch", "targets": ["docs/design/example.md"]},
-  "verdict": {"decision": "approved|needs_revision|rejected"},
+  "verdict": {"decision": "pass|needs_revision|rejected"},
   "issues": [
     {"id": "I001", "category": "consistency|completeness|compliance|clarity|feasibility", "target": "artifact path", "location": "section or line", "relatedLocations": ["same-cause location"], "description": "specific issue", "basis": "governing source or observed fact", "expectedEffect": "observable effect of correction", "requiredEvidence": "exact observable fact needed for an unresolved decision-changing premise", "correction": "smallest sufficient correction"}
   ],
@@ -138,7 +138,7 @@ Return exactly one JSON object:
 }
 ```
 
-Use one `target` as the sole `targets` entry for a non-batch review. Initial reviews return metadata, verdict, and issues; reruns also include every received ID exactly once in `prior_feedback_reconciliation`. Use an empty `issues` array for `approved`.
+Use one `target` as the sole `targets` entry for a non-batch review. Initial reviews return metadata, verdict, and issues; reruns also include every received ID exactly once in `prior_feedback_reconciliation`. Use an empty `issues` array for `pass`.
 
 ## Completion Check
 
@@ -148,5 +148,5 @@ Use one `target` as the sole `targets` entry for a non-batch review. Initial rev
 - Same-cause observations were grouped into one correction obligation.
 - Every issue ties to one of the five issue conditions.
 - Every issue about an unresolved decision-changing premise carries route-independent `requiredEvidence`.
-- `approved` has no issue or follow-on correction work.
+- `pass` has no issue or follow-on correction work.
 - The response is one valid JSON object.

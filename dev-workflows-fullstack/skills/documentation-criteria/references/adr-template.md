@@ -6,6 +6,8 @@
 
 A created ADR starts at `Proposed` and advances `Proposed` → `Accepted` → `Deprecated`/`Superseded`/`Rejected`.
 
+`Accepted` records the currently selected means, not an obligation to retain it. When later evidence supports a smaller sufficient choice, update or supersede this decision while the confirmed outcome, desired-future requirements, and non-goals remain true.
+
 ## Context
 
 [Describe the background and reasons why this decision is needed. Include the essence of the problem, current challenges, and constraints]

@@ -13,9 +13,9 @@ Each document fixes one class of decision that the repository alone cannot suppl
 
 - **PRD** — Fixes the business outcome and the acceptance criteria later work traces to. Its AC IDs are the traceability keys that the Design Doc, UI Spec, and test selection reuse; without them each consumer re-derives requirements from prose and the link between a test and the value it protects is lost. Implementation details belong to the Design Doc, selection rationale to an ADR, phases and task breakdown to the Work Plan.
 
-- **ADR** — Fixes one durable technical choice and the options it beat, so later work can tell a deliberate decision from an accident. Without it a future change either re-runs the same comparison or silently reverses it. End-to-end implementation design belongs to the Design Doc, schedule and repository tasks to the Work Plan.
+- **ADR** — Records one durable technical choice and the options it beat, so later work can tell a deliberate decision from an accident. Without it a future change either re-runs the same comparison or silently reverses it. `Accepted` records the currently selected means, not an obligation to retain it: when later evidence supports a smaller sufficient choice, update or supersede the decision while the confirmed outcome, desired-future requirements, and non-goals remain true. End-to-end implementation design belongs to the Design Doc, schedule and repository tasks to the Work Plan.
 
-- **UI Spec** — Fixes screen structure, transitions, component/state contracts, and visual acceptance before components exist, so decomposition is decided once instead of per-component during implementation. Create one when those decisions remain open; reuse an approved UI Spec or go straight to the Design Doc when one evident repository-supported pattern already determines them. Technical implementation and API contracts belong to the Design Doc.
+- **UI Spec** — Records screen structure, transitions, component/state contracts, and visual acceptance before components exist, so decomposition is decided before implementation instead of per-component during it. Create one when those decisions remain open; reuse an approved UI Spec or go straight to the Design Doc when one evident repository-supported pattern already determines them. Technical implementation and API contracts belong to the Design Doc.
 
 - **Design Doc** — Records the complete implementation design for the confirmed scope: flows, contracts, change impact, and verification strategy. Task execution treats it as the primary technical baseline, so implementation does not silently invent missing How. When repository evidence invalidates technical How while confirmed outcome, desired-future requirements, and non-goals remain true, correct the implementation and the affected technical artifact through their owning workflow without reopening product requirements. Technology selection rationale belongs to an ADR, schedule and assignments to the Work Plan.
 
@@ -60,7 +60,7 @@ Qualifying durable choices include:
 
 - introducing or replacing a technology, library, platform, storage model, or external dependency;
 - changing ownership, dependency direction, a trust boundary, or a shared public contract when credible alternatives exist;
-- reversing or superseding an accepted architecture decision;
+- replacing an accepted architecture decision with a different durable choice that passes both filters;
 - choosing an irreversible or high-cost-to-reverse data or compatibility strategy.
 
 A local contract, data-flow, state, or component change belongs in the Design Doc when it follows an accepted design, has one evident repository-supported implementation, or remains cheaply reversible. Counts of files, consumers, nesting levels, states, steps, and asynchronous operations are supporting evidence rather than ADR criteria. Only the qualifying decisions above create ADRs; generic technical concerns, operational possibilities, and rejected activities can only support that determination.

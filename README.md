@@ -117,17 +117,20 @@ Generating an artifact does not advance the workflow on its own. Decision-changi
 
 The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews check the whole change against the agreed outcome, look for unnecessary changes and serious functional or reliability problems, confirm observable coverage, and assess security.
 
-The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. An accepted correction returns through implementation and the affected verification gates.
+The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. No change, removal, and reuse of what already exists are weighed before a fix that keeps or adds a mechanism, and that fix has to name the result the smaller answers cannot deliver. A correction can therefore remove something an earlier Design Doc or ADR selected, and the document is updated with it. An accepted correction returns through implementation and the affected verification gates.
 
 ### How decisions survive fresh contexts
 
-Fresh contexts keep one phase's reasoning from silently becoming the next phase's authority. The included [Work Plan template](skills/documentation-criteria/references/plan-template.md) requires every approved technical requirement from a Design Doc to have a covering task or an explicit gap. It does not turn every document section or review suggestion into a task. A gap means an approved requirement has no implementation or verification task yet.
+Fresh contexts keep one phase's reasoning from silently becoming the next phase's authority. In the included [Work Plan template](skills/documentation-criteria/references/plan-template.md) each task cites the Design Doc, ADR, or UI Spec sections and acceptance criteria that constrain it, and the plan is finished only when every Design Doc obligation the implementation needs is covered by at least one task. It does not turn every document section or review suggestion into a task. An obligation left uncovered is a planning mistake, so the plan gains or adjusts a task instead of returning the question to the user.
 
 ```markdown
-| Design Doc | DD Section | DD Item | Category | Covered By Task(s) | Gap Status | Notes |
-|---|---|---|---|---|---|---|
-| docs/design/example.md | API contract | Preserve the error response shape | contract-change | Phase 2 Task 1 | covered | |
-| docs/design/example.md | Verification | Exercise cache invalidation | verification | | gap | Add a covering task before approval |
+- [ ] **P1-T1: Preserve the error response shape in the new handler**
+  - **Source**: docs/design/example.md — API contract; AC-03
+  - **Scope**: request handling for the affected endpoint
+  - **Depends on**: none
+  - **Executor lane**: backend
+  - **Rollback boundary**: the handler change reverts with this task
+  - **Verification**: existing contract test for the error path
 ```
 
 The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation. `/recipe-quality-profile` can record repository-specific quality rules and their sources in `docs/project-context/quality.yaml`; implementation executors and final reviewers use a confirmed profile alongside the approved sources.

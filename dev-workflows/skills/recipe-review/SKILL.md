@@ -29,7 +29,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 - **Code-side fix path**: Fix implementation → task-executor; Quality checks → quality-fixer; Re-validation → code-reviewer / security-reviewer
 - **Design-side update path**: DD revision → technical-designer (update mode); DD review → document-reviewer; cross-DD consistency → design-sync (when multiple DDs exist); Re-validation → code-reviewer
 
-Orchestrator invokes sub-agents and passes structured JSON between them. The design-side path applies when the discrepancy reflects code that was correct but the Design Doc became stale, rather than code that violated the Design Doc.
+Orchestrator invokes sub-agents and passes structured JSON between them. The design-side path applies when the Design Doc is stale, excessive, or incorrect for the required outcome. Neither path makes the existing implementation or the prior design authoritative by default.
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
@@ -64,12 +64,13 @@ When either reviewer returns a blocked or otherwise unusable result, apply subag
 
 Apply the Review Resolution Gate to both outputs before reporting or routing them. Finding dispositions determine routing.
 
-For each `apply` finding, compute a proposed route using the mutually exclusive rule below:
+For each `apply` finding, compute a proposed route using the rule below. A finding takes one route, or both `d` and `c` when a selected reduction removes a design statement and the implementation it authorized:
 
 | Finding pattern | Recommended route |
 |-----------------|-------------------|
 | Resolution keeps the current implementation because it matches the original requirement and corrects a stale Design Doc | `d` (Design-side update) |
 | Resolution requires changing implementation to reach the accepted state | `c` (Code-side correction) |
+| Resolution removes a mechanism the Design Doc selected that the required outcome does not need | `d` and `c` (design statement first) |
 
 Then present the adjudicated result to the user. Group `apply` findings by proposed route and list declined IDs with their reasons:
 
@@ -79,7 +80,7 @@ Implementation Review: [verdict from code-reviewer]
   - [fulfilled] [item]: [evidence]
   - [unfulfilled] [item] -> [corresponding finding ID under Required Corrections]
   Required Corrections:
-  - [id] [category] [location]: [description] — [basis and effect] [recommended: c | d]
+  - [id] [category] [location]: [description] — [basis and effect] [recommended: c | d | d and c]
   Limitations:
   - [unverified judgment and effect]
 
@@ -90,7 +91,8 @@ Security Review: [status from security-reviewer]
 
 Approve the proposed changes:
   c) Code-side correction — change implementation to reach the accepted state
-  d) Design-side update   — keep the accepted implementation and update the stale Design Doc
+  d) Design-side update   — correct a stale, excessive, or incorrect Design Doc
+  d and c) Reduction     — delete the selecting design statement, then remove the implementation it authorized
   s) Decline              — record the governing reason and accept current state
 ```
 
@@ -105,7 +107,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 1. Invoke technical-designer in update mode using Agent tool:
    - `subagent_type`: "dev-workflows:technical-designer"
    - `description`: "Design Doc update from review findings"
-   - `prompt`: "Update Design Doc at [path] in update mode. Ratify these findings in the design rather than the code: [complete `d`-routed finding objects from $STEP_2_OUTPUT, unchanged except for their approved routes]. Reflect the current code behavior in the relevant sections and add a history entry."
+   - `prompt`: "Update Design Doc at [path] in update mode. Apply these findings to the design: [complete `d`-routed finding objects from $STEP_2_OUTPUT, unchanged except for their approved routes]. Where a finding accepts the current code, reflect that behavior in the relevant sections; where it removes an unnecessary mechanism, delete the statements that selected it. Add a history entry."
 
 2. Invoke document-reviewer to verify the updated Design Doc:
    - `subagent_type`: "dev-workflows:document-reviewer"
@@ -121,7 +123,7 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 
 4. After Step 5 completes:
    - If the user selected `d` for all findings (no `c` routes) → skip Steps 6-7, proceed to Step 8 for re-validation
-   - If the user selected both `d` and `c` → re-evaluate the `c`-routed findings against the updated DD and drop any that are now satisfied by the DD revision; then proceed to Step 6 with the remaining `c` findings
+   - If the user selected both `d` and `c` → re-evaluate the `c`-routed findings against the updated DD and drop any that are now satisfied by the DD revision; a reduction's code removal is not satisfied by the DD revision alone. Then proceed to Step 6 with the remaining `c` findings
 
 ### Step 6: Execute Fixes
 
@@ -143,7 +145,7 @@ Invoke quality-fixer using Agent tool:
 - Pass Step 6 `mutationEvidence`.
 
 Route the quality-fixer result:
-- `approved` → Proceed to Step 8
+- `pass` → Proceed to Step 8
 - `stub_detected` → Return to Step 6 with `incompleteImplementations` unchanged, then repeat Step 7
 - `verification_incomplete` → Retain the complete result and proceed to Step 8
 - `blocked` → Apply Specialist Result Acceptance
@@ -168,7 +170,7 @@ Invoke security-reviewer using Agent tool when subagents-orchestration-guide's p
 
 Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Follow its `maintained` transitions and repeat the affected verification after a rerouted correction; apply the parent requirement or authority gate when Review Resolution exits to it; proceed at its convergence condition.
 
-Before Step 10, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. Clear an `approved` result, route newly discovered incomplete implementation through Steps 6-9, and report a repeated `verification_incomplete` result. When the retry changes the repository, repeat Steps 8-9 for the changed code before reporting.
+Before Step 10, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. When the retry returns `pass`, remove that limitation from retained state. Route newly discovered incomplete implementation through Steps 6-9, and report a repeated `verification_incomplete` result. When the retry changes the repository, repeat Steps 8-9 for the changed code before reporting.
 
 ### Step 10: Final Report
 
@@ -186,7 +188,7 @@ Security Review:
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
 
 Quality Check:
-  Final: [approved / verification_incomplete / not_run when no code-side fixes were selected]
+  Final: [pass / verification_incomplete / not_run when no code-side fixes were selected]
 
 Remaining proof limitations:
 - [reason — affected check and evidence] (only when repeated after retry)

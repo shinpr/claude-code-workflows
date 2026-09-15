@@ -29,7 +29,7 @@ Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that rou
 
 ### Requirement Change Detection During Flow
 
-Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change; update each invalidated technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
+Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
 
 ## Orchestration Principles
 
@@ -72,7 +72,7 @@ Apply `references/review-resolution.md` to actionable deliverable-review finding
 | Specialist | Responsibility |
 |---|---|
 | task-executor | Implement scoped work and tests, and confirm added tests pass; leave whole-repository quality assurance to the quality-fixer. |
-| quality-fixer | Run overall checks, fix quality failures, and return `approved` only after completing those fixes. |
+| quality-fixer | Run overall checks, fix quality failures, and return `pass` only after completing those fixes. |
 
 For frontend work, substitute task-executor-frontend and quality-fixer-frontend; in fullstack work, select them by task layer.
 
@@ -82,19 +82,19 @@ Workflow coordination is flat: the orchestrator issues every specialist call and
 
 ## Explicit Stop Points
 
-Apply these approval stops when producing or materially revising an artifact in the current workflow. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
+Apply these approval stops when producing or materially revising an artifact in the current workflow. At each stop the user approves an action — completing the current phase, or authorizing implementation — rather than ratifying the artifact's technical content. Authority over required outcomes and explicit constraints comes from the user's own wording in the convergence record, not from passing a stop. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
 **Use AskUserQuestion to present confirmations and questions.**
 
-Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes in the approval presentation.
+Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes, so the user can judge whether to proceed.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
-| Requirements | After requirement-analyzer completes | Answer the requirement-convergence hearing, then confirm requirements |
-| PRD | After document-reviewer completes PRD review | Approve PRD |
-| UI Spec | After document-reviewer completes an applicable UI Spec review | Approve UI Spec |
-| ADR batch | After document-reviewer reviews the complete qualifying batch | Approve all ADR decisions together |
-| Design | After design-sync completes consistency verification | Approve Design Doc |
-| Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) completes | Batch approval for implementation phase |
+| Requirements | After requirement-analyzer completes | Answer the requirement-convergence hearing, confirm the recorded requirements match their intent, then approve proceeding |
+| PRD | After document-reviewer completes PRD review | Approve completing the PRD phase and proceeding |
+| UI Spec | After document-reviewer completes an applicable UI Spec review | Approve completing the UI Spec phase and proceeding |
+| ADR batch | After document-reviewer reviews the complete qualifying batch | Approve completing the ADR batch phase and proceeding |
+| Design | After design-sync completes consistency verification | Approve completing the design phase and proceeding |
+| Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) completes | Batch approval: authorize implementation within this outcome |
 
 **After applicable implementation authorization**: Confirmed Small requirements or Medium/Large batch approval start autonomous execution, which continues until completion or an escalation condition is reached.
 
@@ -184,16 +184,16 @@ graph TD
     RR -->|all decline| REPORT
 ```
 
-For Small, execute one direct-scope 4-step cycle. Complete after `approved`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation review, or task-file cleanup.
+For Small, execute one direct-scope 4-step cycle. Complete after `pass`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation review, or task-file cleanup.
 
 ### Post-Implementation Review Status Routing (Medium/Large)
 
 | Reviewer | Complete: empty finding set | Enter Review Resolution | Blocked |
 |----------|---------------------------|-------------------------|---------|
 | code-reviewer | `verdict` is `pass` | `verdict` is `needs-improvement` or `needs-redesign` | `verdict` is `blocked` → Apply Specialist Result Acceptance |
-| security-reviewer | `status` is `approved` | `status` is `needs_revision` | `status` is `blocked` → Apply Specialist Result Acceptance |
+| security-reviewer | `status` is `pass` | `status` is `needs_revision` | `status` is `blocked` → Apply Specialist Result Acceptance |
 
-Reviewer findings are candidates. Create correction work only from the Review Resolution `apply` set.
+Reviewer findings are candidates. Create correction work only from the Review Resolution `apply` set. A reviewer `pass` records phase passage: it grants no user-held execution authority and does not establish that the reviewed means remain necessary.
 
 **Fix-cycle handoff**: Apply Review Resolution and invoke each correction owner it selects. For an author-owned technical-artifact correction, invoke the layer-appropriate technical designer in update mode, run the artifact's existing document-reviewer and applicable design-sync gates, then re-run the originating reviewer. For an executor-owned correction, invoke the layer-appropriate executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added, then branch on the executor result through the per-task cycle's step 2, including its conditional integration-test-reviewer path, and run the applicable quality gate. When both owners are required, Review Resolution's author-first re-evaluation controls the order. Carry `prior_feedback` only to a reviewer or verifier being rechecked. Post-implementation corrections stay uncommitted through this cycle: the reviewers read the current working tree, so run the applicable quality gate and re-run the originating reviewer on the uncommitted changes, and commit the applied corrections once through Commit Boundary Check after the complete review set reaches Review Resolution convergence.
 
@@ -234,7 +234,7 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
-     - `approved` → Proceed to step 3
+     - `pass` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
    - Otherwise → Proceed to step 3
@@ -242,10 +242,10 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
-   - `approved` → Proceed to step 4
-4. **Commit**: apply Commit Boundary Check, then compose the message from `changeSummary` and execute git commit with Bash after `approved` or `verification_incomplete`; append the verification trailers for the latter
+   - `pass` → Proceed to step 4
+4. **Commit**: apply Commit Boundary Check, then compose the message from `changeSummary` and execute git commit with Bash after `pass` or `verification_incomplete`; append the verification trailers for the latter
 
-Before post-implementation verifiers, collect retained verification limitations from orchestration state and the verification trailers on task-boundary commits created by the workflow, then re-invoke the applicable quality-fixer once for each limitation using the same task inputs and its affected check or command. Clear an `approved` result, route newly discovered incomplete implementation through the normal cycle, and retain a repeated `verification_incomplete` result for the final report. Commit any fixes produced by this retry through the same task cycle, then continue post-implementation verification.
+Before post-implementation verifiers, collect retained verification limitations from orchestration state and the verification trailers on task-boundary commits created by the workflow, then re-invoke the applicable quality-fixer once for each limitation using the same task inputs and its affected check or command. When the retry returns `pass`, remove that limitation from retained state. Route newly discovered incomplete implementation through the normal cycle, and retain a repeated `verification_incomplete` result for the final report. Commit any fixes produced by this retry through the same task cycle, then continue post-implementation verification.
 
 ## Handoff Contracts
 
