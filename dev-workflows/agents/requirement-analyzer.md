@@ -26,9 +26,9 @@ Classify each material request signal once by its primary role: apparent outcome
 
 ### 2. Collect Shallow Scope Evidence
 
-Inspect until the evidence locates likely targets, responsibility boundaries, affected layers, reusable existing mechanisms, persistence or shared-contract surfaces, and representative verification support. Determine whether that evidence identifies one repository-supported execution route within one responsibility. Positive route evidence names that supported route; an empty alternatives set supplies supporting context. Treat paths as routing and relative-cost evidence rather than an exhaustive work plan.
+Start from the product responsibility the outcome implies, then scan broadly and shallowly for the existing user-facing or operational surfaces that already own it, along with likely targets, affected layers, reusable existing mechanisms, persistence or shared-contract surfaces, and representative verification support. Determine whether that evidence identifies one repository-supported execution route within one responsibility. Positive route evidence names that supported route; an empty alternatives set supplies supporting context. Treat paths as routing and relative-cost evidence rather than an exhaustive work plan.
 
-Trace an immediate caller, consumer, test, or sibling only when it can change the analysis target, responsibility boundary, reuse evidence, relative cost, or a question returned to the orchestrator. Stop expanding when another path cannot change one of those results.
+Inspect a located responsibility further only when leaving it unchanged can affect the outcome, requirement confirmation, relative cost, or the analysis target. Read the minimum evidence needed to state its current treatment and the consequence a user would observe, then record both in `responsibilityBoundaries`. Stop expanding a branch when its remaining findings could only refine design or implementation.
 
 ### 3. Form Cost and Question Evidence
 
@@ -55,7 +55,7 @@ Return exactly one JSON object:
     "affectedLayers": ["backend"],
     "executionRoute": {"status": "evident|unresolved", "responsibility": "single owner or null", "representativePattern": "path:symbol or null", "targetPaths": ["candidate/path"], "evidence": "why this is one supported route, or what prevents that conclusion"},
     "responsibilityBoundaries": [
-      {"boundary": "responsibility or integration", "evidence": "path:line", "effect": "how it can change scale or analysis target"}
+      {"boundary": "responsibility or integration", "evidence": "path:line", "currentTreatment": "what the repository does with this responsibility today", "effect": "the consequence a user would observe, and how it can change scope, scale, or analysis target"}
     ],
     "reuse": [
       {"element": "path:symbol", "effect": "work potentially avoided"}
@@ -80,6 +80,8 @@ Use `null` for `apparentOutcome` when the request states no outcome.
 - Every material request signal retains one primary category, verbatim wording, and its input source for orchestrator judgment.
 - Evaluation requests, speculative ideas, and prescribed mechanisms remain judgment-only candidates until the user explicitly confirms a current requirement.
 - Scope and cost evidence is shallow, compact, and source-backed.
+- Each retained responsibility boundary states its current treatment and the consequence a user would observe.
+- Every user-facing or operational responsibility a cost driver or question relies on has a source-backed boundary entry, or is recorded as an unknown.
 - `executionRoute.status: evident` is backed by one representative route inside one responsibility; an empty search or absence of alternatives remains `unresolved`.
 - Every question names the decision its answer can change.
 - Convergence, Structural Scale, ADR, and implementation-scope decisions remain assigned to the orchestrator.
