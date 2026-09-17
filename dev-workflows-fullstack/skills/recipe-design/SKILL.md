@@ -13,7 +13,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 ## Outcome and Ownership
 
-Coordinate the design phase from repository evidence to an approved Design Doc. The orchestrator owns requirement convergence, Structural Scale, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifact authorship.
+Coordinate the design phase from repository evidence to an approved Design Doc. The user owns product requirements and exclusions; the orchestrator owns convergence readiness, Structural Scale, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifact authorship.
 
 The Design Doc is always the complete implementation design for Medium/Large work. A qualifying ADR batch narrows technical choices before the Design Doc, which retains the complete flow and implementation boundary.
 
@@ -74,16 +74,7 @@ Resolve `decisionMaterials.candidateDecisionPoints` against the governing requir
 
 Record every passing item as `adrDecisionPoints`; an empty list routes directly to the Design Doc. ADR creation is limited to items that pass both filters.
 
-Present:
-
-- confirmed outcome and requirements;
-- cost band, structural evidence, and remaining unknowns;
-- exclusions;
-- target responsibilities and strongest file evidence;
-- applicable simplifications and their conditions;
-- Structural Scale and its boundary rationale;
-- each qualifying ADR decision point with filter evidence, or `none`;
-- material unknowns whose answers change the confirmed outcome or scope.
+Present the requirement-convergence Scope Confirmation. Place target responsibilities with their strongest file evidence, applicable simplifications with their conditions, and each qualifying ADR decision point with its filter evidence or `none` under **Decision evidence**; place Structural Scale with its boundary rationale and the recommended document route under **Workflow**.
 
 Offer proceed, or correct scope and re-run analysis. Ask a question only when its answer can change a convergence field, the confirmed outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
 

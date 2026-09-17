@@ -19,7 +19,9 @@ This section governs the orchestrator's Agent prompt. Each specialist's agent de
 
 ### First Action Rule
 
-When receiving a new full-cycle task, pass user requirements directly to requirement-analyzer. Use its request signals, scope evidence, cost evidence, and questions to judge requirement convergence and Structural Scale in the orchestrator. Dedicated design recipes use their own codebase-scoped bootstrap.
+When receiving a new full-cycle task, retain the user's complete wording in the orchestrator and invoke requirement-analyzer with the Requirement Evidence Handoff below. Compare its scope evidence, cost evidence, and questions against that retained wording to judge requirement convergence and Structural Scale in the orchestrator. Dedicated design recipes use their own codebase-scoped bootstrap.
+
+**Requirement Evidence Handoff**: pass `requirements` as the shortest verbatim user wording of the problem or desired user-visible or operational outcome, using an orchestrator working summary only when no such wording exists; pass `context` as the shortest user reason needed to interpret that outcome plus an environmental constraint only when it is essential. Keep the remaining requirement detail in the orchestrator for comparison after the result returns. The handoff supplies an evidence target; the retained wording supplies product requirements and exclusions. Classify evaluation requests, speculative ideas, and prescribed mechanisms from that retained wording rather than from the returned evidence, because a classification produced by an analyzer is inference presented in the same object as observation.
 
 Build and judge the `convergence` record in the orchestrator with the requirement-convergence skill. Run its hearing protocol at the requirements stop point. Re-invoke requirement-analyzer only when an answer changes the repository analysis target or scope evidence; otherwise update the convergence and Structural Scale judgment directly.
 
@@ -28,6 +30,8 @@ Build and judge the `convergence` record in the orchestrator with the requiremen
 Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that route remains inside one responsibility, and every `costEvidence.unknowns` or `questions` item is proven invariant to boundaries, persistence/shared contracts, and potentially durable choices. Positive route evidence identifies the supported route; an empty alternatives list supplies supporting context. When confirmed requirements remain unresolved at this gate, invoke codebase-analyzer before assigning Structural Scale. Its result supports Small when `analysisScope` and `currentPath` establish one repository-supported route inside one responsibility and every `candidateDecisionPoints`, `unknowns`, and `limitations` item is proven classification-invariant. Other observed boundaries and outcomes route Medium or Large. Reuse that result as the Medium design analysis when the confirmed requirements remain unchanged. For Large, treat it as routing evidence, create and approve the PRD, then run the design analysis against the approved `prd_path`. ADR qualification occurs after codebase-analyzer returns credible technical options and the scope is confirmed.
 
 ### Requirement Change Detection During Flow
+
+After an analysis result returns, compare each user-facing or operational responsibility it exposes against the confirmed scope. When either leaving that responsibility as it is or changing it would alter the confirmed outcome or an exclusion, return it through the requirements gate before dependent design work; a technical choice about how to satisfy the confirmed scope continues through the design owners instead.
 
 Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
 
@@ -83,7 +87,6 @@ Workflow coordination is flat: the orchestrator issues every specialist call and
 ## Explicit Stop Points
 
 Apply these approval stops when producing or materially revising an artifact in the current workflow. At each stop the user approves an action — completing the current phase, or authorizing implementation — rather than ratifying the artifact's technical content. Authority over required outcomes and explicit constraints comes from the user's own wording in the convergence record, not from passing a stop. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
-**Use AskUserQuestion to present confirmations and questions.**
 
 Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes, so the user can judge whether to proceed.
 
@@ -250,8 +253,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 ## Handoff Contracts
 
 ### HC-01: requirement-analyzer → orchestrator and codebase-analyzer
-- The orchestrator uses `requestSignals`, `scopeEvidence`, `costEvidence`, and `questions` to judge convergence and Structural Scale. Small requires the positive `scopeEvidence.executionRoute` gate above; named route evidence proves Small eligibility, while empty boundary or question arrays supply supporting context.
-- Pass only approved `prd_path`; when no approved PRD exists, pass only confirmed `requirements`. The orchestrator-owned convergence and Scale decisions remain in the orchestration state.
+- Invoke with the Requirement Evidence Handoff. The orchestrator compares the returned `scopeEvidence`, `costEvidence`, and `questions` against its retained user wording to judge convergence and Structural Scale. Small requires the positive `scopeEvidence.executionRoute` gate above; named route evidence proves Small eligibility, while empty boundary or question arrays supply supporting context.
 - Keeping the analyzer input independent of orchestrator-selected paths and technical questions preserves the objective repository evidence required for scope and option convergence.
 
 ### HC-01b: convergence record → document owner

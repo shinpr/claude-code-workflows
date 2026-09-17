@@ -25,7 +25,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
-   - **Stop at every `[Stop: ...]` marker** → Use AskUserQuestion for confirmation and wait for approval before proceeding
+   - **Stop at every `[Stop: ...]` marker** → Wait for explicit user confirmation before proceeding
 3. **Enter autonomous mode** after confirmed Small requirements or Medium/Large batch approval
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
@@ -63,7 +63,7 @@ When continuing existing flow, verify:
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Build and judge the convergence record from the user's statements and requirement-analyzer `requestSignals`, using `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
+Build and judge the convergence record from the user's retained wording, using requirement-analyzer `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
 
 When user responds to questions:
 - Update the orchestrator-owned convergence record from the answer, then update the Structural Scale judgment through the Small evidence gate.
