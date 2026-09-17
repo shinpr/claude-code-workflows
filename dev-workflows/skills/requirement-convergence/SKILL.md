@@ -22,7 +22,7 @@ This skill converges **what to build**. How to build it, and which documents the
 
 `cost` is a rough band, not the effort estimate a work plan schedules against; requirements cannot support person-days. Its unknowns carry more decision weight than its size.
 
-Keep request signals classified as evaluation requests, speculative ideas, or prescribed mechanisms in active convergence context as judgment-only candidates. `requirements[]` and durable documents receive a candidate only after explicit user confirmation.
+Classify from the user's own retained wording, not from an analyzer's restatement of it: wording that asks for an evaluation, describes a speculative idea, or suggests a mechanism stays in active convergence context as a judgment-only candidate. `requirements[]` and durable documents receive a candidate only after explicit user confirmation.
 
 Each field carries a readiness label: `ready`, `weak`, or `weak-but-explicit` (weak, and the user agreed to leave it unresolved). Only the user sets `weak-but-explicit`. Requirements are converged when every applicable field is `ready` or `weak-but-explicit`.
 
