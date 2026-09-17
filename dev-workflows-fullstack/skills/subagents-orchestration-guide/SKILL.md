@@ -31,6 +31,8 @@ Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that rou
 
 ### Requirement Change Detection During Flow
 
+After an analysis result returns, compare each user-facing or operational responsibility it exposes against the confirmed scope. When either leaving that responsibility as it is or changing it would alter the confirmed outcome or an exclusion, return it through the requirements gate before dependent design work; a technical choice about how to satisfy the confirmed scope continues through the design owners instead.
+
 Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
 
 ## Orchestration Principles
