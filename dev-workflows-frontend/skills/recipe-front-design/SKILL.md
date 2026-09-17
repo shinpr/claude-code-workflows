@@ -13,7 +13,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 ## Outcome and Ownership
 
-Coordinate a Medium/Large frontend design from evidence to an applicable UI Spec and approved Design Doc. The orchestrator owns requirement convergence, Structural Scale, document routing, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifacts.
+Coordinate a Medium/Large frontend design from evidence to an applicable UI Spec and approved Design Doc. The user owns product requirements and exclusions; the orchestrator owns convergence readiness, Structural Scale, document routing, ADR qualification, evidence selection, and Review Resolution. Named specialists own semantic investigation and artifacts.
 
 The frontend Design Doc always carries the complete implementation design. An ADR batch narrows qualifying technical choices; an applicable UI Spec owns UI structure and behavior that remain to be designed.
 
