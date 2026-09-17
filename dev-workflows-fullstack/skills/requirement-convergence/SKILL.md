@@ -44,6 +44,21 @@ Register these steps before starting and record each step's evidence as it compl
 
 Step 3's evidence is what keeps the hearing reviewable: a value restating the hearing's own candidates fails it, so the user's judgment survives however the question was put.
 
+## Scope Confirmation
+
+Render this shape at every requirements confirmation stop, using only what can change the user's requirement decision or the workflow route.
+
+| Section | Contents |
+|---------|----------|
+| **Confirmed scope** | The requirements and exclusions the user has already selected, in the user's wording |
+| **Decision evidence** | Each material observed fact with its source, followed by what that fact can change about scope, outcome, or cost |
+| **User decisions** | Each unresolved product, UX, or operational question, followed by the scope, outcome, or cost effects of its materially different answers |
+| **Workflow** | Rough cost band, Structural Scale, and the selected document and workflow route |
+
+Keeping the first three sections separate is what makes the decision informable: merged, the reader cannot tell which line is the user's own settled boundary, which is a repository observation, and which is still open.
+
+Only an explicit user answer moves an item from **User decisions** into **Confirmed scope**. Because Step 3 records the user's own wording, pose each open decision as a question and let the user supply its answer. The orchestrator owns **Workflow** and presents it as a selected route.
+
 ## Storage Protocol
 
 | Carrier | Holds | Written by |

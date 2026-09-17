@@ -63,7 +63,7 @@ When continuing existing flow, verify:
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Build and judge the convergence record from the user's retained wording, using requirement-analyzer `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
+Build and judge the convergence record from the user's retained wording, using requirement-analyzer `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol and present its Scope Confirmation at the stop. After the requirements are confirmed, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
 
 When user responds to questions:
 - Update the orchestrator-owned convergence record from the answer, then update the Structural Scale judgment through the Small evidence gate.
