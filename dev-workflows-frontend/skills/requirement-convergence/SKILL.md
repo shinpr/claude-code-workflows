@@ -36,28 +36,27 @@ Register these steps before starting and record each step's evidence as it compl
 
 | Step | Action | Completion evidence |
 |------|--------|---------------------|
-| 1 | State the scope facts the analysis produced, then separately what they imply for the requirement | Facts listed with the analysis output they came from |
-| 2 | Ask about the fields below `ready`, at most two questions per message | One question per field below `ready` |
-| 3 | Record each answer as that field's value | The value uses wording the user supplied, not wording the hearing offered |
-| 4 | Re-ask once when a recorded value still fails its pass condition, then mark the field `weak-but-explicit` when the user agrees to leave the second answer as it stands | Two recorded answers, or the user's agreement to stop |
-| 5 | Hand the record to the step that judges the fields | An updated record returned from that step |
+| 1 | Render the Scope Confirmation below, asking only about the fields below `ready` | Each fact cites the analysis output it came from, and **User decisions** holds one question per field below `ready` |
+| 2 | Record each answer as that field's value | The value uses wording the user supplied, not wording the hearing offered |
+| 3 | Re-ask once when a recorded value still fails its pass condition, then mark the field `weak-but-explicit` when the user agrees to leave the second answer as it stands | Two recorded answers, or the user's agreement to stop |
+| 4 | Hand the record to the step that judges the fields | An updated record returned from that step |
 
-Step 3's evidence is what keeps the hearing reviewable: a value restating the hearing's own candidates fails it, so the user's judgment survives however the question was put.
+Step 2's evidence is what keeps the hearing reviewable: a value restating the hearing's own candidates fails it, so the user's judgment survives however the question was put.
 
 ## Scope Confirmation
 
-Render this shape at every requirements confirmation stop, using only what can change the user's requirement decision or the workflow route.
+Render this shape at every requirements confirmation stop, whether or not the hearing ran, using only what can change the user's requirement decision or the workflow route.
 
 | Section | Contents |
 |---------|----------|
 | **Confirmed scope** | The requirements and exclusions the user has already selected, in the user's wording |
 | **Decision evidence** | Each material observed fact with its source, followed by what that fact can change about scope, outcome, or cost |
 | **User decisions** | Each unresolved product, UX, or operational question, followed by the scope, outcome, or cost effects of its materially different answers |
-| **Workflow** | Rough cost band, Structural Scale, and the selected document and workflow route |
+| **Workflow** | Rough cost band with the unknowns that remain, Structural Scale, and the selected document and workflow route |
 
 Keeping the first three sections separate is what makes the decision informable: merged, the reader cannot tell which line is the user's own settled boundary, which is a repository observation, and which is still open.
 
-Only an explicit user answer moves an item from **User decisions** into **Confirmed scope**. Because Step 3 records the user's own wording, pose each open decision as a question and let the user supply its answer. The orchestrator owns **Workflow** and presents it as a selected route.
+Only an explicit user answer moves an item from **User decisions** into **Confirmed scope**. Because Step 2 records the user's own wording, pose each open decision as a question and let the user supply its answer. The orchestrator owns **Workflow** and presents it as a selected route.
 
 ## Storage Protocol
 

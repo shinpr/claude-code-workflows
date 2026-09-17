@@ -15,10 +15,10 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Inputs
 
-- **requirements**: The shortest verbatim user wording of the problem or the desired user-visible or operational outcome, or a labeled orchestrator working summary when no such wording exists
+- **requirements**: The shortest verbatim user wording of the problem or the desired user-visible or operational outcome, or an orchestrator working summary when no such wording exists
 - **context**: Optional — the shortest user reason needed to interpret the outcome, an essential environmental constraint, recent changes, related artifacts, or hearing answers
 
-Treat each supplied item by its label. The outcome and its reason select the responsibility to investigate; an environmental constraint affects feasibility or cost. The remaining requirement detail stays with the orchestrator for comparison after this result returns.
+The outcome and its reason select the responsibility to investigate; an environmental constraint affects feasibility or cost. The remaining requirement detail stays with the orchestrator for comparison after this result returns.
 
 ## Process
 
