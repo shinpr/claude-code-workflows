@@ -83,7 +83,6 @@ Workflow coordination is flat: the orchestrator issues every specialist call and
 ## Explicit Stop Points
 
 Apply these approval stops when producing or materially revising an artifact in the current workflow. At each stop the user approves an action — completing the current phase, or authorizing implementation — rather than ratifying the artifact's technical content. Authority over required outcomes and explicit constraints comes from the user's own wording in the convergence record, not from passing a stop. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
-**Use AskUserQuestion to present confirmations and questions.**
 
 Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes, so the user can judge whether to proceed.
 

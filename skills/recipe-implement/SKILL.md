@@ -25,7 +25,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 2. **Follow subagents-orchestration-guide skill flows exactly**:
    - Execute one step at a time in the defined flow (Large/Medium/Small scale)
    - When flow specifies "Execute document-reviewer" → Execute it immediately
-   - **Stop at every `[Stop: ...]` marker** → Use AskUserQuestion for confirmation and wait for approval before proceeding
+   - **Stop at every `[Stop: ...]` marker** → Wait for explicit user confirmation before proceeding
 3. **Enter autonomous mode** after confirmed Small requirements or Medium/Large batch approval
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
