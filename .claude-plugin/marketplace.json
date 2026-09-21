@@ -312,6 +312,17 @@
       "description": "Reviews GitHub PRs with Claude Code or Codex reviewers on deterministic PR snapshots, repo-specific quality criteria, and severity-gated posting with approval",
       "category": "quality-enforcement",
       "homepage": "https://github.com/shinpr/pr-review-skill"
+    },
+    {
+      "name": "outcome-doctor",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/shinpr/agent-clinic.git",
+        "path": "outcome-doctor"
+      },
+      "description": "Jev checks whether the implementation approach is more or less than the outcome needs; requires a TypeSafe API key",
+      "category": "quality-enforcement",
+      "homepage": "https://github.com/shinpr/agent-clinic"
     }
   ]
 }

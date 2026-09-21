@@ -376,12 +376,14 @@ Agent는 작업에 필요할 때 이 skill을 불러옵니다. 프런트엔드 �
 - [metronome](https://github.com/shinpr/metronome): 지름길을 택한 징후를 감지하고 Claude가 정의된 절차를 따르도록 요청합니다.
 - [linear-prism](https://github.com/shinpr/linear-prism): 요구 사항을 검증하고 구조화된 Linear 작업으로 변환합니다.
 - [pr-review](https://github.com/shinpr/pr-review-skill): 저장소별 기준으로 GitHub PR을 검토하고 승인된 지적만 게시합니다.
+- [outcome-doctor](https://github.com/shinpr/agent-clinic): Claude의 구현 방침이 목적에 비해 과하거나 부족하지 않은지 Jev가 검사합니다. [README](https://github.com/shinpr/agent-clinic#outcome-doctor)를 참고해 TypeSafe API 키를 설정하면 사용할 수 있습니다.
 
 ```bash
 /plugin install discover@claude-code-workflows
 /plugin install metronome@claude-code-workflows
 /plugin install linear-prism@claude-code-workflows
 /plugin install pr-review@claude-code-workflows
+/plugin install outcome-doctor@claude-code-workflows
 ```
 
 </details>

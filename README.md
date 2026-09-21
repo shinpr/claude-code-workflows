@@ -378,12 +378,15 @@ These plugins cover adjacent work without changing the core development workflow
 - [metronome](https://github.com/shinpr/metronome): detects shortcut-taking behavior and asks Claude to follow the defined procedure.
 - [linear-prism](https://github.com/shinpr/linear-prism): validates requirements and turns them into structured Linear tasks.
 - [pr-review](https://github.com/shinpr/pr-review-skill): reviews GitHub PRs against repository-specific criteria before posting approved findings.
+- [outcome-doctor](https://github.com/shinpr/agent-clinic): Jev checks whether Claude's implementation approach is more or less than the outcome needs. Set up a TypeSafe API key from its [README](https://github.com/shinpr/agent-clinic#outcome-doctor) to use it.
 
 ```bash
 /plugin install discover@claude-code-workflows
 /plugin install metronome@claude-code-workflows
 /plugin install linear-prism@claude-code-workflows
 /plugin install pr-review@claude-code-workflows
+/plugin install outcome-doctor@claude-code-workflows
+/plugin install outcome-doctor@claude-code-workflows
 ```
 
 </details>
