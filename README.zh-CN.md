@@ -376,12 +376,14 @@ Agent会在任务需要时加载这些skill。前端插件还包含React和TypeS
 - [metronome](https://github.com/shinpr/metronome)：发现走捷径的迹象，并要求Claude遵循既定流程。
 - [linear-prism](https://github.com/shinpr/linear-prism)：验证需求并转换为结构化Linear任务。
 - [pr-review](https://github.com/shinpr/pr-review-skill)：按照仓库标准审查GitHub PR，只发布获准的问题。
+- [outcome-doctor](https://github.com/shinpr/agent-clinic)：由Jev检查Claude的实现方案相对目标是否过度或不足。参考[README](https://github.com/shinpr/agent-clinic#outcome-doctor)配置TypeSafe API密钥后即可使用。
 
 ```bash
 /plugin install discover@claude-code-workflows
 /plugin install metronome@claude-code-workflows
 /plugin install linear-prism@claude-code-workflows
 /plugin install pr-review@claude-code-workflows
+/plugin install outcome-doctor@claude-code-workflows
 ```
 
 </details>

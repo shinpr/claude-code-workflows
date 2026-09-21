@@ -376,12 +376,14 @@ Estos plugins cubren funciones relacionadas sin cambiar el flujo principal:
 - [metronome](https://github.com/shinpr/metronome): detecta atajos y pide a Claude que siga el procedimiento definido.
 - [linear-prism](https://github.com/shinpr/linear-prism): valida requisitos y los convierte en tareas estructuradas de Linear.
 - [pr-review](https://github.com/shinpr/pr-review-skill): revisa PR de GitHub con criterios propios del repositorio y publica únicamente los hallazgos aprobados.
+- [outcome-doctor](https://github.com/shinpr/agent-clinic): Jev comprueba si el enfoque de implementación de Claude se queda corto o se pasa respecto al objetivo. Configura una clave de API de TypeSafe siguiendo su [README](https://github.com/shinpr/agent-clinic#outcome-doctor) para usarlo.
 
 ```bash
 /plugin install discover@claude-code-workflows
 /plugin install metronome@claude-code-workflows
 /plugin install linear-prism@claude-code-workflows
 /plugin install pr-review@claude-code-workflows
+/plugin install outcome-doctor@claude-code-workflows
 ```
 
 </details>
