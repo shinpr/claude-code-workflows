@@ -25,7 +25,7 @@ Each finding contains one must-fix problem and its smallest sufficient correctio
 1. Verify implementation compliance with security requirements in the governing document
 2. Verify adherence to coding-principles Security Principles
 3. Execute detection patterns from `references/security-checks.md`
-4. Search for recent security advisories related to the detected technology stack
+4. Check dependency provenance and advisories only when the diff changes dependencies or pipeline actions, or a governing document explicitly requires it
 5. Provide structured quality reports with findings and fix suggestions
 
 ## Input Parameters
@@ -69,19 +69,16 @@ When `prior_feedback` is present, complete the correction re-review here:
 5. Return any newly observed condition matching a Status Determination `blocked` trigger through that status, regardless of whether an applied correction caused it.
 6. Derive status only from the reconciliation entries unless step 5 returns `blocked`, apply the prior-feedback checklist item and committed-secrets blocked check, and return the final JSON.
 
-### 2. Conditional First-Pass Risk Coverage
+### 2. Conditional Irreversible-Operation Review
 
-For destructive operations, persistent-state mutations, or boundary changes reaching a mutation, enumerate each operation and reaching route, the incomplete-evidence/default state, and `covered` / `not applicable` / `blocked` dispositions for mutation, partial evidence, retry, concurrency, identity, and input-route handling. Record a finding for every uncovered route, unsafe default, or blocked safety judgment. Other changes proceed to Principles Compliance Check.
+For destructive operations, persistent-state mutations, or boundary changes reaching a mutation, identify the operation, reaching routes, and safe behavior under incomplete evidence. Check retry, concurrency, identity, and input-route handling when relevant. Record a finding for an uncovered route, unsafe default, or blocked safety judgment. Other changes proceed to Principles Compliance Check.
 
 ### 3. Route Parity Review
 
 When multiple routes reach the same mutation, compare validation, classification, resource bounds, and read/parse/mutation/reporting order. Record a finding when a difference lacks an authoritative requirement or design contract and creates a bypass or inconsistent security outcome.
 
 ### 4. Principles Compliance Check
-For each principle in coding-principles Security Principles, verify the implementation:
-- Secure Defaults: credentials management, query construction, cryptographic usage, random generation
-- Input and Output Boundaries: input validation at entry points, output encoding, error response content
-- Access Control: authentication on entry points, authorization on resource access, permission scope
+Apply the coding-principles Security Principles that match the changed attack surface.
 
 ### 5. Pattern Detection
 Execute detection patterns from `references/security-checks.md`:
@@ -89,24 +86,22 @@ Execute detection patterns from `references/security-checks.md`:
 - Search for each Trend-Sensitive Pattern
 - Record matches with file path and line number
 
-### 6. Trend Check
-Search for recent security advisories related to the detected technology stack (language, framework, major dependencies). Incorporate relevant findings into the review. If search returns no actionable results, proceed with the patterns from references/security-checks.md.
+### 6. Conditional Dependency Check
+When the diff changes the version or revision of a dependency, runtime, or pipeline action, or a governing document requests current advisory validation, check authoritative current advisories for that exact component and version.
+
+When the diff additionally introduces a dependency or pipeline action that this project did not use before, or changes where one is resolved from, also confirm that the name resolves to the expected publisher or source repository, since a component new to this project can be attacker-registered or renamed without any advisory existing for it.
+
+Otherwise mark this step `not_applicable`.
 
 ### 7. Findings Consolidation and Classification
 Consolidate all findings, remove duplicates, and classify each finding into one of the following categories:
 
-| Category | Definition | Examples |
-|----------|-----------|----------|
-| **confirmed_risk** | Attack surface is exploitable as-is, post-filter conclusion | Missing authentication on endpoint, arbitrary file access, SQL injection via string concatenation |
-| **defense_gap** | A governing security requirement or in-scope security boundary lacks a required defensive control | Required runtime type validation missing at an input boundary |
+| Category | Definition |
+|----------|-----------|
+| **confirmed_risk** | Attack surface is exploitable as-is, post-filter conclusion |
+| **defense_gap** | A governing security requirement or in-scope security boundary lacks a required defensive control |
 
-Evaluate every finding against actor reachability, deployed exposure, the project's runtime environment, framework protections, existing mitigations, and observable impact. Apply the following rules per category:
-
-- Emit a finding only when current evidence shows a correction is required to satisfy a governing security requirement or repository rule, or to resolve a concrete material failure in the actual reachable trust model.
-- Reserve `confirmed_risk` for findings where the attack surface is exploitable as-is. The category represents post-filter conclusions, not raw observations.
-- Emit a `defense_gap` only when current evidence shows that a governing security requirement or in-scope security boundary lacks a required defensive control.
-- Give every finding a stable ID.
-- Correction re-review follows Step 1-1 and emits one `prior_feedback_reconciliation` entry per received item using `resolved`, `withdrawn`, or `maintained`.
+Apply the Output Boundary filter to every finding, give each a stable ID, and reserve `confirmed_risk` for findings where the attack surface is exploitable as-is. Correction re-review follows Step 1-1 and emits one `prior_feedback_reconciliation` entry per received item using `resolved`, `withdrawn`, or `maintained`.
 
 ### Category-Specific Rationale (required per finding)
 
@@ -125,10 +120,6 @@ Each finding must include a `rationale` field whose content depends on the categ
 - The LAST message returned to the orchestrator MUST be a single JSON object that matches the schema below.
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 - For correction re-review, emit only `status`, `summary`, and `prior_feedback_reconciliation`; when a blocked trigger is observed, also emit its `findings`.
-
-### Output Completion Gate
-
-Before returning the final JSON, emit `findings` for every status with every field in the schema below, then derive `status` from the consolidated findings and blocked conditions.
 
 ```json
 {
@@ -153,7 +144,7 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 
 ### blocked
 - Governing documents fail the Step 1 input gate → return the missing or unusable input so the orchestrator can supply it
-- Credentials, API keys, or tokens found in committed code → return immediately with the finding details; revoking or rotating a live secret is an irreversible external action that requires user authorization
+- A committed credential, API key, or token requires user-held revocation or rotation authority in addition to repository correction → return immediately with the finding details, because that revocation is an irreversible external action the workflow cannot perform
 
 ### needs_revision
 - One or more findings require correction
@@ -164,14 +155,11 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 ## Quality Checklist
 
 - [ ] Governing document type and path validated; security requirements extracted and each item verified
-- [ ] Each Security Principles subsection checked against implementation
-- [ ] All Stable Patterns from security-checks.md searched
-- [ ] All Trend-Sensitive Patterns from security-checks.md searched
-- [ ] Technology stack trend check performed
+- [ ] Applicable Security Principles checked against implementation
+- [ ] Applicable Stable and Trend-Sensitive Patterns from security-checks.md searched
+- [ ] Conditional dependency check performed or marked not applicable with reason
 - [ ] Each finding classified into confirmed_risk / defense_gap
-- [ ] Every finding is one must-fix problem grounded in a governing requirement, repository rule, or concrete material failure in the actual reachable trust model
-- [ ] Every finding remains valid after considering actor reachability, deployed exposure, the runtime environment, framework protections, existing mitigations, and observable impact
-- [ ] Every suggestion is the smallest sufficient correction; optional hardening and defense-in-depth are absent
+- [ ] Every finding passes the Output Boundary filter and its suggestion is the smallest sufficient correction
 - [ ] Committed secrets checked (blocked status if found)
 - [ ] Every finding has a stable ID
 - [ ] When prior feedback is present, every received ID appears once in `prior_feedback_reconciliation`
