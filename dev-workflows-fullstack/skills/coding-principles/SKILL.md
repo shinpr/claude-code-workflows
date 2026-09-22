@@ -155,7 +155,8 @@ One comment per decision. If a comment restates what the names and control flow 
 - Encrypt sensitive data at rest and in transit using standard protocols
 
 ### Input and Output Boundaries
-- Validate all external input at system entry points for expected format, type, and length
+- Validate all external input at system entry points for expected format, type, and length. External input includes request data, external service responses, model or tool output, and stored data whose writer is untrusted or whose consumer needs a guarantee the store does not make
+- When a change alters a boundary where external content or model output selects a tool's action, target, or destination, verify that those values cannot exceed the operation scope and access rights already granted to the caller
 - Encode output appropriately for its rendering context (HTML, SQL, shell, URL)
 - Return only information necessary for the caller in error responses; log detailed diagnostics server-side
 
