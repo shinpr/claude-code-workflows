@@ -1,5 +1,7 @@
 # Security Check Patterns
 
+Last reviewed: 2026-09-22
+
 ## Stable Patterns
 
 These patterns are reachable through direct source search and their shape does not change with the ecosystem.
