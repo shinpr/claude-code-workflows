@@ -367,27 +367,6 @@ Agent会在任务需要时加载这些skill。前端插件还包含React和TypeS
 
 </details>
 
-<details>
-<summary>查看可选扩展</summary>
-
-这些插件在不改变核心工作流的情况下提供相关能力：
-
-- [claude-code-discover](https://github.com/shinpr/claude-code-discover)：将功能想法转为有证据支持的PRD。
-- [metronome](https://github.com/shinpr/metronome)：发现走捷径的迹象，并要求Claude遵循既定流程。
-- [linear-prism](https://github.com/shinpr/linear-prism)：验证需求并转换为结构化Linear任务。
-- [pr-review](https://github.com/shinpr/pr-review-skill)：按照仓库标准审查GitHub PR，只发布获准的问题。
-- [outcome-doctor](https://github.com/shinpr/agent-clinic)：由Jev检查Claude的实现方案相对目标是否过度或不足。参考[README](https://github.com/shinpr/agent-clinic#outcome-doctor)配置TypeSafe API密钥后即可使用。
-
-```bash
-/plugin install discover@claude-code-workflows
-/plugin install metronome@claude-code-workflows
-/plugin install linear-prism@claude-code-workflows
-/plugin install pr-review@claude-code-workflows
-/plugin install outcome-doctor@claude-code-workflows
-```
-
-</details>
-
 ---
 
 ## 常见问题
@@ -413,12 +392,6 @@ docs/plans/
 PRD、ADR、UI Spec和Design Doc分别位于`docs/prd/`、`docs/adr/`、`docs/ui-spec/`和`docs/design/`，它们应当提交到仓库。
 
 ---
-
-## 贡献外部插件
-
-这个插件市场覆盖使用AI构建产品的完整生命周期：产品质量、需求发现、实现控制和验证。如果你的插件能帮助AI编程Agent交付更好的产品，欢迎告诉我们。
-
-提交指南和验收标准请参见[CONTRIBUTING.md](CONTRIBUTING.md)。
 
 <details>
 <summary>查看仓库结构</summary>

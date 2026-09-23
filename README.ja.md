@@ -367,27 +367,6 @@ UI仕様、ADR、結合テストやE2Eテストのスケルトンは、それぞ
 
 </details>
 
-<details>
-<summary>任意のアドオンを表示</summary>
-
-これらのプラグインは、コアワークフローを変更せずに関連機能を追加します。
-
-- [claude-code-discover](https://github.com/shinpr/claude-code-discover)：機能案を根拠のあるPRDへ変換。
-- [metronome](https://github.com/shinpr/metronome)：近道をした兆候を検出し、定義された手順に従うようClaudeへ求める。
-- [linear-prism](https://github.com/shinpr/linear-prism)：要件を検証し、構造化されたLinearタスクへ変換。
-- [pr-review](https://github.com/shinpr/pr-review-skill)：GitHub PRをリポジトリ固有の基準でレビューし、承認された指摘だけを投稿。
-- [outcome-doctor](https://github.com/shinpr/agent-clinic)：Claudeの実装方針が目的に対して過不足ないかをJevが検査。[README](https://github.com/shinpr/agent-clinic#outcome-doctor)を参照してTypeSafeのAPIキーを設定すると使える。
-
-```bash
-/plugin install discover@claude-code-workflows
-/plugin install metronome@claude-code-workflows
-/plugin install linear-prism@claude-code-workflows
-/plugin install pr-review@claude-code-workflows
-/plugin install outcome-doctor@claude-code-workflows
-```
-
-</details>
-
 ---
 
 ## FAQ
@@ -413,12 +392,6 @@ docs/plans/
 PRD、ADR、UI仕様、設計ドキュメントは、それぞれ`docs/prd/`、`docs/adr/`、`docs/ui-spec/`、`docs/design/`に配置され、コミット対象です。
 
 ---
-
-## 外部プラグインのコントリビューション
-
-このマーケットプレイスは、プロダクト品質、発見、実装統制、検証まで、AIを使ったプロダクト開発のライフサイクル全体を支援します。AIコーディングエージェントによる開発を改善するプラグインをお持ちなら、ぜひお知らせください。
-
-提出方法と受け入れ基準は[CONTRIBUTING.md](CONTRIBUTING.md)を参照してください。
 
 <details>
 <summary>リポジトリ構成を表示</summary>
