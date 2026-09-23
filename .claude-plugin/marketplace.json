@@ -271,58 +271,6 @@
         "./skills/testing-principles",
         "./skills/typescript-rules"
       ]
-    },
-    {
-      "name": "metronome",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/shinpr/metronome.git"
-      },
-      "description": "Detects shortcut-taking behavior and guides Claude to follow procedures step by step",
-      "category": "behavior-control",
-      "homepage": "https://github.com/shinpr/metronome"
-    },
-    {
-      "name": "discover",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/shinpr/claude-code-discover.git"
-      },
-      "description": "Turns feature ideas into evidence-backed PRDs through structured discovery, 4 Risks assessment, and validation workflows",
-      "category": "product-quality",
-      "homepage": "https://github.com/shinpr/claude-code-discover"
-    },
-    {
-      "name": "linear-prism",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/shinpr/linear-prism.git"
-      },
-      "description": "Turns requirements into structured Linear tasks — validates before decomposing, so downstream design starts clean",
-      "category": "workflow-orchestration",
-      "homepage": "https://github.com/shinpr/linear-prism"
-    },
-    {
-      "name": "pr-review",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/shinpr/pr-review-skill.git",
-        "path": "plugins/pr-review"
-      },
-      "description": "Reviews GitHub PRs with Claude Code or Codex reviewers on deterministic PR snapshots, repo-specific quality criteria, and severity-gated posting with approval",
-      "category": "quality-enforcement",
-      "homepage": "https://github.com/shinpr/pr-review-skill"
-    },
-    {
-      "name": "outcome-doctor",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/shinpr/agent-clinic.git",
-        "path": "outcome-doctor"
-      },
-      "description": "Jev checks whether the implementation approach is more or less than the outcome needs; requires a TypeSafe API key",
-      "category": "quality-enforcement",
-      "homepage": "https://github.com/shinpr/agent-clinic"
     }
   ]
 }

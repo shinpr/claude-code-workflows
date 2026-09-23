@@ -367,27 +367,6 @@ Para alternar entre os tipos de plugin:
 
 </details>
 
-<details>
-<summary>Ver complementos opcionais</summary>
-
-Estes plugins cobrem funções relacionadas sem alterar o fluxo principal:
-
-- [claude-code-discover](https://github.com/shinpr/claude-code-discover): transforma ideias de funcionalidades em PRDs sustentados por evidências.
-- [metronome](https://github.com/shinpr/metronome): detecta atalhos e pede que o Claude siga o procedimento definido.
-- [linear-prism](https://github.com/shinpr/linear-prism): valida requisitos e os transforma em tarefas estruturadas do Linear.
-- [pr-review](https://github.com/shinpr/pr-review-skill): revisa PRs do GitHub segundo os critérios do repositório e publica apenas os achados aprovados.
-- [outcome-doctor](https://github.com/shinpr/agent-clinic): o Jev verifica se a abordagem de implementação do Claude fica aquém ou além do objetivo. Configure uma chave de API da TypeSafe seguindo o [README](https://github.com/shinpr/agent-clinic#outcome-doctor) para usá-lo.
-
-```bash
-/plugin install discover@claude-code-workflows
-/plugin install metronome@claude-code-workflows
-/plugin install linear-prism@claude-code-workflows
-/plugin install pr-review@claude-code-workflows
-/plugin install outcome-doctor@claude-code-workflows
-```
-
-</details>
-
 ---
 
 ## Perguntas frequentes
@@ -413,12 +392,6 @@ docs/plans/
 PRDs, ADRs, UI Specs e Design Docs ficam em `docs/prd/`, `docs/adr/`, `docs/ui-spec/` e `docs/design/`, respectivamente, e devem ser incluídos no repositório.
 
 ---
-
-## Contribuindo com plugins externos
-
-Este marketplace cobre todo o ciclo de desenvolvimento de produtos com IA: qualidade do produto, descoberta, controle da implementação e verificação. Se o seu plugin ajuda agentes de programação a entregar produtos melhores, queremos conhecê-lo.
-
-Consulte [CONTRIBUTING.md](CONTRIBUTING.md) para ver as instruções e os critérios de aceitação.
 
 <details>
 <summary>Ver a estrutura do repositório</summary>
