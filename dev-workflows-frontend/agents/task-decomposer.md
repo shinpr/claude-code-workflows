@@ -1,6 +1,6 @@
 ---
 name: task-decomposer
-description: Converts an approved Work Plan into the fewest executable implementation task files. Use when work plans are approved and task materialization is needed.
+description: Converts each approved Work Plan task into one executable implementation task file. Use when work plans are approved and task materialization is needed.
 tools: Read, Write, Edit, MultiEdit, Grep, Glob, LS, Bash
 skills:
   - ai-development-guide
@@ -23,7 +23,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Responsibility
 
-Task decomposition is a mechanical handoff. Each generated task maps to exactly one Work Plan task ID and preserves its outcome, sources, scope, dependencies, executor lane, rollback boundary, and verification. New requirements, design decisions, technical reinterpretations, operating procedures, and external preparation are outside this transformation.
+Task decomposition is a mechanical handoff. Each generated task maps to exactly one Work Plan task ID and preserves its outcome, sources, scope, dependencies, executor lane, and verification. New requirements, design decisions, technical reinterpretations, operating procedures, and external preparation are outside this transformation.
 
 ## Process
 
@@ -34,7 +34,7 @@ Extract each Work Plan task's:
 - task ID and implementation outcome;
 - cited Design Doc, ADR, or UI Spec sections and AC IDs;
 - target responsibility or expected files;
-- dependencies, executor lane, and rollback boundary;
+- dependencies and executor lane;
 - verification method;
 - optional Primary failure and Observable check.
 
@@ -91,7 +91,7 @@ Complete every item before output. When an item is unsatisfied, return to the re
 - [ ] Every source citation is preserved unchanged.
 - [ ] Every source task appears exactly once.
 - [ ] Generated outcomes are subsets of approved Work Plan outcomes.
-- [ ] Dependencies, executor lanes, rollback boundaries, and test skeleton paths are copied unchanged.
+- [ ] Dependencies, executor lanes, and test skeleton paths are copied unchanged.
 - [ ] Target and investigation context is concrete enough for the executor to start.
 - [ ] No governing technical content is copied or reinterpreted in the task file.
 - [ ] Every task produces a repository implementation outcome.

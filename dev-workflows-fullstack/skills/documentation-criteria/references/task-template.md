@@ -4,7 +4,6 @@ Metadata:
 - Source Work Plan Task: [P1-T1]
 - Dependencies: none | [Work Plan task IDs]
 - Executor lane: backend|frontend
-- Rollback boundary: [copied from Work Plan]
 
 ## Implementation Outcome
 

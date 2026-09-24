@@ -19,13 +19,7 @@ Review Scope: [repository responsibilities or expected files derived from the De
 
 ## Implementation Phases
 
-Use the implementation approach and dependency order from the Design Doc. Each phase groups work that reaches a shared observable verification point. Keep implementation, tests, configuration, wiring, and documentation together when they become complete at that point.
-
-Shape the phases from the approach the Design Doc selected:
-
-- **Vertical Slice**: each phase is one value unit (feature, component, or migration target) carrying its own implementation and verification per the Verification Strategy.
-- **Horizontal Slice**: foundation (contract definitions, interfaces/signatures, test preparation) → core feature (business logic, unit tests) → integration (external connections, presentation layer).
-- **Hybrid**: combine the two as the Design Doc's implementation approach defines.
+Use the implementation approach and dependency order from the Design Doc.
 
 Whole-repository quality assurance stays outside the plan as a separate execution responsibility.
 
@@ -38,7 +32,6 @@ Whole-repository quality assurance stays outside the plan as a separate executio
   - **Scope**: [responsibility, component, or expected files]
   - **Depends on**: none | [task IDs]
   - **Executor lane**: backend|frontend
-  - **Rollback boundary**: [repository change that reverts with this task]
   - **Verification**: [Design Doc verification method or repository command]
   - **Primary failure**: [optional: most material false-green state]
   - **Observable check**: [optional: smallest check that detects the primary failure]
@@ -52,7 +45,6 @@ Whole-repository quality assurance stays outside the plan as a separate executio
   - **Scope**: [responsibility, component, or expected files]
   - **Depends on**: [task IDs]
   - **Executor lane**: backend|frontend
-  - **Rollback boundary**: [repository change that reverts with this task]
   - **Verification**: [Design Doc verification method or repository command]
   - **Primary failure**: [optional]
   - **Observable check**: [optional]
