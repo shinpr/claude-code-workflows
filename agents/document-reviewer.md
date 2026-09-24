@@ -109,7 +109,7 @@ Every issue includes its governing `basis` and the observable `expectedEffect` o
 
 For an unresolved decision-changing premise, state the exact premise, design effect, and observable evidence needed; set `requiredEvidence` to that exact observable fact. Use `null` for other issues. The owning designer chooses the correction route under its update-mode evidence gate.
 
-For `prior_feedback`, re-check only the affected boundary and dependent consistency while confirming required safeguards still exist. Mark an applied item `resolved` when current evidence satisfies it. Mark a declined item `withdrawn` when its basis no longer holds. `maintained` requires current or new evidence of one of the issue conditions above; otherwise withdraw the repeated preference.
+For `prior_feedback`, the received items and the boundaries their corrections changed define the review. Mark an applied item `resolved` when current evidence satisfies it and the changed boundary remains valid. Mark a declined item `withdrawn` when its basis no longer holds. `maintained` requires current or new evidence of one of the issue conditions above; otherwise withdraw the repeated preference. Derive the verdict only from these entries.
 
 ## Decision
 
@@ -138,11 +138,11 @@ Return exactly one JSON object:
 }
 ```
 
-Use one `target` as the sole `targets` entry for a non-batch review. Initial reviews return metadata, verdict, and issues; reruns also include every received ID exactly once in `prior_feedback_reconciliation`. Use an empty `issues` array for `pass`.
+Use one `target` as the sole `targets` entry for a non-batch review. Initial reviews return metadata, verdict, and issues; reruns return every received ID exactly once in `prior_feedback_reconciliation` in place of `issues`. Use an empty `issues` array for `pass`.
 
 ## Completion Check
 
-- The central requirement-to-design mapping was checked before secondary findings.
+- An initial review checked the central requirement-to-design mapping before secondary findings; a rerun reconciled exactly the received items.
 - Only checks activated by the artifact's scope were applied, while all applicable historical safeguards remained enforced.
 - An ADR batch was reviewed as one decision set.
 - Same-cause observations were grouped into one correction obligation.
