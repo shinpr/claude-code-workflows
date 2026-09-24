@@ -57,7 +57,7 @@ Record each obligation only as its governing path and section or AC identifier.
 Apply the Design Doc's implementation approach and dependency order.
 
 1. Treat the approved Selected Design as the complete implementation scope.
-2. Group source, tests, repository configuration, wiring, and documentation that become complete at the same observable verification point.
+2. Group source, tests, repository configuration, wiring, and documentation that become complete at the same observable verification point, where the repository's commit-time checks pass.
 3. Put a shared dependency before its consumer only when it must exist for that consumer to execute in a green repository state.
 4. Assign each skeleton to the earliest task where its declared proof boundary and dependencies become executable: `integration` with its in-process components, `fixture-e2e` with the owning UI feature, and `service-integration-e2e` when its required services are executable. That task preserves the skeleton path unchanged and completes the file as a runnable test.
 5. Repeat until every implementation obligation is covered.
@@ -70,7 +70,7 @@ Each task records:
 - every directly constraining governing path and section or AC ID;
 - target responsibility or expected files;
 - dependencies;
-- executor lane and rollback boundary;
+- executor lane;
 - executable verification.
 
 An uncovered governing obligation is a planning omission: add or adjust a task. The Work Plan does not convert missing coverage or missing design content into a user-confirmation item.
@@ -90,7 +90,7 @@ Include repository-owned fixtures, migrations, mocks, configuration, and test ha
 
 ### 5. Compose and write the plan
 
-Follow the implementation approach and dependency order selected by the Design Doc. Each phase ends at a shared observable verification point. Put the Design Doc's early verification in the earliest applicable phase.
+Follow the implementation approach and dependency order selected by the Design Doc. Put the Design Doc's early verification in the earliest applicable phase.
 
 Use `references/plan-template.md` in the documentation-criteria skill. Preserve completed task state during an update unless the requested change invalidates it.
 
