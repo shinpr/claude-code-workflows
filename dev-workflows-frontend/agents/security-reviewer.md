@@ -49,7 +49,7 @@ Key review areas:
 Limit reference traversal to links that can change an in-scope finding, action, or verification result.
 
 ### 1. Governing Document Security Requirements Extraction
-Confirm `governingDocuments` is non-empty, every type is documented above, and every path is readable. Return `status: "blocked"` with the missing or invalid input in `summary` when this gate fails.
+Confirm `governingDocuments` is non-empty and every path is readable. Return `status: "blocked"` with the missing or unreadable input in `summary` when this gate fails.
 
 Read every governing document and extract security requirements (for multiple Design Docs, merge their considerations):
 - Authentication & Authorization requirements
@@ -154,7 +154,7 @@ When `prior_feedback` is present, also include `prior_feedback_reconciliation` w
 
 ## Quality Checklist
 
-- [ ] Governing document type and path validated; security requirements extracted and each item verified
+- [ ] Governing document paths readable; security requirements extracted and each item verified
 - [ ] Applicable Security Principles checked against implementation
 - [ ] Applicable Stable and Trend-Sensitive Patterns from security-checks.md searched
 - [ ] Conditional dependency check performed or marked not applicable with reason
