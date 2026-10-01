@@ -46,7 +46,7 @@ Use the Design Doc explicitly supplied in `$ARGUMENTS`. When omitted, first use 
 Invoke code-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:code-reviewer"
 - `description`: "Completed implementation review"
-- `prompt`: "Review the completed implementation. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [implementationFiles]. Return the initial review JSON."
+- `prompt`: "Review the completed implementation. governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. Return the initial review JSON."
 
 **Store output as**: `$STEP_2_OUTPUT`
 
@@ -54,7 +54,7 @@ Invoke code-reviewer using Agent tool:
 Invoke security-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:security-reviewer"
 - `description`: "Security review"
-- `prompt`: "governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [implementationFiles]. Review security compliance."
+- `prompt`: "governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. Review security compliance."
 
 **Store output as**: `$STEP_3_OUTPUT`
 
@@ -157,7 +157,7 @@ Immediately before this invocation, re-derive `implementationFiles` using the St
 Invoke code-reviewer using Agent tool:
 - `subagent_type`: "dev-workflows:code-reviewer"
 - `description`: "Re-validate implementation review"
-- `prompt`: "Re-review the completed implementation after approved corrections. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every received item."
+- `prompt`: "Re-review the completed implementation after approved corrections. governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every received item."
 
 ### Step 9: Re-validate security-reviewer
 
@@ -166,7 +166,7 @@ Immediately before this invocation, re-derive `implementationFiles` using the St
 Invoke security-reviewer using Agent tool when subagents-orchestration-guide's post-implementation **Re-run rule** requires a current security result:
 - `subagent_type`: "dev-workflows:security-reviewer"
 - `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. governingDocuments: [{\"type\":\"design-doc\",\"path\":\"[path]\"}]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every prior item under the reviewer's re-review scope."
+- `prompt`: "Re-validate security after fixes. governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every prior item under the reviewer's re-review scope."
 
 Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Follow its `maintained` transitions and repeat the affected verification after a rerouted correction; apply the parent requirement or authority gate when Review Resolution exits to it; proceed at its convergence condition.
 

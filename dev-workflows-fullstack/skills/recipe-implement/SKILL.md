@@ -119,8 +119,8 @@ Apply subagents-orchestration-guide's retained verification limitation retry bef
 Resolve the Work Plan's readable Design Doc; missing input blocks review.
 
 Emit these Agent calls in one assistant message, then await both:
-- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved typed `governingDocuments`, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
-- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the same typed `governingDocuments`
+- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved `governingDocuments`, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
+- security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the same `governingDocuments`
 
 Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.
 

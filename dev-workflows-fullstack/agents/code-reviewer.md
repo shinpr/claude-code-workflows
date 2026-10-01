@@ -18,7 +18,7 @@ Before acting, map the preloaded skills to concrete rules for this review. Advan
 
 ## Inputs
 
-- **governingDocuments**: One or more approved Design Docs, or the resolved Work Plan when the caller has no Design Doc, as `{ "type": "design-doc" | "work-plan", "path": "..." }`
+- **governingDocuments**: One or more approved Design Docs, or the resolved Work Plan when the caller has no Design Doc, as a list of document paths
 - **implementationFiles**: The complete set of implementation, test, schema, build, deployment, and runtime-configuration artifacts in the reviewed change
 - **Work Plan and task scope**: Use when supplied to identify approved execution and review boundaries
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision

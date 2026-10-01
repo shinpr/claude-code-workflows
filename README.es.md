@@ -9,7 +9,7 @@
 
 Claude Code puede explorar una base de código a fondo. En trabajos complejos, el verdadero reto no es explorar, sino llegar a una conclusión. Mientras diseña un flujo de recuperación de cuentas, Claude podría detectar una inconsistencia real en el manejo de tokens y dedicarle casi todo el diseño, dejando impreciso el comportamiento de recuperación que se había solicitado.
 
-claude-code-workflows mantiene esa exploración enfocada en un resultado acordado. Antes de diseñar, define el objetivo y lo que queda fuera de alcance; contrasta los diseños con el repositorio; verifica cada tarea antes de hacer commit y, en cambios grandes, comprueba de forma independiente que la implementación terminada entregue el resultado acordado, no incluya cambios innecesarios y no tenga problemas graves de funcionamiento, fiabilidad o seguridad. Dentro de esos límites, Claude decide los detalles de implementación a partir de la base de código.
+claude-code-workflows mantiene esa exploración enfocada en un resultado acordado. Antes de diseñar, acuerda con el usuario el resultado esperado y lo que queda fuera de alcance; contrasta los diseños con el repositorio; verifica cada tarea antes de hacer commit y, en cambios grandes, comprueba de forma independiente que la implementación terminada entregue el resultado acordado, no incluya cambios innecesarios y no tenga problemas graves de funcionamiento, fiabilidad o seguridad. Dentro de esos límites, Claude decide los detalles de implementación a partir de la base de código.
 
 Usa Claude Code directamente cuando el resultado y los límites seguros de implementación ya estén claros. Usa estos flujos cuando un cambio requiera acordar el alcance, conservar decisiones de diseño, transferir el trabajo entre contextos de forma confiable o contar con una verificación independiente.
 
@@ -17,9 +17,9 @@ Usa Claude Code directamente cuando el resultado y los límites seguros de imple
 
 ## ¿Cuándo conviene usar estos flujos?
 
-El flujo añade llamadas a agentes y genera documentos, así que debe justificar ese costo. Resulta útil cuando un hallazgo secundario real puede desviar un cambio grande de su objetivo, cuando un diseño coherente podría no cubrir el comportamiento solicitado o cuando una prueba que pasa no observa en realidad aquello que afirma verificar.
+El flujo añade llamadas a agentes y genera documentos, así que debe justificar ese costo. Resulta útil cuando un hallazgo secundario real puede desviar un cambio grande de su objetivo, cuando un diseño coherente podría no cubrir el comportamiento solicitado o cuando una prueba que pasa no observa en realidad aquello que afirma verificar. Cuando un cambio no necesita todos los controles, el [modo ligero](#modo-ligero) ejecuta menos.
 
-Una vez aprobado el alcance de implementación, Claude lleva las tareas por la verificación específica, los controles de calidad del repositorio, los commits y la revisión final, sin consultar decisiones rutinarias. Solo pide una decisión al usuario cuando debe cambiar el resultado de producto acordado o lo que quedó fuera de alcance; Claude se ocupa de las decisiones de diseño técnico e implementación. Al distribuirse como un plugin de Claude Code, un equipo puede aplicar los mismos controles en distintos repositorios sin imponerle a Claude una secuencia fija de pasos.
+Una vez aprobado el alcance de implementación, Claude lleva las tareas por la verificación específica, los controles de calidad del repositorio, los commits y la revisión final, sin consultar decisiones rutinarias. Solo consulta al usuario en dos casos: cuando debe cambiar el resultado de producto acordado o lo que quedó fuera de alcance, y cuando una acción externa irreversible necesita autorización; Claude se ocupa de las decisiones de diseño técnico e implementación. Al distribuirse como un plugin de Claude Code, un equipo puede aplicar los mismos controles en distintos repositorios sin imponerle a Claude una secuencia fija de pasos.
 
 ---
 
@@ -103,51 +103,23 @@ flowchart LR
     I -->|Passed| J[Complete]
 ```
 
-El recorrido depende de la cantidad de decisiones de producto y diseño, no del número de archivos ni del volumen de implementación.
+El recorrido depende de la cantidad de decisiones de producto y diseño, no del número de archivos. Un cambio con un solo resultado que sigue un patrón existente dentro de una sola responsabilidad pasa directamente a un ciclo de tareas. Un cambio que cruza responsabilidades o requiere una decisión de diseño duradera recibe primero un Design Doc y un Work Plan revisados, además de un PRD, una UI Spec o un ADR cuando alguna de sus decisiones lo requiera.
 
-| Escala | Qué necesita el cambio | Qué ocurre |
-|---|---|---|
-| Small | Un resultado que sigue un patrón existente dentro de una sola responsabilidad | Ciclo directo de tareas → controles específicos y del repositorio → revisión de seguridad |
-| Medium | Un resultado que cruza responsabilidades o requiere una decisión de diseño duradera | Design Doc revisado, más UI Spec / ADR cuando corresponda → verificación de integración/E2E seleccionada → Work Plan revisado → ciclos de tareas → revisión final |
-| Large | Varios resultados de producto independientes que requieren decisiones de diseño separadas | PRD y Design Docs revisados, más UI Spec / ADR cuando corresponda → verificación de integración/E2E seleccionada → Work Plan revisado → ciclos de tareas → revisión final |
+Las sugerencias de una revisión no se convierten automáticamente en tareas. La sesión principal decide qué hallazgos pertenecen al resultado acordado y descarta el resto explicando el motivo.
 
-Las UI Specs, los ADR y los esqueletos de pruebas de integración o E2E solo aparecen cuando hacen falta sus decisiones o sus límites de verificación.
+### Modo ligero
 
-Generar un documento no hace avanzar el flujo por sí solo. Las premisas que podrían cambiar el diseño elegido deben resolverse con evidencia comprobable antes de aprobarlo; solo se recurre a una prueba acotada cuando sea la forma más sencilla y suficiente de obtenerla.
-
-El Work Plan se revisa para comprobar cobertura, orden de dependencias y verificaciones ejecutables antes de autorizar la implementación. Cada tarea se incorpora a un commit solo después de pasar sus controles específicos y los controles aplicables del repositorio. Al terminar la implementación por etapas, revisiones separadas comprueban el cambio completo frente al resultado acordado, buscan cambios innecesarios y problemas graves de funcionamiento o fiabilidad, confirman la cobertura observable y evalúan la seguridad.
-
-La sesión principal decide qué hallazgos pertenecen al resultado actual, resuelve preguntas de implementación a partir del repositorio y mantiene en marcha el trabajo no afectado. Las sugerencias de una revisión no se convierten automáticamente en tareas. Antes de asignar un arreglo se valoran, en ese orden, no tocar nada, quitar o acotar lo que ya existe y reutilizar el comportamiento actual; un arreglo que conserva o añade un mecanismo tiene que decir qué resultado no dan las respuestas más pequeñas. Por eso una corrección puede consistir en eliminar algo que eligió un Design Doc o un ADR anterior, y en ese caso el documento se actualiza junto con el código. Las correcciones aceptadas vuelven a implementación y atraviesan de nuevo los controles correspondientes.
-
-### Cómo sobreviven las decisiones a nuevos contextos
-
-Usar un contexto nuevo para cada fase evita que el razonamiento de una fase se convierta silenciosamente en la autoridad de la siguiente. En la [plantilla de Work Plan](skills/documentation-criteria/references/plan-template.md) incluida, cada tarea cita las secciones del Design Doc, el ADR o el UI Spec y los criterios de aceptación que la condicionan, y el plan solo queda terminado cuando cada obligación del Design Doc que la implementación necesita está cubierta por al menos una tarea. No convierte cada sección del documento ni cada sugerencia de revisión en una tarea. Una obligación sin cubrir es un descuido del plan, así que se añade o se ajusta una tarea en lugar de devolverle la pregunta al usuario.
-
-```markdown
-- [ ] **P1-T1: Preserve the error response shape in the new handler**
-  - **Source**: docs/design/example.md — API contract; AC-03
-  - **Scope**: request handling for the affected endpoint
-  - **Depends on**: none
-  - **Executor lane**: backend
-  - **Rollback boundary**: the handler change reverts with this task
-  - **Verification**: existing contract test for the error path
+```bash
+/recipe-implement "Lite mode. Add rate limiting to the public API"
 ```
 
-La [plantilla de Task](skills/documentation-criteria/references/task-template.md) lleva a implementación las decisiones obligatorias y los valores observables de los contratos, cada uno con una comprobación de cumplimiento que se responde con sí o no. Después de ejecutar la tarea, los controles aplicables del repositorio se ejecutan sobre el cambio completo antes del commit. Los revisores finales leen las mismas fuentes aprobadas y el código terminado, en lugar de depender de la conversación de implementación. `/recipe-quality-profile` permite registrar reglas de calidad propias del repositorio y sus fuentes en `docs/project-context/quality.yaml`; los ejecutores de implementación y los revisores finales usan el perfil confirmado junto con las fuentes aprobadas.
+Pide el modo ligero (lite mode) en la solicitud de cualquier recipe. Se mantienen las mismas fases y los mismos puntos de aprobación, pero se ejecutan menos controles: los Design Docs no se contrastan con el repositorio ni entre sí, y se omite la revisión de seguridad independiente. Los controles de calidad del repositorio se ejecutan una sola vez al terminar la última tarea, en lugar de antes de cada commit, y la revisión final del código se mantiene. El modo ligero sigue activo durante el resto de la sesión hasta que le pidas a Claude que lo desactive.
 
 ### Una ejecución real
 
 La [sincronización incremental de mcp-local-rag](https://github.com/shinpr/mcp-local-rag/pull/171) fue un cambio de 42 archivos que abarcó el escaneo del sistema de archivos, el almacenamiento, la CLI y las interfaces MCP. Una revisión de seguridad independiente devolvió la implementación dos veces. Detectó lecturas de archivos antes de la validación y una forma de escapar de los límites de ruta mediante un directorio padre enlazado simbólicamente.
 
 La ejecución comenzó con un Work Plan existente que hacía referencia a un ADR y un Design Doc ausentes, por lo que no estaba clara la fuente aprobada para las decisiones técnicas. El usuario eligió tratar el Work Plan como fuente de autoridad y el flujo lo dividió en 13 tareas. La implementación final incluyó los cambios necesarios para verificar el comportamiento aprobado, mientras que el PR dejó constancia de por qué el modo watch y los trabajos persistentes quedaron fuera de alcance.
-
-### Qué revisar después de la primera ejecución
-
-- ¿El enfoque acordado amplía lo que ya existe y aporta evidencia para cada añadido?
-- ¿Puedes seguir cada requisito hasta una tarea y un método de verificación observable?
-- ¿Cada tarea terminada pasó los controles específicos y del repositorio antes del commit?
-- ¿La revisión final confirmó que el cambio completo entrega el resultado acordado sin cambios innecesarios ni problemas graves de funcionamiento, fiabilidad o seguridad?
-- Cuando un revisor propuso más trabajo, ¿el informe explica por qué se aplicó o se descartó?
 
 ---
 
@@ -175,7 +147,7 @@ El flujo delimita el cambio, inspecciona la implementación actual, crea únicam
 /recipe-front-build
 ```
 
-Los flujos de diseño inspeccionan la implementación existente, confirman el alcance, crean los documentos necesarios, realizan una revisión de coherencia independiente y se detienen para solicitar aprobación. La planificación y la implementación pueden continuar más adelante, en un contexto nuevo o a cargo de otra persona, a partir de esos documentos aprobados.
+Los flujos de diseño inspeccionan la implementación existente, confirman el alcance, crean los documentos necesarios, realizan una revisión de coherencia independiente y se detienen para solicitar aprobación. La planificación y la implementación pueden continuar más adelante, en un contexto nuevo o a cargo de otra persona, a partir de esos documentos aprobados. Cada tarea del [Work Plan](skills/documentation-criteria/references/plan-template.md) cita las decisiones de diseño y los criterios de aceptación que debe cumplir, y los revisores finales contrastan el código terminado con esas mismas fuentes en lugar de con la conversación anterior.
 
 El recorrido de frontend añade análisis de UI y una UI Spec cuando todavía hay que diseñar la estructura o el comportamiento de la interfaz, además de arquitectura de componentes, React Testing Library y controles de TypeScript.
 
@@ -187,7 +159,7 @@ Por ejemplo, dos componentes de un panel pueden manejar correctamente sus estado
 /recipe-fullstack-implement "Add user authentication with JWT + React login form"
 ```
 
-Cuando el cambio contiene varios resultados de producto independientes, un único PRD cubre toda la funcionalidad. Los diseños de backend y frontend permanecen separados, `design-sync` comprueba el límite entre ambos y el Work Plan utiliza cortes verticales para probar la integración desde el principio.
+Cuando el cambio contiene varios resultados de producto independientes, un único PRD cubre toda la funcionalidad. Los diseños de backend y frontend permanecen separados, una revisión de coherencia comprueba el límite entre ambos y el Work Plan utiliza cortes verticales para probar la integración antes del final.
 
 Usa `/recipe-fullstack-build` para continuar desde un Work Plan full stack existente. El plugin full stack también incluye los flujos de backend y frontend aplicables.
 
@@ -274,76 +246,11 @@ El plugin de frontend añade análisis específico de React, arquitectura de com
 
 ---
 
-## Qué incluyen los plugins
-
-Los agentes especializados mantienen separados el análisis y el diseño de la ejecución y la revisión final. Cada plugin incluye solo los roles que usan sus flujos; el plugin full stack combina los roles de backend y frontend. La lista completa está disponible a continuación.
-
-<details>
-<summary>Ver todos los roles de agentes especializados</summary>
-
-### Agentes compartidos
-
-Estos agentes se comparten entre los plugins de backend, frontend y full stack:
-
-| Agente | Función |
-|---|---|
-| **requirement-analyzer** | Reúne evidencia concisa sobre alcance y costo para las decisiones de requisitos y flujo del orquestador |
-| **prd-creator** | Define requisitos de producto para funcionalidades grandes |
-| **codebase-analyzer** | Inspecciona el código y las dependencias existentes antes del diseño |
-| **code-verifier** | Compara los documentos con la implementación |
-| **work-planner** | Convierte las decisiones de diseño en un Work Plan ejecutable |
-| **task-decomposer** | Divide un Work Plan en tareas listas para commit |
-| **acceptance-test-generator** | Crea esqueletos de pruebas de integración y E2E a partir de requisitos |
-| **integration-test-reviewer** | Revisa las pruebas de integración y E2E contra la cobertura prevista |
-| **code-reviewer** | Comprueba que la implementación terminada corresponda al resultado acordado y cumpla los criterios del repositorio |
-| **document-reviewer** | Comprueba la integridad del documento y el cumplimiento de las reglas |
-| **design-sync** | Detecta conflictos entre varios Design Docs |
-| **investigator** | Traza rutas de ejecución e identifica posibles puntos de fallo |
-| **verifier** | Cuestiona los puntos de fallo sospechosos y comprueba la cobertura de rutas |
-| **solver** | Compara soluciones y sus trade-offs |
-| **security-reviewer** | Revisa la implementación terminada en busca de problemas de seguridad |
-
-### Agentes específicos de backend
-
-| Agente | Función |
-|---|---|
-| **technical-designer** | Diseña el enfoque técnico y la arquitectura |
-| **scope-discoverer** | Encuentra límites funcionales en la implementación existente |
-| **task-executor** | Implementa tareas de backend con verificación orientada por pruebas |
-| **quality-fixer** | Ejecuta pruebas, controles de tipos, lint y otros controles de calidad |
-
-### Agentes específicos de frontend
-
-| Agente | Función |
-|---|---|
-| **ui-spec-designer** | Crea una UI Spec a partir de requisitos y un prototipo opcional |
-| **ui-analyzer** | Obtiene fuentes y sistemas de diseño, consulta las guías e inspecciona la UI existente |
-| **technical-designer-frontend** | Diseña la arquitectura de componentes React y la gestión de estado |
-| **task-executor-frontend** | Implementa componentes React con cobertura basada en React Testing Library |
-| **quality-fixer-frontend** | Ejecuta pruebas de frontend, controles de TypeScript, lint y builds |
-
-</details>
-
-<details>
-<summary>Ver las guías de desarrollo incluidas</summary>
-
-- **Coding Principles.** Estándares de calidad del código.
-- **Testing Principles.** TDD, cobertura y patrones de pruebas.
-- **Implementation Approach.** Decisiones de implementación y sus trade-offs.
-- **Documentation Standards.** Documentación clara y mantenible.
-- **External Resource Context.** Registra cómo llegar a fuentes y sistemas de diseño, esquemas de API, definiciones de infraestructura y otros recursos externos.
-- **LLM-Friendly Context.** Prompts, entregas, documentos e instrucciones claras para que los agentes posteriores puedan trabajar sin adivinar.
-
-Los agentes cargan estas skills cuando el trabajo las requiere. El plugin de frontend también incluye reglas específicas de React y TypeScript.
-
-</details>
-
-<details>
-<summary>Usar las guías sin el flujo (dev-skills)</summary>
+## Guías sin el flujo
 
 Si ya tienes orquestación mediante prompts propios o CI y solo necesitas guías de buenas prácticas, usa `dev-skills`. Si quieres que Claude planifique, ejecute y verifique el cambio de principio a fin, instala el plugin de flujos adecuado.
 
-- Uso mínimo de contexto, sin agentes
+- Uso mínimo de contexto, sin agentes ni skills de recipe
 - Guías de desarrollo, pruebas, diseño y documentación sin imponer un proceso
 - Carga automática de las skills pertinentes para cada tarea
 
@@ -365,17 +272,13 @@ Para cambiar de tipo de plugin:
 /plugin install dev-skills@claude-code-workflows
 ```
 
-</details>
-
 ---
 
 ## Preguntas frecuentes
 
 **P: ¿Qué ocurre si hay errores?**
 
-R: Los agentes quality-fixer resuelven fallos de pruebas, tipos, lint y build dentro del resultado aprobado, incluidos los cambios adyacentes necesarios para la misma responsabilidad o contrato.
-
-El flujo solo consulta al usuario cuando ya no es posible conservar a la vez el resultado solicitado y lo que quedó fuera de alcance, o cuando una acción externa irreversible necesita autorización. Mientras no cambie lo que entrega el producto, resuelve por su cuenta los cambios de diseño técnico, contratos, interfaz, arquitectura, persistencia e implementación.
+R: El flujo corrige los fallos de pruebas, tipos, lint y build dentro del resultado aprobado, incluidos los cambios adyacentes necesarios para la misma responsabilidad o contrato.
 
 **P: ¿Existe una versión para OpenAI Codex CLI?**
 
@@ -390,30 +293,6 @@ docs/plans/
 ```
 
 Los PRD, ADR, UI Specs y Design Docs se guardan en `docs/prd/`, `docs/adr/`, `docs/ui-spec/` y `docs/design/`, respectivamente, y sí están destinados a formar parte del repositorio.
-
----
-
-<details>
-<summary>Ver la estructura del repositorio</summary>
-
-```
-claude-code-workflows/
-├── .claude-plugin/
-│   └── marketplace.json        # Plugin definitions and per-plugin contents
-├── agents/                     # Specialized analysis, design, execution, and review roles
-├── skills/
-│   ├── recipe-*/               # Workflow entry points
-│   ├── documentation-criteria/ # Document rules and templates
-│   ├── coding-principles/
-│   ├── testing-principles/
-│   ├── external-resource-context/
-│   ├── llm-friendly-context/
-│   └── ...
-├── LICENSE
-└── README.md
-```
-
-</details>
 
 ---
 

@@ -17,9 +17,9 @@ claude-code-workflows는 탐색이 합의된 결과를 향하도록 유지합니
 
 ## 언제 유용한가요?
 
-이 워크플로는 Agent 호출과 산출물을 추가하므로 그만한 가치가 있을 때 사용해야 합니다. 관련 문제를 발견한 탓에 큰 변경이 원래 목표에서 벗어날 수 있거나, 설계 자체는 일관되지만 요청한 동작을 놓칠 수 있거나, 통과한 테스트가 검증한다고 주장한 내용을 실제로 관찰하지 못할 수 있을 때 유용합니다.
+이 워크플로는 Agent 호출과 산출물을 추가하므로 그만한 가치가 있을 때 사용해야 합니다. 관련 문제를 발견한 탓에 큰 변경이 원래 목표에서 벗어날 수 있거나, 설계 자체는 일관되지만 요청한 동작을 놓칠 수 있거나, 통과한 테스트가 검증한다고 주장한 내용을 실제로 관찰하지 못할 수 있을 때 유용합니다. 모든 검사가 필요하지 않은 변경이라면 [라이트 모드](#라이트-모드)로 검사를 줄일 수 있습니다.
 
-구현 범위가 승인되면 Claude는 일상적인 구현 결정을 되묻지 않고 작업별 검증, 저장소 품질 검사, 커밋, 최종 검토까지 진행합니다. 합의한 제품 결과나 제외 범위를 바꿔야 할 때만 사용자에게 결정을 요청하고, 기술 설계와 구현 선택은 Claude가 처리합니다. Claude Code 플러그인으로 제공되므로 Claude의 구체적인 작업 순서를 고정하지 않고도 팀의 여러 저장소에 같은 통제 방식을 적용할 수 있습니다.
+구현 범위가 승인되면 Claude는 일상적인 구현 결정을 되묻지 않고 작업별 검증, 저장소 품질 검사, 커밋, 최종 검토까지 진행합니다. 합의한 제품 결과나 제외 범위를 바꿔야 할 때, 또는 되돌릴 수 없는 외부 작업에 승인이 필요할 때만 사용자에게 결정을 요청하고, 기술 설계와 구현 선택은 Claude가 처리합니다. Claude Code 플러그인으로 제공되므로 Claude의 구체적인 작업 순서를 고정하지 않고도 팀의 여러 저장소에 같은 통제 방식을 적용할 수 있습니다.
 
 ---
 
@@ -103,51 +103,23 @@ flowchart LR
     I -->|Passed| J[Complete]
 ```
 
-경로는 파일 수나 구현 작업량이 아니라 필요한 제품 결정과 설계 결정의 수에 따라 달라집니다.
+경로는 파일 수가 아니라 변경에 필요한 제품 결정과 설계 결정의 수에 따라 달라집니다. 하나의 책임 안에서 기존 패턴을 따르는 단일 결과라면 바로 작업 주기로 들어갑니다. 여러 책임에 걸치거나 장기적으로 유지할 설계 결정이 필요한 변경은 먼저 검토된 Design Doc과 Work Plan을 만들고, 결정에 따라 PRD, UI Spec, ADR을 더합니다.
 
-| 규모 | 변경에 필요한 조건 | 진행 방식 |
-|---|---|---|
-| Small | 하나의 책임 안에서 기존 패턴을 따르는 단일 결과 | 작업을 직접 실행 → 작업별 검사 및 저장소 검사 → 보안 검토 |
-| Medium | 여러 책임에 걸치거나 장기적으로 유지할 설계 결정이 필요한 단일 결과 | 검토된 Design Doc과 필요시 UI Spec / ADR → 선택된 통합/E2E 검증 → 검토된 Work Plan → 작업 주기 → 최종 검토 |
-| Large | 각각 별도의 설계 결정이 필요한 여러 독립적인 제품 결과 | 검토된 PRD 및 Design Doc과 필요시 UI Spec / ADR → 선택된 통합/E2E 검증 → 검토된 Work Plan → 작업 주기 → 최종 검토 |
+검토 제안이 자동으로 작업이 되지는 않습니다. 메인 세션은 어떤 발견이 합의한 결과에 포함되는지 판단하고, 나머지는 이유를 남기고 거절합니다.
 
-UI Spec, ADR, 통합 또는 E2E 테스트 스켈레톤은 해당 결정이나 검증 경계가 필요할 때만 만들어집니다.
+### 라이트 모드
 
-산출물을 만들었다고 워크플로가 자동으로 다음 단계로 넘어가지는 않습니다. 채택할 설계를 바꿀 수 있는 전제는 승인 전에 실제로 확인할 수 있는 근거로 해소하며, 범위를 제한한 기능 검증은 가장 간단하면서 충분한 방법일 때만 수행합니다.
-
-Work Plan은 구현을 승인하기 전에 범위, 의존성 순서, 실행 가능한 검증 방법을 검토합니다. 각 작업은 작업별 검사와 해당 저장소 검사를 통과한 뒤에만 커밋합니다. 단계별 구현이 끝나면 별도의 검토에서 전체 변경이 합의한 결과에 맞는지 확인하고, 불필요한 변경과 심각한 동작 오류나 신뢰성 문제를 찾고, 필요한 동작을 실제로 검증했는지와 보안을 확인합니다.
-
-메인 세션은 어떤 발견이 현재 목표에 포함되는지 판단하고, 저장소를 근거로 구현 질문을 해결하며, 영향을 받지 않는 작업을 계속 진행합니다. 검토 제안이 자동으로 작업이 되지는 않습니다. 수정을 배정하기 전에 그대로 두기, 제거하거나 좁히기, 기존 동작 재사용을 먼저 검토합니다. 메커니즘을 남기거나 새로 더하는 수정은 그보다 작은 대응으로는 얻을 수 없는 결과를 제시해야 합니다. 그래서 수정이 앞선 Design Doc이나 ADR이 골랐던 수단을 걷어내는 일이 될 수도 있으며, 이때는 문서도 함께 갱신합니다. 수락된 수정은 구현 단계로 돌아가 영향을 받는 검증 관문을 다시 거칩니다.
-
-### 새로운 컨텍스트에도 결정을 유지하는 방법
-
-단계마다 새로운 컨텍스트를 사용하면 한 단계의 추론이 다음 단계에서 암묵적인 권한으로 바뀌는 일을 막을 수 있습니다. 포함된 [Work Plan 템플릿](skills/documentation-criteria/references/plan-template.md)에서는 각 작업이 자신을 제약하는 Design Doc, ADR, UI Spec의 절과 승인 기준을 밝히고, 구현에 필요한 Design Doc의 의무가 모두 최소 한 개의 작업에 담겼을 때 비로소 계획이 완성됩니다. 문서의 모든 절이나 검토 제안을 작업으로 바꾸지는 않습니다. 담기지 않은 의무는 계획의 누락이므로, 판단을 사용자에게 되돌리지 않고 작업을 더하거나 조정합니다.
-
-```markdown
-- [ ] **P1-T1: Preserve the error response shape in the new handler**
-  - **Source**: docs/design/example.md — API contract; AC-03
-  - **Scope**: request handling for the affected endpoint
-  - **Depends on**: none
-  - **Executor lane**: backend
-  - **Rollback boundary**: the handler change reverts with this task
-  - **Verification**: existing contract test for the error path
+```bash
+/recipe-implement "Lite mode. Add rate limiting to the public API"
 ```
 
-[Task 템플릿](skills/documentation-criteria/references/task-template.md)은 구현을 구속하는 결정과 외부에서 확인할 수 있는 계약상의 값을 전달하며, 각 항목에 예/아니요로 답할 수 있는 준수 검사를 둡니다. 실행 후에는 커밋 전에 전체 작업 변경에 해당 저장소 검사를 적용합니다. 최종 검토자는 구현 대화에 의존하지 않고 같은 승인 자료와 완성된 코드를 읽습니다. `/recipe-quality-profile`을 사용하면 저장소별 품질 규칙과 근거를 `docs/project-context/quality.yaml`에 기록할 수 있습니다. 구현 실행자와 최종 검토자는 확인된 프로필을 승인 자료와 함께 사용합니다.
+어떤 recipe든 요청에 라이트 모드를 지정하면 됩니다. 단계와 승인 지점은 그대로 두고 검사만 줄입니다. Design Doc을 저장소나 다른 Design Doc과 대조하지 않으며, 별도의 보안 검토도 생략합니다. 저장소 품질 검사는 커밋할 때마다 실행하지 않고 마지막 작업이 끝난 뒤 한 번 실행하며, 최종 코드 검토는 그대로 진행합니다. 라이트 모드는 Claude에게 해제를 요청할 때까지 해당 세션에서 계속 적용됩니다.
 
 ### 실제 워크플로 실행 사례
 
 [mcp-local-rag의 증분 동기화 기능](https://github.com/shinpr/mcp-local-rag/pull/171)은 파일 시스템 스캔, 스토리지, CLI, MCP 인터페이스에 걸친 42개 파일 변경이었습니다. 독립적인 보안 검토가 구현을 두 번 돌려보냈습니다. 검증 전에 파일을 읽는 문제와 심볼릭 링크된 상위 디렉터리를 통해 경로 제한을 벗어나는 문제를 찾아냈습니다.
 
-실행은 존재하지 않는 ADR과 Design Doc을 참조하는 Work Plan에서 시작되어 기술 결정의 승인 근거가 불분명했습니다. 사용자는 Work Plan을 기준 자료로 삼기로 했고, recipe는 이를 계획된 13개 작업으로 나눴습니다. 최종 구현에는 승인된 동작을 검증하는 데 필요한 변경이 포함되었고, watch 모드와 영구 작업을 제외한 이유는 PR에 기록했습니다.
-
-### 첫 실행 후 확인할 사항
-
-- 합의한 접근 방식이 기존 구현을 확장하며 각 추가 사항에 근거를 제시했나요?
-- 각 요구 사항을 작업과 관찰 가능한 검증 방법까지 추적할 수 있나요?
-- 완료된 모든 작업이 커밋 전에 작업별 검사와 저장소 품질 검사를 통과했나요?
-- 최종 검토에서 전체 변경이 합의한 결과를 제공하며, 불필요한 변경이나 심각한 동작·신뢰성·보안 문제가 없는지 확인했나요?
-- 검토자가 추가 작업을 제안했을 때 적용하거나 거절한 이유가 보고서에 있나요?
+실행은 존재하지 않는 ADR과 Design Doc을 참조하는 Work Plan에서 시작되어 기술 결정의 승인 근거가 불분명했습니다. 사용자는 Work Plan을 기준 자료로 삼기로 했고, recipe는 이를 계획된 13개 작업으로 나눴습니다. 최종 구현에는 승인된 동작을 검증하는 데 필요한 변경이 포함되었고, watch 모드와 영속화된 작업을 제외한 이유는 PR에 기록했습니다.
 
 ---
 
@@ -175,7 +147,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 /recipe-front-build
 ```
 
-설계 recipe는 기존 구현을 조사하고 범위를 확인하며 필요한 문서를 만든 뒤, 독립적인 일관성 검토를 거쳐 승인을 기다립니다. 나중에 새 컨텍스트나 다른 담당자가 승인된 산출물을 바탕으로 계획과 구현을 이어갈 수 있습니다.
+설계 recipe는 기존 구현을 조사하고 범위를 확인하며 필요한 문서를 만든 뒤, 독립적인 일관성 검토를 거쳐 승인을 기다립니다. 나중에 새 컨텍스트나 다른 담당자가 승인된 산출물을 바탕으로 계획과 구현을 이어갈 수 있습니다. 각 작업은 [Work Plan](skills/documentation-criteria/references/plan-template.md)에서 충족해야 할 설계 결정과 수용 기준을 명시하고, 최종 검토자는 이전 대화가 아닌 같은 자료를 기준으로 완성된 코드를 확인합니다.
 
 프런트엔드 경로는 UI 구조나 동작을 더 설계해야 할 때 UI 분석과 UI Spec을 추가하고, 컴포넌트 아키텍처, React Testing Library, TypeScript 검사도 수행합니다.
 
@@ -187,7 +159,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 /recipe-fullstack-implement "Add user authentication with JWT + React login form"
 ```
 
-변경에 여러 독립적인 제품 결과가 있으면 하나의 PRD가 전체 기능을 다룹니다. 백엔드와 프런트엔드 설계는 분리하고, `design-sync`가 그 경계를 확인하며, Work Plan은 수직 슬라이스를 사용해 통합을 일찍 검증합니다.
+변경에 여러 독립적인 제품 결과가 있으면 하나의 PRD가 전체 기능을 다룹니다. 백엔드와 프런트엔드 설계는 분리하고, 일관성 검사로 그 경계를 확인하며, Work Plan은 수직 슬라이스를 사용해 통합을 일찍 검증합니다.
 
 기존 풀스택 Work Plan에서 계속하려면 `/recipe-fullstack-build`를 사용하세요. 풀스택 플러그인에는 필요한 백엔드와 프런트엔드 recipe도 포함되어 있습니다.
 
@@ -274,76 +246,11 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 
 ---
 
-## 플러그인 구성
-
-전문 Agent는 분석과 설계를 실행 및 최종 검토와 분리합니다. 각 플러그인은 해당 워크플로에 필요한 역할만 포함하고, 풀스택 플러그인은 백엔드와 프런트엔드 역할을 결합합니다. 전체 역할 목록은 아래에서 확인할 수 있습니다.
-
-<details>
-<summary>전문 Agent 역할 모두 보기</summary>
-
-### 공통 Agent
-
-백엔드, 프런트엔드, 풀스택 플러그인이 공유하는 Agent입니다.
-
-| Agent | 역할 |
-|---|---|
-| **requirement-analyzer** | 오케스트레이터가 요구 사항과 워크플로를 결정하는 데 필요한 간결한 범위 및 비용 근거 수집 |
-| **prd-creator** | 큰 기능의 제품 요구 사항 정의 |
-| **codebase-analyzer** | 설계 전에 기존 코드와 의존성 조사 |
-| **code-verifier** | 문서를 구현과 비교 |
-| **work-planner** | 설계 결정을 실행 가능한 Work Plan으로 변환 |
-| **task-decomposer** | Work Plan을 커밋 가능한 작업으로 분할 |
-| **acceptance-test-generator** | 요구 사항에서 통합 및 E2E 테스트 스켈레톤 생성 |
-| **integration-test-reviewer** | 통합 및 E2E 테스트가 의도한 범위를 검증하는지 검토 |
-| **code-reviewer** | 완성된 구현이 합의한 결과와 저장소 기준을 충족하는지 확인 |
-| **document-reviewer** | 문서 완전성과 규칙 준수 여부 검토 |
-| **design-sync** | 여러 Design Doc 사이의 충돌 감지 |
-| **investigator** | 실행 경로를 정리하고 잠재적인 실패 지점 식별 |
-| **verifier** | 의심되는 실패 지점을 검증하고 경로 커버리지 확인 |
-| **solver** | 해결책과 장단점 비교 |
-| **security-reviewer** | 완성된 구현의 보안 문제 검토 |
-
-### 백엔드 전용 Agent
-
-| Agent | 역할 |
-|---|---|
-| **technical-designer** | 기술 접근 방식과 아키텍처 설계 |
-| **scope-discoverer** | 기존 구현에서 기능 경계 파악 |
-| **task-executor** | 테스트 우선 검증으로 백엔드 작업 구현 |
-| **quality-fixer** | 테스트, 타입 검사, lint 등 품질 관문 실행 |
-
-### 프런트엔드 전용 Agent
-
-| Agent | 역할 |
-|---|---|
-| **ui-spec-designer** | 요구 사항과 선택적 프로토타입에서 UI Spec 작성 |
-| **ui-analyzer** | 디자인 자료, 디자인 시스템, 가이드라인을 가져오고 기존 UI 조사 |
-| **technical-designer-frontend** | React 컴포넌트 아키텍처와 상태 관리 설계 |
-| **task-executor-frontend** | React Testing Library 커버리지를 포함한 React 컴포넌트 구현 |
-| **quality-fixer-frontend** | 프런트엔드 테스트, TypeScript 검사, lint, 빌드 실행 |
-
-</details>
-
-<details>
-<summary>내장 개발 가이드 보기</summary>
-
-- **Coding Principles.** 코드 품질 기준.
-- **Testing Principles.** TDD, 커버리지, 테스트 패턴.
-- **Implementation Approach.** 구현 결정과 장단점.
-- **Documentation Standards.** 명확하고 유지보수하기 쉬운 문서.
-- **External Resource Context.** 저장소 외부의 디자인 자료, 디자인 시스템, API 스키마, 인프라 정의 등에 접근하는 방법 기록.
-- **LLM-Friendly Context.** 후속 Agent가 추측 없이 실행할 수 있도록 명확한 프롬프트, 인계, 산출물, 지시 제공.
-
-Agent는 작업에 필요할 때 이 skill을 불러옵니다. 프런트엔드 플러그인에는 React와 TypeScript 전용 규칙도 포함됩니다.
-
-</details>
-
-<details>
-<summary>워크플로 없이 가이드만 사용하기(dev-skills)</summary>
+## 워크플로 없이 가이드만 사용하기
 
 사용자 지정 프롬프트나 CI를 통해 이미 오케스트레이션하고 있고 모범 사례 가이드만 필요하다면 `dev-skills`를 사용하세요. Claude가 변경을 처음부터 끝까지 계획하고 실행하며 검증하게 하려면 용도에 맞는 워크플로 플러그인을 설치하세요.
 
-- Agent 없이 최소한의 컨텍스트만 사용
+- Agent와 recipe skill 없이 최소한의 컨텍스트만 사용
 - 정해진 절차를 강제하지 않고 개발, 테스트, 설계, 문서 가이드 제공
 - 작업에 맞는 skill 자동 로드
 
@@ -365,17 +272,13 @@ Agent는 작업에 필요할 때 이 skill을 불러옵니다. 프런트엔드 �
 /plugin install dev-skills@claude-code-workflows
 ```
 
-</details>
-
 ---
 
 ## 자주 묻는 질문
 
 **Q: 오류가 발생하면 어떻게 되나요?**
 
-A: quality-fixer Agent가 승인된 목표 안에서 테스트, 타입, lint, 빌드 실패를 처리합니다. 같은 책임이나 계약에 필요한 인접 변경도 포함됩니다.
-
-워크플로가 사용자에게 결정을 요청하는 경우는 요청한 결과와 제외 범위를 더 이상 함께 지킬 수 없거나, 되돌릴 수 없는 외부 작업에 승인이 필요할 때뿐입니다. 제품이 제공하는 결과를 바꾸지 않는 한 기술 설계, 계약, UI, 아키텍처, 영속성, 구현 변경은 Claude가 처리합니다.
+A: 워크플로가 승인된 목표 안에서 테스트, 타입, lint, 빌드 실패를 처리합니다. 같은 책임이나 계약에 필요한 인접 변경도 포함됩니다.
 
 **Q: OpenAI Codex CLI용 버전도 있나요?**
 
@@ -390,30 +293,6 @@ docs/plans/
 ```
 
 PRD, ADR, UI Spec, Design Doc은 각각 `docs/prd/`, `docs/adr/`, `docs/ui-spec/`, `docs/design/`에 있으며 커밋 대상입니다.
-
----
-
-<details>
-<summary>저장소 구조 보기</summary>
-
-```
-claude-code-workflows/
-├── .claude-plugin/
-│   └── marketplace.json        # Plugin definitions and per-plugin contents
-├── agents/                     # Specialized analysis, design, execution, and review roles
-├── skills/
-│   ├── recipe-*/               # Workflow entry points
-│   ├── documentation-criteria/ # Document rules and templates
-│   ├── coding-principles/
-│   ├── testing-principles/
-│   ├── external-resource-context/
-│   ├── llm-friendly-context/
-│   └── ...
-├── LICENSE
-└── README.md
-```
-
-</details>
 
 ---
 
