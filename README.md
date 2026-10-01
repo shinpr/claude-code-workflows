@@ -17,9 +17,9 @@ Use Claude Code directly when the outcome and safe implementation boundary are a
 
 ## When is the workflow useful?
 
-The workflow adds agent calls and artifacts, so it should earn that cost. Use it when a real side finding could pull a larger change away from its intended result, a design could be internally consistent but miss the requested behavior, or a passing test could fail to observe what it claims to prove.
+The workflow adds agent calls and artifacts, so it should earn that cost. Use it when a real side finding could pull a larger change away from its intended result, a design could be internally consistent but miss the requested behavior, or a passing test could fail to observe what it claims to prove. When a change does not need every check, [lite mode](#lite-mode) runs fewer of them.
 
-Once the implementation scope is approved, Claude carries the tasks through focused verification, repository quality checks, commits, and final review without asking for routine implementation decisions. It asks the user only when the agreed product outcome or exclusions must change; Claude handles technical design and implementation choices. Because the process is packaged as a Claude Code plugin, a team can apply the same controls across repositories without prescribing Claude's steps.
+Once the implementation scope is approved, Claude carries the tasks through focused verification, repository quality checks, commits, and final review without asking for routine implementation decisions. It asks the user only when the agreed product outcome or exclusions must change, or when an irreversible external action needs approval; Claude handles technical design and implementation choices. Because the process is packaged as a Claude Code plugin, a team can apply the same controls across repositories without prescribing Claude's steps.
 
 ---
 
@@ -103,53 +103,23 @@ flowchart LR
     I -->|Passed| J[Complete]
 ```
 
-The number of product and design decisions determines the route, not file count or the amount of implementation work:
+The route depends on how many product and design decisions the change involves, not on file count. A change with one outcome that follows an existing pattern within one responsibility goes straight to a task cycle. A change that crosses responsibilities or needs a lasting design decision first gets a reviewed Design Doc and Work Plan, plus a PRD, UI Spec, or ADR when one of its decisions calls for it.
 
-| Scale | What the change needs | What happens |
-|-------|-----------------------|--------------|
-| Small | One outcome that follows an existing pattern within one responsibility | Direct task cycle → focused and repository checks → security review |
-| Medium | One outcome that crosses responsibilities or needs a lasting design decision | Reviewed Design Doc, plus UI Spec / ADR when required → selected integration/E2E proof → reviewed Work Plan → task cycles → final review |
-| Large | Multiple independent product outcomes that need separate design decisions | Reviewed PRD and Design Docs, plus UI Spec / ADR when required → selected integration/E2E proof → reviewed Work Plan → task cycles → final review |
+Review suggestions do not become work automatically. The main session decides which findings belong to the agreed outcome and declines the rest with a reason.
 
-UI Specs, ADRs, and integration or E2E test skeletons appear only when their decisions or proof boundaries apply.
+### Lite mode
 
-Generating an artifact does not advance the workflow on its own. Decision-changing design premises are resolved with observable evidence before approval, using a bounded probe only when it is the smallest sufficient proof.
-
-The Work Plan is reviewed for coverage, dependency order, and executable verification before it authorizes implementation. Each task is committed only after its focused checks and applicable repository checks complete. When staged implementation is finished, separate reviews check the whole change against the agreed outcome, look for unnecessary changes and serious functional or reliability problems, confirm observable coverage, and assess security.
-
-The main session decides which findings belong to the current outcome, resolves implementation questions from the repository, and keeps unaffected work moving. Review suggestions do not become work automatically. No change, removal, and reuse of what already exists are weighed before a fix that keeps or adds a mechanism, and that fix has to name the result the smaller answers cannot deliver. A correction can therefore remove something an earlier Design Doc or ADR selected, and the document is updated with it. An accepted correction returns through implementation and the affected verification gates.
-
-### How decisions survive fresh contexts
-
-Fresh contexts keep one phase's reasoning from silently becoming the next phase's authority. In the included [Work Plan template](skills/documentation-criteria/references/plan-template.md) each task cites the Design Doc, ADR, or UI Spec sections and acceptance criteria that constrain it, and the plan is finished only when every Design Doc obligation the implementation needs is covered by at least one task. It does not turn every document section or review suggestion into a task. An obligation left uncovered is a planning mistake, so the plan gains or adjusts a task instead of returning the question to the user.
-
-```markdown
-- [ ] **P1-T1: Preserve the error response shape in the new handler**
-  - **Source**: docs/design/example.md — API contract; AC-03
-  - **Scope**: request handling for the affected endpoint
-  - **Depends on**: none
-  - **Executor lane**: backend
-  - **Rollback boundary**: the handler change reverts with this task
-  - **Verification**: existing contract test for the error path
+```bash
+/recipe-implement "Lite mode. Add rate limiting to the public API"
 ```
 
-The [Task template](skills/documentation-criteria/references/task-template.md) carries binding decisions and observable contract values into implementation, each with a yes-or-no compliance check. After execution, the applicable repository checks run against the complete task change before commit. The final reviewers read the same approved sources and the completed code instead of relying on the implementation conversation. `/recipe-quality-profile` can record repository-specific quality rules and their sources in `docs/project-context/quality.yaml`; implementation executors and final reviewers use a confirmed profile alongside the approved sources.
+Ask for lite mode in the request to any recipe. It keeps the same phases and approval stops but runs fewer checks: Design Docs are not checked against the repository or against each other, and the separate security review is skipped. Repository quality checks run once after the last task instead of before every commit, and the final code review still runs. Lite mode stays on for the rest of the session until you ask Claude to drop it.
 
 ### A real workflow run
 
 [The incremental sync feature in mcp-local-rag](https://github.com/shinpr/mcp-local-rag/pull/171) was a 42-file change across filesystem scanning, storage, and both the CLI and MCP surfaces. An independent security review sent the implementation back twice. It caught file reads happening before validation and a path-containment escape through a symlinked parent.
 
 The run began with an existing Work Plan that referred to an ADR and Design Doc that were not present, leaving the approved source for its technical decisions unclear. The user chose to treat the Work Plan as the source of truth, and the recipe divided it into 13 planned tasks. The final implementation included the changes needed to verify the approved behavior, while the PR records why watch mode and persistent jobs were left out.
-
-### What to inspect after the first run
-
-After the first run, inspect the artifacts:
-
-- Did the agreed approach extend what already exists and give evidence for each addition?
-- Can you follow each requirement into a task and an observable verification method?
-- Did every completed task pass its focused and repository quality checks before commit?
-- Did final review confirm that the whole change delivers the agreed outcome without unnecessary changes or serious functional, reliability, or security problems?
-- When a reviewer proposed more work, did the report show why it was applied or declined?
 
 ---
 
@@ -177,7 +147,7 @@ The recipe scopes the change, inspects the current implementation, creates only 
 /recipe-front-build
 ```
 
-The design recipes inspect the existing code, confirm the scope, create the required documents, run an independent consistency review, and stop for approval. Planning and implementation can continue later, in a new context or by another contributor, from those approved artifacts.
+The design recipes inspect the existing code, confirm the scope, create the required documents, run an independent consistency review, and stop for approval. Planning and implementation can continue later, in a new context or by another contributor, from those approved artifacts. Each task in the [Work Plan](skills/documentation-criteria/references/plan-template.md) cites the design decisions and acceptance criteria it must satisfy, and the final reviewers check the completed code against those same sources instead of the earlier conversation.
 
 The frontend path adds UI analysis and a UI Spec when UI structure or behavior remains to be designed, plus component architecture, React Testing Library, and TypeScript checks.
 
@@ -189,7 +159,7 @@ For example, two dashboard components may each handle loading correctly while th
 /recipe-fullstack-implement "Add user authentication with JWT + React login form"
 ```
 
-When the change has multiple independent product outcomes, one PRD covers the whole feature. Backend and frontend design stay separate, `design-sync` checks the boundary between them, and the work plan uses vertical slices so integration is exercised before the end.
+When the change has multiple independent product outcomes, one PRD covers the whole feature. Backend and frontend design stay separate, a consistency check covers the boundary between them, and the work plan uses vertical slices so integration is exercised before the end.
 
 Use `/recipe-fullstack-build` to continue from an existing full-stack work plan. The full-stack plugin also includes the applicable backend and frontend recipes.
 
@@ -276,72 +246,7 @@ The frontend plugin adds React-specific analysis, component architecture, React 
 
 ---
 
-## What the Plugins Include
-
-Specialized agents keep analysis and design separate from execution and final review. Each plugin includes only the roles its workflows use; the full-stack plugin combines the backend and frontend roles. The complete role list is folded below.
-
-<details>
-<summary>View all specialized agent roles</summary>
-
-### Shared agents
-
-These agents are shared by the backend, frontend, and full-stack workflow plugins:
-
-| Agent | What It Does |
-|-------|--------------|
-| **requirement-analyzer** | Collects compact scope and cost evidence for orchestrator requirement and workflow decisions |
-| **prd-creator** | Defines product requirements for larger features |
-| **codebase-analyzer** | Inspects existing code and dependencies before design |
-| **code-verifier** | Compares documents with the implementation |
-| **work-planner** | Turns design decisions into an executable work plan |
-| **task-decomposer** | Splits a work plan into commit-ready tasks |
-| **acceptance-test-generator** | Creates integration and E2E test skeletons from requirements |
-| **integration-test-reviewer** | Reviews integration and E2E tests against their intended coverage |
-| **code-reviewer** | Checks that the completed implementation matches the agreed outcome and repository standards |
-| **document-reviewer** | Checks a document for completeness and rule compliance |
-| **design-sync** | Detects conflicts across multiple Design Docs |
-| **investigator** | Maps execution paths and identifies possible failure points |
-| **verifier** | Challenges suspected failure points and checks path coverage |
-| **solver** | Compares solutions and their trade-offs |
-| **security-reviewer** | Reviews the completed implementation for security issues |
-
-### Backend-specific agents
-
-| Agent | What It Does |
-|-------|--------------|
-| **technical-designer** | Designs the technical approach and architecture |
-| **scope-discoverer** | Finds functional boundaries in an existing codebase |
-| **task-executor** | Implements backend tasks with test-first verification |
-| **quality-fixer** | Runs tests, type checks, linting, and other project quality gates |
-
-### Frontend-specific agents
-
-| Agent | What It Does |
-|-------|--------------|
-| **ui-spec-designer** | Creates a UI Spec from requirements and optional prototype code |
-| **ui-analyzer** | Fetches design sources, design systems, and guidelines, then inspects the existing UI |
-| **technical-designer-frontend** | Designs React component architecture and state management |
-| **task-executor-frontend** | Implements React components with React Testing Library coverage |
-| **quality-fixer-frontend** | Runs frontend tests, TypeScript checks, linting, and builds |
-
-</details>
-
-<details>
-<summary>View built-in development guidance</summary>
-
-- **Coding Principles.** Code quality standards.
-- **Testing Principles.** TDD, coverage, test patterns.
-- **Implementation Approach.** Design decisions and trade-offs.
-- **Documentation Standards.** Clear, maintainable docs.
-- **External Resource Context.** Records how to reach design sources, design systems, API schemas, infrastructure definitions, and other resources outside the repository.
-- **LLM-Friendly Context.** Clear prompts, handoffs, generated artifacts, and instructions for downstream agents.
-
-Agents load these skills when the work calls for them. The frontend plugin also includes React and TypeScript-specific rules.
-
-</details>
-
-<details>
-<summary>Use the guidance without the workflow (dev-skills)</summary>
+## Guidance Without the Workflow
 
 If you already have orchestration through custom prompts or CI and want only the best-practice guides, use `dev-skills`. If you want Claude to plan, execute, and verify a change end to end, install one of the workflow plugins instead.
 
@@ -367,17 +272,13 @@ To switch between plugin types:
 /plugin install dev-skills@claude-code-workflows
 ```
 
-</details>
-
 ---
 
 ## FAQ
 
 **Q: What if there are errors?**
 
-A: The quality-fixer agents handle test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract.
-
-The workflow asks the user only when keeping both the requested outcome and its exclusions is no longer possible, or when an irreversible external action needs approval. It handles technical design, contracts, UI, architecture, persistence, and implementation changes on its own as long as they do not change what the product delivers.
+A: The workflow fixes test, type, lint, and build failures within the approved outcome, including adjacent changes required by the same responsibility or contract.
 
 **Q: Is there a version for OpenAI Codex CLI?**
 
@@ -392,30 +293,6 @@ docs/plans/
 ```
 
 PRDs, ADRs, UI Specs, and Design Docs live in their own directories (`docs/prd/`, `docs/adr/`, `docs/ui-spec/`, `docs/design/`) and are intended to be committed.
-
----
-
-<details>
-<summary>View repository layout</summary>
-
-```
-claude-code-workflows/
-├── .claude-plugin/
-│   └── marketplace.json        # Plugin definitions and per-plugin contents
-├── agents/                     # Specialized analysis, design, execution, and review roles
-├── skills/
-│   ├── recipe-*/               # Workflow entry points
-│   ├── documentation-criteria/ # Document rules and templates
-│   ├── coding-principles/
-│   ├── testing-principles/
-│   ├── external-resource-context/
-│   ├── llm-friendly-context/
-│   └── ...
-├── LICENSE
-└── README.md
-```
-
-</details>
 
 ---
 

@@ -17,9 +17,9 @@ claude-code-workflows让探索始终围绕已经约定的结果展开。它在�
 
 ## 什么时候适合使用？
 
-工作流会增加Agent调用和文档产物，因此应该只在收益足以覆盖成本时使用。当一个实际发现的次要问题可能让大型变更偏离原目标、设计看似自洽却可能漏掉所需行为，或者通过的测试并未真正观察到它声称验证的内容时，这套工作流最有价值。
+工作流会增加Agent调用和文档产物，因此应该只在收益足以覆盖成本时使用。当一个实际发现的次要问题可能让大型变更偏离原目标、设计看似自洽却可能漏掉所需行为，或者通过的测试并未真正观察到它声称验证的内容时，这套工作流最有价值。如果某个变更用不着全部检查，可以用[轻量模式](#轻量模式)少跑一些。
 
-实现范围获批后，Claude会完成每个任务的针对性验证、仓库质量检查、提交和最终审查，不会为常规实现决策反复询问。只有在必须改变约定的产品结果或排除项时，才会交给用户决定；技术设计和实现选择由Claude处理。由于它以Claude Code插件形式提供，团队可以在不规定Claude具体步骤的前提下，在不同仓库中应用同一套控制机制。
+实现范围获批后，Claude会完成每个任务的针对性验证、仓库质量检查、提交和最终审查，不会为常规实现决策反复询问。只有在必须改变约定的产品结果或排除项，或不可逆的外部操作需要授权时，才会交给用户决定；技术设计和实现选择由Claude处理。由于它以Claude Code插件形式提供，团队可以在不规定Claude具体步骤的前提下，在不同仓库中应用同一套控制机制。
 
 ---
 
@@ -103,51 +103,23 @@ flowchart LR
     I -->|Passed| J[Complete]
 ```
 
-路径由产品决策和设计决策的数量决定，而不是文件数量或实现工作量。
+路径由产品决策和设计决策的数量决定，而不是文件数量。如果一个变更只涉及一个结果，并且能在单一职责内沿用现有模式实现，就会直接进入任务周期。跨越多个职责或需要长期设计决策的变更，会先产出经审查的Design Doc和Work Plan；某项决策需要时，还会加上PRD、UI Spec或ADR。
 
-| 规模 | 变更需要什么 | 执行内容 |
-|---|---|---|
-| Small | 一个沿用现有模式、且限定在单一职责内的结果 | 直接执行任务 → 针对当前任务的检查和仓库检查 → 安全审查 |
-| Medium | 一个跨越多个职责或需要长期设计决策的结果 | 经审查的Design Doc，以及按需添加的UI Spec / ADR → 选定的集成/E2E验证 → 经审查的Work Plan → 任务周期 → 最终审查 |
-| Large | 多个需要分别做设计决策的独立产品结果 | 经审查的PRD和Design Doc，以及按需添加的UI Spec / ADR → 选定的集成/E2E验证 → 经审查的Work Plan → 任务周期 → 最终审查 |
+审查建议不会自动变成新任务。主会话判断哪些发现属于约定结果，其余的说明理由后不予采纳。
 
-只有确实存在相应决策或验证边界时，才会创建UI Spec、ADR以及集成或E2E测试骨架。
+### 轻量模式
 
-仅仅生成文档并不会推动工作流继续。可能影响最终设计选择的前提必须在批准前用可验证的证据加以确认；只有当范围受限的能力验证是最简且充分的证明方式时，才会采用。
-
-Work Plan必须经过范围覆盖、依赖顺序和可执行验证方面的审查，才能授权实现。每项任务只有通过针对当前任务的检查和适用的仓库检查后才会提交。分阶段实现完成后，独立审查会对照约定结果检查完整变更，查找不必要的改动和严重的功能或可靠性问题，确认所需行为确实得到验证，并评估安全性。
-
-主会话负责判断哪些发现属于当前目标，根据仓库解决实现问题，并让不受影响的工作继续进行。审查建议不会自动变成新任务。指派修正之前，先依次考虑不做改动、删除或收窄、复用已有行为；保留或新增机制的修正，必须说明更小的做法交付不了什么结果。因此修正也可能是删掉先前Design Doc或ADR选定的手段，此时文档会一并更新。被接受的修正会返回实现阶段，并重新经过受影响的验证环节。
-
-### 如何在新上下文中保留决策
-
-每个阶段使用新的上下文，避免上一阶段的推理在下一阶段悄悄变成权威。在内置的[Work Plan模板](skills/documentation-criteria/references/plan-template.md)里，每个任务都写明约束它的Design Doc、ADR或UI Spec章节与验收标准；只有实现所需的每条Design Doc义务都落到至少一个任务上，计划才算完成。它不会把文档的每个章节或每条审查建议都转成任务。没被覆盖的义务属于计划的疏漏，因此补上或调整任务，而不是把问题退回给用户。
-
-```markdown
-- [ ] **P1-T1: Preserve the error response shape in the new handler**
-  - **Source**: docs/design/example.md — API contract; AC-03
-  - **Scope**: request handling for the affected endpoint
-  - **Depends on**: none
-  - **Executor lane**: backend
-  - **Rollback boundary**: the handler change reverts with this task
-  - **Verification**: existing contract test for the error path
+```bash
+/recipe-implement "Lite mode. Add rate limiting to the public API"
 ```
 
-[Task模板](skills/documentation-criteria/references/task-template.md)会把具有约束力的决策和对外可验证的契约内容带入实现，并为每一项提供可用“是/否”判断的合规检查。执行完成后，在提交前对整个任务变更运行适用的仓库检查。最终审查者读取同一套已批准来源和完成的代码，而不是依赖实现过程中的对话。`/recipe-quality-profile`可以把仓库特有的质量规则及其依据记录到`docs/project-context/quality.yaml`中；实现执行者和最终审查者会将确认后的配置与已批准资料一同使用。
+在任意recipe的请求里说明使用轻量模式（lite mode）即可。阶段和批准节点不变，只是少做一些检查：不再对照代码库检查Design Doc，也不检查多个Design Doc之间的一致性，独立安全审查也会跳过。仓库质量检查改为在最后一个任务完成后统一运行一次，不再在每次提交前运行；最终的代码审查照常执行。本次会话中轻量模式会一直生效，直到你让Claude停用。
 
 ### 一次真实的工作流执行
 
 [mcp-local-rag的增量同步功能](https://github.com/shinpr/mcp-local-rag/pull/171)是一项涉及文件系统扫描、存储、CLI和MCP接口的42文件变更。独立安全审查两次将实现退回修改，发现了验证前读取文件，以及通过符号链接父目录绕过路径边界的问题。
 
 执行开始时，现有Work Plan引用的ADR和Design Doc并不存在，因此技术决策的批准来源并不明确。用户选择把Work Plan作为权威来源，recipe将其拆分成13项计划任务。最终实现包含验证已批准行为所需的变更，同时PR记录了为何不包含watch模式和持久化任务。
-
-### 首次运行后应该检查什么
-
-- 约定的方法是否扩展了现有实现，并为每项新增内容提供依据？
-- 能否从每项需求追踪到任务和可观察的验证方法？
-- 每项已完成任务是否在提交前通过针对性检查和仓库质量检查？
-- 最终审查是否确认完整变更交付了约定结果，且没有不必要的改动或严重的功能、可靠性、安全问题？
-- 审查者建议增加工作时，报告是否说明了采纳或拒绝的原因？
 
 ---
 
@@ -175,7 +147,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 /recipe-front-build
 ```
 
-设计recipe会检查现有实现、确认范围、创建必要文档并进行独立一致性审查，然后等待批准。之后可以在新的上下文中，或由其他贡献者依据已批准的产物继续规划和实现。
+设计recipe会检查现有实现、确认范围、创建必要文档并进行独立一致性审查，然后等待批准。之后可以在新的上下文中，或由其他贡献者依据已批准的产物继续规划和实现。[Work Plan](skills/documentation-criteria/references/plan-template.md)中的每个任务都写明它必须满足的设计决策和验收标准，最终审查者也依据同一套来源检查完成的代码，而不是依赖之前的对话。
 
 当需要进一步设计前端UI结构或行为时，前端路径会增加UI分析和UI Spec，并包含组件架构、React Testing Library与TypeScript检查。
 
@@ -187,7 +159,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 /recipe-fullstack-implement "Add user authentication with JWT + React login form"
 ```
 
-当变更包含多个独立产品结果时，一个PRD覆盖整个功能。前后端设计保持分离，`design-sync`检查两者边界，Work Plan采用纵向切片，以便尽早验证集成。
+当变更包含多个独立产品结果时，一个PRD覆盖整个功能。前后端设计保持分离，由一致性检查覆盖两者之间的边界，Work Plan采用纵向切片，以便尽早验证集成。
 
 使用`/recipe-fullstack-build`可从现有的全栈Work Plan继续执行。全栈插件也包含适用的后端和前端recipe。
 
@@ -274,76 +246,11 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 
 ---
 
-## 插件包含的内容
-
-专用Agent将分析和设计与执行及最终审查分开。每个插件只包含自身工作流使用的角色；全栈插件则组合后端和前端角色。完整角色列表如下。
-
-<details>
-<summary>查看全部专用Agent角色</summary>
-
-### 共享Agent
-
-这些Agent由后端、前端和全栈工作流共享：
-
-| Agent | 职责 |
-|---|---|
-| **requirement-analyzer** | 收集精简的范围和成本证据，供编排器判断需求与工作流 |
-| **prd-creator** | 为大型功能定义产品需求 |
-| **codebase-analyzer** | 在设计前检查现有代码和依赖 |
-| **code-verifier** | 对照实现检查文档 |
-| **work-planner** | 将设计决策转为可执行的Work Plan |
-| **task-decomposer** | 将Work Plan拆分为可提交的任务 |
-| **acceptance-test-generator** | 根据需求创建集成和E2E测试骨架 |
-| **integration-test-reviewer** | 检查集成和E2E测试是否覆盖预期边界 |
-| **code-reviewer** | 检查已完成的实现是否符合约定结果和仓库标准 |
-| **document-reviewer** | 检查文档完整性和规则合规性 |
-| **design-sync** | 发现多个Design Doc之间的冲突 |
-| **investigator** | 绘制执行路径并识别潜在故障点 |
-| **verifier** | 质疑疑似故障点并检查路径覆盖 |
-| **solver** | 比较解决方案及其取舍 |
-| **security-reviewer** | 审查已完成实现中的安全问题 |
-
-### 后端专用Agent
-
-| Agent | 职责 |
-|---|---|
-| **technical-designer** | 设计技术方案和架构 |
-| **scope-discoverer** | 从现有实现中识别功能边界 |
-| **task-executor** | 通过测试优先验证实现后端任务 |
-| **quality-fixer** | 运行测试、类型检查、lint等质量检查 |
-
-### 前端专用Agent
-
-| Agent | 职责 |
-|---|---|
-| **ui-spec-designer** | 根据需求和可选原型创建UI Spec |
-| **ui-analyzer** | 获取设计来源、设计系统和规范，并检查现有UI |
-| **technical-designer-frontend** | 设计React组件架构和状态管理 |
-| **task-executor-frontend** | 实现React组件，并使用React Testing Library提供行为覆盖 |
-| **quality-fixer-frontend** | 运行前端测试、TypeScript检查、lint和构建 |
-
-</details>
-
-<details>
-<summary>查看内置开发指南</summary>
-
-- **Coding Principles：** 代码质量标准。
-- **Testing Principles：** TDD、覆盖率和测试模式。
-- **Implementation Approach：** 实现决策及其取舍。
-- **Documentation Standards：** 清晰、易维护的文档。
-- **External Resource Context：** 记录如何访问仓库外的设计来源、设计系统、API Schema、基础设施定义等资源。
-- **LLM-Friendly Context：** 让下游Agent无需猜测即可执行的提示、交接、产物和说明。
-
-Agent会在任务需要时加载这些skill。前端插件还包含React和TypeScript专项规则。
-
-</details>
-
-<details>
-<summary>不使用工作流，只使用指南（dev-skills）</summary>
+## 不使用工作流，只使用指南
 
 如果你已经通过自定义提示或CI完成编排，只需要最佳实践指南，请使用`dev-skills`。如果希望Claude端到端完成规划、执行和验证，请安装合适的工作流插件。
 
-- 最小上下文占用，不包含Agent
+- 最小上下文占用，不包含Agent和recipe skill
 - 提供编码、测试、设计和文档指南，但不规定固定流程
 - 根据任务自动加载相关skill
 
@@ -365,17 +272,13 @@ Agent会在任务需要时加载这些skill。前端插件还包含React和TypeS
 /plugin install dev-skills@claude-code-workflows
 ```
 
-</details>
-
 ---
 
 ## 常见问题
 
 **问：如果发生错误怎么办？**
 
-答：quality-fixer Agent会在已批准目标的范围内处理测试、类型检查、lint和构建失败，包括同一职责或契约连带需要的改动。
-
-只有在无法同时保留用户要求的结果和排除项，或不可逆的外部操作需要授权时，工作流才会请用户决定。只要不改变产品最终交付的内容，技术设计、契约、UI、架构、持久化和实现变更都由Claude自行处理。
+答：工作流会在已批准目标的范围内处理测试、类型检查、lint和构建失败，包括同一职责或契约连带需要的改动。
 
 **问：有适用于OpenAI Codex CLI的版本吗？**
 
@@ -390,30 +293,6 @@ docs/plans/
 ```
 
 PRD、ADR、UI Spec和Design Doc分别位于`docs/prd/`、`docs/adr/`、`docs/ui-spec/`和`docs/design/`，它们应当提交到仓库。
-
----
-
-<details>
-<summary>查看仓库结构</summary>
-
-```
-claude-code-workflows/
-├── .claude-plugin/
-│   └── marketplace.json        # Plugin definitions and per-plugin contents
-├── agents/                     # Specialized analysis, design, execution, and review roles
-├── skills/
-│   ├── recipe-*/               # Workflow entry points
-│   ├── documentation-criteria/ # Document rules and templates
-│   ├── coding-principles/
-│   ├── testing-principles/
-│   ├── external-resource-context/
-│   ├── llm-friendly-context/
-│   └── ...
-├── LICENSE
-└── README.md
-```
-
-</details>
 
 ---
 

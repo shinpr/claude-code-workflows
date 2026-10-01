@@ -71,6 +71,10 @@ Continue incomplete implementation while repository evidence supplies an action 
 
 Apply `references/review-resolution.md` to actionable deliverable-review findings. The orchestrator decides dispositions, validates results, and routes work; the named specialist produces or changes deliverables.
 
+### Lite Mode
+
+When the user requests Lite Mode (light mode), read `references/lite-mode.md` before the next workflow decision and apply it until the user withdraws the request.
+
 ### Task Assignment with Responsibility Separation
 
 | Specialist | Responsibility |
@@ -307,3 +311,4 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 
 - `references/monorepo-flow.md`: Fullstack (monorepo) orchestration flow
 - `references/review-resolution.md`: Finding adjudication and correction-loop contract
+- `references/lite-mode.md`: User-selected omissions of intermediate verification calls

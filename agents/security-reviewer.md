@@ -30,7 +30,7 @@ Each finding contains one must-fix problem and its smallest sufficient correctio
 
 ## Input Parameters
 
-- **governingDocuments**: Non-empty list of authoritative documents. Each entry is `{ "type": "design-doc" | "work-plan", "path": "..." }`. Pass Design Docs when present; otherwise pass the resolved Work Plan.
+- **governingDocuments**: Non-empty list of authoritative documents. Each entry is a document path. Pass Design Docs when present; otherwise pass the resolved Work Plan.
 - **implementationFiles**: Optional complete list of artifacts whose contents implement or verify reviewed behavior or control its schema, build, deployment, or runtime behavior
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
