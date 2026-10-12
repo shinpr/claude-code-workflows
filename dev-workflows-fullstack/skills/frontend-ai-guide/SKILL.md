@@ -32,7 +32,6 @@ Pause the affected decision and review the design when detecting the following p
 ### Design Anti-patterns
 - **"Make it work for now" thinking** - Accumulation of technical debt
 - **Patchwork implementation** - Unplanned additions to existing components
-- **Optimistic implementation of uncertain technology** - Designing unknown elements assuming "it'll probably work"
 - **Symptomatic fixes** - Surface-level fixes that don't solve root causes
 - **Unplanned large-scale changes** - Lack of incremental approach
 
@@ -89,17 +88,10 @@ Keep concrete implementations separate while their similarity is accidental or t
 **Cause**: Ignoring Red-Green-Refactor process
 **Avoidance**: Start new or changed behavior and reproducible bug fixes with a failing test. For behavior-preserving refactors, confirm existing or characterization tests pass before and after the change
 
-### Pattern 4: Ignoring Technical Uncertainty
-**Symptom**: Frequent unexpected errors when introducing new technology
-**Cause**: Assuming "it should work according to official documentation" without prior investigation
-**Avoidance**:
-- Record certainty where it controls implementation or verification decisions
-  ```
-  Certainty: low (Reason: new experimental feature with limited production examples)
-  Exploratory implementation: true
-  Fallback: use established patterns
-  ```
-- For low certainty cases, create minimal verification code first
+### Pattern 4: Building on Unverified Premises
+**Symptom**: Dependent work fails, or workarounds accumulate, once an assumed premise proves false
+**Cause**: Treating an assumed capability, behavior, or existing implementation as fact
+**Avoidance**: When an unverified premise could invalidate the chosen approach, check it by the cheapest sufficient means before building dependent work on it. When results contradict the premise, reconsider the approach before patching its parts. Keep this reasoning in the active task; it needs no separate artifact.
 
 ### Pattern 5: Insufficient Existing Code Investigation
 **Symptom**: Duplicate implementations, architecture inconsistency, integration failures
