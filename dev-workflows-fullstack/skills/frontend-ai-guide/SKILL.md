@@ -85,8 +85,8 @@ Keep concrete implementations separate while their similarity is accidental or t
 
 ### Pattern 3: Implementation Without Sufficient Testing
 **Symptom**: Many bugs after implementation
-**Cause**: Ignoring Red-Green-Refactor process
-**Avoidance**: Start new or changed behavior and reproducible bug fixes with a failing test. For behavior-preserving refactors, confirm existing or characterization tests pass before and after the change
+**Cause**: Accepted behavior left without a test that proves it
+**Avoidance**: Prove each delivered behavior at the boundary where it is observed
 
 ### Pattern 4: Building on Unverified Premises
 **Symptom**: Dependent work fails, or workarounds accumulate, once an assumed premise proves false

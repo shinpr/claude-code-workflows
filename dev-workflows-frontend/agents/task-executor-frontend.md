@@ -4,7 +4,7 @@ description: Executes React implementation completely self-contained from an exp
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS
 skills:
   - typescript-rules
-  - test-implement
+  - testing-principles
   - frontend-ai-guide
   - implementation-approach
   - external-resource-context
@@ -24,7 +24,7 @@ Workflow callers use the applicable canonical fields below:
 - **target_paths**: Suggested starting write and investigation paths
 - **observable_verification**: UI behavior, artifact state, or command result that proves the direct scope complete
 - **correction_findings**: Complete `apply` finding objects from Review Resolution, unchanged except for their dispositions
-- **incompleteImplementations**: Complete quality-fixer-frontend items rerouted for completion
+- **incompleteImplementations**: Complete incomplete-implementation items rerouted from the quality check
 
 Accept equivalent labels, a prose frontend implementation objective, and legacy `incomplete_implementations`, then normalize the available meaning into one execution-instructions view. Resolve the objective from a readable or uniquely relocated `task_file`; otherwise from `direct_scope` or the direct invocation; otherwise select the next incomplete `docs/plans/tasks/*-task-*.md` for an ad-hoc task invocation. When more than one source is present, the task file governs execution scope and value boundaries; consistent direct values augment it, while its technical and UI How remains an evidence-correctable baseline.
 
@@ -42,7 +42,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 Use the appropriate run command based on the `packageManager` field in package.json.
 
 ### Applying to Implementation
-Apply loaded TypeScript / React / test-implement / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
+Apply loaded TypeScript / React / testing-principles / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
 When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
 
@@ -123,7 +123,7 @@ When the execution instructions or any referenced Design Doc / UI Spec / Work Pl
 Read the Operation Verification Methods from the task file or `observable_verification` and treat them as authoritative. When they require executable tests, verify the project-configured test toolchain — test runner, DOM/browser environment, setup files, and the network mocking layer when the changed behavior depends on mocked network calls.
 
 **Check method**: Inspect `package.json` scripts, the test runner config, the DOM/browser environment setup, and network mock handlers when relevant (e.g., Vitest/Jest, jsdom/browser mode, setup files, MSW or equivalent).
-**Available**: Proceed with the applicable testing flow from test-implement skill
+**Available**: Proceed with implementation and its proof under testing-principles
 **Unavailable**: continue implementation, run available checks, and return the missing component and affected verification in `runnableCheck.reason` with `result: "skipped"`; downstream quality assurance retains the final verification boundary
 When no method requires executable tests, proceed without requiring the test toolchain at this gate.
 
@@ -155,16 +155,10 @@ When adopting a pattern, hook, or library from existing code, apply Reference Re
 □ **Coexistence resolution**: when multiple libraries or patterns coexist for the same concern (routing, server-state, forms, styling, etc.), follow the dominant choice in the **changed feature area** — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. When no dominant choice is clear, select from the repository choices already established for the concern and record the evidence for that selection
 □ **New option discipline**: when no repository choice covers the concern, use the implementation-approach and external-resource-context rules to select the lowest-surface sufficient option, then apply the authoritative escalation boundary below
 
-#### Implementation Flow (TDD Compliant)
+#### Implementation Flow
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-**Apply the applicable testing-principles flow and the task's Operation Verification Methods**:
-- **New/changed behavior or reproducible bug**: RED → GREEN → REFACTOR → VERIFY
-- **Behavior-preserving refactor**: BASELINE → REFACTOR → VERIFY the same evidence
-- **Non-reproducible bug**: record the reproduction blocker and alternate evidence → FIX → VERIFY that evidence
-- **Non-executable deliverable**: read the named source → PRODUCE/UPDATE → VERIFY against it
-- Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks.
-- **Progress Update [MANDATORY]**: Apply the Responsibility Boundaries progress rule after verification
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions

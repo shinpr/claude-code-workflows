@@ -1,22 +1,18 @@
 ---
 name: testing-principles
-description: Language-agnostic testing principles including TDD, test quality, coverage standards, and test design patterns. Use when writing tests, designing test strategies, or reviewing test quality.
+description: Language-agnostic testing principles for choosing which tests a change needs, test quality, and proof ownership, with frontend and browser E2E implementation references. Use when writing tests, deciding test scope, or reviewing test quality.
 ---
 
 # Language-Agnostic Testing Principles
 
-## Test-Driven Development (TDD)
+Tests here guarantee accepted behavior, and the next agent reads every existing test as a requirement to preserve. A brittle, duplicated, or implementation-shaped test therefore becomes a false requirement: it gets worked around, and the workaround leaves debt in the implementation. Keep the set of tests whose proof is worth its maintenance.
 
-Use this cycle for new or changed executable behavior and reproducible bug fixes. For a behavior-preserving refactor, first confirm existing tests pass or add passing characterization tests, then refactor and rerun the same regression evidence.
+## Test Selection
 
-RED: confirm the new test fails for the intended reason. GREEN: implement the smallest passing change. REFACTOR: improve structure while the test remains green. VERIFY: run the repository's applicable regression checks.
-
-## Quality Requirements
-
-- Treat coverage as a diagnostic signal for finding untested areas, not a target — a target gets gamed into trivial tests (Goodhart's Law)
-- Concentrate tests on critical paths, business logic, and behavior whose regression would matter
-- Prioritize meaningful assertions over the coverage number; any CI threshold is the project's config, not a quality goal in itself
-- Use project-configured speed budgets when present. Otherwise investigate test speed only when observed feedback or CI cost is material to the current outcome; retain slower tests when their proof boundary requires it
+- Prove accepted behavior by default through integration and E2E tests at the boundary users and callers observe. Add a unit test for logic whose cases one representative boundary test cannot prove, such as calculations, parsing, or branching rules.
+- Each behavioral claim is owned by one test: such logic by its unit test, other behavior by the test at the narrowest integration or E2E boundary where it is observable. A test at a wider boundary or in a variant (viewport, device, role) proves what that boundary or variant adds, such as wiring, mapping, persistence, rendering, or navigation, and keeps at most one representative case of a rule owned elsewhere.
+- Treat coverage as a diagnostic signal for finding untested areas, not a target; any CI threshold is the project's config, not a quality goal in itself.
+- Use project-configured speed budgets when present. Otherwise investigate test speed only when observed feedback or CI cost is material to the current outcome; retain slower tests when their proof boundary requires it.
 
 ## Test Design Rules
 
@@ -55,3 +51,8 @@ Follow the repository's established test paths, runner routing, and naming. When
 
 - Add a regression test for every reproducible behavior bug fix. When executable reproduction is impossible, record the reason and the alternative static, contract, or environment evidence that prevents recurrence.
 - Before behavior-preserving changes to uncharacterized legacy code, establish passing characterization evidence and rerun it after the change.
+
+## References
+
+- [references/frontend.md](references/frontend.md): read when writing, changing, or reviewing component, hook, or UI integration tests
+- [references/e2e.md](references/e2e.md): read when writing, changing, or reviewing browser E2E tests

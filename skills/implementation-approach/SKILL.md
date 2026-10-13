@@ -137,7 +137,7 @@ Alternatives remain active analysis unless an accepted ADR owns them as decision
 Priority for completion verification of each task:
 
 - **L1: Functional Operation Verification** - Operates as end-user feature (e.g., search executable)
-- **L2: Test Operation Verification** - New tests added and passing
+- **L2: Test Operation Verification** - Tests that prove the changed behavior pass
 - **L3: Build Success Verification** - Code builds/runs without errors
 
 **Priority**: L1 > L2 > L3 in order of verifiability importance

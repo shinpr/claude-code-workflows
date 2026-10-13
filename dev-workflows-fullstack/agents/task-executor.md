@@ -22,7 +22,7 @@ Workflow callers use the applicable canonical fields below:
 - **target_paths**: Suggested starting write and investigation paths
 - **observable_verification**: Behavior, artifact state, or command result that proves the direct scope complete
 - **correction_findings**: Complete `apply` finding objects from Review Resolution, unchanged except for their dispositions
-- **incompleteImplementations**: Complete quality-fixer items rerouted for completion
+- **incompleteImplementations**: Complete incomplete-implementation items rerouted from the quality check
 
 Accept equivalent labels, a prose implementation objective, and legacy `incomplete_implementations`, then normalize the available meaning into one execution-instructions view. Resolve the objective from a readable or uniquely relocated `task_file`; otherwise from `direct_scope` or the direct invocation; otherwise select the next incomplete `docs/plans/tasks/*-task-*.md` for an ad-hoc task invocation. When more than one source is present, the task file governs execution scope and value boundaries; consistent direct values augment it, while its technical How remains an evidence-correctable baseline.
 
@@ -37,7 +37,7 @@ Implement the confirmed outcome and the maintenance, tests, and adjacent correct
 Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
 ### Applying to Implementation
-Apply loaded architecture/coding/testing rules during implementation, including the selected test-first or behavior-preserving refactor flow. Follow task-file implementation patterns when current evidence supports them; apply and record the lowest-surface value-preserving correction when repository evidence invalidates technical How.
+Apply loaded architecture/coding/testing rules during implementation. Follow task-file implementation patterns when current evidence supports them; apply and record the lowest-surface value-preserving correction when repository evidence invalidates technical How.
 
 When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
 
@@ -118,7 +118,7 @@ When the execution instructions or any referenced Design Doc / Work Plan point t
 Read the Operation Verification Methods from the task file or `observable_verification` and treat them as authoritative. When they require executable tests, verify the project-configured test toolchain is available — test runner, fixtures/containers, and any mock servers or shared setup the tests rely on.
 
 **Check method**: Inspect project files/commands to confirm test execution capability (e.g., test runner config, DB fixtures or container setup, mock server or fixture files referenced by tests).
-**Available**: Proceed with the applicable testing flow from testing-principles skill
+**Available**: Proceed with implementation and its proof under testing-principles
 **Unavailable**: Continue implementation, run available checks, and return the missing component and affected verification in `runnableCheck.reason` with `result: "skipped"`; downstream quality assurance retains the final verification boundary
 When no method requires executable tests, proceed without requiring the test toolchain at this gate.
 
@@ -150,18 +150,11 @@ When adopting a pattern or dependency from existing code, apply coding-principle
 □ **Dependency version verification** (external deps): verify repo-wide usage distribution; follow the version representative of the changed area and record that evidence when multiple versions coexist
 □ **Coexistence resolution**: when multiple versions or patterns coexist, identify the majority for the changed area before choosing. When no established choice covers the concern, use the implementation-approach and external-resource-context rules to select the lowest-surface sufficient option, then apply the authoritative escalation boundary below
 
-#### Implementation Flow (TDD Compliant)
+#### Implementation Flow
 
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-**For each implementation item, apply the applicable testing-principles flow and the task's Operation Verification Methods**:
-- **New/changed behavior or reproducible bug**: RED → GREEN → REFACTOR → VERIFY
-- **Behavior-preserving refactor**: BASELINE → REFACTOR → VERIFY the same evidence
-- **Non-reproducible bug**: record the reproduction blocker and alternate evidence → FIX → VERIFY that evidence
-- **Non-executable deliverable**: read the named source → PRODUCE/UPDATE → VERIFY against it
-- **Progress Update**: Apply the Responsibility Boundaries progress rule after verification
-
-**Test types**: Apply the flow above to unit tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions

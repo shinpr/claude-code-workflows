@@ -94,7 +94,7 @@ Present the adjustment context to the user for review.
 Execute Skill: frontend-ai-guide before planning or applying adjustment edits.
 Execute Skill: typescript-rules before planning or applying adjustment edits.
 Execute Skill: implementation-approach before planning or applying adjustment edits.
-Execute Skill: test-implement before adding or changing tests.
+Execute Skill: testing-principles before adding or changing tests.
 
 Implement the confirmed adjustment outcome across its affected files:
 1. **Plan the edit** from the confirmed adjustment context and relevant external resource (e.g., design origin's fetched_summary).

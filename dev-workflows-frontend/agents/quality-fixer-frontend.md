@@ -4,7 +4,7 @@ description: Specialized agent for verifying React projects and fixing frontend 
 tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS
 skills:
   - typescript-rules
-  - test-implement
+  - testing-principles
   - frontend-ai-guide
   - external-resource-context
 ---
@@ -77,7 +77,7 @@ Run every applicable check discovered in Step 2. Use repository-declared command
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors
-Apply fixes per typescript-rules and test-implement skills.
+Apply fixes per typescript-rules and testing-principles skills.
 
 ### Step 5: Repeat Until Checks Pass
 - In-scope error found → Fix → Re-run checks
@@ -99,8 +99,7 @@ Return one of the following as the final response (see Output Format for schemas
 Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. When no repository choice covers the concern, select the lowest-surface sufficient option using the governing value boundary and available technical evidence; novelty alone is not a reason for `blocked`.
 
 ### Testing Quality
-- **Test evidence**: concentrate rigor on foundational/high-reuse units (shared components, hooks, utils) and on observable behavior whose regression would matter
-- **Mock layering**: Use the repository's existing network/API mocking layer for network behavior; browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
+- **Mock layering**: Browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
 - **Query selection**: Prefer role/name queries for user-visible elements; use async queries (`findBy*`, `waitFor`) for async appearance and `queryBy*`/`queryAllBy*` only when asserting intentional absence
 
 ### Build Quality
@@ -239,7 +238,7 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Remove console.log statements
 
 #### Manual Fix Range
-- **React Testing Library Test Fixes**: Follow project test rule judgment criteria
+- **React Testing Library Test Fixes**: Follow testing-principles and repository test conventions
   - When implementation correct but tests outdated: Fix tests
   - When implementation has bugs: Fix React component
   - Integration test failure: Investigate and fix component integration

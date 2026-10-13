@@ -7,7 +7,7 @@ description: Integration and E2E test design principles, ROI calculation, test s
 
 ## References
 
-**E2E test design**: See [references/e2e-design.md](references/e2e-design.md) for UI Spec-driven E2E test candidate selection and browser test architecture. The reference uses Playwright as the default browser harness; substitute the project's standard when different.
+**E2E test design**: See [references/e2e-design.md](references/e2e-design.md) for UI Spec-driven E2E test candidate selection.
 
 ## Test Type Definition and Standard Budgets
 
@@ -26,12 +26,13 @@ One input Design Doc is one budget scope: apply each lane budget once across all
 ## Behavior-First Principle
 
 ### Include (High ROI)
-- Business logic correctness (calculations, state transitions, data transformations)
+- Business state transitions observable across components
 - Data integrity and persistence behavior
 - User-visible functionality completeness
 - Error handling behavior (what user sees/experiences)
 
 ### Redirect to Other Test Types
+- Calculation and data transformation rules → Verify via unit tests of the logic that owns them
 - External service connections → Verify via contract/interface tests
 - Performance metrics → Verify via dedicated load testing
 - Implementation details → Verify observable behavior instead
@@ -175,23 +176,6 @@ The test runner or framework in the project determines the appropriate file exte
 | Verification Item Coverage | Listed items not all covered by assertions |
 | Mock Boundary | Internal components mocked in integration test |
 
-### Implementation Quality
-
-| Check | Failure Condition |
-|-------|-------------------|
-| AAA Structure | Arrange/Act/Assert separation unclear |
-| Independence | State sharing between tests, order dependency |
-| Reproducibility | Date/random dependency, varying results |
-| Readability | Test name doesn't match verification content |
-
 ### Route Parity for Shared Mutations
 
 When multiple routes reach the same mutation, compare validation, classification, resource bounds, and read/parse/mutation/reporting order. Each difference requires an authoritative requirement, design contract, or explicit test claim; otherwise require a test exposing the bypass or inconsistent outcome.
-
-## Quality Standards
-
-### Required
-- Each test verifies one behavior
-- Clear AAA (Arrange-Act-Assert) structure
-- No test interdependencies
-- Deterministic execution

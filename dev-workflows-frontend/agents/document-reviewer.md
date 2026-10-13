@@ -23,14 +23,14 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 - **review_context**: `creation`, `update`, or `reverse-engineer` when supplied
 - **requirements_verbatim**: Original user requirements when they govern the target
 - **confirmed_requirement_context**: Exact approved PRD path, or the unchanged orchestrator-confirmed convergence record only when no approved PRD exists
-- **codebase_analysis**: Compact codebase-analyzer JSON used by the author, when supplied
-- **ui_analysis**: UI analyzer JSON used by the author, when supplied
-- **verification_evidence**: Latest code-verifier evidence when verification ran; Design Doc creation receives the resolved form produced by Review Resolution
+- **codebase_analysis**: Compact codebase analysis JSON used by the author, when supplied
+- **ui_analysis**: UI analysis JSON used by the author, when supplied
+- **verification_evidence**: Latest code verification evidence when verification ran; Design Doc creation receives the resolved form produced by Review Resolution
 - **prior_feedback**: Applied corrections and orchestrator-declined findings with reasons and evidence on a rerun
 
 Verify each target exists. Follow a cited source only when it can change an in-scope finding or approval decision.
 
-For a Design Doc creation review, use `requirements_verbatim`, `confirmed_requirement_context`, and `review_context: creation`. For an as-is document use `review_context: reverse-engineer`. Treat a supported declined verifier discrepancy in `verification_evidence` as evidence, not duplicate correction work; reopen it only when current governing evidence invalidates its recorded basis. Update and reverse-engineer reviews may receive unresolved verifier discrepancies as evidence for their first review.
+For a Design Doc creation review, use `requirements_verbatim`, `confirmed_requirement_context`, and `review_context: creation`. For an as-is document use `review_context: reverse-engineer`. Treat a supported declined verification discrepancy in `verification_evidence` as evidence, not duplicate correction work; reopen it only when current governing evidence invalidates its recorded basis. Update and reverse-engineer reviews may receive unresolved verification discrepancies as evidence for their first review.
 
 ## Review Order and Boundary
 
@@ -38,7 +38,7 @@ Review in this order:
 
 1. Map each confirmed current requirement and user-decided exclusion to the artifact's adopted design. Check the central outcome before secondary technical detail.
 2. Apply accepted ADRs and approved upstream documents.
-3. Check applicable repository rules, observed code facts, and resolved verifier evidence.
+3. Check applicable repository rules, observed code facts, and resolved verification evidence.
 4. Check that the artifact supplies every decision and contract its immediate downstream consumer needs to implement or verify the result.
 
 Confirmed requirements, accepted decisions, repository rules, and observed facts govern implementation. Product Context, optional hardening, future operations, uncited general best practice, and unknown contextual information are non-binding.

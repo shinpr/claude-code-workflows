@@ -36,16 +36,14 @@ Read the smallest representative set needed to implement the task:
 ## Implementation Steps
 
 1. Read the Investigation Targets and record relevant repository facts.
-2. Add or update the focused test required by the cited verification strategy.
-3. Implement the smallest repository change that completes the outcome.
-4. Refactor within the same outcome while focused checks remain green.
-5. Run task verification.
+2. Implement the smallest repository change that completes the outcome, with the tests its cited verification requires.
+3. Run task verification.
 
 ## Operation Verification Methods
 
 - **Verification method**: [Governing verification method or repository command]
 - **Success criteria**: [Observable result tied to cited ACs]
-- **Verification level**: [L1 functional operation | L2 passing tests | L3 successful build — per implementation-approach]
+- **Verification level**: [L1 functional operation | L2 passing tests | L3 successful build]
 
 ## Verification Focus
 
@@ -58,7 +56,7 @@ Include only when the Work Plan supplies it.
 
 - [ ] The cited implementation outcome is complete
 - [ ] The cited ACs are satisfied
-- [ ] Required focused tests pass
+- [ ] Required tests pass
 - [ ] Operation verification succeeds
 - [ ] Verification Focus is satisfied when present
 
