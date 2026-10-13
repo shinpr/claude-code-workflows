@@ -4,7 +4,7 @@
 
 Inspect the repository's browser-test configuration, scripts, fixtures, neighboring tests, and CI routing. Preserve the existing harness, imports, locator conventions, setup lifecycle, file naming, and test location.
 
-When no browser harness exists, use integration-e2e-testing to determine whether browser-level proof is necessary. If it is, select the lowest-surface sufficient harness from repository and applicable external evidence; if it is not, use the cheaper observable boundary. Report an unavailable execution environment as a proof limitation rather than a user decision.
+When no browser harness exists, establish one only when a test skeleton, the task's Operation Verification Methods, or an accepted requirement names browser-level proof, selecting the lowest-surface sufficient harness from repository and applicable external evidence; otherwise prove the behavior at the cheaper observable boundary. Report an unavailable execution environment as a proof limitation rather than a user decision.
 
 ## Lane Selection
 
@@ -16,7 +16,6 @@ Preserve the lane selected by the skeleton. A lane change requires evidence that
 ## Structure and Reuse
 
 - Follow the repository's existing browser abstraction and paths.
-- When establishing an approved new Playwright convention, use `*.fixture.e2e.test.ts` and `*.service.e2e.test.ts`, or the naming defined by the parent test skill.
 - Introduce a page object when one interaction is reused across 3+ tests or a coherent workflow would otherwise be duplicated. Keep direct accessible locators for a small, local test.
 
 ## Fixture Lane
@@ -40,20 +39,7 @@ Use the repository's existing seed and authentication mechanisms. Create per-tes
 - Follow the repository's locator convention; otherwise prefer accessible role/name or label locators, then stable test IDs when no semantic locator exists.
 - Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Treat assertions tied only to CSS classes or internal DOM structure as insufficient proof.
 - When the UI specification defines responsive behavior, run the affected interaction at the specified viewport; otherwise use the repository's default browser matrix.
-- Each test starts from isolated state and remains independent of execution order.
 
-## Skeleton Comment Format
+## Skeleton Annotations
 
-Preserve the skeleton's annotations using the source language's comment syntax:
-
-```text
-AC: [acceptance criterion]
-Behavior: [trigger] → [process] → [observable result]
-@category: fixture-e2e | service-integration-e2e
-@lane: fixture-e2e | service-integration-e2e
-@dependency: none | [dependency names] | full-system
-@complexity: low | medium | high
-ROI: [score]
-```
-
-When `Verification items:` are present, implement and assert every listed item.
+Preserve the skeleton's annotations unchanged. When `Verification items:` are present, implement and assert every listed item.

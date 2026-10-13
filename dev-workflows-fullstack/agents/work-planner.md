@@ -110,7 +110,7 @@ Complete every item before output. When an item is unsatisfied, return to the re
 - [ ] Every supplied test skeleton was read and its path is preserved unchanged in the task selected by its `@lane` and proof boundary.
 - [ ] Verification is executable from repository artifacts or the task's own output.
 - [ ] Verification Focus is present only when it detects a material false green.
-- [ ] The plan contains the minimum context required by task-decomposer; design detail remains in governing documents.
+- [ ] The plan contains the minimum context required for task decomposition; design detail remains in governing documents.
 
 ## Update Mode
 

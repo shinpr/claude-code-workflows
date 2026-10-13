@@ -11,15 +11,11 @@ Before writing a test, inspect package scripts, runner configuration, setup file
 
 ## Test Scope
 
-- Concentrate rigor on shared components, hooks, and utilities with a wide blast radius. Use integration or E2E coverage for higher-composition surfaces when their boundary is the behavior under test.
-- For a behavior-preserving refactor, establish passing regression or characterization evidence before the change and rerun it afterward.
-- Test-first scope covers executable behavior; configuration that changes runtime or build behavior requires executable validation.
-- Continuity tests cover existing feature behavior affected by the change; long-term performance and operational testing remain infrastructure concerns unless the accepted work includes them.
+- In UI code, logic that needs its own unit tests usually lives in shared components, hooks, and utilities with a wide blast radius. Screen behavior is owned by the narrowest test that renders the real composition.
+- Configuration that changes runtime or build behavior requires executable validation.
 
-## Mock Boundary
+## Test Data
 
-- For network behavior, use the repository's network-level mock layer rather than mocking implementation modules.
-- Mock only direct external I/O. Exercise internal utilities, business logic, and the component boundary under test through real implementations.
 - Keep test data minimal and free of real sensitive values.
 
 ## Failure Classification
@@ -37,12 +33,9 @@ Keep setup local until 3+ uses or a named readability/contract benefit justifies
 ## Repository Conventions
 
 - Preserve the repository's test location and naming. For an approved new co-located React convention, use `{ComponentName}.test.tsx`; for integration tests, use `{FeatureName}.integration.test.tsx`.
-- Keep tests executable. Fix or remove tests that no longer describe accepted behavior; remove `skip` markers used only to bypass a failure.
 - Test rendered output, user interactions, accessibility, and observable error states rather than component internals.
 
 ## Assertion Rules
 
-- Use independently derived literal values by default. An approved snapshot, property, or fixture expectation may replace a literal when it provides a clearer independent oracle.
-- Every test executes at least one assertion that proves the expected observable behavior.
-- Verify final results and state changes; use mock-call assertions only when the call contract itself is the observable boundary.
+- Use mock-call assertions only when the call contract itself is the observable boundary.
 - For asynchronous UI, use the repository's established async query/wait pattern and assert the resulting user-visible state.

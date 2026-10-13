@@ -1,6 +1,6 @@
 # E2E Test Design (Browser Harness)
 
-This reference uses Playwright as the default example throughout because it is the standard E2E browser harness assumed by these workflows. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the lane definitions, ROI rules, and budgets remain the same.
+This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the lane definitions, ROI rules, and budgets remain the same.
 
 ## Two E2E Lanes
 
@@ -10,8 +10,6 @@ E2E tests in this workflow split into two lanes (see parent skill Test Type Defi
 |------|------|----------|------|
 | **fixture-e2e** | UI journey verification with deterministic fixtures (mocked backend / fixture data) | ROI ≥ 20 (beyond reserved slot); selected by ranking within MAX 3 budget | Comparable to integration; runs in CI without infrastructure setup |
 | **service-integration-e2e** | Journey correctness depends on real cross-service behavior (data persistence, transactional consistency, external contracts) | ROI > 50 (beyond reserved slot) | Higher setup, state-cleanup, and diagnosis cost; reserved for what cannot be faked safely |
-
-Both lanes typically use Playwright; the difference is whether the backend is mocked / fixture-driven or running for real.
 
 The **reserved slot** referenced in the ROI gates is a per-lane slot for a qualifying multi-step user journey that is emitted regardless of its ROI score; it is defined in the parent skill's *Multi-Step User Journey Definition* section.
 
@@ -64,39 +62,6 @@ E2E ROI Score: [calculated score]
 ```
 
 **Lane decision**: choose `fixture-e2e` by default. Promote to `service-integration-e2e` when the verification requires observing real cross-service behavior (e.g., the test asserts that data persists across a real DB write, or that an external service receives the correct payload).
-
-## Playwright Test Architecture
-
-### Page Object Decision
-
-Use the repository's existing browser abstraction. When establishing a new Playwright structure, introduce a page object when one page/workflow interaction is reused across 3+ tests or when a coherent interaction sequence would otherwise be duplicated. Keep direct accessible locators in a small test when a page object would only add indirection.
-
-```
-tests/
-├── e2e/
-│   ├── pages/                   # Page objects (shared across lanes)
-│   ├── fixtures/                # Test fixtures and helpers (auth, seed)
-│   ├── data/                    # Static fixture data for fixture-e2e
-│   ├── *.fixture.e2e.test.ts    # fixture-e2e test files
-│   └── *.service.e2e.test.ts    # service-integration-e2e test files
-```
-
-### Test Isolation
-
-- Each test starts from a clean browser context
-- No shared state between tests
-- Use `beforeEach` for common setup (auth, navigation)
-- Prefer `page.goto()` over in-test navigation for setup
-
-### Viewport Testing
-
-When UI Spec defines responsive behavior, test critical breakpoints:
-
-| Breakpoint | Width | When to Test |
-|-----------|-------|-------------|
-| Mobile | 375px | If UI Spec defines mobile-specific interactions |
-| Tablet | 768px | If UI Spec defines tablet layout differences |
-| Desktop | 1280px | Use when the UI Spec or project browser matrix defines this viewport; otherwise use the harness/project default |
 
 ## Budget Enforcement
 

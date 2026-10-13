@@ -25,11 +25,11 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 - **Operation Mode**: `create` (default), `update`, or `reverse-engineer`
 - **confirmed_requirement_context**: Exact approved PRD path, or the unchanged orchestrator-confirmed convergence record only when no approved PRD exists
 - **structural_scale**: Orchestrator-confirmed `Medium` or `Large` scale for a Design Doc
-- **decision_materials**: Ordered array copied unchanged from the codebase-analyzer result at `decisionMaterials.candidateDecisionPoints`
+- **decision_materials**: Ordered array copied unchanged from the codebase analysis result at `decisionMaterials.candidateDecisionPoints`
 - **codebase_analysis**: Applicable focus areas and existing-behavior safeguards for a Design Doc
 - **decision_points**: Orchestrator-confirmed decision points for an ADR batch, copied unchanged
 - Existing document path or paths in update mode
-- **correction_findings**: Complete applied verifier or reviewer finding objects, copied verbatim with only their orchestrator dispositions added (update mode)
+- **correction_findings**: Complete applied verification or review finding objects, copied verbatim with only their orchestrator dispositions added (update mode)
 - **adr_paths**: Accepted ADRs that constrain the Design Doc
 - Optional UI Spec, external-resource references, or prior-layer verification supplied by the caller
 
@@ -68,7 +68,7 @@ Use `Proposed` status for created ADRs. The orchestrator records user approval f
 
 ## Design Doc — Create Mode
 
-Create the complete end-to-end technical design for the confirmed scope. Apply implementation-approach Design Convergence in active analysis, then record only the Selected Design and the evidence that justifies any added design surface. Create mode limits evidence collection to supplied artifacts, read-only repository inspection, and authoritative read-only sources. When a specific decision-changing premise remains unresolved, record it for the verifier; capability probes are reserved for the fresh review-triggered update gate below.
+Create the complete end-to-end technical design for the confirmed scope. Apply implementation-approach Design Convergence in active analysis, then record only the Selected Design and the evidence that justifies any added design surface. Create mode limits evidence collection to supplied artifacts, read-only repository inspection, and authoritative read-only sources. When a specific decision-changing premise remains unresolved, record it for verification; capability probes are reserved for the fresh review-triggered update gate below.
 
 Follow `references/design-template.md` in the documentation-criteria skill. Preserve these downstream guarantees whenever applicable:
 

@@ -46,7 +46,7 @@ Behavioral or factual claims the design relies on (framework/library defaults, c
 
 #### Bounded Self-Verification Evidence (when applied)
 
-Include only when a fresh review-triggered technical-designer update executed a capability probe. Keep the durable record compact; raw logs and temporary artifacts are discarded during probe cleanup.
+Include only when a fresh review-triggered design update executed a capability probe. Keep the durable record compact; raw logs and temporary artifacts are discarded during probe cleanup.
 
 | Applied finding | Premise | Method and observed boundary | Observation | Limitation | Design effect |
 |---|---|---|---|---|---|
@@ -337,7 +337,7 @@ Mark as N/A with brief rationale when the feature has no data layer dependencies
 
 ## Verification Strategy
 
-Verification Strategy defines what correctness means and how to prove it at design time. L1/L2/L3 levels (L1: functional operation works as end-user feature; L2: tests added and passing; L3: build succeeds without errors) define completion verification granularity at task execution time.
+Verification Strategy defines what correctness means and how to prove it at design time. L1/L2/L3 levels (L1: functional operation works as end-user feature; L2: tests that prove the changed behavior pass; L3: build succeeds without errors) define completion verification granularity at task execution time.
 
 ### Correctness Proof Method
 
@@ -364,7 +364,7 @@ Mark as N/A with brief rationale when the design introduces entirely new behavio
 
 ## Design Boundaries
 
-Record boundaries needed by a current requirement, downstream implementer, or verifier. This section contains selected design boundaries rather than discovered candidates or unselected future possibilities.
+Record boundaries needed by a current requirement, downstream implementation, or verification. This section contains selected design boundaries rather than discovered candidates or unselected future possibilities.
 
 - **Intentional limitations**: [Current behavior or responsibility deliberately kept outside the selected design, with the governing scope reason]
 - **Existing extension points used**: [Interfaces or hooks the selected design uses, with each named current consumer | None]

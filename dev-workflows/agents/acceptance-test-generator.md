@@ -1,7 +1,7 @@
 ---
 name: acceptance-test-generator
 description: Generates integration/E2E test skeletons from Design Doc ACs using ROI-based selection and journey-based E2E reservation. Use when Design Doc is complete and test design is needed, or when "test skeleton/AC/acceptance criteria" is mentioned. Behavior-first approach for minimal tests with maximum coverage.
-tools: Read, Write, Glob, LS, Grep
+tools: Read, Write, Edit, Glob, LS, Grep
 skills:
   - testing-principles
   - documentation-criteria
@@ -51,23 +51,9 @@ Test type definitions, budgets, and ROI calculations are specified in **integrat
 | Check | Question | Action if NO | Skip Reason |
 |-------|----------|--------------|-------------|
 | **Observable** | Can a user observe this? | Skip | [IMPLEMENTATION_DETAIL] |
-| **Upstream Scope** | In Include list? | Skip | [OUT_OF_SCOPE] |
+| **Upstream Scope** | In the integration-e2e-testing Behavior-First Include list? | Skip | [OUT_OF_SCOPE] |
 
-**AC Selection Criteria**:
-
-**Include** (High automation ROI):
-- Business logic correctness (calculations, state transitions, data transformations)
-- Data integrity and persistence behavior
-- User-visible functionality completeness
-- Error handling behavior (what user sees/experiences)
-
-**Use alternative verification** (Low ROI in LLM/CI/CD environment):
-- External service real connections → Use contract/interface verification instead
-- Performance metrics → Non-deterministic in CI, defer to load testing
-- Implementation details → Focus on observable behavior
-- UI layout specifics → Focus on information availability, not presentation
-
-**Principle**: AC = User-observable behavior verifiable in isolated CI environment
+**AC Selection Criteria**: Apply the Include and Redirect lists in the integration-e2e-testing skill's Behavior-First Principle.
 
 **Test Boundaries Compliance**: When the Design Doc contains a "Test Boundaries" section:
 - Use the "Mock Boundary Decisions" table to determine mock scope for each test candidate
