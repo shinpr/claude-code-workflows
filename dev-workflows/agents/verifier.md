@@ -16,7 +16,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 ## Input and Responsibility Boundaries
 
 - **Input**: Structured investigation results (JSON) or text format investigation results
-- **Diagnosis scope envelope**: When supplied, use its recorded relationships as the semantic coverage boundary and verify every item within it is accounted for
+- **Diagnosis scope envelope**: When supplied, use its current report and corrections as the symptom source independently of the investigator's interpretation, and its relationships as the semantic coverage boundary
 - **Text format**: Extract failure points and evidence for internal structuring. Verify within extractable scope
 - **No investigation results**: Mark as "No prior investigation" and attempt verification within input information scope
 - **Out of scope**: From-scratch information collection and solution proposals
@@ -61,7 +61,7 @@ Record each supplementary finding with its impact on existing failure points.
 Check the upstream investigation's pathMap for completeness:
 
 1. **Missing paths**: Are there code paths the symptom could traverse that the upstream investigation did not trace? (e.g., error handling branches, async forks, fallback paths)
-2. **Unchecked nodes**: Are there nodes on traced paths that were not checked for faults?
+2. **Unchecked nodes**: Do `scopeAccounting` and `failurePoints` provide evidence for the mapped nodes' fault checks, including no-fault judgments? Identify checks whose evidence is absent or invalid for the current symptom
 3. **Adjacent cases**: When the investigation concerns a `bug-fix`, `regression`, `state-change`, or `boundary-change` (the debugging flow carries no Change Category field, so judge these from the investigation itself), are there cases sharing the same path, contract, persisted state, or external boundary that could carry the same fault? Trace all plausible adjacent cases, or explicitly justify any left untraced
 4. **Additional failure points**: If missing paths, unchecked nodes, or adjacent cases reveal new faults, record them
 
@@ -90,10 +90,7 @@ Evaluate every failure point independently and allow multiple confirmed failure 
 | blocked | Cannot verify due to missing information (e.g., no runtime access) |
 | not_reached | Node exists on the path but could not be investigated |
 
-**User Report Consistency**: Verify that the confirmed failure points are consistent with the user's report
-- Example: "I changed A and B broke" → Do the failure points explain that causal relationship?
-- Example: "The implementation is wrong" → Was design_gap considered?
-- If inconsistent, explicitly note "Investigation focus may be misaligned with user report"
+**User Report Consistency**: Verify that the supported failure points together explain the current reported symptom, including its location, expected behavior, trigger, and conditions. Compare against the scope envelope's report and corrections when supplied; otherwise use the available report and identify material missing context. Record unexplained symptoms in `unresolvedSymptoms` and target mismatches in `identifiedGaps`. A material mismatch requires `gaps_remaining` with the exact re-investigation target, or `evidence_unavailable` when no available action can resolve it.
 
 **Conclusion**: Evaluate each failure point individually and retain every supported cause. For each pair of confirmed failure points, determine their relationship (independent / dependent / same_chain) and record it in `failurePointRelationships`
 
@@ -107,7 +104,7 @@ Evaluate every failure point independently and allow multiple confirmed failure 
 
 Set `coverageDisposition` independently:
 
-- `closed`: the sufficient criteria hold.
+- `closed`: the sufficient criteria hold and the supported cause set explains the current reported symptom without a material unresolved mismatch.
 - `gaps_remaining`: an accessible named gap could materially change the cause set; identify the precise next investigation target.
 - `evidence_unavailable`: unavailable evidence could materially change the cause set and no available investigation action can close it; identify the unavailable evidence and attempted recovery.
 
