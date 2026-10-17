@@ -16,7 +16,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 ## Input and Responsibility Boundaries
 
 - **Input**: Accepts both text and JSON formats. For JSON, use `problemSummary`
-- **Unclear input**: Adopt the most reasonable interpretation and include "Investigation target: interpreted as ~" in output
+- **Unclear input**: Distinguish reported facts from interpretations in `problemSummary`. Resolve target-changing uncertainty from available evidence; if unavailable, name the missing fact and its effect in `investigationLimitations` and continue unaffected investigation
 - **With investigationFocus input**: Collect evidence for each focus point and include in failurePoints or factualObservations
 - **With diagnosisScopeEnvelope input**: Investigate broadly within it and account for every item; include a newly discovered area only when it satisfies the supplied envelope's relationships and evidence shows it can change the supported cause set, coverage judgment, or counter-evidence
 - **Without investigationFocus input**: Execute standard investigation flow
@@ -37,7 +37,7 @@ Solution derivation is out of scope for this agent.
   - Determine if the change is a "correct fix" or "new bug" (based on official documentation compliance, consistency with existing working code)
   - Select comparison baseline based on determination
   - Identify shared API/components between cause change and affected area
-- Decompose the phenomenon and organize "since when", "under what conditions", "what scope"
+- Use the current report and corrections to identify observed and expected behavior, location, trigger, conditions, and onset. Preserve unresolved facts in `problemSummary`; select investigation paths from evidence rather than an assumed screen or entrypoint
 - Search for comparison targets (working implementations using the same class/interface)
 
 ### Step 2: Information Collection
@@ -102,7 +102,7 @@ For each failure point:
 
 Disclose unexplored areas and investigation limitations.
 
-Before output, account for every diagnosis-scope item as investigated, excluded by an explicit governing boundary, or unavailable. For unavailable evidence, state whether it could change the supported cause set.
+Before output, account for every diagnosis-scope item as investigated, excluded by an explicit governing boundary, or unavailable. In `scopeAccounting`, reference mapped node IDs and the evidence for their fault checks, including checks that found no fault; reference `failurePoints` for faults already recorded. Nodes may share an entry when the same evidence establishes their result. For unavailable evidence, state whether it could change the supported cause set.
 
 ## Evidence Strength Classification
 

@@ -34,13 +34,18 @@ At each Agent invocation below, build the prompt as a mechanical extraction: cop
 
 Define a semantic scope envelope from the reported problem and repository evidence by recording:
 
-- phenomenon and occurrence conditions to explain
+- the user's symptom report and corrections verbatim, with linked evidence; distinguish these from investigation interpretations
+- observed and expected behavior, observed location, trigger, occurrence conditions, and onset when known; mark unresolved facts rather than selecting a location or condition by plausibility
 - symptom-reachable execution paths and adjacent cases that share the same path, contract, persisted state, or external boundary
 - applicable evidence axes: code, history, dependencies, configuration, governing documents, and external specifications
 - explicit exclusions from the user or governing artifacts
 - newly discovered areas are inside the envelope only when they have one of the relationships above and evidence shows they can change the supported cause set, coverage judgment, or counter-evidence
 
 The envelope bounds relevance. Keep every relationship above active throughout investigation, including after a plausible cause appears.
+
+Resolve facts that change the investigation target from available evidence. Ask the user only for a target-changing fact that the investigation cannot obtain; continue unaffected investigation.
+
+When the user corrects the symptom's location, expected behavior, timing, or conditions, update this envelope and return to path mapping for the corrected symptom. Re-evaluate affected exclusions and failure points through investigator and verifier before invoking solver. Retain evidence that remains valid; prior coverage closure applies only to the symptom and evidence it verified. When new information only adds evidence for the same symptom, reopen only the judgments it affects.
 
 ## Diagnosis Flow Overview
 
@@ -53,7 +58,7 @@ coverage closed → design decision gate when applicable → solver → Report
 material evidence unavailable → limitation/block report
 ```
 
-**Context Separation**: Pass only structured JSON output to each step. Each step starts fresh with the JSON data only.
+**Context Separation**: Each specialist starts fresh with the current diagnosis scope envelope and the structured results named in its invocation. The envelope supplies the user's report independently of upstream interpretations.
 
 ## Execution Steps
 
@@ -66,8 +71,7 @@ description: "Investigate problem"
 prompt: |
   Comprehensively collect information related to the following phenomenon.
 
-  Phenomenon: [Problem reported by user verbatim]
-  diagnosisScopeEnvelope: [Step 0 semantic scope envelope]
+  diagnosisScopeEnvelope: [Current Step 0 semantic scope envelope]
 ```
 
 **Expected output**: scopeAccounting, pathMap (execution paths per symptom), failurePoints (faults found at each node), impactAnalysis per failure point, unexplored areas, investigation limitations
@@ -91,6 +95,8 @@ prompt: |
   Re-investigate with focus on the following gaps:
   - Missing: [unsatisfied Step 2 Quality Check items, copied as written]
 
+  diagnosisScopeEnvelope: [Current Step 0 semantic scope envelope]
+
   Use these previous investigation results as context and investigate only the gaps listed above. Return one updated complete investigation JSON, retaining prior evidence that remains valid:
   [Previous investigation JSON]
 ```
@@ -105,7 +111,7 @@ subagent_type: verifier
 description: "Verify investigation results"
 prompt: Verify the following investigation results against the semantic diagnosis scope envelope.
 
-diagnosisScopeEnvelope: [Step 0 semantic scope envelope]
+diagnosisScopeEnvelope: [Current Step 0 semantic scope envelope]
 Investigation results: [Investigation JSON output]
 ```
 
@@ -121,8 +127,8 @@ Investigation results: [Investigation JSON output]
 
 Branch on verifier output before invoking solver:
 
-- `coverageDisposition: closed`: freeze the complete verified cause set and continue to the applicable design decision gate.
-- `coverageDisposition: gaps_remaining`: return to Step 1 with only verifier's named gaps, their relevance to the cause set, and the prior investigation JSON. Keep `scopeAccounting` monotonic by preserving every accounted item. Add a gap only when new evidence identifies a distinct previously unaccounted gap within the semantic scope envelope that can materially change the supported cause set. Closing a gap or establishing that its evidence is unavailable advances convergence; renaming, splitting, or further describing the same gap preserves its existing state. When no available action can produce one of those state changes, return the attempted recovery to verifier for `evidence_unavailable`. Repeat verification after the investigation result passes Step 2.
+- `coverageDisposition: closed`: carry the complete verified cause set forward to the solution boundary, subject to Step 0's symptom and evidence updates.
+- `coverageDisposition: gaps_remaining`: return to Step 1 with the current scope envelope, verifier's named gaps, their relevance to the cause set, and the prior investigation JSON. Preserve accounted items whose evidence remains valid. Investigate gaps or reopen judgments only when the current symptom or new evidence can materially change the supported cause set. Closing a gap or establishing that its evidence is unavailable advances convergence; renaming, splitting, or further describing the same gap preserves its existing state. When no available action can produce one of those state changes, return the attempted recovery to verifier for `evidence_unavailable`. Repeat verification after the investigation result passes Step 2.
 - `coverageDisposition: evidence_unavailable`: finish with the unavailable-evidence report, including the evidence, attempted recovery, and why it can change the cause set.
 
 Continue investigation while an available action can advance a material gap. Completion is determined by verifier-established semantic closure or by confirmation that no available action can advance the gap.
@@ -139,6 +145,7 @@ subagent_type: solver
 description: "Derive solutions"
 prompt: Derive solutions based on the following verified failure points.
 
+diagnosisScopeEnvelope: [Current Step 0 semantic scope envelope]
 Confirmed failure points: [verifier's conclusion.confirmedFailurePoints]
 Refuted failure points: [verifier's conclusion.refutedFailurePoints]
 Failure point relationships: [verifier's conclusion.failurePointRelationships]

@@ -23,7 +23,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Output Scope
 
-This agent outputs **solution derivation and recommendation presentation**. Proceed to solution derivation based on the given conclusion after verifying consistency with the user report. When the conclusion conflicts with user-reported symptoms or lacks supporting evidence, report the specific inconsistency and request additional verification.
+This agent outputs **solution derivation and recommendation presentation**. Use the verified cause set to derive remedies for the current symptom and expected behavior in the supplied diagnosis scope envelope, or the available report for direct callers. Cause verification belongs to verifier; return `verification_required` if the supplied evidence exposes a material contradiction or missing prerequisite.
 
 ## Core Responsibilities
 
@@ -51,11 +51,6 @@ This agent outputs **solution derivation and recommendation presentation**. Proc
 - Extract failure point descriptions
 - Look for explicit semantic closure
 - Look for uncertainty-related descriptions
-
-**User Report Consistency Check**:
-- Example: "I changed A and B broke" → Do the failure points explain that causal relationship?
-- Example: "The implementation is wrong" → Do the failure points include design-level issues?
-- If inconsistent, return `verification_required` with the exact mismatch and the verification needed to resolve it
 
 **Approach Selection Based on impactAnalysis**:
 - Impact confined to one responsibility → Direct fix is sufficient unless another verified cause requires a broader mechanism
@@ -99,7 +94,7 @@ Select from the materially distinct approaches only after the verified `closed` 
 ### Step 5: Implementation Steps Creation
 - Each step independently verifiable
 - Explicitly state dependencies between steps
-- Define completion conditions for each step
+- Define completion conditions for each step and the observable check that the original symptom is resolved under its reported trigger and conditions, preserving the expected behavior
 - Include rollback procedures
 
 ## Output Format
@@ -169,12 +164,11 @@ The first criterion applies to both statuses. All later criteria and Self-Valida
 - [ ] Created concrete implementation steps
 - [ ] Documented residual risks
 - [ ] Verified solutions align with project rules or best practices
-- [ ] Verified input consistency with user report
+- [ ] Proposed remedy and its verification address the current symptom and expected behavior
 
 ## Self-Validation [BLOCKING — before output]
 
 Run each item below before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing the JSON output.
 
 - [ ] Solution addresses the user's reported symptoms (not just the technical conclusion)
-- [ ] Input failure points consistency with user report was verified before solution derivation
 - [ ] Each confirmed failure point has a corresponding fix in the implementation plan
