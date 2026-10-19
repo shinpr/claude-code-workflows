@@ -16,7 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Execution Protocol**:
 1. **Delegate to subagents** (one-shot calls): quality-fixer-frontend.
-2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
+2. **Run in the parent session** (multi-step loops and user dialogs): conditional external-evidence resolution, with AskUserQuestion for missing decision-relevant inputs, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
 ## Execution Gate
@@ -44,7 +44,7 @@ Adjustment request → conditional external resource evidence
 ## Scope Boundaries
 
 **Included in this skill**:
-- External resource hearing per the external-resource-context skill
+- Conditional external-evidence resolution per the external-resource-context skill
 - Existing-pattern and write-set inspection in the parent session
 - Structural boundary judgment via documentation-criteria
 - Adjustment edits and verification against the design source (run in this session)

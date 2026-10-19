@@ -2,17 +2,17 @@
 
 This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the parent skill's proof selection remains applicable.
 
-Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. Apply the parent skill’s major-UI-flow coverage check; select only browser proof not already supplied by existing tests.
+Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. Apply the parent skill’s Test Lanes coverage criteria; select only browser proof not already supplied by existing tests.
 
 ## When to Create E2E Tests
 
-E2E candidates target **critical user journeys** that span multiple pages or require real browser interaction. Pick the lane based on whether real services are required for the verification.
+E2E candidates target browser behavior needed to satisfy accepted criteria. Pick the lane based on whether real services are required for the verification.
 
 ### Candidate Sources
 
 | Source | What to Extract |
 |--------|----------------|
-| **Design Doc ACs** | User journeys with EARS "When" keyword spanning multiple screens |
+| **Design Doc ACs** | Required UI interactions, state updates and navigation, including single-screen behavior |
 | **UI Spec Screen Transitions** | Multi-step flows (e.g., form wizard, checkout) |
 | **UI Spec State x Display Matrix** | Error/empty/loading states requiring browser-level verification |
 | **UI Spec Interaction Definitions** | Complex interactions (drag-drop, keyboard navigation, responsive behavior) |
@@ -34,7 +34,7 @@ E2E candidates target **critical user journeys** that span multiple pages or req
 
 When a UI Spec exists, use it as the primary source for E2E test design:
 
-1. **Extract screen transitions** → Each multi-step transition = 1 E2E candidate
+1. **Extract screen transitions** → Acceptance-relevant transitions supply browser-proof candidates
 2. **Check state x display matrix** → Error states requiring navigation = E2E candidate
 3. **Review interaction definitions** → Browser-dependent interactions = E2E candidate
 4. **Cross-reference with Design Doc ACs** → Ensure E2E candidates map to acceptance criteria
