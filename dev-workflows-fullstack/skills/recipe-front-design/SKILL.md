@@ -35,6 +35,8 @@ requirement source -> codebase-analyzer -> scope/document routing confirmation [
 
 Use Review Resolution for every actionable finding. Wait at each `[Stop]` for explicit user confirmation.
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 ## Step 1: Select the Governing Requirement Source
 
 Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.

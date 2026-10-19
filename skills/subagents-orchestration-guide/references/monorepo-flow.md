@@ -38,7 +38,7 @@ For Medium scale, execute Large steps 4-17 and carry the confirmed convergence r
 
 ## Analysis and Evidence Rules
 
-Preserve the named authoritative inputs and required cross-layer context at each handoff; specialists select their evidence and execution route.
+At each Agent invocation in this flow, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 Invoke codebase-analyzer once for the complete confirmed feature. It discovers backend/frontend responsibility boundaries and their cross-layer contracts; independent discovery keeps convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 

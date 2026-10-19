@@ -33,6 +33,8 @@ requirement source -> codebase-analyzer -> scope/decision confirmation [Stop]
 
 Execute each dependent step after its prerequisite evidence exists. Use Review Resolution for every actionable verifier, reviewer, or design-sync finding. Wait at each `[Stop]` for explicit user confirmation.
 
+At each `Invoke` below, build the Agent prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 ## Step 1: Select the Governing Requirement Source
 
 Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.

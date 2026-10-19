@@ -27,6 +27,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: See Scope Boundaries below
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 Acceptance-test-generator is part of this planning flow and may return no selected lanes when the Design Doc has no justified integration/E2E proof boundary.
 
 ## Scope Boundaries

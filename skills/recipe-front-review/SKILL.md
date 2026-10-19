@@ -31,6 +31,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 The design-side path applies when the Design Doc is stale, excessive, or incorrect for the required outcome. Neither path makes the existing implementation or the prior design authoritative by default.
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 Design Doc: $ARGUMENTS
 
 ## Execution Flow

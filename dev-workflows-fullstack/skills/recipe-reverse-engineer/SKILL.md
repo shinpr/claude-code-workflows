@@ -27,7 +27,7 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 2. **Respect evidence dependencies**: Generation precedes verification and review for each unit; revision reruns the affected checks. Independent units may be scheduled without changing these gates.
 3. **Preserve evidence while bridging outputs** — copy the fields required by the next specialist in their declared form; apply Review Resolution before routing any correction
 
-At each invocation, preserve the named source values and derive only the declared scope mappings. Supply the evidence and paths the specialist needs; its own instructions govern investigation.
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
 **Execution Gate**: Each Design Doc depends on its completed parent PRD and scope mapping. Advance each unit only when its stated evidence and Unit Completion conditions are satisfied; a document path proves generation only. Continue independent units when another has a recorded failure, and report incomplete units explicitly.
 

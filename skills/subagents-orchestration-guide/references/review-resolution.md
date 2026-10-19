@@ -60,7 +60,7 @@ For a mixed set, complete author-owned corrections first and re-evaluate executo
 
 For an applied Design Doc finding about an unverified decision-changing premise, the fresh technical-designer invocation applies its review-triggered bounded self-verification gate. The finding carries the exact premise and required evidence; the designer selects existing evidence, a smaller design valid under every unresolved outcome, or a probe when all gate conditions hold. Rerun the originating verifier or reviewer after the update.
 
-For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
+For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`. For each ID, preserve the original finding claim and basis verbatim in `evidence`, alongside the correction diff or paths.
 
 The correction assessment covers exactly every received item. The reviewer completes that scope and then:
 
@@ -84,7 +84,7 @@ For a bounded verifier, a current finding with `apply` returns through the corre
 
 After the same `apply` finding remains material through two consecutive correction attempts, finish the correction cycle as incomplete and report the finding with its latest implementation and verification evidence. Apply the same terminal report to a required input or verification prerequisite that remains unavailable after in-scope recovery. Progress after every `apply` correction is complete and every other actionable finding has a `decline` disposition. The parent requirement and authority gates independently control their workflow stops.
 
-Handoffs preserve the following required evidence:
+Handoffs contain this exact set:
 
 - the original review target identifier;
 - initial reviewer or verifier inputs unchanged when rechecking;
@@ -93,7 +93,7 @@ Handoffs preserve the following required evidence:
 - declined IDs with reasons and evidence in `prior_feedback` when the next consumer accepts reviewer reconciliation;
 - for a bounded verifier, the previous complete result and correction diff or paths in the same `prior_feedback` handoff.
 
-Include necessary governing context when the artifact and finding objects cannot supply it; preserve their source meaning rather than inventing additional revision scope.
+An author handoff contains no other orchestrator-authored semantic content.
 
 The final user report lists every declined actionable finding with its ID, governing reason, and evidence.
 

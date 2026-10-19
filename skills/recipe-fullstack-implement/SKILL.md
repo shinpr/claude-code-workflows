@@ -31,6 +31,8 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 ## Execution Decision Flow
 
 ### 1. Current Situation Assessment

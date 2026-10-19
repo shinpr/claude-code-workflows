@@ -26,6 +26,8 @@ Target problem: $ARGUMENTS
 
 Orchestrator invokes sub-agents and passes structured JSON between them.
 
+At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
+
 **Execution Gate**: Each step below establishes evidence required by the next decision. Complete Steps 0-7 in order, including every required investigation and verification retry. Advance only through the current step's stated quality or coverage condition; invoke solver only after coverage is closed.
 
 ## Step 0: Diagnosis Scope Envelope (Before investigator invocation)

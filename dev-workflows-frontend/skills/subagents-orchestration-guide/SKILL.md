@@ -13,9 +13,9 @@ The orchestrator owns workflow decisions, routing, progress management, user int
 
 ### Workflow Subagent Context — Mandatory
 
-Specialists own their process through agent definitions, loaded skills and artifacts. Supply their declared inputs with authoritative source meaning intact, plus only context necessary to execute the assigned outcome. Canonical names aid handoffs; semantically equivalent labels are acceptable. Artifact paths can carry details without repeating them. Keep user constraints and required evidence that would otherwise be lost; avoid prescribing the specialist's reversible investigation route.
+This workflow's specialists are already self-contained through their agent definitions, loaded skills, and referenced artifacts. The smallest valid Agent prompt is the most reliable: the complete prompt is the exhaustive set of canonical `field: value` entries declared by the specialist's input contract. Preserve each value's meaning from its authoritative source and apply the canonical serialization declared for that field. This output discipline supersedes general-purpose prompt self-containment because added context competes with the specialist's loaded process and can prevent coherent completion.
 
-This section governs the orchestrator's Agent prompt. Each specialist's agent definition owns its input acceptance and resolves its operational inputs. The orchestrator preserves input meaning and the specialist's actual consumer contract.
+This section governs the orchestrator's Agent prompt. Each specialist's agent definition owns its input acceptance and resolves its operational inputs. The orchestrator supplies the canonical contract entries unchanged.
 
 ### First Action Rule
 
@@ -128,7 +128,7 @@ Each subagent invocation is a **fresh Agent tool** call, isolating each phase's 
 Tool choice does not define responsibility: the orchestrator may use any available tool for its owned work, while named specialists perform semantic deliverable creation or modification; the orchestrator writes only for mechanical operations explicitly assigned by the active workflow.
 
 ### Prompt Construction Rule
-Use the specialist input contract to select necessary context. Preserve authoritative requirements and evidence; supply a missing decision-relevant input rather than withholding it because a recipe used another label.
+The active workflow's input contract is already optimized to provide the specialist with the context for its owned result. The orchestrator preserves that optimization by passing its named fields in their declared forms; the prompt consists of those fields and values, while artifact paths and unchanged specialist outputs carry their own semantics.
 
 ## Handling Requirement Changes
 

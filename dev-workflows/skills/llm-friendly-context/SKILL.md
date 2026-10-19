@@ -21,7 +21,7 @@ The goal is stable downstream execution: the next consumer should know what to r
 
 3. **Specify output shape**
    - Use the sections, fields, table columns, JSON keys, or checklist items the consumer uses.
-   - For handoffs, include the authoritative inputs, artifact paths, decision-relevant evidence and result fields the next consumer needs.
+   - For handoffs, include only produced artifact paths and status fields that control the next transition.
 
 4. **Provide the smallest sufficient context**
    - Sufficient means sufficient for the assigned action, not complete background: every item you include is consumed by that action or by the result it must produce.
