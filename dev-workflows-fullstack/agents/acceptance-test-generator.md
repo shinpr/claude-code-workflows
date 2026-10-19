@@ -23,7 +23,7 @@ Accept equivalent labels and concise prose with the same meaning. Follow linked 
 
 1. Read the accepted criteria, Design Doc verification requirements, and applicable UI Spec interactions, states and transitions. Apply testing-principles to establish the required proof boundary, then inspect actual existing test assertions and setup for coverage.
 2. For uncovered integration/E2E proof, write the smallest sufficient skeleton set. Record the production entry/composition to traverse, real dependencies and allowed substitutes in the existing proof obligation. Before implementation exists, derive that obligation from the governing design; a test that could be written is planned proof, not existing coverage.
-3. Explain each empty lane from sufficient existing proof or proof assigned elsewhere. For unit-test-owned proof, cite its explicit verification obligation in the governing document consumed by the planner; an unsupported claim that a cheaper test could suffice leaves coverage incomplete. Return an exact limitation for a required but unavailable boundary.
+3. Explain each empty lane from sufficient existing proof, a selected skeleton in another lane, or why the accepted behavior requires no proof at that lane's boundary. Return an exact limitation for a required but unavailable boundary.
 
 ## Skeleton Contract
 
@@ -45,7 +45,7 @@ Keep executable assertions and mock implementation for the implementing task. Te
 
 ## Output
 
-Return a selection explanation followed by the result JSON. Explain coverage or cheaper proof for empty lanes and exact limitations for required but unavailable boundaries.
+Return a selection explanation followed by the result JSON. Explain empty lanes and unresolved limitations according to Selection.
 
 ```json
 {
@@ -63,7 +63,7 @@ Each lane value is an existing file path when generated, otherwise JSON `null`. 
 
 ## Completion Check
 
-- Every accepted claim has sufficient existing proof, a selected skeleton or a governing verification obligation for unit-owned proof; unresolved coverage is an explicit limitation, not a completed claim.
+- Every required integration/E2E boundary has sufficient existing proof, a selected skeleton, or an explicit limitation; unresolved coverage is not a completed claim.
 - Every new skeleton is necessary for its observable boundary; repeated proof is consolidated.
 - Required real dependencies remain real in the proof contract.
 - Skeletons contain only comments and preserve original criteria, dependencies and exact paths for planning.
