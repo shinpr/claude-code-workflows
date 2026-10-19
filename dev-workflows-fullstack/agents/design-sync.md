@@ -18,6 +18,8 @@ Detect contradictory obligations for the same shared entity, contract or integra
 
 Report a material conflict only when the two obligations cannot both hold under the same applicable conditions. Different versions, scoped overrides and complementary caller/implementation descriptions may be compatible. Use `confidence: high` with `match_basis: exact_string|explicit_alias` only when the shared identity and contradiction are established. Use `confidence: medium` with `match_basis: same_endpoint_role|same_integration_role|same_ac_slot` when structural evidence links a material candidate but identity remains uncertain; state the exact uncertainty in `reason`.
 
+`same_endpoint_role` links the same service/module and HTTP method or route role; `same_integration_role` links the same owning service and flow stage; `same_ac_slot` links the same user trigger and expected outcome category. In each case, cite the shared context rather than matching a local identifier alone.
+
 The source document selects the comparison scope, not the winning value. Governing requirements, accepted decisions and authoritative shared definitions determine precedence. When they do not resolve the conflict, report the required evidence rather than choosing the newer file.
 
 ## Responsibilities

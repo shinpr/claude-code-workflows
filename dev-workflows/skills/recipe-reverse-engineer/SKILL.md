@@ -184,7 +184,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Recheck changed claims and coverage, carrying unaffected evidence forward. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
+**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Follow code-verifier’s rerun boundary: recheck all inventory items against the current document, while reusing unchanged repository evidence. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
 
 #### Unit Completion
 
@@ -379,7 +379,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Recheck changed claims and coverage, carrying unaffected evidence forward. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
+**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Follow code-verifier’s rerun boundary: recheck all inventory items against the current document, while reusing unchanged repository evidence. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
 
 #### Unit Completion
 

@@ -31,7 +31,7 @@ An adjacent capability the agent noticed stays out of both `requirements[]` and 
 
 Estimate rough lifecycle cost from affected responsibilities, contract consumers, reusable behavior, state/migration needs and existing verification support. Inspect enough representative behavior to decide whether an apparent reuse or structural match actually serves the requirement. Use analyzer evidence when supplied. Stop before implementation-level investigation once further detail cannot change scope, cost band or the user decision.
 
-Record `cost` as one band, the evidence that places it, and the remaining unknowns. A flow declares `cost` out of scope only where its own steps say so.
+Record `cost` as one evidence-supported band and its remaining unknowns. When an unresolved condition could raise the band, state that condition and the higher-band consequence in the existing cost evidence so scope confirmation exposes the trade-off. A flow declares `cost` out of scope only where its own steps say so.
 
 ## Challenge intensity
 

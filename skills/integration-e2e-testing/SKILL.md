@@ -20,10 +20,10 @@ Select enough tests to prove every required boundary and independently failing s
 | Lane | Observable boundary | Dependencies |
 |------|---------------------|--------------|
 | `integration` | Interactions within a process, including framework-rendered UI and module/API handlers | Real participating components; mock only outside the claimed boundary |
-| `fixture-e2e` | Real application entry point with deterministic fixtures: browser, CLI process, or API transport | Fixtures may replace dependencies outside the claimed boundary |
+| `fixture-e2e` | Actual UI behavior in a real browser with deterministic fixtures | Fixtures may replace dependencies outside the claimed boundary |
 | `service-integration-e2e` | Outcome depends on actual cross-service interaction or persistence | Required local services and stores are real; stubs only outside that proof boundary |
 
-Choose by what must be observed, not whether a human triggers it. CLI/API journeys need no browser. A single interaction may need E2E proof; a multi-step journey may already be sufficiently proven in-process. For browser-specific candidate mapping, consult the E2E design reference.
+Choose by the observable failure boundary. For major UI flows named by the UI Spec or Design Doc, account for actual UI interaction, state updates and navigation using existing browser proof or selected fixture-e2e tests. In-process success alone does not prove browser wiring: a button can be disconnected, application state can fail to update, or navigation can break while component tests pass. Reuse sufficient browser proof and consolidate overlapping flows; journey length creates no test quota. For browser-specific candidate mapping, consult the E2E design reference.
 
 Generated skeletons become executable in the earliest implementation task where their proof boundary and dependencies exist. Planning preserves their paths and proof obligations; an unavailable service is an exact verification prerequisite, not a reason to substitute a fake boundary.
 

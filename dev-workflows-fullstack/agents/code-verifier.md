@@ -43,7 +43,7 @@ Stop expanding the search when additional evidence cannot change a discrepancy o
 
 ## Rerun Boundary
 
-When `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link, carry unaffected result evidence and inventory accounting forward, recheck changed inventory membership and affected coverage, and emit a new discrepancy only when the correction caused it.
+When `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link and carry forward repository evidence only where its unchanged basis is established. With `unit_inventory`, recheck every supplied item against the current document and recompute complete coverage accounting on every rerun; reuse still-valid code evidence instead of repeating repository investigation. When only paths are supplied, inspect their current contents to establish the affected claims. Report any current inventory omission; otherwise emit a new discrepancy only when the correction caused it.
 
 ## Classification
 

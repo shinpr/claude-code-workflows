@@ -23,7 +23,7 @@ Accept equivalent labels and concise prose with the same meaning. Follow linked 
 
 1. Map every accepted outcome and material failure boundary to existing proof. An observable result may belong to a user, API caller, downstream service, persistent store or operator. Preserve the source criterion; omit internal implementation detail that changes no required outcome.
 2. Identify uncovered obligations. Reuse or extend existing proof before adding tests. Inspect actual assertions and boundaries, not merely matching names. Push isolated logic to its owner-level tests; retain interaction or end-to-end candidates only when that boundary is necessary.
-3. Select the smallest sufficient set using integration-e2e-testing. Group overlapping claims while preserving independently failing boundaries. Honor required real dependencies and explain the allowed mock boundary. Use a CLI/API harness for CLI/API contracts; select browser proof only for browser behavior. Product frequency estimates, fixed test counts and reserved slots are unnecessary.
+3. Select the smallest sufficient set using integration-e2e-testing. Group overlapping claims while preserving independently failing boundaries. Honor required real dependencies and explain the allowed mock boundary. Select browser proof for browser behavior. Product frequency estimates, fixed test counts and reserved slots are unnecessary.
 4. Write skeletons only for selected obligations. An empty lane is valid with evidence showing the accepted claims are already proven or belong at a cheaper boundary. An absent prerequisite is a limitation, not proof that the obligation can be dropped.
 
 ## Skeleton Contract

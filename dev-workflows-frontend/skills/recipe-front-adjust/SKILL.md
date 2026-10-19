@@ -99,14 +99,11 @@ Execute Skill: testing-principles before adding or changing tests.
 Implement the confirmed adjustment outcome across its affected files:
 1. **Plan the edit** from the confirmed adjustment context and relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
-3. **Verify against external sources** using whichever access method `docs/project-context/external-resources.md` declares for each axis:
-   - Design origin: compare current rendering against the design source via the declared access method (e.g., design-tool MCP, WebFetch from a public URL, file read from a specification path)
-   - Visual rendering: capture screenshot or run a smoke check via the declared visual verification method (e.g., browser MCP, E2E test runner CLI invoked via Bash, dev-server URL inspection, Storybook URL)
-   - Design system tokens / variants: confirm against the declared design system source (e.g., design-system MCP, package import, Storybook URL, internal documentation path)
+3. **Verify the confirmed target** using applicable repository/UI Spec evidence and any external source selected in Step 1. Reuse its available access or verification method; compare rendering, interaction or tokens only where they determine the requested adjustment.
 4. **Refine and re-verify** until the adjustment matches the design source, or matches the user-confirmed adjustment target when no separate design source exists.
 5. When the complete adjustment matches the confirmed target, proceed to Step 6.
 
-When the project-tier file declares no automated verification mechanism for an axis, ask the user to confirm the result manually, or use file-based comparison when a specification file is available.
+When required proof is unavailable, use sufficient file-based or other available evidence; retain an exact proof limitation otherwise. Ask for manual confirmation only when a user-owned interpretation is needed to determine the adjustment target.
 
 ### Step 6: Quality Verification
 
@@ -132,7 +129,7 @@ On continuation, reconstruct retained limitations from the verification trailers
 
 ## Completion Criteria
 
-- [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
+- [ ] Decision-relevant external evidence was resolved or its exact limitation retained; no record is required when repository/UI Spec evidence suffices
 - [ ] UI Spec applicability and the candidate write set were determined from the requested UI and sufficient repository evidence
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context, including the affected files, was presented and confirmed once

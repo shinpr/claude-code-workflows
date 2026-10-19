@@ -204,7 +204,9 @@ Reviewer findings are candidates. Create correction work only from the Review Re
 
 **Fix-cycle handoff**: Apply Review Resolution and invoke each correction owner it selects. For an author-owned technical-artifact correction, invoke the layer-appropriate technical designer in update mode, run the artifact's existing document-reviewer and applicable design-sync gates, then re-run the originating reviewer. For an executor-owned correction, invoke the layer-appropriate executor with its original `task_file` or direct-scope fields plus `correction_findings` as the complete `apply` finding objects verbatim with only their dispositions added, then branch on the executor result through the per-task cycle's step 2, including its conditional integration-test-reviewer path, and run the applicable quality gate. When both owners are required, Review Resolution's author-first re-evaluation controls the order. Carry `prior_feedback` only to a reviewer or verifier being rechecked. Post-implementation corrections stay uncommitted through this cycle: the reviewers read the current working tree, so run the applicable quality gate and re-run the originating reviewer on the uncommitted changes, and commit the applied corrections once through Commit Boundary Check after the complete review set reaches Review Resolution convergence.
 
-**Re-run rule**: After an applied post-implementation correction, re-run only the reviewer that owns a corrected finding from its latest result. Retain every passed reviewer result, including after another reviewer's correction. Pass the previous complete result, dispositions, and correction diff or paths to the rerun. After Specialist Result Acceptance recovers a blocked review prerequisite, re-run that reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
+**Re-run rule**: After an applied post-implementation correction, re-run only the reviewer that owns a corrected finding from its latest result. For these finding-owned corrections, retain every passed reviewer result, including after another reviewer's correction. Pass the previous complete result, dispositions, and correction diff or paths to the rerun. After Specialist Result Acceptance recovers a blocked review prerequisite, re-run that reviewer. Review Resolution convergence governs acceptance and preserves resolved declines.
+
+When a quality-fixer retry changes behavior outside the received findings, compare its actual diff against the already reviewed boundaries. Reconcile changes covered by an existing finding through its owner. For other behavior changes that invalidate review evidence, invoke only the applicable code-reviewer or security-reviewer with the original governing documents and the affected `implementationFiles`, scoped to that diff and its directly affected boundary; omit `prior_feedback` because this is new changed code, not finding reconciliation. Apply Review Resolution to its findings. Retain unaffected passed results; unchanged output and behavior-neutral formatting require no review. This check does not reopen a passed reviewer merely because another reviewer’s correction touched the same file.
 
 ### Conditions for Stopping Autonomous Execution
 
@@ -244,7 +246,8 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
      - `pass` → Proceed to step 3
      - `blocked` → Apply Specialist Result Acceptance
      - `needs_revision` → Pass `qualityIssues` objects unchanged into Review Resolution. On correction re-review, derive the next transition only from `prior_feedback_reconciliation`; return to step 1 for rerouted corrections and proceed to step 3 only at convergence
-   - Otherwise → Proceed to step 3
+   - Implementation is complete with supporting repository evidence → Proceed to step 3
+   - Otherwise → Apply Specialist Result Acceptance
 3. **Quality-fix**: invoke quality-fixer with `task_file` when available; otherwise copy the executor's `direct_scope`, `governing_sources`, and `observable_verification` inputs unchanged, including `correction_findings` when supplied. Add upstream `mutationEvidence` and `qualityCommand` from the caller first or task otherwise
    - `stub_detected` → Return to step 1 with quality-fixer's `incompleteImplementations` array unchanged as the canonical `incompleteImplementations` field
    - `blocked` → Apply Specialist Result Acceptance
@@ -302,7 +305,8 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 ### HC-06: acceptance-test-generator → work-planner
 
 - Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `confirmed_requirement_context` used for design.
-- Verify each non-null `generatedFiles.<lane>` path exists. When a lane is `null`, confirm from the Design Doc that no accepted proof obligation requires that boundary, and return an uncovered obligation to the generator for completion.
+- Resolve a blocked generator result through Specialist Result Acceptance before consuming `generatedFiles`.
+- Verify each non-null `generatedFiles.<lane>` path exists. When a lane is `null`, confirm from the accepted criteria, applicable UI Spec, and existing proof that no uncovered obligation requires that boundary, and return an uncovered obligation to the generator for completion.
 - Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement.
 - Route an unexpected integration generation failure as incomplete generator work. A validated null E2E lane is complete.
 

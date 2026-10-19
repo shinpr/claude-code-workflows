@@ -176,7 +176,7 @@ Return the final response per Structured Response Specification. For research/an
 ### Output Protocol
 
 - During execution, intermediate progress messages MAY be emitted as plain text or markdown.
-- The LAST message returned to the orchestrator MUST be a single JSON object that matches one of the schemas below (Task Completion, Incomplete, or Escalation Response).
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches one of the schemas below (Task Completion, Blocked, or Escalation Response).
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 ### Field Specifications
@@ -208,9 +208,9 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 }
 ```
 
-### 2. Incomplete Response
+### 2. Blocked Response
 
-When required implementation remains incomplete and available in-scope recovery supplies no advancing action, return `{"status":"incomplete","taskName":"task","changeSummary":"completed work","remainingWork":["required unfinished result"],"evidence":["attempt and observed blocker"],"runnableCheck":{"result":"failed|skipped","reason":"exact affected proof"}}`. Preserve unfinished checkboxes. Verification unavailable after completed implementation remains a `completed` implementation result with an exact skipped/failed check for downstream quality assurance.
+When required implementation remains incomplete and available in-scope recovery supplies no advancing action, return `{"status":"blocked","taskName":"task","changeSummary":"completed work","remainingWork":["required unfinished result"],"evidence":["attempt and observed blocker"],"runnableCheck":{"result":"failed|skipped","reason":"exact affected proof"}}`. Preserve unfinished checkboxes. Verification unavailable after completed implementation remains a `completed` implementation result with an exact skipped/failed check for downstream quality assurance.
 
 ### 3. Escalation Response
 
@@ -236,6 +236,6 @@ This gate runs immediately before producing the final JSON response.
 ☐ `reuseDecisions` records decision-relevant similar components or hooks and its evidence-backed reuse, extend, or separate disposition
 ☐ Every available Operation Verification Method ran; each unavailable or failed check has its exact result and affected proof in `runnableCheck`
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
-☐ Final response is a single JSON with `status: "completed"`, `status: "incomplete"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
+☐ Final response is a single JSON with `status: "completed"`, `status: "blocked"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
 **ENFORCEMENT**: Return `escalation_needed` only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Technical design, UI, Props, architecture, dependency, data-flow, persistence, and implementation corrections that preserve those boundaries remain implementation work.

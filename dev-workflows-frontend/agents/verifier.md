@@ -117,12 +117,8 @@ Set `coverageDisposition` independently:
     "pathMapCoverage": "Assessment of path coverage completeness",
     "identifiedGaps": ["Missing paths or unchecked nodes"]
   },
-  "triangulationSupplements": [
-    {"source": "Additional information source investigated", "findings": "Content discovered", "impactOnFailurePoints": "Impact on existing failure points"}
-  ],
-  "externalResearch": [
-    {"query": "Search query used", "source": "Information source", "findings": "Related information discovered", "impactOnFailurePoints": "Impact on failure points"}
-  ],
+  "triangulationSupplements": [],
+  "externalResearch": [],
   "coverageCheck": {
     "scopeEnvelopeAccounting": [
       {"scopeItem": "Scope-envelope item", "status": "closed|material_gap|evidence_unavailable", "evidence": "Coverage evidence", "nextInvestigationTarget": "Exact target or null"}

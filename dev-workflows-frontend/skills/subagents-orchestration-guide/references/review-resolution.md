@@ -19,7 +19,7 @@ For verifier, design-sync, code-reviewer, security-reviewer, and integration-tes
 Use the result producer's declared verification mode:
 
 - **Reconciliation reviewer**: document-reviewer, code-reviewer, security-reviewer, and integration-test-reviewer accept `prior_feedback` and return `prior_feedback_reconciliation` after correction.
-- **Bounded verifier**: code-verifier and design-sync accept the previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Recheck the prior findings and inconsistencies directly introduced by the correction, and preserve unaffected evidence. A decline-only result is complete.
+- **Bounded verifier**: code-verifier and design-sync accept the previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Recheck the prior findings and inconsistencies directly introduced by the correction, and preserve unaffected evidence. For code-verifier with `unit_inventory`, its full current-document inventory accounting still applies. A decline-only result is complete.
 
 ## 1. Assess Every Finding
 
@@ -70,7 +70,7 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction.
+For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction or code-verifier’s required full inventory accounting establishes a current omission.
 
 ## 3. Converge or Report
 

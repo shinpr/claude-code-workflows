@@ -2,7 +2,7 @@
 
 This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the parent skill's proof selection remains applicable.
 
-Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. A UI journey alone creates no reserved test slot.
+Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. Apply the parent skill’s major-UI-flow coverage check; select only browser proof not already supplied by existing tests.
 
 ## When to Create E2E Tests
 

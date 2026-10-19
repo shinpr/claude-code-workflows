@@ -156,7 +156,7 @@ Use the shared **Re-run rule** to select the owners of the findings corrected in
 
 Apply Review Resolution to each returned reconciliation. Return maintained applied findings to their correction owner; proceed to Step 9 at convergence.
 
-Before Step 9, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. Remove a limitation when the retry passes, route newly discovered incomplete implementation through Steps 6-8, and report a repeated `verification_incomplete` result. A correction follows the same finding-owner re-run rule.
+Before Step 9, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. Remove a limitation when the retry passes, route newly discovered incomplete implementation through Steps 6-8, and report a repeated `verification_incomplete` result. Apply the shared Re-run rule, including its changed-boundary check for mutations outside received findings, before reporting.
 
 ### Step 9: Final Report
 
