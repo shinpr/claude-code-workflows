@@ -16,7 +16,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 **Execution Protocol**:
 1. **Delegate to subagents** (one-shot calls): quality-fixer-frontend.
-2. **Run in the parent session** (multi-step loops and user dialogs): external-resource hearing via AskUserQuestion, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
+2. **Run in the parent session** (multi-step loops and user dialogs): conditional external-evidence resolution, with AskUserQuestion for missing decision-relevant inputs, write-set inspection, scale judgment, adjustment-context approval, adjustment edits, verification against the design source, iteration until acceptance.
 3. **Stop at every `[Stop: ...]` marker** before proceeding.
 
 ## Execution Gate
@@ -44,7 +44,7 @@ Adjustment request → conditional external resource evidence
 ## Scope Boundaries
 
 **Included in this skill**:
-- External resource hearing per the external-resource-context skill
+- Conditional external-evidence resolution per the external-resource-context skill
 - Existing-pattern and write-set inspection in the parent session
 - Structural boundary judgment via documentation-criteria
 - Adjustment edits and verification against the design source (run in this session)
@@ -59,10 +59,10 @@ Adjustment request: $ARGUMENTS
 
 ## Execution Flow
 
-### Step 1: External Resource Hearing
-Execute Skill: external-resource-context before running the hearing protocol.
+### Step 1: External Resource Evidence
+Execute Skill: external-resource-context when external evidence is required.
 
-Run the hearing protocol only when external evidence can change the current adjustment target or verification result. Otherwise continue with the existing repository/UI Spec evidence and record no external references.
+Resolve only external evidence that can change the current adjustment target or verification result; use existing access details and ask only for missing decision-relevant inputs. Otherwise continue with the existing repository/UI Spec evidence and record no external references.
 
 ### Step 2: Determine the Route and Write Set
 
@@ -99,14 +99,11 @@ Execute Skill: testing-principles before adding or changing tests.
 Implement the confirmed adjustment outcome across its affected files:
 1. **Plan the edit** from the confirmed adjustment context and relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
-3. **Verify against external sources** using whichever access method `docs/project-context/external-resources.md` declares for each axis:
-   - Design origin: compare current rendering against the design source via the declared access method (e.g., design-tool MCP, WebFetch from a public URL, file read from a specification path)
-   - Visual rendering: capture screenshot or run a smoke check via the declared visual verification method (e.g., browser MCP, E2E test runner CLI invoked via Bash, dev-server URL inspection, Storybook URL)
-   - Design system tokens / variants: confirm against the declared design system source (e.g., design-system MCP, package import, Storybook URL, internal documentation path)
+3. **Verify the confirmed target** using applicable repository/UI Spec evidence and any external source selected in Step 1. Reuse its available access or verification method; compare rendering, interaction or tokens only where they determine the requested adjustment.
 4. **Refine and re-verify** until the adjustment matches the design source, or matches the user-confirmed adjustment target when no separate design source exists.
 5. When the complete adjustment matches the confirmed target, proceed to Step 6.
 
-When the project-tier file declares no automated verification mechanism for an axis, ask the user to confirm the result manually, or use file-based comparison when a specification file is available.
+When required proof is unavailable, use sufficient file-based or other available evidence; retain an exact proof limitation otherwise. Ask for manual confirmation only when a user-owned interpretation is needed to determine the adjustment target.
 
 ### Step 6: Quality Verification
 
@@ -132,7 +129,7 @@ On continuation, reconstruct retained limitations from the verification trailers
 
 ## Completion Criteria
 
-- [ ] External resource hearing executed (project-tier file written or update explicitly skipped)
+- [ ] Decision-relevant external evidence was resolved or its exact limitation retained; no record is required when repository/UI Spec evidence suffices
 - [ ] UI Spec applicability and the candidate write set were determined from the requested UI and sufficient repository evidence
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context, including the affected files, was presented and confirmed once

@@ -36,17 +36,17 @@ When the file is absent or the resource is unreachable, continue from governing 
 
 ## Capturing and Updating Records
 
-Capturing a record requires an interactive hearing. The workflow using this skill owns the interaction mechanism and routing. Follow [references/hearing.md](references/hearing.md) for the hearing conditions, domain routing, two-phase hearing, storage protocol, and quality checklist.
+Capture only resources needed by the current decision. Reuse supplied access details and repository records, verify them within current authority, and ask only for missing information that prevents that decision. Follow [references/hearing.md](references/hearing.md) for evidence, questions and storage.
 
 ## Output Format
 
-The project-tier file follows the structure in [references/template.md](references/template.md). The project-tier file's heading levels and section names are fixed so downstream agents can locate sections deterministically.
+Use [references/template.md](references/template.md) for a compact project record. Preserve existing labels referenced by consumers; include only relevant entries with their access details and source evidence.
 
 For feature-tier sections inside UI Spec or Design Doc, the heading text "External Resources Used" is fixed; the heading level matches the parent document's natural structure (h2 in UI Spec where it is a sibling of other top-level sections, h3 in Design Doc where it sits under Background and Context).
 
 ## References
 
-- [references/hearing.md](references/hearing.md) — Hearing conditions, domain routing, storage protocol, quality checklist
+- [references/hearing.md](references/hearing.md) — Decision-specific capture and storage
 - [references/frontend.md](references/frontend.md) — Frontend domain axes
 - [references/backend.md](references/backend.md) — Backend domain axes
 - [references/api.md](references/api.md) — API contract domain axes

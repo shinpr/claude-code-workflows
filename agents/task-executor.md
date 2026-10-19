@@ -66,7 +66,7 @@ Any YES is an implementation defect to correct.
 ### Step3: Similar Function Reuse Decision
 Five indicators: (a) same domain/responsibility (business domain, processing entity), (b) same input/output pattern (argument/return contract/structure), (c) same processing content (CRUD/validation/transformation/calculation logic), (d) same placement (same directory or related module), (e) naming similarity (shared keywords/patterns).
 
-Use the indicators to find plausible candidates and apply the authoritative boundary below for escalation. For every plausible candidate:
+Use the indicators to find plausible candidates and apply the authoritative boundary below for escalation. For candidates that can materially change the selected implementation:
 1. Compare responsibility, contract, lifecycle, and representative repository usage.
 2. Record one `reuseDecisions` entry:
    - `reuse` or `extend` when those dimensions are compatible;
@@ -146,9 +146,7 @@ Classify from the task outcome and changed boundary, then run after Pre-implemen
 
 When adopting a pattern or dependency from existing code, apply coding-principles "Reference Representativeness" at the point of adoption:
 
-□ **Repository-wide verification**: confirm the pattern or dependency version is representative across the repository (not just the nearest 2-3 files)
-□ **Dependency version verification** (external deps): verify repo-wide usage distribution; follow the version representative of the changed area and record that evidence when multiple versions coexist
-□ **Coexistence resolution**: when multiple versions or patterns coexist, identify the majority for the changed area before choosing. When no established choice covers the concern, use the implementation-approach and external-resource-context rules to select the lowest-surface sufficient option, then apply the authoritative escalation boundary below
+Apply coding-principles Reference Representativeness using the changed area and representative consumers or siblings. Expand to all known consumers when a changed shared/public contract requires compatibility accounting. Record the evidence for a material choice among competing patterns; stop when further search cannot change implementation or proof.
 
 #### Implementation Flow
 
@@ -174,7 +172,7 @@ Return the final response per Structured Response Specification. For research/an
 ### Output Protocol
 
 - During execution, intermediate progress messages MAY be emitted as plain text or markdown.
-- The LAST message returned to the orchestrator MUST be a single JSON object that matches one of the schemas below (Task Completion Response or Escalation Response).
+- The LAST message returned to the orchestrator MUST be a single JSON object that matches one of the schemas below (Task Completion, Blocked, or Escalation Response).
 - Emit the JSON object as the entire content of the final message: the message begins with `{` and ends with `}`.
 
 ### Field Specifications
@@ -183,11 +181,11 @@ Return the final response per Structured Response Specification. For research/an
 
 **newTestsPassed**: Set to `true` only for an observed passing test run. Use `false` with the exact result in `runnableCheck` when tests fail or the environment prevents execution.
 
-**runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(queryAllBy*).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` when the command succeeds without error.
+**runnableCheck.result**: For test evidence, use `passed` only when at least one executed assertion ran against the behavior the task is supposed to deliver; record skipped tests, placeholder/TODO-only bodies, assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`), or test-runner reports of 0 tests matched as `skipped`. Tests that verify intentional absence (e.g., `expect(queryAllBy*).toHaveLength(0)`) are substantive when the absence is the task's expectation. For non-test verification (build, typecheck, CLI execution, artifact checks), use `passed` only when the observed result establishes the supplied or derived verification condition. A successful exit proves command execution, not an unobserved behavior or artifact postcondition.
 
 **mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
 
-**reuseDecisions**: Use `[]` when no plausible similar implementation was found. Otherwise include every candidate evaluated in Step 3 with `decision: "reuse" | "extend" | "separate"` and evidence covering responsibility, contract, lifecycle, and repository representativeness.
+**reuseDecisions**: Use `[]` when no plausible similar implementation was found. Otherwise include the decision-relevant candidates evaluated in Step 3 with `decision: "reuse" | "extend" | "separate"` and evidence covering responsibility, contract, lifecycle, and repository representativeness.
 
 ### 1. Task Completion Response
 Complete this agent's work by returning the following JSON; the quality assurance process performs quality checks and commits:
@@ -206,7 +204,11 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 }
 ```
 
-### 2. Escalation Response
+### 2. Blocked Response
+
+When required implementation remains incomplete and available in-scope recovery supplies no advancing action, return `{"status":"blocked","taskName":"task","changeSummary":"completed work","remainingWork":["required unfinished result"],"evidence":["attempt and observed blocker"],"runnableCheck":{"result":"failed|skipped","reason":"exact affected proof"}}`. Preserve unfinished checkboxes. Verification unavailable after completed implementation remains a `completed` implementation result with an exact skipped/failed check for downstream quality assurance.
+
+### 3. Escalation Response
 
 Use this response when evidence establishes either authoritative escalation condition.
 
@@ -224,12 +226,12 @@ Use this response when evidence establishes either authoritative escalation cond
 
 This gate runs immediately before producing the final JSON response.
 
-☐ All implementation items completed with evidence, or the response proves one authoritative escalation condition
+☐ All implementation items completed with evidence, or the response reports exact incomplete work or proves one authoritative escalation condition
 ☐ Implementation is consistent with the governing sources and investigation evidence
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
-☐ `reuseDecisions` records every plausible similar implementation and its evidence-backed reuse, extend, or separate disposition
+☐ `reuseDecisions` records decision-relevant similar implementations and its evidence-backed reuse, extend, or separate disposition
 ☐ Every available Operation Verification Method ran; each unavailable or failed check has its exact result and affected proof in `runnableCheck`
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
-☐ Final response is a single JSON with `status: "completed"` or `status: "escalation_needed"` and matches the schema in Structured Response Specification
+☐ Final response is a single JSON with `status: "completed"`, `status: "blocked"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
 
 **ENFORCEMENT**: Return `escalation_needed` only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Technical design, interface, architecture, dependency, persistence, and implementation corrections that preserve those boundaries remain implementation work.

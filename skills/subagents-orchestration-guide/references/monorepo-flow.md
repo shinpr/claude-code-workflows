@@ -77,7 +77,7 @@ After scope and any applicable UI Spec approval, resolve candidate decision poin
 - Collect every returned ADR path.
 - Invoke document-reviewer once with `doc_type: ADRBatch` and the complete `targets` array.
 - Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per owning-designer invocation serially, and repeats the complete batch review; `rejected` resolves the governing-source conflict before another review.
-- Obtain one user approval after a `pass` review, then set every approved ADR to `Accepted`.
+- Obtain one user approval after Review Resolution converges and governing-source conflicts are resolved, then set every approved ADR to `Accepted`.
 - An empty batch proceeds directly to both Design Docs.
 
 ## Layer Design Context
@@ -88,6 +88,7 @@ Create each complete layer design from reviewed artifacts and unchanged evidence
 
 ```text
 document_to_create: DesignDoc
+output_path: docs/design/[feature-name]-backend-design.md
 confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
 structural_scale: [confirmed scale]
 adr_paths: [accepted paths or []]
@@ -98,6 +99,7 @@ codebase_analysis: [complete analysis JSON unchanged]
 
 ```text
 document_to_create: DesignDoc
+output_path: docs/design/[feature-name]-frontend-design.md
 confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
 structural_scale: [confirmed scale]
 adr_paths: [accepted paths or []]
@@ -117,7 +119,7 @@ After both document reviews permit approval, invoke design-sync with `source_des
 
 ## Test Skeleton and Work Planning
 
-Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for `value_input_required` and its unknown-value continuation before planning. Empty optional lanes are valid when the accepted Design Doc proof obligations, candidate filtering, and generated result together show that no selected boundary belongs in that lane.
+Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for generated-path and empty-lane coverage checks before planning. Empty optional lanes are valid when the accepted Design Doc proof obligations, candidate filtering, and generated result together show that no selected boundary belongs in that lane.
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 

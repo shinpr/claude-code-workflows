@@ -41,7 +41,6 @@ For the `skeleton` basis, extract the following comment patterns from the change
 Annotation patterns (comment syntax varies by project language):
 - `AC:` → Original acceptance criteria
 - `Behavior:` → Trigger → Process → Observable Result
-- `@category:` → Test classification
 - `@dependency:` → Dependencies
 - `Verification items:` → Expected verification items (if present)
 

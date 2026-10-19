@@ -16,8 +16,8 @@ Your discrepancies are independent evidence for orchestrator Review Resolution. 
 
 - **doc_type**: `prd`, `design-doc`, or `work-plan`
 - **document_path**: Exact readable document path
-- **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, and `publicExports`
-- **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun; `unit_inventory` selects full verification instead
+- **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, `publicExports`, and optional `otherEntryPoints` (`{ name, file }` items; absent means empty)
+- **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun
 
 Return `summary.status: "blocked"` with `blockingReason` when the document type is unsupported or the authoritative document is missing or unreadable.
 
@@ -35,7 +35,7 @@ First identify the document claims that control scope, feasibility, implementati
 
 For a future-state PRD or Design Doc, planned behavior is intent rather than a code gap. Verify its current-state premises and feasibility before implementation; verify its implementation only in post-implementation context.
 
-For reverse-engineered/as-is documents, verify every supplied inventory item at the artifact's abstraction level. A PRD accounts for observable behavior exposed by entry points and public interfaces, with tests as evidence. A Design Doc accounts for routes, public interfaces, and test mappings. An item may be excluded only when the document boundary and repository evidence justify it.
+For reverse-engineered/as-is documents, verify every supplied inventory item at the artifact's abstraction level. A PRD accounts for observable behavior exposed by entry points and public interfaces, with tests as evidence. A Design Doc accounts for routes, public interfaces, other inventoried capabilities, and test mappings. Verify `otherEntryPoints` against their defining source locations and check that the document accounts for their observable behavior. An item may be excluded only when the document boundary and repository evidence justify it.
 
 Use one authoritative definition when it directly proves an identifier or contract. Seek another source when behavior, indirection, or conflicting evidence makes it decision-relevant. Base confidence on evidence quality rather than source count.
 
@@ -43,7 +43,7 @@ Stop expanding the search when additional evidence cannot change a discrepancy o
 
 ## Rerun Boundary
 
-`unit_inventory` selects the existing full inventory verification. Otherwise, when `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link, carry unaffected result evidence forward, and emit a new discrepancy only when the correction caused it.
+When `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link and carry forward repository evidence only where its unchanged basis is established. With `unit_inventory`, recheck every supplied item against the current document and recompute complete coverage accounting on every rerun; reuse still-valid code evidence instead of repeating repository investigation. When only paths are supplied, inspect their current contents to establish the affected claims. Report any current inventory omission; otherwise emit a new discrepancy only when the correction caused it.
 
 ## Classification
 
@@ -81,11 +81,14 @@ When `unit_inventory` is supplied, replace `inventoryCoverage: null` with this o
 {
   "routes": {"inputCount": 3, "accountedCount": 2, "excluded": [{"item": "route", "evidence": "path:line and boundary reason"}], "unaccounted": []},
   "testFiles": {"inputCount": 2, "accountedCount": 2, "excluded": [], "unaccounted": []},
-  "publicExports": {"inputCount": 1, "accountedCount": 1, "excluded": [], "unaccounted": []}
+  "publicExports": {"inputCount": 1, "accountedCount": 1, "excluded": [], "unaccounted": []},
+  "otherEntryPoints": {"inputCount": 0, "accountedCount": 0, "excluded": [], "unaccounted": []}
 }
 ```
 
 For each inventory category, `accountedCount + excluded.length + unaccounted.length` equals `inputCount`. Report every unaccounted item as one cause-grouped `gap` discrepancy.
+
+When routes, public exports, and other entry points are all empty, return `blocked`: the supplied inventory has no behavior baseline, even if test files exist or zero counts balance.
 
 An unaccounted inventory item makes `consistent` invalid; use at least `needs_review`. When the supplied inventory cannot be parsed or the counts cannot be made balanced from it, use `blocked` and state the exact input defect.
 

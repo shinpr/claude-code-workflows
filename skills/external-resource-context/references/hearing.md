@@ -1,52 +1,18 @@
-# External Resource Hearing and Storage
+# External Resource Capture
 
-Content protocol for capturing or updating external-resource records. The owning workflow supplies the interactive question mechanism.
+Capture a resource only when repository and supplied evidence cannot decide a current design, implementation or verification question without it. Absence of a project record does not trigger a domain-wide questionnaire.
 
-## When to Hear
+## Resolve Access
 
-| Condition | Action |
-|-----------|--------|
-| `docs/project-context/external-resources.md` does not exist | Run full hearing for the relevant domain(s) |
-| File exists and covers the current decision | Use it without an update question |
-| The governing request identifies changed environment facts | Run diff-only hearing for the named axes |
-| A relevant axis is absent | Hear only the missing axis |
-| Access failure or contradictory current evidence indicates possible staleness | Ask: "Update external-resources.md? (no / yes-full / yes-diff-only)". On `yes-full` run full hearing; on `yes-diff-only` hear the named stale axes; on `no` preserve the file and report the limitation |
+1. Name the decision and required external fact. Read the existing project entry and feature identifier when available.
+2. Reuse access details from the user, governing artifacts or repository configuration. Fetch the selected content within current authority. A new record can be written from this evidence without a hearing.
+3. Ask only for a missing location, access method or user-owned interpretation that prevents the decision. The calling workflow owns interaction; an autonomous consumer returns the exact missing evidence to that caller and continues independent work.
+4. Correct stale details when authoritative current evidence establishes the replacement. When it does not, preserve the last known record, report the failed access and ask only for the unresolved decision-relevant fact. Record locations and access mechanisms, never secret values.
 
-## Domain Routing
+## Optional Domain Cues
 
-Load the domain reference matching the current task:
+Load only the reference needed to locate the selected fact: [frontend.md](frontend.md), [backend.md](backend.md), [api.md](api.md), or [infra.md](infra.md). Their lists are cues, not required questions or completion axes.
 
-| Task type | References to load |
-|-----------|--------------------|
-| Frontend (UI work) | [frontend.md](frontend.md) |
-| Backend (server / data work) | [backend.md](backend.md) |
-| API contract work | [api.md](api.md) |
-| Infrastructure / deployment | [infra.md](infra.md) |
-| Fullstack | Load only the references whose frontend, backend/data, API-contract, or infrastructure responsibilities are affected by the confirmed scope; a fullstack label alone does not activate infrastructure |
+## Store
 
-Each domain reference defines the axes and the question template.
-
-## Two-Phase Hearing
-
-1. **Structured hearing** — for each axis selected by the When to Hear and Domain Routing rules, present the choices listed in its domain reference (always include "Not applicable" as an option). For each non-N/A axis, follow up with an access-method question (URL / MCP name / file path / command).
-
-2. **Self-declaration for a full hearing** — after the structured axes for all selected domains are complete, ask: "Are there any other external resources for this work that the structured questions did not cover? If yes, describe them in your next message." If additional resources are supplied, append them to the storage file under an "Additional resources" subsection. A diff-only or missing-axis hearing ends after its named axes because the existing project record already completed self-declaration.
-
-For a full hearing, the two phases are sequential and self-declaration runs even if the user answered "Not applicable" to every structured axis.
-
-## Storage Protocol
-
-After hearing completes:
-
-1. Build the project-tier content from the answers. Use [template.md](template.md) as the structure.
-2. Write to `docs/project-context/external-resources.md`. Create the directory if absent.
-3. When the calling workflow has a target UI Spec or Design Doc, also append or update the document's `## External Resources Used` section with the feature-tier subset (label references + feature-specific identifiers only).
-4. Report the file paths back to the calling workflow.
-
-## Quality Checklist
-
-- [ ] Each axis answered has both a presence indicator and an access method, or is marked "Not applicable"
-- [ ] A full hearing ran self-declaration even when all structured axes were "Not applicable"; a diff-only or missing-axis hearing stayed within its named axes
-- [ ] Project-tier entries hold the environment facts (URL, MCP name, file path, command)
-- [ ] Feature-tier rows hold a project-tier label and the feature-specific identifier
-- [ ] When the project file already existed, each write traces to an explicit changed fact, a missing relevant axis, or a confirmed stale-evidence update decision
+Use [template.md](template.md) for `docs/project-context/external-resources.md`. Keep environment facts at project level and feature-specific identifiers in the consuming document's `External Resources Used` table. Preserve unrelated entries and stable labels. Create no empty record or N/A catalog when no external source is required. Return changed paths and any exact remaining evidence limitation to the caller.

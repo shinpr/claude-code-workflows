@@ -66,7 +66,7 @@ Key points to enforce as the orchestrator runs the flow:
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows-fullstack:work-planner") with vertical slicing instruction
-- Pass the Work Plan to document-reviewer (`doc_type: WorkPlan`) and request batch approval only after the review passes
+- Pass the Work Plan to document-reviewer (`doc_type: WorkPlan`) and request batch approval after Review Resolution converges and governing-source conflicts are resolved
 
 ### 4. Bind the Applicable Flow
 

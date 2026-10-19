@@ -29,20 +29,9 @@ An adjacent capability the agent noticed stays out of both `requirements[]` and 
 
 ## cost
 
-Cost follows structure and count, not behavior, so it is decided from these inputs alone:
+Estimate rough lifecycle cost from affected responsibilities, contract consumers, reusable behavior, state/migration needs and existing verification support. Inspect enough representative behavior to decide whether an apparent reuse or structural match actually serves the requirement. Use analyzer evidence when supplied. Stop before implementation-level investigation once further detail cannot change scope, cost band or the user decision.
 
-| Input | How it is obtained |
-|-------|--------------------|
-| Number and kind of targets to change | Grep/Glob over the affected files |
-| Number of boundaries crossed | Affected path composition plus import and caller tracing |
-| Whether an equivalent already exists (reuse or new) | Grep for a similar name or shape |
-| Whether persisted state needs converting | Whether a schema or migration path is in the change set |
-| Whether verification support already exists | Glob for the area's existing test harness |
-| What remains unknown | WebSearch for a dependency's current capability; anything the above cannot resolve |
-
-Reading what the code *does* answers whether the change is correct, not what it costs, and belongs to the codebase analysis that precedes design.
-
-Record `cost` as one band, the inputs above that place it, and the remaining unknowns. A flow declares `cost` out of scope only where its own steps say so.
+Record `cost` as one evidence-supported band and its remaining unknowns. When an unresolved condition could raise the band, state that condition and the higher-band consequence in the existing cost evidence so scope confirmation exposes the trade-off. A flow declares `cost` out of scope only where its own steps say so.
 
 ## Challenge intensity
 
@@ -51,10 +40,10 @@ The band's only job is to select a row here, so cheap requirements stay cheap to
 | Band | Meaning | Challenge |
 |------|---------|-----------|
 | `low-reversible` | Additive, flagged, or easily deleted | Record the fields and accept the requirement |
-| `medium` | Reverting would touch other work | Present the cost and one lower-cost alternative |
-| `high-irreversible` | Public contract, persisted data shape, or dependency swap | Present the trade-off and require a user decision before design |
+| `medium` | Reverting would touch other work | Present cost and a lower-cost alternative when a materially distinct sufficient option exists |
+| `high-irreversible` | Public contract, persisted data shape, or dependency swap | Present the trade-off; obtain a user decision when a required outcome, explicit constraint or irreversible-action authority must change |
 
-Report an unknown that would move the band up as a blocking question rather than assuming the lower band.
+Resolve repository-answerable uncertainty locally. Ask the user only when a remaining unknown changes required scope, constraints or authority; otherwise record its cost effect and keep independent work moving.
 
 ## Solution-in-disguise test
 

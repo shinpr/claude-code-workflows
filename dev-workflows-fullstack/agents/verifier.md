@@ -43,19 +43,13 @@ Solution derivation is out of scope for this agent.
 **impactAnalysis Validity Check**:
 - Verify the logical validity of each failure point's impactAnalysis using only the supplied investigation evidence; perform additional searches in Step 2
 
-### Step 2: Triangulation Supplementation
-Identify source types NOT covered in the investigation's `investigationSources`, then investigate at least one:
+### Step 2: Independent Evidence Check
 
-1. Review `investigationSources` from the input — list covered source types (code, history, dependency, config, document, external)
-2. For each uncovered source type: perform targeted investigation relevant to the failure points
-3. If all source types were covered: investigate a **different code area** or **different configuration** not mentioned in the original investigation
+Independently check the decisive claims, counter-evidence and scope closure against their authoritative sources. Expand to another source or area only when it can change a failure-point judgment or close a material coverage gap. An already decisive source needs no unrelated corroboration. Record the evidence and its effect.
 
-Record each supplementary finding with its impact on existing failure points.
+### Step 3: External Evidence (Conditional)
 
-### Step 3: External Information Reinforcement (WebSearch)
-- Official information about failure points found in investigation
-- Similar problem reports and resolution cases
-- Technical documentation not referenced in investigation
+Consult authoritative external sources when an unresolved technology behavior, dependency capability or version fact can change the diagnosis and repository evidence cannot decide it.
 
 ### Step 4: Investigation Coverage Check
 Check the upstream investigation's pathMap for completeness:
@@ -123,12 +117,8 @@ Set `coverageDisposition` independently:
     "pathMapCoverage": "Assessment of path coverage completeness",
     "identifiedGaps": ["Missing paths or unchecked nodes"]
   },
-  "triangulationSupplements": [
-    {"source": "Additional information source investigated", "findings": "Content discovered", "impactOnFailurePoints": "Impact on existing failure points"}
-  ],
-  "externalResearch": [
-    {"query": "Search query used", "source": "Information source", "findings": "Related information discovered", "impactOnFailurePoints": "Impact on failure points"}
-  ],
+  "triangulationSupplements": [],
+  "externalResearch": [],
   "coverageCheck": {
     "scopeEnvelopeAccounting": [
       {"scopeItem": "Scope-envelope item", "status": "closed|material_gap|evidence_unavailable", "evidence": "Coverage evidence", "nextInvestigationTarget": "Exact target or null"}
@@ -166,8 +156,8 @@ Set `coverageDisposition` independently:
 
 ## Completion Criteria
 
-- [ ] Performed Triangulation supplementation and collected additional information
-- [ ] Collected external information via WebSearch
+- [ ] Independently verified decisive evidence and closed material coverage gaps
+- [ ] Used external evidence when unresolved technology facts could change the diagnosis
 - [ ] Checked pathMap coverage (missing paths, unchecked nodes)
 - [ ] Performed Devil's Advocate evaluation on each failure point
 - [ ] Weakened finalStatus for failure points with official documentation-based counter-evidence

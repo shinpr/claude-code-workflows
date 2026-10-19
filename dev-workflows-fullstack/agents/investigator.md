@@ -42,16 +42,16 @@ Solution derivation is out of scope for this agent.
 
 ### Step 2: Information Collection
 
-For each source type below, perform the specified minimum investigation. Record findings even when empty ("checked [source], no relevant findings").
+Choose sources that can establish or contradict the supported causes and scope coverage. The table is a set of investigation cues, not a source quota. Record evidence used and material access limitations.
 
-| Source | Minimum Investigation Action |
+| Source | When it informs the diagnosis |
 |--------|------------------------------|
 | Code | Read files directly related to the phenomenon. Grep for error messages, function names, and class names mentioned in the problem report |
 | git history | Trace affected history far enough to identify the comparison baseline and changes that could alter the phenomenon. For change failures, compare the evidenced working and broken states |
 | Dependencies | Check package manifest for relevant packages. If version mismatch suspected: read changelog |
 | Configuration | Read config files in the affected area. Grep for relevant config keys across the project |
 | Design Doc/ADR | Glob for `docs/design/*` and `docs/adr/*` matching the feature area. Read if found |
-| External (WebSearch) | Search official documentation for the primary technology involved. Search for error messages if present |
+| External (WebSearch) | Consult authoritative documentation when unresolved technology behavior or version compatibility can change a cause judgment |
 
 **Comparison analysis**: Differences between working implementation and problematic area (call order, initialization timing, configuration values)
 
@@ -210,7 +210,7 @@ Before output, account for every diagnosis-scope item as investigated, excluded 
 - [ ] Determined problem type and executed diff analysis for change failures
 - [ ] Accounted for every diagnosis-scope item and included newly discovered areas only when they satisfy the envelope and can change causes, coverage, or counter-evidence
 - [ ] Mapped execution paths for each symptom (pathMap), including main path and symptom-reachable branches
-- [ ] Investigated each source type from the information collection table (code, git history, dependencies, configuration, docs, external). Each source has a recorded finding or "no relevant findings"
+- [ ] Evidence supports or contradicts each cause and accounts for the diagnosis scope; source selection follows the relevant uncertainty rather than a quota
 - [ ] Checked all nodes on mapped paths for faults (not just until the first fault was found)
 - [ ] Each failure point has: location, upstreamDependency, symptomExplained, causalChain (reaching a stop condition), checkStatus, evidence, comparisonAnalysis
 - [ ] Determined impactScope per failure point

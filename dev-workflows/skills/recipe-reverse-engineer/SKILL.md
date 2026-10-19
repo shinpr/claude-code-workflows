@@ -24,18 +24,18 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 
 **Execution Protocol**:
 1. **Invoke named specialists for deliverable production** — pass deliverable paths between them and validate their results (see subagents-orchestration-guide "Orchestrator Execution Boundary")
-2. **Process one step at a time**: Execute steps sequentially within each unit (2 → 3 → 4 → 5). Each step's output is the required input for the next step. Complete all steps for one unit before starting the next
+2. **Respect evidence dependencies**: Generation precedes verification and review for each unit; revision reruns the affected checks. Independent units may be scheduled without changing these gates.
 3. **Preserve evidence while bridging outputs** — copy the fields required by the next specialist in their declared form; apply Review Resolution before routing any correction
 
 At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-**Execution Gate**: Complete Phase 1 before Phase 2. Within each phase, complete one unit's generation, verification, review, and required revision to convergence before starting the next unit. Advance only when the current step's stated output and quality gate are satisfied. At each loop boundary, select the first unit in the current phase's declared order whose Unit Completion conditions are unsatisfied and that is not logged as a generation failure. A document path proves generation only.
+**Execution Gate**: Each Design Doc depends on its completed parent PRD and scope mapping. Advance each unit only when its stated evidence and Unit Completion conditions are satisfied; a document path proves generation only. Continue independent units when another has a recorded failure, and report incomplete units explicitly.
 
 ## Step 0: Initial Configuration
 
 ### 0.1 Scope Confirmation
 
-Use AskUserQuestion to confirm:
+Use supplied instructions and repository context first. Ask only for missing choices that materially change scope or execution; retain prior authorization and preferences:
 1. **Target path**: Which directory/module to document
 2. **Depth**: PRD only, or PRD + Design Docs
 3. **Reference Architecture**: layered / mvc / clean / hexagonal / none
@@ -85,14 +85,16 @@ prompt: |
 - At least one unit discovered → proceed
 - No units discovered → ask user for hints
 - `$STEP_1_OUTPUT.prdUnits` exists
-- All `sourceUnits` across `prdUnits` (flattened, deduplicated) match the set of `discoveredUnits` IDs — no unit missing, no unit duplicated
-- Each discovered unit's `unitInventory` has at least one non-empty category (routes, testFiles, or publicExports). Units with all three empty indicate incomplete discovery — re-run scope-discoverer with focus on that unit's `relatedFiles`
+- Flatten `sourceUnits` across `prdUnits` without deduplication: every discovered ID occurs exactly once, with no unknown IDs
+- Each discovered unit has source evidence and an inventory containing the applicable categories; empty categories are valid, but each unit requires at least one behavior-bearing route, public export, or `otherEntryPoints` item with a defining source location. Resolve a material coverage limitation through targeted discovery; preserve non-blocking limitations.
 
 **Human Review Point** (if enabled): Present `$STEP_1_OUTPUT.prdUnits` with their source unit mapping. The user confirms, adjusts grouping, or excludes units from scope. This is the most important review point — incorrect grouping cascades into all downstream documents.
 
 ### Step 2-5: Per-Unit Processing
 
-**FOR** each unit in `$STEP_1_OUTPUT.prdUnits` **(sequential, one unit at a time)**:
+**FOR** each unit in `$STEP_1_OUTPUT.prdUnits`:
+
+Derive `$PRD_UNIT_INVENTORY` by joining this PRD unit's `sourceUnits` to `discoveredUnits[].id` and merging their `unitInventory` categories. Deduplicate the merged inventory by item identity (route method/path/owner, test path, export file/name, other entry-point file/name), preserving source evidence. Use this same baseline for generation and verification.
 
 #### Step 2: PRD Generation
 
@@ -110,9 +112,10 @@ prompt: |
   Description: $PRD_UNIT_DESCRIPTION (current Step 1 PRD unit description unchanged)
   Related Files: $PRD_UNIT_COMBINED_RELATED_FILES
   Entry Points: $PRD_UNIT_COMBINED_ENTRY_POINTS
+  Unit Inventory: $PRD_UNIT_INVENTORY
 
   Use provided scope as investigation starting point.
-  If tracing entry points reveals files outside this scope, include them.
+  Inspect dependencies outside these files only when they establish an in-scope behavior or contract; this does not automatically expand feature scope.
   Create final version PRD based on thorough code investigation.
 ```
 
@@ -131,7 +134,7 @@ prompt: |
 
   doc_type: prd
   document_path: $STEP_2_OUTPUT
-  unit_inventory: [the current unit's Step 1 unitInventory]
+  unit_inventory: $PRD_UNIT_INVENTORY
 ```
 
 `unit_inventory` supplies the completeness baseline while repository evidence supplies the search scope.
@@ -181,7 +184,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document with the original `unit_inventory`, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
+**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Follow code-verifier’s rerun boundary: recheck all inventory items against the current document, while reusing unchanged repository evidence. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
 
 #### Unit Completion
 
@@ -202,20 +205,22 @@ Each PRD unit from Phase 1 maps to Design Doc unit(s):
 - **Standard mode (fullstack=No)**: 1 PRD unit → 1 Design Doc (using technical-designer)
 - **Fullstack mode (fullstack=Yes)**: 1 PRD unit → 2 Design Docs (technical-designer + technical-designer-frontend)
 
-Map `$STEP_1_OUTPUT` units to Design Doc generation targets, carrying forward:
+For each PRD unit, join its `sourceUnits` to discovered units and merge their technical evidence and inventory, preserving provenance. Map the result to Design Doc targets, carrying forward:
 - `technicalProfile.primaryModules` → Primary Files
 - `technicalProfile.publicInterfaces` → Public Interfaces
 - `dependencies` → Dependencies
 - `relatedFiles` → Scope boundary
-- `unitInventory` → Unit Inventory (routes, test files, public exports)
+- `unitInventory` → Unit Inventory (routes, test files, public exports, other entry points)
 
 In fullstack mode, partition each unit inventory by the owning path into backend and frontend target inventories. Assign a shared entry to each Design Doc whose public contract must account for it and record that shared reason; otherwise assign it once. Each Step 7 and Step 8 invocation receives its target's inventory, not the unpartitioned combined unit.
+
+Assign each target a distinct `output_path` before generation. Use `[feature]-design.md` in standard mode and `[feature]-backend-design.md` / `[feature]-frontend-design.md` in fullstack mode. Check existing destinations and preserve unrelated artifacts.
 
 **Store output as**: `$STEP_6_OUTPUT`
 
 ### Step 7-10: Per-Unit Processing
 
-**FOR** each unit in `$STEP_6_OUTPUT` **(sequential, one unit at a time)**:
+**FOR** each unit in `$STEP_6_OUTPUT`:
 
 #### Step 7: Design Doc Generation
 
@@ -238,10 +243,11 @@ prompt: |
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
   Unit Inventory: $DESIGN_DOC_UNIT_INVENTORY
+  output_path: $DESIGN_DOC_OUTPUT_PATH
 
   Parent PRD: $APPROVED_PRD_PATH
 
-  Document current architecture as-is. Use Unit Inventory as a completeness baseline — all routes and exports should be accounted for in the Design Doc.
+  Document current architecture as-is. Use Unit Inventory as a completeness baseline — all inventoried capabilities should be accounted for in the Design Doc.
 ```
 
 **Store output as**: `$STEP_7_OUTPUT`
@@ -265,6 +271,7 @@ prompt: |
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
   Unit Inventory: $BACKEND_UNIT_INVENTORY
+  output_path: $BACKEND_DESIGN_DOC_OUTPUT_PATH
 
   Parent PRD: $APPROVED_PRD_PATH
 
@@ -289,6 +296,7 @@ prompt: |
   Public Interfaces: $UNIT_PUBLIC_INTERFACES
   Dependencies: $UNIT_DEPENDENCIES
   Unit Inventory: $FRONTEND_UNIT_INVENTORY
+  output_path: $FRONTEND_DESIGN_DOC_OUTPUT_PATH
 
   Parent PRD: $APPROVED_PRD_PATH
   Backend Design Doc: $STEP_7a_OUTPUT
@@ -371,7 +379,7 @@ prompt: |
   Treat these findings as the complete revision scope and preserve adjacent content.
 ```
 
-**Re-validation**: After each revision, re-run code-verifier on the revised document with the original `unit_inventory`, then re-run document-reviewer with the latest `verification_evidence` and `prior_feedback`.
+**Re-validation**: After each revision, pass code-verifier the same `unit_inventory` plus the previous complete verifier result, dispositions and correction diff or paths as `prior_feedback`. Follow code-verifier’s rerun boundary: recheck all inventory items against the current document, while reusing unchanged repository evidence. Re-run document-reviewer with the latest `verification_evidence`, `prior_feedback`.
 
 #### Unit Completion
 
@@ -394,4 +402,4 @@ Output summary including:
 |-------|--------|
 | Discovery finds nothing | Ask user for project structure hints |
 | Generation fails | Log failure, continue with other units, report in summary |
-| Verification is `inconsistent` or inventory remains unaccounted after correction | Flag for mandatory human review — require explicit human approval |
+| Required defect remains after Review Resolution | Report the unit incomplete with evidence. A raw verifier label or a resolved decline creates no extra approval gate; optional human review follows Step 0. |

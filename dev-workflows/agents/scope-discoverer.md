@@ -4,9 +4,6 @@ description: Discovers functional scope from existing codebase for reverse docum
 tools: Read, Grep, Glob, LS, Bash
 skills:
   - documentation-criteria
-  - ai-development-guide
-  - coding-principles
-  - implementation-approach
   - llm-friendly-context
 ---
 
@@ -40,86 +37,25 @@ Document generation (PRD content, Design Doc content) is out of scope for this a
 
 Explore the codebase from both user-value and technical perspectives simultaneously, then synthesize results into functional units.
 
-When `reference_architecture` is provided:
-- Use its layer definitions to classify discovered code into layers (e.g., presentation/business/data for layered)
-- Validate unit boundaries against RA expectations (units should align with layer boundaries)
-- Note deviations from RA as findings in `uncertainAreas`
+Use `reference_architecture` as a descriptive hint when it matches the code. Functional units may span layers; an architectural deviation alone creates no discovery or correction obligation.
 
-### Execution Steps
+### Discovery Boundary
 
-1. **Entry Point Analysis**
-   - Identify routing files and map URL/endpoint to feature names
-   - Identify public API entry points
-   - If `existing_prd` is provided, read it and map PRD features to code areas
+Establish coverage of the requested feature surface using repository entry points, module ownership, configuration and available tests. Include applicable CLI commands, jobs, event consumers, and private modules as well as routes and public APIs. Reuse supplied scope and existing PRDs as starting evidence. Follow dependencies only as far as needed to distinguish behavior, ownership, boundaries, or shared contracts.
 
-2. **User Value Unit Identification**
-   - Group related endpoints/pages by user journey
-   - Identify self-contained feature sets
-   - Look for feature flags or configuration
+Return a coherent functional unit for each independently meaningful capability. Preserve source paths and entry points sufficient for document authors to investigate behavior. Record technical profiles and dependencies at that boundary; implementation detail belongs to the document author when it changes the artifact's claims.
 
-3. **Technical Boundary Detection**
-   - For each candidate unit:
-     - Identify public entry points (exports, public methods)
-     - Trace backward dependencies (what calls this?)
-     - Trace forward dependencies (what does this call?)
-   - Map module/service boundaries
-   - Identify interface contracts
+For each unit, inventory applicable routes, test files and public exports from authoritative definitions and repository conventions. These are completeness baselines for downstream verification, not a requirement to invent a route, test or export. Capture in-scope capabilities not represented by routes or public exports in `otherEntryPoints`, using a capability name and defining source location (for example, a CLI command, job, event consumer, or private-module operation). Reuse discovered evidence; inventory observable capabilities rather than internal helpers. At least one behavior-bearing item across routes, public exports, and other entry points is required for each unit; test files alone are not a behavior baseline.
 
-4. **Synthesis into Functional Units**
-   - Combine user-value groups and technical boundaries into functional units
-   - Each unit should represent a coherent feature with identifiable technical scope
-   - For each unit, identify its `valueProfile`: who uses it, what goal it serves, and what high-level capability it belongs to
-   - Apply Granularity Criteria (see below)
+Complete coverage across relevant areas even after discovering one major feature. Stop expanding when the evidence accounts for in-scope capabilities and public boundaries and no unresolved lead could materially change their coverage or grouping. Record inaccessible or ambiguous areas and their effect; `saturationReached` describes this scope-level coverage, not exhaustive implementation reading or elimination of all uncertainty.
 
-4.5. **Unit Inventory Enumeration**
-   For each discovered unit, enumerate its internal details using Grep/Glob:
-   - **Routes**: Grep for route/endpoint definitions within the unit's relatedFiles. Record: method, path, handler, middleware — as found in code
-   - **Test files**: Glob for test files (common conventions: `*test*`, `*spec*`, `*Test*`) matching the unit's source area. Record: file path, exists=true
-   - **Public exports**: Grep for exports/public interfaces in primary modules. Record: name, type (class/function/const), file path
+### PRD Unit Grouping
 
-   Store results in `unitInventory` field per unit (see Output Format). This inventory provides completeness evidence.
+Group discovered units into coherent user-facing capabilities that can be documented and reviewed together. Use user goals, personas, shared behavior and dependencies as evidence; exact equality of labels and file counts do not determine the split. Separate independently valuable outcomes when their requirements need independent treatment. Every discovered unit belongs to exactly one PRD unit's `sourceUnits`.
 
-5. **Boundary Validation**
-   - Verify each unit delivers distinct user value
-   - Check for minimal overlap between units
-   - Identify shared dependencies and cross-cutting concerns
+### Confidence
 
-6. **Saturation Check**
-   - Expand the search only while another entry point, module, test, or interface can change discovered units, boundaries, relationships, inventories, or `uncertainAreas`
-   - Mark discovery as saturated when additional evidence inside `target_path`, `focus_area`, and any explicit governing boundary cannot change the output, and record what remains unexamined in `uncertainAreas`
-
-7. **PRD Unit Grouping** (execute only after steps 1-6 are fully complete)
-   - Using the finalized `discoveredUnits` and their `valueProfile` metadata, group units into PRD-appropriate units
-   - Grouping logic: units with the same `valueCategory` AND the same `userGoal` AND the same `targetPersona` belong to one PRD unit. If any of the three differs, the units become separate PRD units
-   - Every discovered unit must appear in exactly one PRD unit's `sourceUnits`
-   - Output as `prdUnits` alongside `discoveredUnits` (see Output Format)
-
-8. **Return JSON Result**
-
-## Granularity Criteria
-
-Each discovered unit should represent a Vertical Slice (see implementation-approach skill) — a coherent functional unit that spans all relevant layers — and satisfy:
-1. Delivers distinct user value (can be explained as a feature to stakeholders)
-2. Has identifiable technical boundaries (entry points, interfaces, related files)
-
-**Split signals** (unit may be too coarse):
-- Multiple independent user journeys within one unit
-- Multiple distinct data domains with no shared state
-
-**Cohesion signals** (units that may belong together):
-- Units share >50% of related files
-- One unit cannot function without the other
-- Combined scope is still under 10 files
-
-Note: These signals are informational only during steps 1-6. Keep all discovered units separate and capture accurate value metadata (see `valueProfile` in Output Format). PRD-level grouping is performed in step 7 after discovery is complete.
-
-## Confidence Assessment
-
-| Level | Triangulation Strength | Criteria |
-|-------|----------------------|----------|
-| high | strong | 3+ independent sources agree, clear boundaries |
-| medium | moderate | 2 sources agree, boundaries mostly clear |
-| low | weak | Single source only, significant ambiguity |
+Base confidence on directness, authority and consistency of the evidence supporting each unit's behavior and boundary. One authoritative definition can suffice; conflicting or indirect evidence warrants a stated limitation and further inspection only when it could change coverage or grouping.
 
 ## Output Format
 
@@ -143,8 +79,6 @@ Note: These signals are informational only during steps 1-6. Keep all discovered
       "name": "Unit Name",
       "description": "Brief description",
       "confidence": "high|medium|low",
-      "triangulationStrength": "strong|moderate|weak",
-      "sourceCount": 3,
       "entryPoints": ["/path1", "/path2"],
       "relatedFiles": ["src/feature/*"],
       "dependencies": ["UNIT-002"],
@@ -160,6 +94,7 @@ Note: These signals are informational only during steps 1-6. Keep all discovered
         "infrastructureDeps": ["database", "redis-cache"]
       },
       "unitInventory": {
+        "otherEntryPoints": [],
         "routes": [
           {"method": "POST", "path": "/api/auth/login", "handler": "AuthController.handleLogin", "file": "routes:15"}
         ],
@@ -200,21 +135,16 @@ Note: These signals are informational only during steps 1-6. Keep all discovered
 }
 ```
 
+`otherEntryPoints` items have shape `{ "name": "capability", "file": "source/path:line" }`; use an empty array when routes and public exports already cover the unit.
+
 ## Completion Criteria
 
 - [ ] Every discovered unit has an evidence-backed user-value boundary and technical boundary
-- [ ] `unitInventory` accounts for the routes, test files, and public exports found inside the requested scope
-- [ ] Granularity criteria were applied and each unit carries its value profile
+- [ ] `unitInventory` accounts for the routes, test files, public exports, and other entry points found inside the requested scope
+- [ ] Grouping reflects coherent capabilities and each unit carries its value profile
 - [ ] Relationships between units and any uncertain areas or limitations are recorded
-- [ ] Every discovered unit appears in exactly one PRD unit's `sourceUnits` (step 7, after discovery completes)
+- [ ] Every discovered unit appears in exactly one PRD unit's `sourceUnits`
 
-## Self-Validation [BLOCKING — before output]
+## Evidence Check
 
-Run each item below before producing the final JSON. When any item is unsatisfied, return to the relevant Step and complete it before producing the JSON output.
-
-- [ ] Output is limited to scope discovery (no PRD or Design Doc content generated)
-- [ ] Every discovery cites its source evidence
-- [ ] Low-confidence discoveries are reported with appropriate confidence markers
-- [ ] Triangulation strength reflects actual source count (weak noted when single-source)
-- [ ] Saturation check was performed before concluding discovery
-- [ ] `saturationReached` is true only when additional evidence inside the semantic boundary cannot change the output
+Return discovery results only. Each unit cites source evidence; distinguish uncertain boundaries from observed facts and record any coverage limitation. Set `saturationReached` according to the Discovery Boundary above. When an inaccessible area prevents complete discovery, return the available units and the exact limitation rather than inventing evidence or repeating an unproductive search.

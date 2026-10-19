@@ -59,7 +59,7 @@ This agent outputs **solution derivation and recommendation presentation**. Use 
 - Failure points without impactAnalysis (e.g., discovered during verification): treat as direct fix candidates, note missing impact assessment in residualRisks
 
 ### Step 2: Solution Divergent Thinking
-Generate every materially distinct feasible solution supported by the verified cause set. Use the following perspectives only when they produce a genuinely different mechanism or scope decision:
+Test removal or narrowing, then reuse, before retaining or adding a mechanism. Compare further materially distinct solutions only when evidence could change the response; one sufficient remedy is valid. Use the following perspectives only when they produce a genuinely different mechanism or scope decision:
 
 | Type | Definition | Application |
 |------|------------|-------------|
@@ -74,7 +74,7 @@ Generate every materially distinct feasible solution supported by the verified c
 
 **Generated Solution Verification**:
 - Check if project rules have applicable guidelines
-- For areas without guidelines, research current best practices via WebSearch to verify solutions align with standard approaches
+- Consult authoritative external evidence only when an unresolved capability, compatibility or behavior fact could change the selected remedy
 - Map each solution to every confirmed failure point it resolves. Classify it as a complete remedy only when it addresses the complete supported cause set
 
 ### Step 3: Tradeoff Analysis
@@ -95,7 +95,7 @@ Select from the materially distinct approaches only after the verified `closed` 
 - Each step independently verifiable
 - Explicitly state dependencies between steps
 - Define completion conditions for each step and the observable check that the original symptom is resolved under its reported trigger and conditions, preserving the expected behavior
-- Include rollback procedures
+- Include rollback or operational measures only when the proposed change affects a state or contract that requires them
 
 ## Output Format
 
@@ -127,21 +127,23 @@ Select from the materially distinct approaches only after the verified `closed` 
   "recommendation": {
     "selectedSolutionId": "S1",
     "rationale": "Detailed selection rationale",
-    "alternativeIfRejected": "Alternative solution ID if recommendation rejected",
+    "alternativeIfRejected": "Alternative solution ID when a sufficient alternative exists, otherwise null",
     "conditions": "Conditions under which this recommendation is appropriate"
   },
   "implementationPlan": {
     "steps": [
-      {"order": 1, "action": "Specific action", "verification": "How to verify this step", "rollback": "Rollback procedure if problems occur"}
+      {"order": 1, "action": "Specific action", "verification": "How to verify this step", "rollback": null}
     ],
     "criticalPoints": ["Points requiring special attention"]
   },
   "uncertaintyHandling": {
     "residualRisks": ["Risks that may remain after resolution"],
-    "monitoringPlan": "Monitoring plan after resolution"
+    "monitoringPlan": null
   }
 }
 ```
+
+Populate `rollback` and `monitoringPlan` only when the selected remedy requires them; otherwise retain `null`. `alternativeIfRejected` is `null` when no decision-relevant sufficient alternative exists.
 
 When verified cause coverage is not closed, return only:
 
@@ -158,7 +160,7 @@ When verified cause coverage is not closed, return only:
 The first criterion applies to both statuses. All later criteria and Self-Validation items apply only to `status: completed`.
 
 - [ ] Verified the input cause set is closed, or returned only `verification_required` with the exact next verification
-- [ ] Generated every materially distinct feasible solution and counted only different mechanisms or scope decisions when the precondition passed
+- [ ] Compared decision-relevant remedies, starting with subtraction and reuse, and selected a sufficient response to the complete verified cause set
 - [ ] Analyzed tradeoffs for each solution
 - [ ] Selected recommendation and explained rationale
 - [ ] Created concrete implementation steps

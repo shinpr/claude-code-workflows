@@ -20,7 +20,7 @@ Execute Skill: subagents-orchestration-guide before making workflow decisions, i
 **Review Resolution Gate [MANDATORY]**: Resolve every actionable deliverable-review finding through subagents-orchestration-guide `Review Resolution` before correction or progression.
 Before the first finding disposition, read `references/review-resolution.md` from the loaded subagents-orchestration-guide skill.
 
-**Execution Gate**: Complete Steps 1-10 in order, following only the branches activated by their stated conditions. Advance through each review, correction, and re-validation transition only at its declared convergence condition. Present the final report after every applicable finding and retained quality limitation reaches its required disposition or retry result.
+**Execution Gate**: Complete Steps 1-9 in order, following only the branches activated by their stated conditions. Advance through each review, correction, and re-validation transition only at its declared convergence condition. Present the final report after every applicable finding and retained quality limitation reaches its required disposition or retry result.
 
 ## Execution Method
 
@@ -96,7 +96,7 @@ Approve the proposed changes:
   s) Decline              — record the governing reason and accept current state
 ```
 
-This review command authorizes analysis; use AskUserQuestion to obtain separate implementation authority. The batch option is **"approve all proposed `apply` routes"** and its scope consists exclusively of those routes. When the approved change set is empty, proceed directly to Step 10.
+This review command authorizes analysis; use AskUserQuestion to obtain separate implementation authority. The batch option is **"approve all proposed `apply` routes"** and its scope consists exclusively of those routes. When the approved change set is empty, proceed directly to Step 9.
 
 Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update. Remove accidental unmapped changes; when a necessary change would alter a confirmed value boundary or explicit size constraint, return to Requirement Change Detection.
 
@@ -150,41 +150,27 @@ Route the quality-fixer result:
 - `verification_incomplete` → Retain the complete result and proceed to Step 8
 - `blocked` → Apply Specialist Result Acceptance
 
-### Step 8: Re-validate code-reviewer
+### Step 8: Reconcile Corrected Findings
 
-Immediately before this invocation, re-derive `implementationFiles` using the Step 1 inclusion rule so it includes implementation artifacts added or changed by the approved corrections.
+Use the shared **Re-run rule** to select the owners of the findings corrected in Steps 5-7. Retain all other reviewer results. For each selected owner, invoke its original `dev-workflows-fullstack:code-reviewer` or `dev-workflows-fullstack:security-reviewer` with the original governing documents, current `implementationFiles`, and `prior_feedback` containing the received finding IDs, dispositions and correction evidence. Derive `implementationFiles` using Step 1's inclusion rule. The reviewer reconciles those findings under its existing re-review contract.
 
-Invoke code-reviewer using Agent tool:
-- `subagent_type`: "dev-workflows-fullstack:code-reviewer"
-- `description`: "Re-validate implementation review"
-- `prompt`: "Re-review the completed implementation after approved corrections. governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every received item."
+Apply Review Resolution to each returned reconciliation. Return maintained applied findings to their correction owner; proceed to Step 9 at convergence.
 
-### Step 9: Re-validate security-reviewer
+Before Step 9, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. Remove a limitation when the retry passes, route newly discovered incomplete implementation through Steps 6-8, and report a repeated `verification_incomplete` result. Apply the shared Re-run rule, including its changed-boundary check for mutations outside received findings, before reporting.
 
-Immediately before this invocation, re-derive `implementationFiles` using the Step 1 inclusion rule so it includes implementation artifacts added or changed by the approved corrections.
-
-Invoke security-reviewer using Agent tool when subagents-orchestration-guide's post-implementation **Re-run rule** requires a current security result:
-- `subagent_type`: "dev-workflows-fullstack:security-reviewer"
-- `description`: "Re-validate security"
-- `prompt`: "Re-validate security after fixes. governingDocuments: [\"[path]\"]. implementationFiles: [implementationFiles]. prior_feedback: [{id, disposition, reason?, evidence}]. Reconcile every prior item under the reviewer's re-review scope."
-
-Apply the Review Resolution Gate to every Step 8 and Step 9 result before Step 10. Follow its `maintained` transitions and repeat the affected verification after a rerouted correction; apply the parent requirement or authority gate when Review Resolution exits to it; proceed at its convergence condition.
-
-Before Step 10, retry each retained quality-fixer limitation once with the same Step 7 inputs and affected check. When the retry returns `pass`, remove that limitation from retained state. Route newly discovered incomplete implementation through Steps 6-9, and report a repeated `verification_incomplete` result. When the retry changes the repository, repeat Steps 8-9 for the changed code before reporting.
-
-### Step 10: Final Report
+### Step 9: Final Report
 
 Present the final report:
 
 ```
 Implementation Review:
   Initial: [verdict from code-reviewer]
-  Correction review: [verdict for the re-review scope] (if fixes executed)
+  Correction review: [verdict for the re-review scope] (if this reviewer was rerun)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
 
 Security Review:
   Initial: [status]
-  Correction review: [status for the re-review scope] (if fixes executed)
+  Correction review: [status for the re-review scope] (if this reviewer was rerun)
   Reconciliation: [resolved / withdrawn / maintained by finding ID]
 
 Quality Check:

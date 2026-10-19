@@ -113,7 +113,7 @@ When `adrDecisionPoints` is non-empty:
 1. Route shared/backend-owned points to technical-designer first, then frontend-owned points to technical-designer-frontend. Invoke each owner with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; its ordered `decision_points` confirmed in Step 4, unchanged; `decision_materials` as the corresponding Step 2 `decisionMaterials.candidateDecisionPoints` objects copied unchanged in that order; and `ui_spec_path` only when the approved UI Spec constrains that owner's decision. Run owner batches serially so each batch allocates ADR numbers after the preceding batch exists.
 2. Collect all returned paths and invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all paths]`, and `confirmed_requirement_context`. The reviewer follows the approved UI Spec cited by the ADRs when it can change the decision review.
 3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
-4. Present one batch decision only after a `pass` review. `[Stop: ADR batch approval]`.
+4. Present one batch decision after Review Resolution converges, including a decline-only result; unresolved governing-source conflicts still block approval. `[Stop: ADR batch approval]`.
 5. After user approval, set every ADR status to `Accepted` and verify the status update.
 
 ## Step 7: Create the Frontend Design Doc
@@ -131,6 +131,8 @@ Invoke `dev-workflows-fullstack:technical-designer-frontend` with exactly:
 - `ui_analysis: [complete Step 3 JSON unchanged; omit when absent]`.
 
 The Design Doc owns the full component-to-service implementation and retains all applicable downstream safeguards.
+
+When a backend Design Doc already exists for this feature, pass a distinct `output_path` such as `docs/design/[feature-name]-frontend-design.md`; preserve the backend path as a reference.
 
 ## Step 8: Verify, Review, and Approve
 

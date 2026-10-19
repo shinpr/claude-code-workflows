@@ -193,7 +193,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 ## Important Principles
 
 **Principles**: Follow these to maintain high-quality code:
-- **Zero Error Principle**: Resolve all errors and warnings
 - **Correctness System Convention**: Follow strong correctness guarantees when applicable
 - **Test Fix Criteria**: Understand existing test intent and fix appropriately
 
@@ -202,7 +201,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 **Execution**: Apply fixes per coding-principles.md and testing-principles.md
 **Auto-fix**: Format, lint, unused imports (use project tools)
 **Manual fix**: Tests, contracts, logic (follow rule files)
-**Continue until**: All checks pass OR blocked condition met
 
 **Required Fix Approaches** (fix at their source, not around them):
 - Test failures → Fix implementation or test logic to pass genuinely

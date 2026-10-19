@@ -19,7 +19,7 @@ For verifier, design-sync, code-reviewer, security-reviewer, and integration-tes
 Use the result producer's declared verification mode:
 
 - **Reconciliation reviewer**: document-reviewer, code-reviewer, security-reviewer, and integration-test-reviewer accept `prior_feedback` and return `prior_feedback_reconciliation` after correction.
-- **Bounded verifier**: code-verifier and design-sync accept the previous complete result, dispositions, and correction diff or paths as `prior_feedback`; code-verifier reruns with `unit_inventory` use full verification instead. Recheck the prior findings and inconsistencies directly introduced by the correction, and preserve unaffected evidence. A decline-only result is complete.
+- **Bounded verifier**: code-verifier and design-sync accept the previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Recheck the prior findings and inconsistencies directly introduced by the correction, and preserve unaffected evidence. For code-verifier with `unit_inventory`, its full current-document inventory accounting still applies. A decline-only result is complete.
 
 ## 1. Assess Every Finding
 
@@ -58,9 +58,9 @@ Select the existing correction owner from the accepted state each finding requir
 
 For a mixed set, complete author-owned corrections first and re-evaluate executor-owned findings against the corrected governing artifact. Pass complete `apply` finding objects verbatim with their dispositions to the selected owner. Invoke a document author as a fresh update call with the original target and those findings; the artifact supplies unaffected context. When an executor is used, preserve its original `task_file` or four direct-scope fields and add the findings as `correction_findings`; correction remains inside the original execution scope.
 
-For an applied Design Doc finding about an unverified decision-changing premise, the fresh technical-designer invocation applies its bounded self-verification gate. The finding carries the exact premise and required evidence; the designer selects existing evidence, a smaller design valid under every unresolved outcome, or a probe when all gate conditions hold. Rerun the originating verifier or reviewer after the update.
+For an applied Design Doc finding about an unverified decision-changing premise, the fresh technical-designer invocation applies its review-triggered bounded self-verification gate. The finding carries the exact premise and required evidence; the designer selects existing evidence, a smaller design valid under every unresolved outcome, or a probe when all gate conditions hold. Rerun the originating verifier or reviewer after the update.
 
-For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`.
+For a reconciliation reviewer, reuse the initial reviewer inputs and add `prior_feedback` as an array of `{ id, disposition, reason?, evidence }`. For each ID, preserve the original finding claim and basis verbatim in `evidence`, alongside the correction diff or paths.
 
 The correction assessment covers exactly every received item. The reviewer completes that scope and then:
 
@@ -70,7 +70,7 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction.
+For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction or code-verifier’s required full inventory accounting establishes a current omission.
 
 ## 3. Converge or Report
 

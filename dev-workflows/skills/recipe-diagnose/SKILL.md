@@ -85,7 +85,7 @@ Review investigation output:
 - [ ] Each failure point has: `location`, `upstreamDependency`, `symptomExplained`, `causalChain` (reaching a stop condition), `checkStatus`, `evidence` with a `source` citing a specific file or location
 - [ ] Each failure point has `comparisonAnalysis` (normalImplementation found or explicitly null)
 - [ ] `causeCategory` for each failure point is one of: typo / logic_error / missing_constraint / design_gap / external_factor
-- [ ] `investigationSources` covers at least 3 distinct source types (code, history, dependency, config, document, external)
+- [ ] `investigationSources` supplies decisive evidence for the reported causes and scope coverage; material evidence gaps are explicit
 - [ ] All nodes on mapped paths have been checked (no path was abandoned after finding the first fault)
 - [ ] `scopeAccounting` accounts for every scope-envelope item as investigated, excluded with governing evidence, or unavailable with its potential effect
 

@@ -43,14 +43,7 @@ Document paths: $ARGUMENTS
 
 ### Step 1: Discover and Validate Documents
 
-Confirm `$ARGUMENTS` names at least one existing document path; report and end when it is empty or every path is unresolvable. Then discover the remaining Design Docs, UI Specs, and PRDs under `docs/design/`, `docs/ui-spec/`, and `docs/prd/`.
-
-Classify discovered documents by filename:
-- Filename contains `backend` → **Design Doc (backend)**
-- Filename contains `frontend` → **Design Doc (frontend)**
-- Located in `docs/ui-spec/` → **UI Spec** (optional)
-- Located in `docs/prd/` → **approved PRD / confirmed requirement context** (optional; prefer the path named by the Design Doc)
-- None of the above → treat as single-layer Design Doc
+Resolve the documents named by `$ARGUMENTS`; when a supplied path is stale, use repository evidence to locate its intended artifact. Use the requested feature and layers as the discovery boundary. Resolve applicable Design Docs and UI Specs/PRDs within that boundary, including same-feature frontend/backend counterparts when fullstack work is requested, even when the named document does not link them. Use feature identity, governing requirements, and implementation ownership to establish relevance; stop once the requested layers and proof boundaries are covered. An explicitly single-layer request remains single-layer. Classify documents from their content and references; filenames are hints. Report an exact missing prerequisite when no applicable Design Doc can be resolved.
 
 ### Step 2: Skeleton Generation
 
@@ -61,7 +54,7 @@ Invoke acceptance-test-generator using Agent tool:
 - `ui_spec`: Existing UI Spec path when present
 - `confirmed_requirement_context`: Approved PRD path or unchanged Design Doc Requirement Convergence record
 
-Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation before Step 3.
+Follow subagents-orchestration-guide HC-06 to verify generated paths and coverage of empty lanes before Step 3.
 
 **Expected output**: `generatedFiles` containing integration and e2e paths
 

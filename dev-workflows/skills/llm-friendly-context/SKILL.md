@@ -16,7 +16,7 @@ The goal is stable downstream execution: the next consumer should know what to r
    - Example: "Preserve existing public API behavior across the documented compatibility cases."
 
 2. **Make vague instructions concrete**
-   - Replace subjective terms with observable conditions, paths, commands, schemas, examples, or decision rules.
+   - Clarify wording when plausible interpretations would change the outcome, scope, authority or proof. Supply purpose, evidence and selection criteria for reversible choices; reserve exact selections for actual consumer contracts and user-owned decisions.
    - Terms that often need clarification when they leave a decision to the next consumer: `appropriate`, `proper`, `related`, `existing behavior`, `optional`, `as needed`, `if needed`, `per convention`, unresolved alternatives, `TBD`, `placeholder`.
 
 3. **Specify output shape**
@@ -30,7 +30,7 @@ The goal is stable downstream execution: the next consumer should know what to r
    - Follow references while they can change an in-scope decision, action, or verification result.
 
 5. **Decompose complex work into verifiable steps**
-   - Split work with 3+ objectives or sequential dependencies into ordered steps.
+   - Expose real dependencies and their completion evidence. Let independent reversible work follow the route suited to the task.
    - Each step needs a checkpoint: what evidence proves it is complete.
 
 6. **Permit uncertainty explicitly**
@@ -40,7 +40,7 @@ The goal is stable downstream execution: the next consumer should know what to r
 7. **Keep constraints proportionate**
    - Add only constraints that reduce ambiguity or preserve a real requirement.
    - Keep simple downstream tasks lightweight when the target action, context, and success criteria are already clear.
-   - Apply `minimal`, `a few lines`, and explicit line estimates to the completed diff as one total budget.
+   - Interpret minimal as the least downstream complexity that fully solves the problem. An explicit user diff limit is a constraint; otherwise necessary corrections are not bounded by a line count.
 
 ## Rewrite Patterns
 
@@ -49,7 +49,7 @@ Use these rewrites before treating a prompt, handoff, or artifact as complete.
 | Ambiguous form | Rewrite as |
 |---|---|
 | `optional` used as an unresolved choice | Required, omitted, or required only under a named condition |
-| Multiple alternatives that the next consumer must choose between | The selected option, or a deterministic decision rule |
+| Alternatives whose choice changes a protected outcome | The governing constraint or unresolved owner decision; for reversible choices, purpose, evidence and selection criteria |
 | `as needed` / `if needed` | The triggering condition and required action |
 | `per convention` | The file, function, test, or documented convention to follow |
 | `related files` | Specific paths, globs, or search hints |
@@ -68,7 +68,7 @@ Before sending a prompt or artifact to another consumer, verify:
 - [ ] Accepted decisions and constraints use one canonical wording.
 - [ ] Output format or expected status fields are specified.
 - [ ] Success criteria are observable.
-- [ ] Ambiguous expressions have been rewritten or marked as unresolved.
+- [ ] Outcome-relevant ambiguities are resolved or assigned to their decision owner; harmless execution flexibility remains.
 - [ ] Each instruction states the allowed action; each retained prohibition names the protected condition and allowed alternative.
 - [ ] The next consumer can complete its scope from the supplied purpose, sources, criteria, and evidence, or return the exact unresolved decision and owner.
 

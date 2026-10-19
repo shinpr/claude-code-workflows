@@ -53,7 +53,7 @@ Follow the planning process below:
 
 ### Step 2: Test Skeleton Generation
    - Invoke acceptance-test-generator with `design_docs: [selected Design Doc path]` and `confirmed_requirement_context` as the approved PRD path named by its Requirement Convergence section, or that section's unchanged convergence record when no PRD exists
-   - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
+   - Follow subagents-orchestration-guide HC-06 for generated-path and empty-lane coverage checks
    - Pass every non-null generated skeleton path to the next process; treat an evidence-backed empty lane as complete for that lane and continue to the next process
 
 ### Step 3: Work Plan Creation
