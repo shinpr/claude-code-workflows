@@ -1,6 +1,6 @@
 ---
 name: requirement-convergence
-description: Separates the outcome a change must produce from the requirements proposed to reach it, records what the user excluded, and bands cost from structure. Use when a requirement enters a workflow, before design begins.
+description: Separates the outcome a change must produce from the requirements proposed to reach it, records what the user excluded, and bands cost from decision-relevant repository evidence. Use when a requirement enters a workflow, before design begins.
 ---
 
 # Requirement Convergence
@@ -18,7 +18,7 @@ This skill converges **what to build**. How to build it, and which documents the
 | `outcome` | One observable result. A requirement that does not serve it is excess. |
 | `requirements[]` | Every build-relevant item labeled `current-state` or `desired-future`. |
 | `nonGoals[]` | Authored by the user, or the user stated there are none. |
-| `cost` | A band with the structural evidence that places it, plus the unknowns that remain. |
+| `cost` | A band with the repository and lifecycle evidence that places it, plus the unknowns that remain. |
 
 `cost` is a rough band, not the effort estimate a work plan schedules against; requirements cannot support person-days. Its unknowns carry more decision weight than its size.
 

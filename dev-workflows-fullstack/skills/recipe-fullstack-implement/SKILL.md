@@ -31,8 +31,6 @@ Before the first finding disposition, read `references/review-resolution.md` fro
 3. **Follow subagents-orchestration-guide skill** for all other orchestration rules (stop points, structured responses, escalation)
 4. **Enter autonomous mode** only after "batch approval for entire implementation phase"
 
-At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
-
 ## Execution Decision Flow
 
 ### 1. Current Situation Assessment
@@ -66,7 +64,7 @@ Key points to enforce as the orchestrator runs the flow:
 - Execute document-reviewer once per Design Doc (separate invocations)
 - Run design-sync for cross-layer consistency verification
 - Pass all Design Docs to work-planner (subagent_type: "dev-workflows-fullstack:work-planner") with vertical slicing instruction
-- Pass the Work Plan to document-reviewer (`doc_type: WorkPlan`) and request batch approval only after the review passes
+- Pass the Work Plan to document-reviewer (`doc_type: WorkPlan`) and request batch approval after Review Resolution converges and governing-source conflicts are resolved
 
 ### 4. Bind the Applicable Flow
 

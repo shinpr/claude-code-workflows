@@ -68,7 +68,7 @@ Make all errors visible and traceable with full context. Prioritize primary code
 - The same failure is caught at multiple layers without a single recovery owner
 - Nested handlers obscure which state is committed, rolled back, or exposed
 - A handler converts a failure to success/default output without an observable degraded-state contract
-- Error handlers that return default values without logging
+- Recovery behavior that hides a failure from the boundary responsible for diagnosis or recovery
 
 Another handler may remain when it covers a distinct failure mode with a documented recovery owner, state outcome, and observable signal.
 
@@ -143,7 +143,7 @@ Keep concrete implementations separate while their apparent similarity is accide
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
-- **Reference representativeness check**: When adopting a pattern or dependency from nearby code, verify it is representative across the repository before adopting — nearby files alone are an insufficient basis
+- **Reference representativeness check**: When adopting a pattern or dependency from nearby code, inspect the changed area and enough representative consumers or siblings to establish compatibility; expand only when competing patterns or a shared/public contract can change the choice
 
 ## Quality Assurance Mechanism Awareness
 

@@ -59,10 +59,10 @@ Adjustment request: $ARGUMENTS
 
 ## Execution Flow
 
-### Step 1: External Resource Hearing
-Execute Skill: external-resource-context before running the hearing protocol.
+### Step 1: External Resource Evidence
+Execute Skill: external-resource-context when external evidence is required.
 
-Run the hearing protocol only when external evidence can change the current adjustment target or verification result. Otherwise continue with the existing repository/UI Spec evidence and record no external references.
+Resolve only external evidence that can change the current adjustment target or verification result; use existing access details and ask only for missing decision-relevant inputs. Otherwise continue with the existing repository/UI Spec evidence and record no external references.
 
 ### Step 2: Determine the Route and Write Set
 

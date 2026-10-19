@@ -94,6 +94,8 @@ Use `user` for a user-authored non-goal and `analysis` for a current exclusion r
 
 ## Success Criteria
 
+State observable success for the confirmed outcome. Include only sourced quantitative/UI targets; in as-is documentation, distinguish observed measures from unknown business objectives. The examples below are optional shapes, not a required metric count.
+
 ### Quantitative Metrics
 1. [Metric name]: [numeric target] measured by [method] within [timeframe]
 2. [Metric name]: [numeric target] measured by [method] within [timeframe]
@@ -134,7 +136,7 @@ Include only evidenced product or delivery risks that can change scope, success 
 - [ ] [Question 1]: [Description of options or impacts]
 - [ ] [Question 2]: [Description of options or impacts]
 
-*Discuss with user until this section is empty, then delete after confirmation*
+Resolve only questions that block the current document or next decision. Retain non-blocking unknowns with their effect; in as-is documentation, unknown business intent is not a reason to invent requirements.
 
 ## Appendix
 

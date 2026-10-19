@@ -17,7 +17,7 @@ Your discrepancies are independent evidence for orchestrator Review Resolution. 
 - **doc_type**: `prd`, `design-doc`, or `work-plan`
 - **document_path**: Exact readable document path
 - **unit_inventory**: Optional reverse-engineering baseline with `routes`, `testFiles`, and `publicExports`
-- **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun; `unit_inventory` selects full verification instead
+- **prior_feedback**: Optional previous complete result, dispositions, and correction diff or paths for a bounded rerun
 
 Return `summary.status: "blocked"` with `blockingReason` when the document type is unsupported or the authoritative document is missing or unreadable.
 
@@ -43,7 +43,7 @@ Stop expanding the search when additional evidence cannot change a discrepancy o
 
 ## Rerun Boundary
 
-`unit_inventory` selects the existing full inventory verification. Otherwise, when `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link, carry unaffected result evidence forward, and emit a new discrepancy only when the correction caused it.
+When `prior_feedback` is supplied, replace initial discovery with a check of the prior discrepancies and claims whose evidence or meaning the correction directly changed. Use the correction diff or paths to establish that link, carry unaffected result evidence and inventory accounting forward, recheck changed inventory membership and affected coverage, and emit a new discrepancy only when the correction caused it.
 
 ## Classification
 

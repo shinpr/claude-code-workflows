@@ -113,8 +113,8 @@ For `prior_feedback`, the received items and the boundaries their corrections ch
 
 ## Decision
 
-- `pass`: `issues` is empty.
-- `needs_revision`: One or more issues can be repaired inside approved scope.
+- `pass`: `issues` is empty and no maintained prior finding remains. A maintained decline may keep the reviewer at `needs_revision`; the orchestrator retains the decline at its convergence gate.
+- `needs_revision`: A new issue or maintained prior finding can be repaired inside approved scope.
 - `rejected`: Confirmed outcome, desired-future requirements, and non-goals cannot all remain true and approval requires choosing which value changes.
 
 Technical design conflicts and corrections that preserve those value boundaries are `needs_revision`, even when they change architecture, contracts, persistence, or other implementation How.

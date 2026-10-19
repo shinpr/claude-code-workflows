@@ -27,8 +27,6 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - **Stop and obtain approval** for plan content before completion
 3. **Scope**: See Scope Boundaries below
 
-At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
-
 Acceptance-test-generator is part of this planning flow and may return no selected lanes when the Design Doc has no justified integration/E2E proof boundary.
 
 ## Scope Boundaries
@@ -59,7 +57,7 @@ Follow the planning process below:
      - `design_docs: [Design Doc path]`
      - `ui_spec: [UI Spec path]` when one exists
      - `confirmed_requirement_context`: approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
-     - Follow subagents-orchestration-guide HC-06 for `value_input_required` and its unknown-value continuation
+     - Follow subagents-orchestration-guide HC-06 for generated-path and empty-lane coverage checks
    - Pass every non-null generated skeleton path to work-planner; treat an evidence-backed empty lane as complete for that lane and continue to work-planner
 
 ### Step 3: Work Plan Creation

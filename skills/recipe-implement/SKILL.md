@@ -28,8 +28,6 @@ Before the first finding disposition, read `references/review-resolution.md` fro
    - **Stop at every `[Stop: ...]` marker** → Wait for explicit user confirmation before proceeding
 3. **Enter autonomous mode** after confirmed Small requirements or Medium/Large batch approval
 
-At each Agent invocation below, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
-
 ## Execution Decision Flow
 
 ### 1. Current Situation Assessment

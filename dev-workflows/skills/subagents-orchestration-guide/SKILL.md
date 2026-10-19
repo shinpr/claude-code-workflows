@@ -13,9 +13,9 @@ The orchestrator owns workflow decisions, routing, progress management, user int
 
 ### Workflow Subagent Context — Mandatory
 
-This workflow's specialists are already self-contained through their agent definitions, loaded skills, and referenced artifacts. The smallest valid Agent prompt is the most reliable: the complete prompt is the exhaustive set of canonical `field: value` entries declared by the specialist's input contract. Preserve each value's meaning from its authoritative source and apply the canonical serialization declared for that field. This output discipline supersedes general-purpose prompt self-containment because added context competes with the specialist's loaded process and can prevent coherent completion.
+Specialists own their process through agent definitions, loaded skills and artifacts. Supply their declared inputs with authoritative source meaning intact, plus only context necessary to execute the assigned outcome. Canonical names aid handoffs; semantically equivalent labels are acceptable. Artifact paths can carry details without repeating them. Keep user constraints and required evidence that would otherwise be lost; avoid prescribing the specialist's reversible investigation route.
 
-This section governs the orchestrator's Agent prompt. Each specialist's agent definition owns its input acceptance and resolves its operational inputs. The orchestrator supplies the canonical contract entries unchanged.
+This section governs the orchestrator's Agent prompt. Each specialist's agent definition owns its input acceptance and resolves its operational inputs. The orchestrator preserves input meaning and the specialist's actual consumer contract.
 
 ### First Action Rule
 
@@ -128,7 +128,7 @@ Each subagent invocation is a **fresh Agent tool** call, isolating each phase's 
 Tool choice does not define responsibility: the orchestrator may use any available tool for its owned work, while named specialists perform semantic deliverable creation or modification; the orchestrator writes only for mechanical operations explicitly assigned by the active workflow.
 
 ### Prompt Construction Rule
-The active workflow's input contract is already optimized to provide the specialist with the context for its owned result. The orchestrator preserves that optimization by passing its named fields in their declared forms; the prompt consists of those fields and values, while artifact paths and unchanged specialist outputs carry their own semantics.
+Use the specialist input contract to select necessary context. Preserve authoritative requirements and evidence; supply a missing decision-relevant input rather than withholding it because a recipe used another label.
 
 ## Handling Requirement Changes
 
@@ -156,7 +156,7 @@ Rules:
 - When the Small evidence gate is unresolved, invoke codebase-analyzer with confirmed `requirements` to resolve routing. Reuse that result for unchanged Medium scope. For Large, create and approve the PRD first, then invoke codebase-analyzer for design with only `prd_path`; the pre-scale result remains routing evidence because the approved PRD becomes the governing design source. For Medium already established by positive boundary evidence, invoke once with confirmed `requirements`
 - When a UI Spec applies, invoke ui-analyzer with that same governing-source choice plus existing `ui_spec_path`, decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`; invoke ui-spec-designer with `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, plus the complete unchanged `ui_analysis`, applicable unchanged `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`. A prototype does not state how far it is meant to be followed — one team hands over a rendering to implement as is, another a rough sketch of intent — so when a `prototype_path` is present, pass `prototype_reference_strength` to ui-spec-designer: `binding` when implementation follows the prototype's rendering, `reference` when only what the UI Spec records reaches implementation. Resolve it from what the user already stated about the prototype, and ask only when neither reading is supported
 - Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
-- Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add only their named UI or layer artifact paths
+- Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add their named UI or layer artifact paths and distinct `output_path` destinations when splitting a feature across documents
 - Resolve code-verifier discrepancies through Review Resolution before invoking document-reviewer; pass the exact HC-04 inputs rather than a narrative evidence bundle
 - An applied `unverified` discrepancy returns through a fresh owning technical-designer update invocation. Capability probing is reserved for the designer's review-triggered gate, with that fresh designer as the sole correction specialist
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
@@ -282,7 +282,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 ### HC-03b: applied design-evidence finding → technical-designer
 - Invoke the owning designer as a fresh `update` call with the existing Design Doc path and complete `correction_findings` objects copied verbatim with only their `apply` dispositions added.
 - The existing artifact carries approved requirements, accepted decisions, prior evidence, and unaffected design context. Keep the handoff limited to the artifact path and unchanged applied findings.
-- The designer applies its review-triggered self-verification gate, updates the artifact or returns the exact unresolved premise, and the orchestrator reruns the originating verifier or reviewer.
+- The designer applies its review-triggered bounded self-verification gate, updates the artifact or returns the exact unresolved premise, and the orchestrator reruns the originating verifier or reviewer.
 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.
@@ -302,7 +302,6 @@ Pass the Design Doc path. Work-planner maps governing sections and ACs to implem
 ### HC-06: acceptance-test-generator → work-planner
 
 - Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `confirmed_requirement_context` used for design.
-- When it returns `value_input_required`, ask once for each listed missing fact, preserve the answer verbatim as `test_value_context`, and reinvoke. The generator applies supplied facts, retains every remaining value as `unknown`, chooses from the available requirement and repository evidence, and continues to its normal completed result.
 - Verify each non-null `generatedFiles.<lane>` path exists. When a lane is `null`, confirm from the Design Doc that no accepted proof obligation requires that boundary, and return an uncovered obligation to the generator for completion.
 - Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement.
 - Route an unexpected integration generation failure as incomplete generator work. A validated null E2E lane is complete.

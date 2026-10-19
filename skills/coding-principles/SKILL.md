@@ -70,15 +70,9 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 ## Reference Representativeness
 
-### Verifying References Before Adoption
-When adopting patterns, APIs, or dependencies from existing code:
-- **IF** a reference sample covers only nearby files → **THEN** confirm the pattern is representative by checking relevant repository usage before adopting
-- **IF** multiple approaches coexist in the repository → **THEN** identify the majority pattern and make a deliberate choice — selecting whichever is nearest is insufficient
-- **IF** adopting an external dependency (library, plugin, SDK) → **THEN** verify repository-wide usage and compatibility evidence; when that evidence cannot determine the required version, record the unresolved version decision and the evidence needed to settle it
-- **IF** following an existing pattern → **THEN** state the reason for following it when an alternative exists (e.g., consistency with surrounding code, avoiding breaking changes, pending coordinated update)
+Inspect the changed responsibility and enough representative callers, consumers, configuration and siblings to establish a compatible pattern or dependency. Nearby code is a starting point; when alternatives coexist, choose from their responsibility, contract, lifecycle and repository usage rather than proximity or global popularity alone. Record the evidence only when it changes the choice.
 
-### Principle
-Nearby code is a starting point for investigation, not a sufficient basis for adoption. Verify that what you reference is representative of the repository's conventions and current best practices before using it as a model.
+Expand to all known consumers for a changed public, shared, serialized or persistent contract whose compatibility depends on them. Otherwise stop when additional inspection cannot change implementation or proof. Resolve versions from applicable manifests and usage; record a specific limitation only when required compatibility evidence remains unavailable.
 
 ## Performance Considerations
 

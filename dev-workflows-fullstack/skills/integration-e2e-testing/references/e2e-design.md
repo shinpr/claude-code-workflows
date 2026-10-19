@@ -1,17 +1,8 @@
 # E2E Test Design (Browser Harness)
 
-This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the lane definitions, ROI rules, and budgets remain the same.
+This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the parent skill's proof selection remains applicable.
 
-## Two E2E Lanes
-
-E2E tests in this workflow split into two lanes (see parent skill Test Type Definition):
-
-| Lane | When | ROI gate | Cost |
-|------|------|----------|------|
-| **fixture-e2e** | UI journey verification with deterministic fixtures (mocked backend / fixture data) | ROI ≥ 20 (beyond reserved slot); selected by ranking within MAX 3 budget | Comparable to integration; runs in CI without infrastructure setup |
-| **service-integration-e2e** | Journey correctness depends on real cross-service behavior (data persistence, transactional consistency, external contracts) | ROI > 50 (beyond reserved slot) | Higher setup, state-cleanup, and diagnosis cost; reserved for what cannot be faked safely |
-
-The **reserved slot** referenced in the ROI gates is a per-lane slot for a qualifying multi-step user journey that is emitted regardless of its ROI score; it is defined in the parent skill's *Multi-Step User Journey Definition* section.
+Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. A UI journey alone creates no reserved test slot.
 
 ## When to Create E2E Tests
 
@@ -28,7 +19,7 @@ E2E candidates target **critical user journeys** that span multiple pages or req
 
 ### Selection Criteria
 
-**Include** (high E2E ROI):
+**Candidate boundaries** (retain only when required and not already proven):
 - Multi-page user journeys (login → dashboard → action → confirmation)
 - Flows requiring real browser APIs (navigation, cookies, localStorage)
 - Accessibility verification requiring actual DOM rendering
@@ -58,15 +49,11 @@ Lane: fixture-e2e | service-integration-e2e
 Preconditions: [Auth state, data state — note whether these are fixture-driven or live]
 Verification Points:
   - [What to assert at each step]
-E2E ROI Score: [calculated score]
+Selection evidence: [required claim and why cheaper proof is insufficient]
 ```
 
 **Lane decision**: choose `fixture-e2e` by default. Promote to `service-integration-e2e` when the verification requires observing real cross-service behavior (e.g., the test asserts that data persists across a real DB write, or that an external service receives the correct payload).
 
-## Budget Enforcement
+## Coverage Check
 
-Standard budgets per input Design Doc (same as parent skill):
-- **fixture-e2e**: MAX 3 tests, ROI ≥ 20 beyond the reserved slot (selected by ranking)
-- **service-integration-e2e**: MAX 1-2 tests, ROI > 50 beyond the reserved slot
-- Prefer fewer, comprehensive journey tests over many granular tests in both lanes
-- Exceed a standard budget only for an accepted requirement or distinct uncovered failure mode, and record why the selected tests cannot be consolidated
+Account for every required browser-specific claim using existing or selected proof. Consolidate overlapping journeys and states; add distinct cases only when they expose independently failing required boundaries. Empty lanes need coverage evidence, not a minimum journey count.

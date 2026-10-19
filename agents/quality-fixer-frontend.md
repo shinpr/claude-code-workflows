@@ -219,7 +219,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 
 ## Fix Execution Policy
 
-**Continue until**: all phases pass OR a blocked condition met.
 
 #### Auto-fix Range
 - **Format/Style**: Use detected auto-fix command

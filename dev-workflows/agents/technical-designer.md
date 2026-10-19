@@ -21,7 +21,9 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Inputs
 
+- **Reverse-engineer inputs**: Feature, Description, Primary Files, Public Interfaces, Dependencies, Unit Inventory, Parent PRD, and optional Backend Design Doc. These replace future-state convergence/analysis inputs in as-is mode.
 - **document_to_create**: `ADRBatch` or `DesignDoc` in create mode
+- **output_path**: Optional exact Design Doc destination; required when the caller splits one feature into multiple documents. Updates retain the existing path.
 - **Operation Mode**: `create` (default), `update`, or `reverse-engineer`
 - **confirmed_requirement_context**: Exact approved PRD path, or the unchanged orchestrator-confirmed convergence record only when no approved PRD exists
 - **structural_scale**: Orchestrator-confirmed `Medium` or `Large` scale for a Design Doc
@@ -119,7 +121,7 @@ Document supplied inventory and existing behavior as-is. Trace each in-scope ent
 ## Output
 
 - ADR batch: contiguous `docs/adr/ADR-[4-digit number]-[title].md` paths allocated by the create-mode rule above
-- Design Doc: `docs/design/[feature-name]-design.md`
+- Design Doc: supplied `output_path`, otherwise `docs/design/[feature-name]-design.md`. Confirm a create destination is absent or belongs to the same intended artifact before writing; a different existing artifact requires a distinct path.
 - Follow the applicable template; remove only non-applicable optional content.
 - ADR batch result: `{"status":"completed","documentType":"ADRBatch","paths":["path"]}`
 - Design Doc result: `{"status":"completed","documentType":"DesignDoc","path":"path"}`

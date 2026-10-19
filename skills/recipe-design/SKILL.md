@@ -33,8 +33,6 @@ requirement source -> codebase-analyzer -> scope/decision confirmation [Stop]
 
 Execute each dependent step after its prerequisite evidence exists. Use Review Resolution for every actionable verifier, reviewer, or design-sync finding. Wait at each `[Stop]` for explicit user confirmation.
 
-At each `Invoke` below, build the Agent prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
-
 ## Step 1: Select the Governing Requirement Source
 
 Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.
@@ -85,7 +83,7 @@ When `adrDecisionPoints` is non-empty:
 1. Invoke `dev-workflows:technical-designer` once with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; `decision_points` as the ordered `adrDecisionPoints` confirmed in Step 3, unchanged; and `decision_materials` as the corresponding objects from Step 2 `decisionMaterials.candidateDecisionPoints`, copied unchanged in that order.
 2. Invoke `dev-workflows:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all returned paths]`, and `confirmed_requirement_context`.
 3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
-4. Present one batch decision only after a `pass` review. `[Stop: ADR batch approval]`.
+4. Present one batch decision after Review Resolution converges, including a decline-only result; unresolved governing-source conflicts still block approval. `[Stop: ADR batch approval]`.
 5. After user approval, update each ADR status to `Accepted` and verify the changed status.
 
 ## Step 5: Create the Design Doc

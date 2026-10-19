@@ -46,11 +46,11 @@ Behavioral or factual claims the design relies on (framework/library defaults, c
 
 #### Bounded Self-Verification Evidence (when applied)
 
-Include only when a fresh review-triggered design update executed a capability probe. Keep the durable record compact; raw logs and temporary artifacts are discarded during probe cleanup.
+Include only when design creation or update executed a bounded capability probe. Keep the durable record compact; raw logs and temporary artifacts are discarded during probe cleanup.
 
-| Applied finding | Premise | Method and observed boundary | Observation | Limitation | Design effect |
+| Finding (if any) | Premise | Method and observed boundary | Observation | Limitation | Design effect |
 |---|---|---|---|---|---|
-| [finding ID] | [exact premise] | [bounded method and consumer-visible postcondition] | [observed result] | [remaining limitation that constrains the design effect, or None] | [Selected Design change or confirmation] |
+| [finding ID or N/A in creation] | [exact premise] | [bounded method and consumer-visible postcondition] | [observed result] | [remaining limitation that constrains the design effect, or None] | [Selected Design change or confirmation] |
 
 #### Quality Assurance Mechanisms
 How quality is enforced in the change area. Each item is either adopted (will be enforced during implementation) or noted (observed but not adopted, with reason).
