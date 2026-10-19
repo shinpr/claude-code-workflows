@@ -2,7 +2,7 @@
 
 This reference uses Playwright as the default browser harness. Adapt patterns to the project's chosen framework when different (Cypress, Selenium, etc.); the parent skill's proof selection remains applicable.
 
-Use the parent skill's proof selection and lanes. Browser fixture tests observe browser behavior; service-integration tests add real dependencies only when the claim requires them. Apply the parent skill’s Test Lanes coverage criteria; select only browser proof not already supplied by existing tests.
+Use the parent skill's Proof Selection and Test Lanes criteria for all candidates below; their UI shape alone creates no test obligation.
 
 ## When to Create E2E Tests
 
@@ -24,11 +24,6 @@ E2E candidates target browser behavior needed to satisfy accepted criteria. Pick
 - Flows requiring real browser APIs (navigation, cookies, localStorage)
 - Accessibility verification requiring actual DOM rendering
 - Responsive behavior across viewports
-
-**Use integration tests instead when**:
-- Testing single-component state changes → in-process component renderer (e.g., RTL for React/TS)
-- Testing API response handling → in-process API mock + component renderer (e.g., MSW + RTL for React/TS)
-- Testing pure data transformations → unit tests
 
 ## UI Spec to E2E Test Mapping
 
