@@ -45,7 +45,7 @@ Establish coverage of the requested feature surface using repository entry point
 
 Return a coherent functional unit for each independently meaningful capability. Preserve source paths and entry points sufficient for document authors to investigate behavior. Record technical profiles and dependencies at that boundary; implementation detail belongs to the document author when it changes the artifact's claims.
 
-For each unit, inventory applicable routes, test files and public exports from authoritative definitions and repository conventions. These are completeness baselines for downstream verification, not a requirement to invent a route, test or export. All three categories may be empty for a valid unit supported by other entry-point and file evidence.
+For each unit, inventory applicable routes, test files and public exports from authoritative definitions and repository conventions. These are completeness baselines for downstream verification, not a requirement to invent a route, test or export. Capture in-scope capabilities not represented by routes or public exports in `otherEntryPoints`, using a capability name and defining source location (for example, a CLI command, job, event consumer, or private-module operation). Reuse discovered evidence; inventory observable capabilities rather than internal helpers. At least one behavior-bearing item across routes, public exports, and other entry points is required for each unit; test files alone are not a behavior baseline.
 
 Complete coverage across relevant areas even after discovering one major feature. Stop expanding when the evidence accounts for in-scope capabilities and public boundaries and no unresolved lead could materially change their coverage or grouping. Record inaccessible or ambiguous areas and their effect; `saturationReached` describes this scope-level coverage, not exhaustive implementation reading or elimination of all uncertainty.
 
@@ -94,6 +94,7 @@ Base confidence on directness, authority and consistency of the evidence support
         "infrastructureDeps": ["database", "redis-cache"]
       },
       "unitInventory": {
+        "otherEntryPoints": [],
         "routes": [
           {"method": "POST", "path": "/api/auth/login", "handler": "AuthController.handleLogin", "file": "routes:15"}
         ],
@@ -134,10 +135,12 @@ Base confidence on directness, authority and consistency of the evidence support
 }
 ```
 
+`otherEntryPoints` items have shape `{ "name": "capability", "file": "source/path:line" }`; use an empty array when routes and public exports already cover the unit.
+
 ## Completion Criteria
 
 - [ ] Every discovered unit has an evidence-backed user-value boundary and technical boundary
-- [ ] `unitInventory` accounts for the routes, test files, and public exports found inside the requested scope
+- [ ] `unitInventory` accounts for the routes, test files, public exports, and other entry points found inside the requested scope
 - [ ] Grouping reflects coherent capabilities and each unit carries its value profile
 - [ ] Relationships between units and any uncertain areas or limitations are recorded
 - [ ] Every discovered unit appears in exactly one PRD unit's `sourceUnits`

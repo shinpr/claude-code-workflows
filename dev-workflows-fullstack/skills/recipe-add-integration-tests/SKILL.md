@@ -43,7 +43,7 @@ Document paths: $ARGUMENTS
 
 ### Step 1: Discover and Validate Documents
 
-Resolve the documents named by `$ARGUMENTS`; when a supplied path is stale, use repository evidence to locate its intended artifact. Limit generation to those Design Docs and linked UI Specs/PRDs needed for their proof boundaries. Classify documents from their content and references; filenames are hints. Report an exact missing prerequisite when no applicable Design Doc can be resolved.
+Resolve the documents named by `$ARGUMENTS`; when a supplied path is stale, use repository evidence to locate its intended artifact. Use the requested feature and layers as the discovery boundary. Resolve applicable Design Docs and UI Specs/PRDs within that boundary, including same-feature frontend/backend counterparts when fullstack work is requested, even when the named document does not link them. Use feature identity, governing requirements, and implementation ownership to establish relevance; stop once the requested layers and proof boundaries are covered. An explicitly single-layer request remains single-layer. Classify documents from their content and references; filenames are hints. Report an exact missing prerequisite when no applicable Design Doc can be resolved.
 
 ## Step 2: Skeleton Generation
 

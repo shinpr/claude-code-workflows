@@ -86,7 +86,7 @@ prompt: |
 - No units discovered → ask user for hints
 - `$STEP_1_OUTPUT.prdUnits` exists
 - Flatten `sourceUnits` across `prdUnits` without deduplication: every discovered ID occurs exactly once, with no unknown IDs
-- Each discovered unit has source evidence and an inventory containing the applicable categories; empty categories are valid. Resolve a material coverage limitation through targeted discovery; preserve non-blocking limitations.
+- Each discovered unit has source evidence and an inventory containing the applicable categories; empty categories are valid, but each unit requires at least one behavior-bearing route, public export, or `otherEntryPoints` item with a defining source location. Resolve a material coverage limitation through targeted discovery; preserve non-blocking limitations.
 
 **Human Review Point** (if enabled): Present `$STEP_1_OUTPUT.prdUnits` with their source unit mapping. The user confirms, adjusts grouping, or excludes units from scope. This is the most important review point — incorrect grouping cascades into all downstream documents.
 
@@ -94,7 +94,7 @@ prompt: |
 
 **FOR** each unit in `$STEP_1_OUTPUT.prdUnits`:
 
-Derive `$PRD_UNIT_INVENTORY` by joining this PRD unit's `sourceUnits` to `discoveredUnits[].id` and merging their `unitInventory` categories. Deduplicate the merged inventory by item identity (route method/path/owner, test path, export file/name), preserving source evidence. Use this same baseline for generation and verification.
+Derive `$PRD_UNIT_INVENTORY` by joining this PRD unit's `sourceUnits` to `discoveredUnits[].id` and merging their `unitInventory` categories. Deduplicate the merged inventory by item identity (route method/path/owner, test path, export file/name, other entry-point file/name), preserving source evidence. Use this same baseline for generation and verification.
 
 #### Step 2: PRD Generation
 
@@ -210,7 +210,7 @@ For each PRD unit, join its `sourceUnits` to discovered units and merge their te
 - `technicalProfile.publicInterfaces` → Public Interfaces
 - `dependencies` → Dependencies
 - `relatedFiles` → Scope boundary
-- `unitInventory` → Unit Inventory (routes, test files, public exports)
+- `unitInventory` → Unit Inventory (routes, test files, public exports, other entry points)
 
 In fullstack mode, partition each unit inventory by the owning path into backend and frontend target inventories. Assign a shared entry to each Design Doc whose public contract must account for it and record that shared reason; otherwise assign it once. Each Step 7 and Step 8 invocation receives its target's inventory, not the unpartitioned combined unit.
 
@@ -247,7 +247,7 @@ prompt: |
 
   Parent PRD: $APPROVED_PRD_PATH
 
-  Document current architecture as-is. Use Unit Inventory as a completeness baseline — all routes and exports should be accounted for in the Design Doc.
+  Document current architecture as-is. Use Unit Inventory as a completeness baseline — all inventoried capabilities should be accounted for in the Design Doc.
 ```
 
 **Store output as**: `$STEP_7_OUTPUT`
