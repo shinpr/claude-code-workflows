@@ -70,7 +70,7 @@ The correction assessment covers exactly every received item. The reviewer compl
 
 Derive the correction re-review status or verdict only from these reconciliation entries. An independent factual verifier may repeat an observed discrepancy; the orchestrator assigns its disposition from governing evidence.
 
-For a bounded verifier, rerun after at least one correction is applied from its latest result or when the caller's re-run rule identifies a direct change to its declared boundary. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction or code-verifier’s required full inventory accounting establishes a current omission.
+For a bounded verifier, rerun after at least one correction is applied from its latest result. Pass the previous complete result, dispositions, and correction diff or paths. The returned result replaces corrected items and carries unaffected evidence forward. Match materially identical findings by their claim or conflict and cited source and target evidence rather than a regenerated positional ID. A new finding enters routing only when its evidence links it causally to the correction or code-verifier’s required full inventory accounting establishes a current omission.
 
 ## 3. Converge or Report
 

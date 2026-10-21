@@ -289,7 +289,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.
-- Apply Review Resolution and rerun verification after every applied correction, passing the previous complete verifier result, dispositions, and correction diff or paths as `prior_feedback`. Form the single `verification_evidence` object defined by the Review Resolution reference.
+- Apply Review Resolution and rerun verification after every correction applied from code-verifier findings, passing the previous complete verifier result, dispositions, and correction diff or paths as `prior_feedback`. Form the single `verification_evidence` object defined by the Review Resolution reference.
 - Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and the same `confirmed_requirement_context` supplied at the owning designer invocation.
 - Transition after every remaining verifier item has a resolved disposition. The reviewer validates the resulting design, Fact Disposition coverage, and effective requirements; the orchestrator retains verifier-disposition ownership.
 
