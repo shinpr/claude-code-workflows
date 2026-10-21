@@ -148,7 +148,7 @@ For each type, review consistency of the changed sections and their dependent st
 
 **On review result**:
 - Pass → Proceed to Step 6
-- Needs revision → Apply the Review Resolution Gate. Return to Step 4 when `apply` findings exist, using the following prompt:
+- Needs revision → Apply the Review Resolution Gate. When `apply` findings exist, invoke the update agent with the following prompt, then re-run document-reviewer:
   ```
   subagent_type: [Update Agent from Step 2]
   description: "Revise [Type from Step 2]"

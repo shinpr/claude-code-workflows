@@ -115,7 +115,7 @@ Apply Review Resolution to every discrepancy before document review. Send only `
 Invoke `dev-workflows:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `confirmed_requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
 
 - `pass`: continue.
-- `needs_revision`: apply Review Resolution, update through a fresh technical-designer invocation using the existing path and complete applied findings, then rerun Steps 6-7 for the affected boundary.
+- `needs_revision`: apply Review Resolution, update through a fresh technical-designer invocation using the existing path and complete applied findings, then re-review with `prior_feedback`.
 - `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
 Invoke `dev-workflows:design-sync` for consistency with other Design Docs and apply Review Resolution to actionable conflicts. Report `SKIPPED` distinctly when only one Design Doc exists.

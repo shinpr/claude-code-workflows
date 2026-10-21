@@ -143,7 +143,7 @@ Invoke `dev-workflows-frontend:code-verifier` with `doc_type: design-doc` and `d
 Invoke `dev-workflows-frontend:document-reviewer` with exact inputs: `doc_type: DesignDoc`; `target` as the returned Design Doc path unchanged; `review_context: creation`; original user requirements unchanged as `requirements_verbatim`; the Step 1 `confirmed_requirement_context` unchanged; the same unchanged `codebase_analysis` and optional `ui_analysis` supplied to the designer; and Step 8 `verification_evidence` unchanged. The reviewer follows an applicable UI Spec and accepted ADR paths cited by the Design Doc only when they can change an in-scope finding.
 
 - `pass`: continue.
-- `needs_revision`: apply Review Resolution, update through a fresh technical-designer-frontend invocation using the existing path and complete applied findings, and rerun verification/review for the affected boundary.
+- `needs_revision`: apply Review Resolution, update through a fresh technical-designer-frontend invocation using the existing path and complete applied findings, then re-review with `prior_feedback`.
 - `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
 Invoke `dev-workflows-frontend:design-sync` with `source_design` as the returned Design Doc path unchanged, apply Review Resolution to actionable conflicts, and report `SKIPPED` distinctly when only one Design Doc exists.

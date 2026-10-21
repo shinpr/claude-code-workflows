@@ -86,7 +86,7 @@ Follow `references/design-template.md` in the documentation-criteria skill. Pres
 
 Sections and rows activate when their boundary exists. An authoritative referenced artifact may carry the information; every included section contains decision-, implementation-, or verification-relevant content.
 
-Use diagrams only when they make a material relationship easier to judge than prose or a compact table. Repository-owned migration, feature-flag, deployment configuration, logging, monitoring, or measurement belongs in the design only when it changes checked-in implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval are context rather than implementation tasks.
+Use diagrams only when they make a material relationship easier to judge than prose or a compact table. Repository-owned migration, feature-flag, deployment configuration, logging, monitoring, or measurement belongs in the design only when it changes checked-in implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval stay outside the Design Doc.
 
 Acceptance criteria use the smallest representative set that proves the confirmed outcome and material failure boundaries. Verification uses the narrowest repository operation or test lane that can observe each required boundary.
 

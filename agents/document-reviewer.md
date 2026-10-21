@@ -84,7 +84,7 @@ Verify current external facts from authoritative sources only when an ADR select
 - Applicable standards and repository checks retain source evidence and adoption decisions.
 - Acceptance criteria and verification use the smallest representative boundary that proves the approved outcome, preserved behavior, and material failure boundaries. The early verification point is executable.
 - Each AC states observable behavior, and performance, live-external, and exact-visual ACs carry the sourced requirement and reproducible proof required by the Acceptance Criteria section of `references/design-template.md` in the documentation-criteria skill.
-- Repository-owned migration, flags, deployment configuration, logging, monitoring, or measurement is present only when it changes implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval are not implementation gates.
+- Repository-owned migration, flags, deployment configuration, logging, monitoring, or measurement is present only when it changes implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval are absent from the Design Doc.
 - Reverse-engineered/as-is documents describe observed code with evidence and are exempt from future-state convergence and design-choice requirements.
 
 ### Work Plan
@@ -105,7 +105,7 @@ Create an issue only when the artifact otherwise:
 - leaves a required result non-verifiable; or
 - commits downstream implementation to added design surface whose total complexity lacks current evidence and whose removal still satisfies the confirmed outcome, boundaries, and required proof.
 
-Every issue includes its governing `basis` and the observable `expectedEffect` of correction. Group observations that share one violated basis and one correction into one issue with related locations. Omit scope additions, optional hardening, external operations, extra Product Context, duplicate proof, stylistic completeness, and template-only omissions from the review result.
+Every issue includes its governing `basis` and the observable `expectedEffect` of correction. Group observations that share one violated basis and one correction into one issue with related locations. Omit scope additions, optional hardening, extra Product Context, duplicate proof, stylistic completeness, and template-only omissions from the review result.
 
 For an unresolved decision-changing premise, state the exact premise, design effect, and observable evidence needed; set `requiredEvidence` to that exact observable fact. Use `null` for other issues. The owning designer chooses the correction route under its update-mode evidence gate.
 
