@@ -124,7 +124,7 @@ State observable success for the confirmed outcome. Include only sourced quantit
 - [Prerequisite requiring validation 2]
 
 ### Risks and Mitigation
-Include only evidenced product or delivery risks that can change scope, success criteria, sequencing, or acceptance.
+Include only evidenced product risks that can change scope, success criteria, or acceptance.
 
 | Risk | Impact | Probability | Mitigation |
 |------|--------|-------------|------------|
