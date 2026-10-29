@@ -19,6 +19,8 @@ Evaluation requests, speculative ideas, and prescribed mechanisms stay in active
 
 Flattening current state, desired future, and candidates into one requirement list makes a bloated plan look coherent because every item then reads as equally required. Label each build-relevant item; ask when its current-state or desired-future role is unclear rather than inferring it.
 
+An item is build-relevant when the repository change can satisfy it. A precondition held outside that change, such as legal or policy review, contract execution, release execution, or organizational approval, enters `requirements[]` and the hearing only when the user's wording raises it.
+
 ## nonGoals[]
 
 Capabilities deliberately excluded from this change, authored by the user.

@@ -21,7 +21,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 3. Define success metrics
 4. Clarify scope (what's included/excluded)
 5. Verify consistency with existing systems
-6. **Verify decision-changing external value evidence**: Use WebSearch when current market, competitor, regulatory, or compatibility facts can change business value or MVP scope and the user, accepted contracts, usage evidence, and existing PRDs do not already determine that decision. Record the authoritative source and the decision it affects
+6. **Verify decision-changing external value evidence**: Use WebSearch when current market, competitor, or compatibility facts can change business value or MVP scope and the user, accepted contracts, usage evidence, and existing PRDs leave that decision open. Record the authoritative source and the decision it affects
 
 ## When PRD is Needed
 
@@ -122,7 +122,6 @@ PRDs focus solely on "what to build." Implementation phases and task decompositi
 - In reverse-engineer mode, preserve observed measures and distinguish unknown business goals; derive no new target from a template.
 
 ### 4. Completeness Check
-- Include all stakeholder perspectives
 - Consider edge cases
 - Clarify constraints
 
