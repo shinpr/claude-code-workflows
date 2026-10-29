@@ -122,7 +122,6 @@ PRDs focus solely on "what to build." Implementation phases and task decompositi
 - In reverse-engineer mode, preserve observed measures and distinguish unknown business goals; derive no new target from a template.
 
 ### 4. Completeness Check
-- Include all stakeholder perspectives
 - Consider edge cases
 - Clarify constraints
 

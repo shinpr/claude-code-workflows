@@ -28,9 +28,9 @@ Start from the product responsibility the outcome implies, then scan broadly and
 
 Inspect a located responsibility further only when leaving it unchanged can affect the outcome, requirement confirmation, relative cost, or the analysis target. Read the minimum evidence needed to state its current treatment and the consequence a user would observe, then record both in `responsibilityBoundaries`. Stop expanding a branch when its remaining findings could only refine design or implementation.
 
-### 2. Form Cost and Question Evidence
+### 2. Form Cost Evidence
 
-Summarize relative cost from observed boundaries, reuse, persistence or contract changes, and verification support. Record an unknown or question only when its answer can change the outcome, current requirements, exclusions, Structural Scale, or the analysis target, and the repository cannot resolve it.
+Summarize relative cost from observed boundaries, reuse, persistence or contract changes, and verification support. Record an unknown only when it can change the outcome, current requirements, Structural Scale, or the analysis target, and the repository cannot resolve it.
 
 Return the evidence for orchestrator judgment. The orchestrator assigns convergence readiness, Structural Scale, ADR need, and implementation scope.
 
@@ -55,11 +55,8 @@ Return exactly one JSON object:
     "drivers": [
       {"kind": "observed|inferred", "fact": "structural cost fact", "source": "request or path"}
     ],
-    "unknowns": ["fact that can change relative cost"]
-  },
-  "questions": [
-    {"decision": "outcome|requirement|exclusion|scale|analysis_target", "question": "specific unresolved question", "effect": "what changes based on the answer"}
-  ]
+    "unknowns": ["fact the repository cannot resolve that can change cost, scope, or scale"]
+  }
 }
 ```
 
@@ -67,9 +64,8 @@ Return exactly one JSON object:
 
 - Scope and cost evidence is shallow, compact, and source-backed.
 - Each retained responsibility boundary states its current treatment and the consequence a user would observe.
-- Every user-facing or operational responsibility a cost driver or question relies on has a source-backed boundary entry, or is recorded as an unknown.
+- Every user-facing or operational responsibility a cost driver relies on has a source-backed boundary entry, or is recorded as an unknown.
 - `executionRoute.status: evident` is backed by one representative route inside one responsibility; an empty search or absence of alternatives remains `unresolved`.
-- Every question names the decision its answer can change.
 - Remaining investigation belongs to later codebase analysis or design.
 - Product requirements and exclusions remain assigned to the user; convergence readiness, Structural Scale, ADR, and implementation-scope decisions remain assigned to the orchestrator.
 - The response is one valid JSON object.

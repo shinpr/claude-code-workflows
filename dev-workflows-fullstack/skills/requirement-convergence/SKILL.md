@@ -51,7 +51,7 @@ Render this shape at every requirements confirmation stop, whether or not the he
 |---------|----------|
 | **Confirmed scope** | The requirements and exclusions the user has already selected, in the user's wording |
 | **Decision evidence** | Each material observed fact with its source, followed by what that fact can change about scope, outcome, or cost |
-| **User decisions** | Each unresolved product, UX, or operational question, followed by the scope, outcome, or cost effects of its materially different answers |
+| **User decisions** | One question per convergence field below `ready` (Hearing Protocol Step 1), followed by the scope, outcome, or cost effects of its materially different answers |
 | **Workflow** | Rough cost band with the unknowns that remain, Structural Scale, and the selected document and workflow route |
 
 Keeping the first three sections separate is what makes the decision informable: merged, the reader cannot tell which line is the user's own settled boundary, which is a repository observation, and which is still open.
