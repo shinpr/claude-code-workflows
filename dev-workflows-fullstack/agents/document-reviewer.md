@@ -89,11 +89,11 @@ Verify current external facts from authoritative sources only when an ADR select
 
 ### Work Plan
 
-- Every Design Doc obligation needed for implementation is covered by a task, and every task produces a repository outcome required by a cited governing section or acceptance criterion.
+- Every Design Doc obligation that is repository work is covered by a task, and every task produces a repository outcome required by a cited governing section or acceptance criterion.
 - Task count and order follow real dependency, executor-routing, and independently completable-outcome boundaries.
 - The first representative vertical proof occurs at the earliest point permitted by those dependencies; generated test skeletons are consumed at the first task where their boundary becomes executable.
 - Verification is executable from repository artifacts or task output, and design detail is referenced rather than re-selected or copied.
-- External setup, credentials, approval, release/deployment execution, production operation, and review-only final QA are outside the plan unless a cited Design Doc requires checked-in repository changes.
+- Every task is repository work as defined by the Work Plan entry in documentation-criteria, and review-only final QA remains outside the task set.
 
 ## Findings and Review Resolution
 

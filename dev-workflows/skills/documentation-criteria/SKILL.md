@@ -19,7 +19,7 @@ Each document fixes one class of decision that the repository alone cannot suppl
 
 - **Design Doc** — Records the complete implementation design for the confirmed scope: flows, contracts, change impact, and verification strategy. Task execution treats it as the primary technical baseline, so implementation does not silently invent missing How. The same baseline turns anything written in it into planned and implemented work, so release execution, production operation, and other work outside the repository change stay out of it; a confirmed requirement that describes such work is met by designing the capability it uses. When repository evidence invalidates technical How while confirmed outcome, desired-future requirements, and non-goals remain true, correct the implementation and the affected technical artifact through their owning workflow without reopening product requirements. Technology selection rationale belongs to an ADR, schedule and assignments to the Work Plan.
 
-- **Work Plan** — Fixes task order, dependencies, executable verification, and the earliest vertical proof point. Without it task order follows file layout rather than dependency, and integration risk moves to the end of the work. Design detail is referenced from the Design Doc rather than restated.
+- **Work Plan** — Fixes task order, dependencies, executable verification, and the earliest vertical proof point. Without it task order follows file layout rather than dependency, and integration risk moves to the end of the work. Design detail is referenced from the Design Doc rather than restated. Each task is repository work the executor completes and verifies during implementation using repository artifacts and its own output.
 
 ## Creation Decision Matrix
 

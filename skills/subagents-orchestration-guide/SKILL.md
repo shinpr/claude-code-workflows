@@ -35,6 +35,8 @@ After an analysis result returns, compare each user-facing or operational respon
 
 Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
 
+**Requirement reopening after codebase analysis**: When the first codebase-analyzer result after requirement confirmation shows existing behavior that serves a confirmed requirement's need and falls short only of extra behavior that requirement specifies, whichever field reports it, present it with its evidence and cost effect at one requirements stop before UI Spec, ADR, or Design Doc work, and let the user keep or change the requirement. Requirements are confirmed before any code is read, and every later phase builds and reviews against them without questioning them, so this is the one point where repository evidence can reduce them; judging such evidence as ruled out by the requirement removes the user's only chance to weigh it. Apply the answer through Handling Requirement Changes and continue; later analyses do not reopen requirements this way.
+
 ## Orchestration Principles
 
 ### Outcome Stewardship
@@ -98,6 +100,7 @@ Before presenting an artifact at an approval stop, read its current version and 
 |-------|------------|---------------------|
 | Requirements | After requirement-analyzer completes | Answer the requirement-convergence hearing, confirm the recorded requirements match their intent, then approve proceeding |
 | PRD | After document-reviewer completes PRD review | Approve completing the PRD phase and proceeding |
+| Requirement reopening | After the first codebase-analyzer result when it shows existing behavior that falls short of a confirmed requirement only by extra behavior that requirement specifies | Keep or change each affected requirement |
 | UI Spec | After document-reviewer completes an applicable UI Spec review | Approve completing the UI Spec phase and proceeding |
 | ADR batch | After document-reviewer reviews the complete qualifying batch | Approve completing the ADR batch phase and proceeding |
 | Design | After design-sync completes consistency verification | Approve completing the design phase and proceeding |
@@ -144,8 +147,8 @@ Use create mode for initial documents. For requirement-driven revisions, invoke 
 
 | Scale | Planning flow |
 |-------|---------------|
-| Large | requirement-analyzer → PRD → PRD review → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
-| Medium | requirement-analyzer → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
+| Large | requirement-analyzer → PRD → PRD review → codebase-analyzer → requirement reopening when applicable → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
+| Medium | requirement-analyzer → codebase-analyzer → requirement reopening when applicable → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
 | Small | requirement-analyzer → conditional codebase-analyzer when the Small evidence gate is unresolved → direct task execution (no Work Plan) |
 
 The requirement-convergence and external-resource hearings run in the orchestrator. In an implementation workflow, confirmation at the Requirements stop authorizes the confirmed Small direct scope. Medium/Large implementation begins after Work Plan batch approval.
@@ -300,7 +303,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### technical-designer → work-planner
 
-Pass the Design Doc path. Work-planner maps governing sections and ACs to implementation tasks. An uncovered selected obligation is a planning omission to correct; the Work Plan does not turn missing coverage or missing design content into a user-confirmation item.
+Pass the Design Doc path. Work-planner maps governing sections and ACs to implementation tasks. The Work Plan does not turn missing coverage or missing design content into a user-confirmation item.
 
 ### HC-06: acceptance-test-generator → work-planner
 

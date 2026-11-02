@@ -17,7 +17,7 @@ This reference defines the orchestration flow for one feature spanning backend a
 | 1 | requirement-analyzer + orchestrator | Scope/cost evidence followed by orchestrator convergence and Structural Scale judgment, then the requirements hearing **[Stop]** | Confirmed requirements + scale |
 | 2 | prd-creator | PRD for the complete feature | PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
-| 4 | codebase-analyzer | Repository decision material for the complete feature, including layer boundaries and cross-layer contracts | Analysis JSON |
+| 4 | codebase-analyzer + orchestrator | Repository decision material for the complete feature, including layer boundaries and cross-layer contracts, then requirement reopening when applicable **[Stop when applicable]** | Analysis JSON |
 | 5 | orchestrator + ui-analyzer | Determine UI Spec applicability; collect external, prototype, and UI evidence only when applicable | UI analysis or none |
 | 6 | ui-spec-designer | Applicable UI Spec from PRD and UI evidence | UI Spec or none |
 | 7 | document-reviewer | Applicable UI Spec review **[Stop]** | Approval or skipped |
@@ -34,7 +34,7 @@ This reference defines the orchestration flow for one feature spanning backend a
 
 ### Medium Structural Scale Fullstack
 
-For Medium scale, execute Large steps 4-17 and carry the confirmed convergence record in place of a PRD; retain the conditional stops at steps 7 and 9 and the approval stops at steps 14 and 17.
+For Medium scale, execute Large steps 4-17 and carry the confirmed convergence record in place of a PRD; retain the conditional stops at steps 4, 7, and 9 and the approval stops at steps 14 and 17.
 
 ## Analysis and Evidence Rules
 
