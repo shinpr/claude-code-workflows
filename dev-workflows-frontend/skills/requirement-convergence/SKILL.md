@@ -9,7 +9,7 @@ description: Separates the outcome a change must produce from the requirements p
 
 Requirements arrive bloated, ambiguous, or aimed at the wrong outcome. A capable model reconciles all three into a coherent plan and builds it faithfully — delivering exactly what was asked for when what was asked for was wrong.
 
-This skill converges **what to build**. How to build it, and which documents the change requires, are settled after the what is.
+This skill converges **what to build**. How to build it, and which documents the change requires, come after the what.
 
 ## Convergence Fields
 
@@ -49,14 +49,14 @@ Render this shape at every requirements confirmation stop, whether or not the he
 
 | Section | Contents |
 |---------|----------|
-| **Confirmed scope** | The requirements and exclusions the user has already selected, in the user's wording |
+| **User-selected scope** | The requirements and exclusions the user has already selected, in the user's wording |
 | **Decision evidence** | Each material observed fact with its source, followed by what that fact can change about scope, outcome, or cost |
 | **User decisions** | One question per convergence field below `ready` (Hearing Protocol Step 1), followed by the scope, outcome, or cost effects of its materially different answers |
 | **Workflow** | Rough cost band with the unknowns that remain, Structural Scale, and the selected document and workflow route |
 
-Keeping the first three sections separate is what makes the decision informable: merged, the reader cannot tell which line is the user's own settled boundary, which is a repository observation, and which is still open.
+Keeping the first three sections separate is what makes the decision informable: merged, the reader cannot tell which line is the user's own selection, which is a repository observation, and which is still open.
 
-Only an explicit user answer moves an item from **User decisions** into **Confirmed scope**. Because Step 2 records the user's own wording, pose each open decision as a question and let the user supply its answer. The orchestrator owns **Workflow** and presents it as a selected route.
+Only an explicit user answer moves an item from **User decisions** into **User-selected scope**. Because Step 2 records the user's own wording, pose each open decision as a question and let the user supply its answer. The orchestrator owns **Workflow** and presents it as a selected route.
 
 ## Storage Protocol
 

@@ -51,7 +51,7 @@ Whole-repository quality assurance stays outside the plan as a separate executio
 
 ## Completion Criteria
 
-- [ ] Every Design Doc obligation needed for implementation is covered by at least one task
+- [ ] Every Design Doc obligation that is repository work is covered by at least one task
 - [ ] Every task cites each directly constraining governing section and applicable AC
 - [ ] Every task produces a repository implementation outcome required by its source
 - [ ] Dependencies permit execution in the listed order

@@ -52,7 +52,7 @@ Invoke acceptance-test-generator using Agent tool:
 - `description`: "Generate test skeletons"
 - `design_docs`: Existing backend, frontend, or single-layer Design Doc paths from Step 1
 - `ui_spec`: Existing UI Spec path when present
-- `confirmed_requirement_context`: Approved PRD path or unchanged Design Doc Requirement Convergence record
+- `requirement_context`: Approved PRD path or unchanged Design Doc Requirement Convergence record
 
 Follow subagents-orchestration-guide HC-06 to verify generated paths and coverage of empty lanes before Step 3.
 

@@ -4,7 +4,7 @@ This reference defines the orchestration flow for one feature spanning backend a
 
 ## When This Flow Applies
 
-- The confirmed outcome requires backend and frontend implementation.
+- The outcome requires backend and frontend implementation.
 - Separate Design Docs are needed for layer ownership and cross-layer verification.
 - The orchestrator is invoked through a fullstack implementation or build recipe.
 
@@ -14,10 +14,10 @@ This reference defines the orchestration flow for one feature spanning backend a
 
 | Step | Owner | Purpose | Output |
 |------|-------|---------|--------|
-| 1 | requirement-analyzer + orchestrator | Scope/cost evidence followed by orchestrator convergence and Structural Scale judgment, then the requirements hearing **[Stop]** | Confirmed requirements + scale |
+| 1 | requirement-analyzer + orchestrator | Scope/cost evidence followed by orchestrator convergence and Structural Scale judgment, then the requirements hearing **[Stop]** | Convergence record + scale |
 | 2 | prd-creator | PRD for the complete feature | PRD |
 | 3 | document-reviewer | PRD review **[Stop]** | Approval |
-| 4 | codebase-analyzer | Repository decision material for the complete feature, including layer boundaries and cross-layer contracts | Analysis JSON |
+| 4 | codebase-analyzer + orchestrator | Repository decision material for the complete feature, including layer boundaries and cross-layer contracts, then requirement reopening when applicable **[Stop when applicable]** | Analysis JSON |
 | 5 | orchestrator + ui-analyzer | Determine UI Spec applicability; collect external, prototype, and UI evidence only when applicable | UI analysis or none |
 | 6 | ui-spec-designer | Applicable UI Spec from PRD and UI evidence | UI Spec or none |
 | 7 | document-reviewer | Applicable UI Spec review **[Stop]** | Approval or skipped |
@@ -34,13 +34,13 @@ This reference defines the orchestration flow for one feature spanning backend a
 
 ### Medium Structural Scale Fullstack
 
-For Medium scale, execute Large steps 4-17 and carry the confirmed convergence record in place of a PRD; retain the conditional stops at steps 7 and 9 and the approval stops at steps 14 and 17.
+For Medium scale, execute Large steps 4-17 and carry the convergence record in place of a PRD; retain the conditional stops at steps 4, 7, and 9 and the approval stops at steps 14 and 17.
 
 ## Analysis and Evidence Rules
 
 At each Agent invocation in this flow, build the prompt as a mechanical extraction: copy the named source values into the exact fields, apply only the declared serialization, then invoke immediately.
 
-Invoke codebase-analyzer once for the complete confirmed feature. It discovers backend/frontend responsibility boundaries and their cross-layer contracts; independent discovery keeps convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
+Invoke codebase-analyzer once for the complete feature. It discovers backend/frontend responsibility boundaries and their cross-layer contracts; independent discovery keeps convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 
 Apply the documentation-criteria UI Spec creation condition. Invoke ui-analyzer only when a UI Spec applies. External-resource and prototype inputs are then conditional: load external-resource-context when external evidence can change the current UI or verification decision, and ask for a prototype only when it resolves an approved UI decision or target ambiguity.
 
@@ -50,7 +50,7 @@ Use these prompt shapes:
 For either analyzer, pass exactly one governing source:
 prd_path: [approved PRD path]
 or
-requirements: [confirmed requirements verbatim]
+requirements: [convergence record requirements verbatim]
 
 For UI analysis only, add an existing UI Spec, a decision-relevant prototype, and selected external references:
 ui_spec_path: [existing UI Spec path]
@@ -58,7 +58,7 @@ prototype_path: [decision-relevant path]
 external_resource_refs: [selected references or []]
 
 UI Spec:
-confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
 ui_analysis: [UI analyzer JSON]
 codebase_analysis: [applicable frontend codebase evidence]
 prototype_path: [decision-relevant path or absent]
@@ -72,7 +72,7 @@ After scope and any applicable UI Spec approval, resolve candidate decision poin
 
 - Route layer-owned decision points to the matching technical designer.
 - Route cross-layer points to technical-designer.
-- Invoke each owner with `document_to_create: ADRBatch`, `confirmed_requirement_context`, its ordered confirmed `decision_points` unchanged, and the corresponding codebase-analysis `candidateDecisionPoints` objects unchanged as `decision_materials`; include an approved `ui_spec_path` only when it constrains a frontend decision.
+- Invoke each owner with `document_to_create: ADRBatch`, `requirement_context`, its ordered `decision_points` that pass both filters unchanged, and the corresponding codebase-analysis `candidateDecisionPoints` objects unchanged as `decision_materials`; include an approved `ui_spec_path` only when it constrains a frontend decision.
 - Invoke technical-designer batches serially: cross-layer/backend first, frontend second. Each owner allocates numbers only after the preceding batch exists.
 - Collect every returned ADR path.
 - Invoke document-reviewer once with `doc_type: ADRBatch` and the complete `targets` array.
@@ -89,8 +89,8 @@ Create each complete layer design from reviewed artifacts and unchanged evidence
 ```text
 document_to_create: DesignDoc
 output_path: docs/design/[feature-name]-backend-design.md
-confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
-structural_scale: [confirmed scale]
+requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+structural_scale: [orchestrator-selected scale]
 adr_paths: [accepted paths or []]
 codebase_analysis: [complete analysis JSON unchanged]
 ```
@@ -100,8 +100,8 @@ codebase_analysis: [complete analysis JSON unchanged]
 ```text
 document_to_create: DesignDoc
 output_path: docs/design/[feature-name]-frontend-design.md
-confirmed_requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
-structural_scale: [confirmed scale]
+requirement_context: [approved PRD path exactly; otherwise unchanged convergence record]
+structural_scale: [orchestrator-selected scale]
 adr_paths: [accepted paths or []]
 ui_spec_path: [approved UI Spec; omit when absent]
 backend_design_doc: [path]
@@ -113,13 +113,13 @@ Apply `code:` and `ui:` prefixes to respective Fact Disposition IDs. The fronten
 
 ## Verification Resolution
 
-Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier with its previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `confirmed_requirement_context` in the exact form fixed by the orchestration guide.
+Keep verifier observations unchanged so corrections remain traceable to observed evidence rather than orchestrator-authored design instructions. Invoke code-verifier once per Design Doc with `doc_type: design-doc`; apply Review Resolution independently, forward each `apply` discrepancy verbatim with only its disposition, and rerun the affected verifier with its previous complete result, dispositions, and correction diff or paths as `prior_feedback`. Build one `verification_evidence` object per Design Doc from the latest result. Invoke document-reviewer with `review_context: creation`, `verification_evidence`, the same unchanged `codebase_analysis` and optional unchanged `ui_analysis`, original requirements as `requirements_verbatim`, and `requirement_context` in the exact form fixed by the orchestration guide.
 
 After both document reviews permit approval, invoke design-sync with `source_design` as the frontend Design Doc path because it consumes backend integration contracts. Apply Review Resolution to actionable conflicts before the design approval stop.
 
 ## Test Skeleton and Work Planning
 
-Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `confirmed_requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for generated-path and empty-lane coverage checks before planning. Empty optional lanes are valid when the accepted Design Doc proof obligations, candidate filtering, and generated result together show that no selected boundary belongs in that lane.
+Pass both Design Doc paths as `design_docs`, the applicable `ui_spec`, and the same `requirement_context` used for design to acceptance-test-generator. Follow parent HC-06 for generated-path and empty-lane coverage checks before planning. Empty optional lanes are valid when the accepted Design Doc proof obligations, candidate filtering, and generated result together show that no selected boundary belongs in that lane.
 
 Pass both Design Docs, the applicable UI Spec, applicable PRD, and generated skeleton paths to work-planner. Compose phases around shared backend/frontend verification points. The generated skeleton file is consumed by the earliest task where its declared boundary becomes executable.
 

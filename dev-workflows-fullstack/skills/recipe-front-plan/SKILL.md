@@ -58,7 +58,7 @@ Follow the planning process below:
      - `description`: "Test skeleton generation"
      - `design_docs: [Design Doc path]`
      - `ui_spec: [UI Spec path]` when one exists
-     - `confirmed_requirement_context`: approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
+     - `requirement_context`: approved PRD path named by the Design Doc, or its unchanged Requirement Convergence record when no PRD exists
      - Follow subagents-orchestration-guide HC-06 for generated-path and empty-lane coverage checks
    - Pass every non-null generated skeleton path to work-planner; treat an evidence-backed empty lane as complete for that lane and continue to work-planner
 
@@ -81,7 +81,7 @@ Invoke document-reviewer to review the work plan:
 
 ### Step 5: Present for Approval
 - Present the reviewed work plan to the user for batch approval. If the user requests changes, re-invoke work-planner with the user's requested changes verbatim and re-run Step 4.
-- Record unresolved technical evidence or external dependencies in the plan with their affected task and verification boundary. Return to the requirements gate only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true without a user choice.
+- Return to the requirements gate only when the outcome, desired-future requirements, and non-goals cannot all remain true without a user choice.
 
 ## Response at Completion
 **Recommended**: End with the following standard response after plan content approval

@@ -115,7 +115,7 @@ Severity Assessment:
   - Term → medium (confusion risk)
 ```
 
-Recommend only a correction within confirmed requirements, accepted design decisions, and existing responsibilities. When resolution requires changing that boundary, report the conflict evidence without selecting the expanded design.
+Recommend only a correction within the requirements, accepted design decisions, and existing responsibilities. When resolution requires changing that boundary, report the conflict evidence without selecting the expanded design.
 
 ## Output Format
 

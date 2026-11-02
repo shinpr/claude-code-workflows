@@ -39,13 +39,13 @@ At each Agent invocation below, build the prompt as a mechanical extraction: cop
 
 ## Step 1: Select the Governing Requirement Source
 
-Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.
+Use the approved PRD path when one exists. Otherwise use the requirements verbatim.
 
-Set `confirmed_requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator-confirmed convergence record unchanged.
+Set `requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator's convergence record unchanged.
 
 ## Step 2: Collect Repository Decision Material
 
-Invoke `dev-workflows-fullstack:codebase-analyzer` once for the complete confirmed scope with exactly `prd_path: [approved PRD path]`, or `requirements: [confirmed requirements verbatim]` when no approved PRD exists.
+Invoke `dev-workflows-fullstack:codebase-analyzer` once for the complete scope with exactly `prd_path: [approved PRD path]`, or `requirements: [requirements verbatim]` when no approved PRD exists.
 
 Require one valid JSON result and let the analyzer discover affected paths, responsibility boundaries, and cross-layer contracts. Treat `focusAreas` as existing-behavior safeguards rather than requirements.
 
@@ -68,7 +68,7 @@ prd_path: [approved PRD path]
 or, when no approved PRD exists:
 
 ```text
-requirements: [confirmed requirements verbatim]
+requirements: [requirements verbatim]
 ```
 
 Add only an existing `ui_spec_path`, a decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`.
@@ -87,7 +87,7 @@ Judge all four convergence fields. Assign `cost` from Step 2 structural evidence
 
 Determine Structural Scale from outcomes and responsibility boundaries; file count is supporting evidence only. Resolve candidate decision points against the governing source, applicable code/UI `simplifications`, `reuse`, and `invalidations`; applicable UI facts may support or contradict the remaining options. Apply documentation-criteria Choice and Durability filters only after this convergence and record passing points as `adrDecisionPoints`; an empty list is valid.
 
-Present the requirement-convergence Scope Confirmation. Place affected responsibilities, applicable simplifications with their conditions, and qualifying ADR points or `none` under **Decision evidence**; place Structural Scale, UI Spec applicability, and the recommended document route under **Workflow**. Offer proceed, or correct and re-run. Ask a question only when its answer can change a convergence field, the confirmed outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
+Present the requirement-convergence Scope Confirmation. Place affected responsibilities, applicable simplifications with their conditions, and qualifying ADR points or `none` under **Decision evidence**; place Structural Scale, UI Spec applicability, and the recommended document route under **Workflow**. Offer proceed, or correct and re-run. Ask a question only when its answer can change a convergence field, the outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
 
 ## Step 5: Create and Approve the UI Spec
 
@@ -96,7 +96,7 @@ Run this step only when Step 3 determined that a UI Spec applies.
 Invoke `dev-workflows-fullstack:ui-spec-designer` with exact inputs:
 
 ```text
-confirmed_requirement_context: [the value fixed in Step 1]
+requirement_context: [the value set in Step 1]
 ui_analysis: [complete Step 3 UI analyzer JSON unchanged]
 codebase_analysis: [complete Step 2 codebase-analyzer JSON unchanged]
 prototype_path: [decision-relevant path from Step 3 exactly, or absent]
@@ -110,8 +110,8 @@ Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type:
 
 When `adrDecisionPoints` is non-empty:
 
-1. Route shared/backend-owned points to technical-designer first, then frontend-owned points to technical-designer-frontend. Invoke each owner with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; its ordered `decision_points` confirmed in Step 4, unchanged; `decision_materials` as the corresponding Step 2 `decisionMaterials.candidateDecisionPoints` objects copied unchanged in that order; and `ui_spec_path` only when the approved UI Spec constrains that owner's decision. Run owner batches serially so each batch allocates ADR numbers after the preceding batch exists.
-2. Collect all returned paths and invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all paths]`, and `confirmed_requirement_context`. The reviewer follows the approved UI Spec cited by the ADRs when it can change the decision review.
+1. Route shared/backend-owned points to technical-designer first, then frontend-owned points to technical-designer-frontend. Invoke each owner with exact inputs: `document_to_create: ADRBatch`; `requirement_context`; its ordered `decision_points` from Step 4, unchanged; `decision_materials` as the corresponding Step 2 `decisionMaterials.candidateDecisionPoints` objects copied unchanged in that order; and `ui_spec_path` only when the approved UI Spec constrains that owner's decision. Run owner batches serially so each batch allocates ADR numbers after the preceding batch exists.
+2. Collect all returned paths and invoke `dev-workflows-fullstack:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all paths]`, and `requirement_context`. The reviewer follows the approved UI Spec cited by the ADRs when it can change the decision review.
 3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
 4. Present one batch decision after Review Resolution converges, including a decline-only result; unresolved governing-source conflicts still block approval. `[Stop: ADR batch approval]`.
 5. After user approval, set every ADR status to `Accepted` and verify the status update.
@@ -123,7 +123,7 @@ Create the complete frontend MVP implementation design from reviewed artifacts a
 Invoke `dev-workflows-fullstack:technical-designer-frontend` with exactly:
 
 - `document_to_create: DesignDoc`;
-- `confirmed_requirement_context`;
+- `requirement_context`;
 - `structural_scale`;
 - applicable approved `ui_spec_path` exactly and selected external-resource reference records unchanged;
 - `adr_paths: [accepted paths or []]`;
@@ -140,11 +140,11 @@ Keep verifier observations unchanged so corrections remain traceable to observed
 
 Invoke `dev-workflows-fullstack:code-verifier` with `doc_type: design-doc` and `document_path` as the Design Doc path returned by technical-designer-frontend, unchanged, to verify current premises and feasibility while treating planned behavior as intent. Apply Review Resolution before document review; send applied findings to a fresh technical-designer-frontend update invocation with `Operation Mode: update`, `Existing Document: [Design Doc path]`, and `correction_findings: [complete findings unchanged except for their dispositions]`. The designer applies its review-triggered bounded self-verification gate for an unverified decision-changing premise; this fresh designer is the sole correction specialist and selects the evidence route. Rerun verification after an applied correction with the previous complete result, dispositions, and correction diff or paths as `prior_feedback`, then build one `verification_evidence` object from the latest result. Continue at the Review Resolution convergence condition.
 
-Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`; `target` as the returned Design Doc path unchanged; `review_context: creation`; original user requirements unchanged as `requirements_verbatim`; the Step 1 `confirmed_requirement_context` unchanged; the same unchanged `codebase_analysis` and optional `ui_analysis` supplied to the designer; and Step 8 `verification_evidence` unchanged. The reviewer follows an applicable UI Spec and accepted ADR paths cited by the Design Doc only when they can change an in-scope finding.
+Invoke `dev-workflows-fullstack:document-reviewer` with exact inputs: `doc_type: DesignDoc`; `target` as the returned Design Doc path unchanged; `review_context: creation`; original user requirements unchanged as `requirements_verbatim`; the Step 1 `requirement_context` unchanged; the same unchanged `codebase_analysis` and optional `ui_analysis` supplied to the designer; and Step 8 `verification_evidence` unchanged. The reviewer follows an applicable UI Spec and accepted ADR paths cited by the Design Doc only when they can change an in-scope finding.
 
 - `pass`: continue.
 - `needs_revision`: apply Review Resolution, update through a fresh technical-designer-frontend invocation using the existing path and complete applied findings, then re-review with `prior_feedback`.
-- `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
+- `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when the outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
 Invoke `dev-workflows-fullstack:design-sync` with `source_design` as the returned Design Doc path unchanged, apply Review Resolution to actionable conflicts, and report `SKIPPED` distinctly when only one Design Doc exists.
 
@@ -153,7 +153,7 @@ Present the applicable UI Spec, Design Doc, accepted ADR paths, resolved limitat
 ## Completion Criteria
 
 - External and prototype evidence was requested only when it controlled a current decision.
-- Scope and Structural Scale were confirmed from outcomes and responsibility boundaries.
+- Scope and Structural Scale were determined from outcomes and responsibility boundaries.
 - ADRs exist only for points passing both filters, and the batch received one review and approval.
 - An applicable UI Spec and a complete frontend Design Doc exist regardless of ADR need.
 - Applicable existing UI behavior, contracts, assumptions, states, equivalence, and verification safeguards reached the Design Doc.

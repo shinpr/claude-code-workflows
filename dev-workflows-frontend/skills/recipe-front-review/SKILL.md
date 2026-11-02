@@ -98,7 +98,7 @@ Approve the proposed changes:
 
 This review command authorizes analysis; use AskUserQuestion to obtain separate implementation authority. The batch option is **"approve all proposed `apply` routes"** and its scope consists exclusively of those routes. When the approved change set is empty, proceed directly to Step 9.
 
-Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update. Remove accidental unmapped changes; when a necessary change would alter a confirmed value boundary or explicit size constraint, return to Requirement Change Detection.
+Pass approved findings, routes, covered files/sections, and any stated total size budget to update or fix agents. Before re-validation, map every diff hunk to an approved finding or required consistency update. Remove accidental unmapped changes; when a necessary change would alter a value boundary or explicit size constraint, return to Requirement Change Detection.
 
 ### Step 5: Design-Side Update
 
@@ -130,9 +130,9 @@ Run this step only when the user routed at least one finding to `d`. When no `d`
 Invoke task-executor-frontend using Agent tool:
 - `subagent_type`: "dev-workflows-frontend:task-executor-frontend"
 - `description`: "Execute review fixes"
-- `direct_scope`: Apply the approved frontend corrections within the confirmed review scope and stated total size budget
+- `direct_scope`: Apply the approved frontend corrections within the review scope and stated total size budget
 - `governing_sources`: The reviewed Design Doc, applicable UI Spec, and accepted requirement or ADR paths
-- `target_paths`: The implementation and test paths confirmed for the approved code-side routes
+- `target_paths`: The implementation and test paths identified for the approved code-side routes
 - `observable_verification`: The focused UI behavior tests or observable contract checks named by the findings and governing sources pass
 - `correction_findings`: Complete reviewer finding objects verbatim, with only their orchestrator dispositions added
 

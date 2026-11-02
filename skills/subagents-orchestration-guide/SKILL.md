@@ -27,25 +27,27 @@ Build and judge the `convergence` record in the orchestrator with the requiremen
 
 ### Small Evidence Gate
 
-Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that route remains inside one responsibility, and every `costEvidence.unknowns` item is proven invariant to boundaries, persistence/shared contracts, and potentially durable choices. Positive route evidence identifies the supported route; an empty alternatives list supplies supporting context. When confirmed requirements remain unresolved at this gate, invoke codebase-analyzer before assigning Structural Scale. Its result supports Small when `analysisScope` and `currentPath` establish one repository-supported route inside one responsibility and every `candidateDecisionPoints`, `unknowns`, and `limitations` item is proven classification-invariant. Other observed boundaries and outcomes route Medium or Large. Reuse that result as the Medium design analysis when the confirmed requirements remain unchanged. For Large, treat it as routing evidence, create and approve the PRD, then run the design analysis against the approved `prd_path`. ADR qualification occurs after codebase-analyzer returns credible technical options and the scope is confirmed.
+Classify Small when `scopeEvidence.executionRoute.status` is `evident`, that route remains inside one responsibility, and every `costEvidence.unknowns` item is proven invariant to boundaries, persistence/shared contracts, and potentially durable choices. Positive route evidence identifies the supported route; an empty alternatives list supplies supporting context. When the requirements remain unresolved at this gate, invoke codebase-analyzer before assigning Structural Scale. Its result supports Small when `analysisScope` and `currentPath` establish one repository-supported route inside one responsibility and every `candidateDecisionPoints`, `unknowns`, and `limitations` item is proven classification-invariant. Other observed boundaries and outcomes route Medium or Large. Reuse that result as the Medium design analysis when the requirements remain unchanged. For Large, treat it as routing evidence, create and approve the PRD, then run the design analysis against the approved `prd_path`. ADR qualification occurs after codebase-analyzer returns credible technical options and the scope has passed the requirements stop.
 
 ### Requirement Change Detection During Flow
 
-After an analysis result returns, compare each user-facing or operational responsibility it exposes against the confirmed scope. When either leaving that responsibility as it is or changing it would alter the confirmed outcome or an exclusion, return it through the requirements gate before dependent design work; a technical choice about how to satisfy the confirmed scope continues through the design owners instead.
+After an analysis result returns, compare each user-facing or operational responsibility it exposes against the scope in the convergence record. When either leaving that responsibility as it is or changing it would alter the outcome or an exclusion, return it through the requirements gate before dependent design work; a technical choice about how to satisfy that scope continues through the design owners instead.
 
-Treat a proposed change to the confirmed outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
+Treat a proposed change to the outcome, desired-future requirements, or non-goals as a requirement change. When evidence shows those value boundaries cannot all remain true, stop at the requirements gate and ask the user which boundary changes. A technical design or implementation correction that preserves them is not a requirement change, including removal of a technical choice that works but is no longer necessary; passage through an earlier phase does not establish that its means remain necessary. Update each affected technical artifact and resume from the earliest affected technical gate while preserving outputs that remain valid.
+
+**Requirement reopening after codebase analysis**: When the first codebase-analyzer result after requirement confirmation shows existing behavior that serves a requirement's need and falls short only of extra behavior that requirement specifies, whichever field reports it, present it with its evidence and cost effect at one requirements stop before UI Spec, ADR, or Design Doc work, and let the user keep or change the requirement. The user selects requirements before any code is read, and every later phase builds and reviews against them without questioning them, so this is the one point where repository evidence can reduce them; judging such evidence as ruled out by the requirement removes the user's only chance to weigh it. Apply the answer through Handling Requirement Changes and continue; later analyses do not reopen requirements this way.
 
 ## Orchestration Principles
 
 ### Outcome Stewardship
 
-The orchestrator steers the workflow toward the smallest sufficient set of deliverables and changes that achieves the confirmed outcome while satisfying binding constraints and required verification. Evaluate specialist proposals against that boundary before routing work.
+The orchestrator steers the workflow toward the smallest sufficient set of deliverables and changes that achieves the outcome while satisfying binding constraints and required verification. Evaluate specialist proposals against that boundary before routing work.
 
-Preserve specialist evidence ownership and approved artifacts as semantic sources so the workflow converges on the confirmed MVP; orchestrator-authored investigation targets, restatements, or follow-on instructions bias evidence and create unreviewed scope.
+Preserve specialist evidence ownership and approved artifacts as semantic sources so the workflow converges on the MVP; orchestrator-authored investigation targets, restatements, or follow-on instructions bias evidence and create unreviewed scope.
 
 ### Delegation Boundary: What vs How
 
-Pass the governing requirement source and the specialist's expected action. Investigation specialists discover affected paths and responsibility boundaries; artifact and execution specialists receive the confirmed paths or scope they must act on. Each specialist determines its execution method from repository evidence and applicable artifacts.
+Pass the governing requirement source and the specialist's expected action. Investigation specialists discover affected paths and responsibility boundaries; artifact and execution specialists receive the paths or scope they must act on. Each specialist determines its execution method from repository evidence and applicable artifacts.
 
 **Decision precedence for routing**:
 1. User instructions (explicit requests or constraints)
@@ -54,10 +56,10 @@ Pass the governing requirement source and the specialist's expected action. Inve
 4. Specialist judgment
 
 **Scope source classification**:
-- An explicit restriction in the user instruction or confirmed outcome, desired-future requirements, or non-goals is a hard boundary. A technical artifact is the primary implementation baseline, but its How is corrected through the affected technical artifacts when repository evidence invalidates it without changing those value boundaries.
+- An explicit restriction in the user instruction or the outcome, desired-future requirements, or non-goals is a hard boundary. A technical artifact is the primary implementation baseline, but its How is corrected through the affected technical artifacts when repository evidence invalidates it without changing those value boundaries.
 - Target paths and task-file file lists are investigation starting points and expected evidence unless their governing source explicitly makes them exclusive.
-- Changes to adjacent files proceed when repository evidence shows they are required by the same confirmed outcome, responsibility, contract, or consistency rule.
-- Unrelated improvements remain outside the active change. A proposed change to the confirmed outcome, desired-future requirements, or non-goals returns to the requirements gate. Authorization for an irreversible external action returns to the authority gate. Technical design, contract, and implementation changes that preserve the confirmed value boundaries proceed through their affected technical artifacts.
+- Changes to adjacent files proceed when repository evidence shows they are required by the same outcome, responsibility, contract, or consistency rule.
+- Unrelated improvements remain outside the active change. A proposed change to the outcome, desired-future requirements, or non-goals returns to the requirements gate. Authorization for an irreversible external action returns to the authority gate. Technical design, contract, and implementation changes that preserve those value boundaries proceed through their affected technical artifacts.
 
 Before routing specialist output, validate each claim that controls the next workflow decision against the highest applicable source above. Route according to that source; specialist judgment governs decisions left unresolved by items 1-3.
 
@@ -65,7 +67,7 @@ Before routing specialist output, validate each claim that controls the next wor
 
 Each specialist's agent definition owns its canonical result shape. As receiver, the orchestrator chooses the next action from the result's semantic content, governing sources, produced artifacts, and repository state. Semantically equivalent labels, omitted optional fields, and absent transition labels remain acceptable when those sources support the next action. Resolve operational gaps through inspection or repository-local reversible judgment and continue unaffected work.
 
-Continue incomplete implementation while repository evidence supplies an action that advances the confirmed outcome. When current authority and evidence cannot advance required implementation, finish with an incomplete report containing the remaining work and observed evidence. Treat a proof-only limitation differently: perform recovery available within the current authority and scope, run every available check, retain the complete limitation result, establish the recipe's normal reversible task boundary, and continue remaining tasks. Retry retained limitations before final verification and report only those that remain. Claim only the proof actually observed. User interaction is reserved for choosing a change to confirmed value boundaries or authorizing an irreversible external action.
+Continue incomplete implementation while repository evidence supplies an action that advances the outcome. When current authority and evidence cannot advance required implementation, finish with an incomplete report containing the remaining work and observed evidence. Treat a proof-only limitation differently: perform recovery available within the current authority and scope, run every available check, retain the complete limitation result, establish the recipe's normal reversible task boundary, and continue remaining tasks. Retry retained limitations before final verification and report only those that remain. Claim only the proof actually observed. User interaction is reserved for choosing a change to value boundaries or authorizing an irreversible external action.
 
 ### Review Resolution
 
@@ -92,18 +94,19 @@ Workflow coordination is flat: the orchestrator issues every specialist call and
 
 Apply these approval stops when producing or materially revising an artifact in the current workflow. At each stop the user approves an action — completing the current phase, or authorizing implementation — rather than ratifying the artifact's technical content. Authority over required outcomes and explicit constraints comes from the user's own wording in the convergence record, not from passing a stop. A user instruction to proceed to a later phase accepts the preceding phases and authorizes entry into that phase; continue from that entry point rather than rechecking earlier review or approval records. In particular, a build instruction with an existing Work Plan grants batch approval for task materialization and implementation.
 
-Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the ADR batch and Design stops, state each quality level the artifacts selected where the requirements left it unset, so the user can raise one before dependent work. At the Design stop, also read the current PRD when present and state the confirmed user-visible outcome from it or the confirmed requirement context alongside major internal responsibility, contract, or refactoring changes, so the user can judge whether to proceed.
+Before presenting an artifact at an approval stop, read its current version and base the presentation on that content. At the ADR batch and Design stops, state each quality level the artifacts selected where the requirements left it unset, so the user can raise one before dependent work. At the Design stop, also read the current PRD when present and state the user-visible outcome from it or the requirement context alongside major internal responsibility, contract, or refactoring changes, so the user can judge whether to proceed.
 
 | Phase | Stop Point | User Action Required |
 |-------|------------|---------------------|
 | Requirements | After requirement-analyzer completes | Answer the requirement-convergence hearing, confirm the recorded requirements match their intent, then approve proceeding |
 | PRD | After document-reviewer completes PRD review | Approve completing the PRD phase and proceeding |
+| Requirement reopening | After the first codebase-analyzer result when it shows existing behavior that falls short of a requirement only by extra behavior that requirement specifies | Keep or change each affected requirement |
 | UI Spec | After document-reviewer completes an applicable UI Spec review | Approve completing the UI Spec phase and proceeding |
 | ADR batch | After document-reviewer reviews the complete qualifying batch | Approve completing the ADR batch phase and proceeding |
 | Design | After design-sync completes consistency verification | Approve completing the design phase and proceeding |
 | Work Plan | After work plan review (document-reviewer, doc_type WorkPlan; Medium/Large) completes | Batch approval: authorize implementation within this outcome |
 
-**After applicable implementation authorization**: Confirmed Small requirements or Medium/Large batch approval start autonomous execution, which continues until completion or an escalation condition is reached.
+**After applicable implementation authorization**: User confirmation at the Requirements stop for Small, or Medium/Large batch approval, starts autonomous execution, which continues until completion or an escalation condition is reached.
 
 ## Scale Determination and Document Requirements
 
@@ -144,19 +147,19 @@ Use create mode for initial documents. For requirement-driven revisions, invoke 
 
 | Scale | Planning flow |
 |-------|---------------|
-| Large | requirement-analyzer → PRD → PRD review → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
-| Medium | requirement-analyzer → codebase-analyzer → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
+| Large | requirement-analyzer → PRD → PRD review → codebase-analyzer → requirement reopening when applicable → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
+| Medium | requirement-analyzer → codebase-analyzer → requirement reopening when applicable → conditional external/UI analysis and UI Spec → optional ADR batch/review/approval → Design Doc → code-verifier/Review Resolution → document-reviewer → design-sync → acceptance-test-generator → work-planner → work plan review → task-decomposer |
 | Small | requirement-analyzer → conditional codebase-analyzer when the Small evidence gate is unresolved → direct task execution (no Work Plan) |
 
-The requirement-convergence and external-resource hearings run in the orchestrator. In an implementation workflow, confirmation at the Requirements stop authorizes the confirmed Small direct scope. Medium/Large implementation begins after Work Plan batch approval.
+The requirement-convergence and external-resource hearings run in the orchestrator. In an implementation workflow, confirmation at the Requirements stop authorizes the Small direct scope. Medium/Large implementation begins after Work Plan batch approval.
 
 Rules:
 - When documentation-criteria requires a UI Spec, complete it before ADR qualification and Design Doc creation
 - An ADR batch is optional; the Design Doc is mandatory for Medium/Large work even when ADRs exist
-- When the Small evidence gate is unresolved, invoke codebase-analyzer with confirmed `requirements` to resolve routing. Reuse that result for unchanged Medium scope. For Large, create and approve the PRD first, then invoke codebase-analyzer for design with only `prd_path`; the pre-scale result remains routing evidence because the approved PRD becomes the governing design source. For Medium already established by positive boundary evidence, invoke once with confirmed `requirements`
-- When a UI Spec applies, invoke ui-analyzer with that same governing-source choice plus existing `ui_spec_path`, decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`; invoke ui-spec-designer with `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, plus the complete unchanged `ui_analysis`, applicable unchanged `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`. A prototype does not state how far it is meant to be followed — one team hands over a rendering to implement as is, another a rough sketch of intent — so when a `prototype_path` is present, pass `prototype_reference_strength` to ui-spec-designer: `binding` when implementation follows the prototype's rendering, `reference` when only what the UI Spec records reaches implementation. Resolve it from what the user already stated about the prototype, and ask only when neither reading is supported
-- Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, ordered confirmed `decision_points` unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
-- Invoke the Design Doc owner with `document_to_create: DesignDoc`, `confirmed_requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged confirmed convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add their named UI or layer artifact paths and distinct `output_path` destinations when splitting a feature across documents
+- When the Small evidence gate is unresolved, invoke codebase-analyzer with the convergence record's `requirements` to resolve routing. Reuse that result for unchanged Medium scope. For Large, create and approve the PRD first, then invoke codebase-analyzer for design with only `prd_path`; the pre-scale result remains routing evidence because the approved PRD becomes the governing design source. For Medium already established by positive boundary evidence, invoke once with the convergence record's `requirements`
+- When a UI Spec applies, invoke ui-analyzer with that same governing-source choice plus existing `ui_spec_path`, decision-relevant `prototype_path`, and selected `external_resource_refs` or `[]`; invoke ui-spec-designer with `requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged convergence record, plus the complete unchanged `ui_analysis`, applicable unchanged `codebase_analysis`, optional `prototype_path`, and `external_resource_refs` or `[]`. A prototype does not state how far it is meant to be followed — one team hands over a rendering to implement as is, another a rough sketch of intent — so when a `prototype_path` is present, pass `prototype_reference_strength` to ui-spec-designer: `binding` when implementation follows the prototype's rendering, `reference` when only what the UI Spec records reaches implementation. Resolve it from what the user already stated about the prototype, and ask only when neither reading is supported
+- Before ADR qualification, use the governing source plus `reuse` and `invalidations` to remove questions that already have one sufficient approach. Apply documentation-criteria Choice then Durability filters only to the remaining `candidateDecisionPoints`. When non-empty, invoke each owning technical-designer with `document_to_create: ADRBatch`, `requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged convergence record, the ordered `decision_points` that pass both filters unchanged, and the corresponding `candidateDecisionPoints` objects unchanged as `decision_materials`; add an approved `ui_spec_path` only when it constrains a frontend decision. Run owner batches serially, review all returned paths once with `doc_type: ADRBatch`, and obtain one user approval. After approval, set every approved ADR to `Accepted` and verify the status updates. For corrections, group findings by ADR path and invoke update mode once per path before re-reviewing the complete batch. An empty result proceeds directly to the Design Doc
+- Invoke the Design Doc owner with `document_to_create: DesignDoc`, `requirement_context` as the approved PRD path exactly or, only when none exists, the unchanged convergence record, `structural_scale`, unchanged `codebase_analysis`, optional unchanged `ui_analysis`, and accepted `adr_paths`; frontend/fullstack invocations add their named UI or layer artifact paths and distinct `output_path` destinations when splitting a feature across documents
 - Resolve code-verifier discrepancies through Review Resolution before invoking document-reviewer; pass the exact HC-04 inputs rather than a narrative evidence bundle
 - An applied `unverified` discrepancy returns through a fresh owning technical-designer update invocation. Capability probing is reserved for the designer's review-triggered gate, with that fresh designer as the sole correction specialist
 - Fullstack layer sequencing is defined only in `references/monorepo-flow.md`
@@ -171,7 +174,7 @@ Start the applicable Structural Scale flow at the user-requested phase. Before r
 
 Verify commit capability before autonomous mode. Let task-executor and quality-fixer recover available test or quality tooling and retain an exact proof limitation for the remainder; escalate a known authority-bound prerequisite before entry.
 
-Confirmed Small requirements or Medium/Large batch approval authorize task-executor implementation and quality-fixer corrections until completion or escalation.
+User confirmation at the Requirements stop for Small, or Medium/Large batch approval, authorizes task-executor implementation and quality-fixer corrections until completion or escalation.
 
 ### Autonomous Execution Summary
 For Medium/Large, after batch approval, including an existing-plan build instruction, autonomously execute the following processes through completion or an escalation condition:
@@ -212,7 +215,7 @@ When a quality-fixer retry changes behavior outside the received findings, compa
 
 | Trigger | Action |
 |---|---|
-| Evidence shows the confirmed outcome, desired-future requirements, and non-goals cannot all remain true without a user choice | Apply Requirement Change Detection and ask which value boundary changes. |
+| Evidence shows the outcome, desired-future requirements, and non-goals cannot all remain true without a user choice | Apply Requirement Change Detection and ask which value boundary changes. |
 | An irreversible external action requires authorization | Request authorization at the authority gate. |
 | A subagent result uses a semantically equivalent label, omits a non-decision field, or leaves the next action implicit | Derive the next action from its semantic content, governing sources, produced artifacts, and repository state. |
 | Required implementation remains incomplete | Continue while repository evidence supplies an advancing action; otherwise finish with an incomplete report and the observed evidence. |
@@ -225,9 +228,9 @@ When a quality-fixer retry changes behavior outside the received findings, compa
 #### Commit Boundary Check
 
 Immediately before a workflow commit:
-1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change. `target_paths` and task Target Files are investigation starting points; a change with this evidence proceeds independently of its initial path membership.
-2. Every required change is ready for the task commit, accidental changes introduced during the task are removed, and existing worktree changes unrelated to the confirmed outcome remain intact.
-3. Commit the resulting change set. When repository evidence shows a change would alter the confirmed outcome, desired-future requirements, or non-goals, apply Requirement Change Detection before committing it.
+1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change. `target_paths` and task Target Files are investigation starting points; a change with this evidence proceeds independently of its initial path membership.
+2. Every required change is ready for the task commit, accidental changes introduced during the task are removed, and existing worktree changes unrelated to the outcome remain intact.
+3. Commit the resulting change set. When repository evidence shows a change would alter the outcome, desired-future requirements, or non-goals, apply Requirement Change Detection before committing it.
 
 For a `verification_incomplete` commit, append one trailer pair per retained limitation:
 
@@ -239,7 +242,7 @@ Verification-Affected: <affected check or command>
 Derive the values from the quality-fixer result. Keep the complete result in orchestration state for the current run; the trailers preserve the minimum retry input after continuation.
 
 **Per-task cycle**:
-1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the confirmed outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
+1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the convergence record's outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
@@ -265,12 +268,12 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### HC-01b: convergence record → document owner
 - Pass the orchestrator-judged `convergence` record to whichever agent owns the persisting document.
-- **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria` and user-authored `nonGoals` to `Future / Out of Scope`; the PRD contains confirmed requirements and boundaries while evaluation requests, speculative ideas, and unselected mechanisms remain only in pre-confirmation convergence context
+- **prd-creator** (when a PRD is created or updated): persists `outcome` to `Success Criteria` and user-authored `nonGoals` to `Future / Out of Scope`; the PRD contains the user-selected requirements and boundaries while evaluation requests, speculative ideas, and unselected mechanisms remain only in active convergence context
 - **technical-designer / technical-designer-frontend**: persists the same to the Design Doc's `Requirement Convergence` when no PRD exists, and always records the fields left `weak-but-explicit` there
 - Pass the record unchanged; a field's readiness label travels with it
 
 ### HC-02: codebase-analyzer → technical-designer
-- For an ADR batch, pass the confirmed `decision_points` unchanged and copy their corresponding `decisionMaterials.candidateDecisionPoints` objects unchanged as `decision_materials`.
+- For an ADR batch, pass the `decision_points` that pass both filters unchanged and copy their corresponding `decisionMaterials.candidateDecisionPoints` objects unchanged as `decision_materials`.
 - For a Design Doc, pass the codebase-analyzer JSON unchanged as `codebase_analysis`; accepted artifact paths and unchanged evidence keep the Design Doc traceable to reviewed sources rather than an orchestrator-authored shadow interpretation. Use these fields as follows:
 - Required downstream uses:
   - `focusAreas` → canonical disposition-target list for the Fact Disposition Table
@@ -290,7 +293,7 @@ Before post-implementation verifiers, collect retained verification limitations 
 ### HC-04: code-verifier + codebase-analyzer → document-reviewer
 - Keep verifier discrepancies unchanged so correction and review remain traceable to observed evidence rather than orchestrator-authored design instructions.
 - Apply Review Resolution and rerun verification after every correction applied from code-verifier findings, passing the previous complete verifier result, dispositions, and correction diff or paths as `prior_feedback`. Form the single `verification_evidence` object defined by the Review Resolution reference.
-- Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and the same `confirmed_requirement_context` supplied at the owning designer invocation.
+- Pass these exact keys: `review_context: creation`, `verification_evidence`, the same `codebase_analysis` JSON previously given to the designer, optional `ui_analysis`, original user requirements as `requirements_verbatim`, and the same `requirement_context` supplied at the owning designer invocation.
 - Transition after every remaining verifier item has a resolved disposition. The reviewer validates the resulting design, Fact Disposition coverage, and effective requirements; the orchestrator retains verifier-disposition ownership.
 
 ### HC-05: code-verifier → next-layer technical-designer (fullstack only)
@@ -300,11 +303,11 @@ Before post-implementation verifiers, collect retained verification limitations 
 
 ### technical-designer → work-planner
 
-Pass the Design Doc path. Work-planner maps governing sections and ACs to implementation tasks. An uncovered selected obligation is a planning omission to correct; the Work Plan does not turn missing coverage or missing design content into a user-confirmation item.
+Pass the Design Doc path. Work-planner maps governing sections and ACs to implementation tasks. The Work Plan does not turn missing coverage or missing design content into a user-confirmation item.
 
 ### HC-06: acceptance-test-generator → work-planner
 
-- Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `confirmed_requirement_context` used for design.
+- Invoke acceptance-test-generator with `design_docs` as the applicable Design Doc path list, optional `ui_spec`, and the same `requirement_context` used for design.
 - Resolve a blocked generator result through Specialist Result Acceptance before consuming `generatedFiles`.
 - Verify each non-null `generatedFiles.<lane>` path exists. When a lane is `null`, check the generator’s explanation against the accepted criteria, applicable UI Spec, actual existing test assertions and generated skeletons. Confirm that the explanation accounts for the required observable boundary. A proposed test is not existing coverage; return any missing integration/E2E obligation to the generator.
 - Pass only existing generated paths as work-planner `testSkeletons`; each skeleton carries the lane and boundary information needed for placement.

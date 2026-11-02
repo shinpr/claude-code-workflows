@@ -95,8 +95,8 @@ Correction re-review:
 
 - `pass`: no required-correction finding or blocked judgment remains;
 - `needs-improvement`: findings are repairable within the approved scope;
-- `needs-redesign`: correction requires updating the governing technical design or responsibility boundary while preserving the confirmed outcome, desired-future requirements, and non-goals;
-- `blocked`: required inputs or evidence are unavailable, or evidence shows the confirmed outcome, desired-future requirements, and non-goals cannot all remain true.
+- `needs-redesign`: correction requires updating the governing technical design or responsibility boundary while preserving the outcome, desired-future requirements, and non-goals;
+- `blocked`: required inputs or evidence are unavailable, or evidence shows the outcome, desired-future requirements, and non-goals cannot all remain true.
 
 ## Completion Check
 

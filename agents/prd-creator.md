@@ -38,7 +38,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
   - `reverse-engineer`: Create PRD from existing implementation (Reverse PRD)
 
 - **Requirements Analysis Results**: Requirements analysis results
-- **Convergence Result**: The `convergence` object (HC-01b) → `outcome` anchors Success Criteria; user-authored `nonGoals` populate `Future / Out of Scope`. The PRD contains confirmed requirements and boundaries; evaluation requests, speculative ideas, and unselected mechanisms remain only in pre-confirmation convergence context
+- **Convergence Result**: The `convergence` object (HC-01b) → `outcome` anchors Success Criteria; user-authored `nonGoals` populate `Future / Out of Scope`. The PRD contains the user-selected requirements and boundaries; evaluation requests, speculative ideas, and unselected mechanisms remain only in active convergence context
 - **Existing PRD**: Path to existing PRD file for reference (if any)
 - **Project Context**:
   - Target users (sales, marketing, HR, etc.)
@@ -118,7 +118,7 @@ PRDs focus solely on "what to build." Implementation phases and task decompositi
 4. Limit Future or Out of Scope to user-authored non-goals and current exclusions needed to make the MVP boundary executable
 
 ### 3. Measurable Success Metrics
-- Define observable success for the confirmed outcome. Include numerical targets and measurement methods when supported by a governing requirement or existing evidence.
+- Define observable success for the outcome. Include numerical targets and measurement methods when supported by a governing requirement or existing evidence.
 - In reverse-engineer mode, preserve observed measures and distinguish unknown business goals; derive no new target from a template.
 
 ### 4. Completeness Check
@@ -150,7 +150,7 @@ Use a user journey diagram, scope boundary diagram, or both only when prose does
 ## Update Mode Operation
 
 - **Execution**: User's modification instruction = approval. Execute modifications immediately
-- **Review corrections**: Resolve supplied defects within the confirmed product outcome and scope. A reviewer suggestion does not become a new requirement; return the conflicting evidence when the correction would require one.
+- **Review corrections**: Resolve supplied defects within the product outcome and scope. A reviewer suggestion does not become a new requirement; return the conflicting evidence when the correction would require one.
 - **Processing**: Increment version number and record change history
 
 ## Reverse-Engineer Mode (Reverse PRD)

@@ -8,11 +8,11 @@ description: Applies language-agnostic and backend technical decision criteria, 
 ## Value-First Engineering
 
 Inspect until the evidence identifies the lowest-total-complexity solution that delivers the required user, operator, or maintainer value while keeping the system correct and maintainable.
-- Resolve verified problems within confirmed scope or dependencies required for the outcome; report other findings with their owning boundary and evidence without expanding the active change.
+- Resolve verified problems within scope or dependencies required for the outcome; report other findings with their owning boundary and evidence without expanding the active change.
 - Introduce capabilities, infrastructure, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
-- Treat behavior-preserving maintenance inside the confirmed responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
+- Treat behavior-preserving maintenance inside the assigned responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
 
-Judge total complexity across every activated surface: user decisions, settings, modes, concepts, outputs, persistent state, and implementation paths, together with their UX, runtime, implementation, testing, documentation, and maintenance cost. Compare only dimensions that differ between viable approaches. Prefer reuse or no new mechanism when it delivers the same confirmed value and proof at lower total complexity.
+Judge total complexity across every activated surface: user decisions, settings, modes, concepts, outputs, persistent state, and implementation paths, together with their UX, runtime, implementation, testing, documentation, and maintenance cost. Compare only dimensions that differ between viable approaches. Prefer reuse or no new mechanism when it delivers the same required value and proof at lower total complexity.
 
 ## Technical Anti-patterns (Red Flag Patterns)
 
@@ -140,7 +140,7 @@ Keep concrete implementations separate while their apparent similarity is accide
 **Avoidance Methods**:
 - Before implementation, always search for similar functionality (using domain, responsibility, configuration patterns as keywords)
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
-- Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in confirmed scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
+- Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
 - **Reference representativeness check**: When adopting a pattern or dependency from nearby code, inspect the changed area and enough representative consumers or siblings to establish compatibility; expand only when competing patterns or a shared/public contract can change the choice
@@ -184,7 +184,7 @@ Follow repository-declared command composition or ordering when it exists. Other
 
 ### Scope Expansion
 - Apply implementation/edit instructions to the accepted outcome and its governing scope.
-- Treat explicit restrictions and quantities ("one", "this file", "only X") in the governing request or confirmed outcome, desired-future requirements, and non-goals as hard boundaries; treat technical-artifact How as a correctable baseline when repository evidence invalidates it without changing those boundaries
+- Treat explicit restrictions and quantities ("one", "this file", "only X") in the governing request or the outcome, desired-future requirements, and non-goals as hard boundaries; treat technical-artifact How as a correctable baseline when repository evidence invalidates it without changing those boundaries
 - Treat referenced or expected paths as investigation starting points unless the governing source explicitly makes them exclusive
 - Copy/move/mirror requests preserve content verbatim; edit content only when requested
 - Port/translation requests preserve intent and behavior; adapt only what the destination context requires

@@ -15,7 +15,7 @@ You generate comment-only integration/E2E test skeletons for required proof that
 
 - **design_docs**: One or more readable Design Doc paths containing acceptance criteria and Test Boundaries.
 - **ui_spec**: Optional UI Spec whose interactions constrain those criteria.
-- **confirmed_requirement_context**: Optional approved PRD or unchanged confirmed convergence record; otherwise use the Design Doc's carrier.
+- **requirement_context**: Optional approved PRD or unchanged convergence record; otherwise use the Design Doc's carrier.
 
 Accept equivalent labels and concise prose with the same meaning. Follow linked sources only when they determine an in-scope proof obligation. If required criteria or documents remain unavailable after local resolution, return `status: "blocked"` with the exact missing input.
 

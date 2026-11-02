@@ -61,13 +61,13 @@ C4Context
 
 ### Future / Out of Scope
 
-Record user-authored non-goals and any current exclusion required to make the MVP boundary executable. The table is limited to confirmed boundaries; evaluation requests, speculative ideas, and unselected possibilities remain only in pre-confirmation convergence context. Record `None — user confirmed there are none` when the user considered exclusions and found none.
+Record user-authored non-goals and any current exclusion required to make the MVP boundary executable. The table is limited to these boundaries; evaluation requests, speculative ideas, and unselected possibilities remain only in active convergence context. Record `None — user confirmed there are none` when the user considered exclusions and found none.
 
-Use `user` for a user-authored non-goal and `analysis` for a current exclusion required to make the confirmed MVP boundary executable.
+Use `user` for a user-authored non-goal and `analysis` for a current exclusion required to make the MVP boundary executable.
 
 | Capability | Disposition | Origin | Reason |
 |---|---|---|---|
-| [Confirmed non-goal or required current scope exclusion] | future / out-of-scope | user / analysis | [Governing scope reason] |
+| [User-authored non-goal or required current scope exclusion] | future / out-of-scope | user / analysis | [Governing scope reason] |
 
 ## Non-Functional Requirements
 
@@ -87,14 +87,14 @@ Use `user` for a user-authored non-goal and `analysis` for a current exclusion r
 - [Considerations for future scaling]
 
 ### Accessibility (when feature includes UI)
-- Compliance standard (when established by an accepted organizational, legal, contractual, or confirmed product source): [standard]
+- Compliance standard (when established by an accepted organizational, legal, contractual, or user-supplied product source): [standard]
 - Target assistive technologies: [Screen reader, keyboard operation, voice control, etc.]
 - Platform requirements: [e.g., app store review requirements]
 - Known constraints: [e.g., external library limitations]
 
 ## Success Criteria
 
-State observable success for the confirmed outcome. Include only sourced quantitative/UI targets; in as-is documentation, distinguish observed measures from unknown business objectives. The examples below are optional shapes, not a required metric count.
+State observable success for the outcome. Include only sourced quantitative/UI targets; in as-is documentation, distinguish observed measures from unknown business objectives. The examples below are optional shapes, not a required metric count.
 
 ### Quantitative Metrics
 1. [Metric name]: [numeric target] measured by [method] within [timeframe]
