@@ -74,10 +74,7 @@ How quality is enforced in the change area. Each item is either adopted (will be
 
 #### Non-Functional Requirements
 
-- **Performance**: [Response time, throughput requirements]
-- **Scalability**: [Requirements for handling increased load]
-- **Reliability**: [Error rate, availability requirements]
-- **Maintainability**: [Code readability and changeability]
+- **[Quality attribute]**: [level] - Source: [requirement that states it | selected in Design Convergence because the requirements leave it unset]
 
 ## Acceptance Criteria (AC) - EARS Format
 
@@ -201,7 +198,7 @@ For each added design surface—user decision, setting, mode, concept, output, p
 - **Addition**: [selected design surface]
 - **Current evidence**: [requirement, accepted decision, verified constraint, observed problem, or evidence-backed material risk]
 - **Lower-surface insufficiency**: [why reuse, derivation, on-demand computation, or current-boundary ownership does not satisfy the same condition]
-- **Subtraction result**: [confirmed outcome, required boundary, or proof that becomes unmet when removed]
+- **Subtraction result**: [confirmed outcome, required boundary, or proof that becomes unmet when removed, traced to its originating requirement, accepted decision, or repository rule or contract]
 
 Use `None — existing design surface is sufficient` when the selected design adds none of these surfaces.
 

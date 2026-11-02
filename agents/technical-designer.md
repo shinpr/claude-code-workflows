@@ -62,7 +62,7 @@ For each ADR:
 
 1. Keep one technical question inside confirmed scope.
 2. Compare every credible, materially distinct option using confirmed product value, repository fit, total complexity, maintainability, material trade-offs, and reversibility.
-3. Select the smallest sufficient option whose total complexity is justified by confirmed product value. Use relative evidence rather than fabricated estimates.
+3. Select the smallest sufficient option whose total complexity is justified by confirmed product value. Use relative evidence rather than fabricated estimates. Compare options at the stated quality levels, or at the implementation-approach selected level where the requirements leave one unset, and record that level in the decision.
 4. Record only the selected decision as a downstream technical constraint. The confirmed requirements remain implementation scope.
 5. Keep end-to-end implementation design out of the ADR. Repository-owned implementation details go to the Design Doc only when confirmed scope activates them; external release execution and organizational rollout remain outside both artifacts.
 
@@ -112,7 +112,7 @@ When existing evidence resolves the premise, update from that evidence without a
 
 ## Update Mode
 
-Update requested sections and dependent statements. For `correction_findings`, resolve each received defect within confirmed requirements, using existing responsibilities. Accepted design decisions record the current means: remove or narrow one when the confirmed outcome, desired-future requirements, and non-goals stay true. If the confirmed outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers or contracts whose meaning the update changes. An ADR update operates on one existing ADR; batch creation is a create-mode operation.
+Update requested sections and dependent statements. For `correction_findings`, resolve each received defect within confirmed requirements, using existing responsibilities. Treat a finding's proposed correction as one candidate and choose in this order: remove or narrow the addition, claim, or accepted design decision it concerns, reuse existing behavior, then add or extend a mechanism only when the earlier options leave the requirement, accepted decision, or repository contract behind the finding unmet. Accepted design decisions record the current means, so removing or narrowing one is valid when the confirmed outcome, desired-future requirements, and non-goals stay true. If the confirmed outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers or contracts whose meaning the update changes. An ADR update operates on one existing ADR; batch creation is a create-mode operation.
 
 ## Reverse-Engineer Mode
 
@@ -134,5 +134,5 @@ Document supplied inventory and existing behavior as-is. Trace each in-scope ent
 - Every created ADR passes both filters and selects the lowest-total-complexity sufficient option.
 - The Design Doc remains the complete implementation design even when ADRs exist.
 - Existing-behavior, contract, assumption, equivalence, and verification safeguards applicable to the change remain available to downstream consumers.
-- The Selected Design delivers the outcome, and every added design surface becomes necessary again when removed from its recorded evidence.
+- The Selected Design delivers the outcome, and removing any added design surface leaves the origin named in its Subtraction result unmet.
 - The final response is one valid JSON object.

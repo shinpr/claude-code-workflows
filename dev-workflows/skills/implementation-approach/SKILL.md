@@ -31,9 +31,9 @@ Stop when another current-state fact cannot change responsibility, reuse, option
 Complete these steps in order before selecting an implementation strategy:
 
 1. **Existing-Surface Baseline**: Form the simplest end-to-end path that delivers the current outcome through existing responsibilities. Explicit requirements and accepted decisions are binding; suggested mechanisms remain candidates.
-2. **Evidence Check**: Test that path against current requirements, verified constraints, observed in-scope problems, and evidence-backed material risks. Keep only the unmet conditions that can change the selected design.
+2. **Evidence Check**: Test that path against current requirements, verified constraints, observed in-scope problems, and evidence-backed material risks. Keep only the unmet conditions that can change the selected design. Where the requirements leave a quality level unset, such as performance, freshness, consistency, availability, or protection beyond the required trust boundary, test against the lowest level that still delivers the outcome and record it as the selected level.
 3. **Targeted Comparison**: For each unmet condition, test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary before adding design surface. Compare viable choices by total complexity across the dimensions that materially differ: user decisions, settings, modes, concepts, outputs, persistent state, implementation paths, UX, runtime, implementation, testing, documentation, and maintenance. Select the lowest-total-complexity choice that satisfies the condition.
-4. **Subtraction Check**: Remove each proposed addition and re-test its governing condition. Retain it only when the confirmed outcome, a required boundary, or necessary proof becomes unmet.
+4. **Subtraction Check**: Remove each proposed addition and re-test its governing condition. Retain it only when the confirmed outcome, a required boundary, or necessary proof becomes unmet at its origin (a confirmed requirement, an accepted decision, or a repository rule or contract); a criterion, invariant, or constraint that a workflow artifact derived from that origin is narrowed to what the origin requires instead.
 
 Classify supporting claims as observed, inferred, or unknown. Route an unknown that blocks the next step as an exact evidence prerequisite; the caller's value-boundary and irreversible-action gates determine whether user interaction is required.
 
@@ -79,13 +79,6 @@ Evaluate only risk categories for which current evidence can change the strategy
 ```yaml
 Technical Risks: System impact, data consistency, performance degradation, integration complexity
 Operational Risks: Service availability, deployment downtime, process changes, rollback procedures
-Project Risks: Schedule delays, learning costs, quality achievement, team coordination
-```
-
-#### Risk Control Strategies
-```yaml
-Preventive Measures: Phased migration, parallel operation verification, integration/regression tests, monitoring setup
-Incident Response: Rollback procedures, log/metrics preparation, communication system, service continuation procedures
 ```
 
 ### Phase 5: Decision-Relevant Constraint Compatibility
@@ -98,8 +91,6 @@ Check only constraints evidenced by the governing requirements, repository, exte
 ```yaml
 Technical Constraints: Library compatibility, resource capacity, mandatory requirements, numerical targets
 Temporal Constraints: Deadlines/priorities, dependencies, milestones, learning periods
-Resource Constraints: Team/skills, work hours/systems, budget, external contracts
-Business Constraints: Market launch timing, customer impact, regulatory compliance
 ```
 
 ### Phase 6: Implementation Approach Decision

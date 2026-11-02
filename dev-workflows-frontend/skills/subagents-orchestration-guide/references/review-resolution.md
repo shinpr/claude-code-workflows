@@ -36,7 +36,7 @@ The orchestrator records one disposition for every actionable finding:
 | `apply` | Leaving the current deliverable unchanged would prevent the confirmed outcome, violate a binding requirement, design decision, or repository rule, leave required correctness or verification unsupported, or commit downstream work to added design surface whose total complexity lacks current evidence. Otherwise, apply only when the material effect exceeds the response cost. |
 | `decline` | No material effect is established; the finding is outside the agreed boundary above or the reviewer's declared artifact boundary, or reverses an exclusion; or the response cost equals or exceeds the material effect. |
 
-A confirmed security risk, implementation divergence, or governing-source contradiction receives `apply` when correction preserves the confirmed value boundaries; cost alone leaves that classification unchanged. Technical design, contract, or implementation changes are correction work rather than user decisions when those boundaries remain true.
+A confirmed exploitable gap in a relied-upon trust boundary, implementation divergence, or governing-source contradiction receives `apply` when correction preserves the confirmed value boundaries; cost alone leaves that classification unchanged. Technical design, contract, or implementation changes are correction work rather than user decisions when those boundaries remain true.
 
 For each finding record:
 
