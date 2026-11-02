@@ -22,7 +22,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 - **targets**: Complete ADR path array for `ADRBatch`
 - **review_context**: `creation`, `update`, or `reverse-engineer` when supplied
 - **requirements_verbatim**: Original user requirements when they govern the target
-- **confirmed_requirement_context**: Exact approved PRD path, or the unchanged orchestrator-confirmed convergence record only when no approved PRD exists
+- **requirement_context**: Exact approved PRD path, or the orchestrator's unchanged convergence record only when no approved PRD exists
 - **codebase_analysis**: Compact codebase analysis JSON used by the author, when supplied
 - **ui_analysis**: UI analysis JSON used by the author, when supplied
 - **verification_evidence**: Latest code verification evidence when verification ran; Design Doc creation receives the resolved form produced by Review Resolution
@@ -30,18 +30,18 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 Verify each target exists. Follow a cited source only when it can change an in-scope finding or approval decision.
 
-For a Design Doc creation review, use `requirements_verbatim`, `confirmed_requirement_context`, and `review_context: creation`. For an as-is document use `review_context: reverse-engineer`. Treat a supported declined verification discrepancy in `verification_evidence` as evidence, not duplicate correction work; reopen it only when current governing evidence invalidates its recorded basis. Update and reverse-engineer reviews may receive unresolved verification discrepancies as evidence for their first review.
+For a Design Doc creation review, use `requirements_verbatim`, `requirement_context`, and `review_context: creation`. For an as-is document use `review_context: reverse-engineer`. Treat a supported declined verification discrepancy in `verification_evidence` as evidence, not duplicate correction work; reopen it only when current governing evidence invalidates its recorded basis. Update and reverse-engineer reviews may receive unresolved verification discrepancies as evidence for their first review.
 
 ## Review Order and Boundary
 
 Review in this order:
 
-1. Map each confirmed current requirement and user-decided exclusion to the artifact's adopted design. Check the central outcome before secondary technical detail.
+1. Map each current requirement and user-decided exclusion to the artifact's adopted design. Check the central outcome before secondary technical detail.
 2. Apply accepted ADRs and approved upstream documents.
 3. Check applicable repository rules, observed code facts, and resolved verification evidence.
 4. Check that the artifact supplies every decision and contract its immediate downstream consumer needs to implement or verify the result.
 
-Confirmed requirements, accepted decisions, repository rules, and observed facts govern implementation. Product Context, optional hardening, future operations, uncited general best practice, and unknown contextual information are non-binding.
+Requirements, accepted decisions, repository rules, and observed facts govern implementation. Product Context, optional hardening, future operations, uncited general best practice, and unknown contextual information are non-binding.
 
 Apply a section, table, diagram, metric, edge case, test lane, or external-evidence check only when the artifact's scope or evidence activates the boundary it protects. Structural presence alone is not quality. Conversely, retain a required safeguard even when it appears verbose if its absence would make a current contract, implementation action, or verification result ambiguous.
 
@@ -51,17 +51,17 @@ Verify current external facts from authoritative sources only when an ADR select
 
 ### PRD
 
-- A future-state PRD contains one confirmed outcome, buildable current requirements, representative acceptance criteria, and user-decided exclusions or confirmed none.
+- A future-state PRD contains one outcome, buildable current requirements, representative acceptance criteria, and user-decided exclusions or confirmed none.
 - Product Context retains provenance and does not fabricate unknown business, UX, success, or feasibility claims.
 - A contextual unknown permits approval unless the user must resolve it to define the outcome, requirement, exclusion, or acceptance criterion.
 
 ### ADR Batch
 
 - For ADR and Design Doc checks, total complexity covers every activated user decision, setting, mode, concept, output, persistent state, and implementation path, together with its UX, runtime, implementation, testing, documentation, and maintenance cost; compare only dimensions that differ between valid options.
-- Each ADR owns one technical question inside confirmed scope.
+- Each ADR owns one technical question inside the scope of the requirements.
 - Current requirements and repository evidence support at least two credible, materially distinct options, and the choice has durable impact.
-- Options compare confirmed product value, repository fit, total complexity, maintainability, material trade-offs, and reversibility using available evidence.
-- The selected option is necessary and sufficient for the approved outcome and has the lowest justified total complexity among valid options. A more expensive option has confirmed product value that changes the selection.
+- Options compare product value from the requirements, repository fit, total complexity, maintainability, material trade-offs, and reversibility using available evidence.
+- The selected option is necessary and sufficient for the approved outcome and has the lowest justified total complexity among valid options. A more expensive option has product value from the requirements that changes the selection.
 - Relative evidence is sufficient. A numeric estimate or fixed option count applies only when governing evidence requires it.
 - The selected decision alone constrains the downstream Design Doc for that technical question. Implementation procedure, end-to-end design, release strategy, and work planning remain outside the ADR.
 - For a batch, decision ownership does not overlap and the selected combination has justified cumulative total complexity.
@@ -69,12 +69,12 @@ Verify current external facts from authoritative sources only when an ADR select
 ### UI Spec
 
 - Required screens/components, transitions, state/display behavior, interactions, visual outcomes, and acceptance-criteria traceability are implementable.
-- Loading, empty, error, responsive, accessibility, token, and browser behavior is present when supported by confirmed requirements, approved UI direction, preserved behavior, or repository/design-system rules.
+- Loading, empty, error, responsive, accessibility, token, and browser behavior is present when supported by the requirements, approved UI direction, preserved behavior, or repository/design-system rules.
 - Speculative UI states and user-decided exclusions are not reintroduced.
 
 ### Design Doc
 
-- Each confirmed requirement maps to an adopted end-to-end flow or concrete verification evidence; exclusions are not implemented indirectly.
+- Each requirement maps to an adopted end-to-end flow or concrete verification evidence; exclusions are not implemented indirectly.
 - The Design Doc remains the complete implementation design and carries the flow, contracts, impact, and verification design; ADRs constrain selected technical questions.
 - Every premise that can change the Selected Design is resolved by current evidence before approval. Risks contain only residual implementation uncertainty whose possible outcomes leave the Selected Design valid, with an executable in-scope verification or guard when needed.
 - Every supplied code/UI focus area has one evidence-preserving Fact Disposition row. This check protects existing behavior; it does not require disposition rows for unrelated discovered symbols.
@@ -103,7 +103,7 @@ Create an issue only when the artifact otherwise:
 - describes an incorrect approved outcome or contract;
 - leaves approved implementation non-executable;
 - leaves a required result non-verifiable; or
-- commits downstream implementation to added design surface whose total complexity lacks current evidence and whose removal still satisfies the confirmed outcome, boundaries, and required proof.
+- commits downstream implementation to added design surface whose total complexity lacks current evidence and whose removal still satisfies the outcome, boundaries, and required proof.
 
 Every issue includes its governing `basis` and the observable `expectedEffect` of correction. Group observations that share one violated basis and one correction into one issue with related locations. Omit scope additions, optional hardening, extra Product Context, duplicate proof, stylistic completeness, and template-only omissions from the review result.
 
@@ -115,7 +115,7 @@ For `prior_feedback`, the received items and the boundaries their corrections ch
 
 - `pass`: `issues` is empty and no maintained prior finding remains. A maintained decline may keep the reviewer at `needs_revision`; the orchestrator retains the decline at its convergence gate.
 - `needs_revision`: A new issue or maintained prior finding can be repaired inside approved scope.
-- `rejected`: Confirmed outcome, desired-future requirements, and non-goals cannot all remain true and approval requires choosing which value changes.
+- `rejected`: The outcome, desired-future requirements, and non-goals cannot all remain true and approval requires choosing which value changes.
 
 Technical design conflicts and corrections that preserve those value boundaries are `needs_revision`, even when they change architecture, contracts, persistence, or other implementation How.
 

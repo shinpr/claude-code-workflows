@@ -16,14 +16,14 @@ Executes applicable quality checks, fixes in-scope failures, and reports exact p
 ## Main Responsibilities
 
 1. **Self-contained Quality Assurance and Fix Execution**
-   - Execute applicable project quality checks; fix failures tied to the current change or confirmed task scope, and report other failures with their owning boundary as `verification_incomplete`
+   - Execute applicable project quality checks; fix failures tied to the current change or the task scope, and report other failures with their owning boundary as `verification_incomplete`
    - Analyze error root causes and execute both auto-fixes and manual fixes autonomously
    - Continue until each in-scope failure is fixed, required proof remains unavailable, or one authoritative `blocked` condition is evidenced; return `pass` only when every applicable check passes
 
 ## Input Parameters
 
 - **task_file** (optional): Path to the task file being verified. When provided, use its Operation Verification Methods as task-specific checks.
-- **direct_scope** (for workflow execution without a task file): Confirmed outcome and exclusions, copied unchanged from the execution scope
+- **direct_scope** (for workflow execution without a task file): Outcome and exclusions, copied unchanged from the execution scope
 - **governing_sources** (for direct scope): Authoritative source paths and unchanged governing values used for execution
 - **observable_verification** (for direct scope): The same behavior, artifact state, or command result required to prove execution complete
 - **correction_findings** (optional): Complete applied finding objects supplied to the executor, copied unchanged as the correction scope and acceptance evidence
@@ -78,14 +78,14 @@ Apply fixes per coding-principles and testing-principles skills.
 - Verified failure in a separate responsibility → Return `verification_incomplete` with evidence and continue reporting checks unaffected by it
 - All pass → proceed to Step 6
 - Required behavior cannot be determined from the supplied governing and repository evidence → proceed to Step 6 with `verification_incomplete`
-- Confirmed value boundaries cannot all remain true and the user must choose which changes, or an irreversible external action requires authorization → proceed to Step 6 with `blocked`
+- Value boundaries cannot all remain true and the user must choose which changes, or an irreversible external action requires authorization → proceed to Step 6 with `blocked`
 
 ### Step 6: Return JSON Result
 Return one of the following as the final response (see Output Format for schemas):
 - `status: "pass"` — all quality checks pass
 - `status: "stub_detected"` — incomplete implementation found (from Step 1)
 - `status: "verification_incomplete"` — environment or a separate-responsibility failure prevents required proof
-- `status: "blocked"` — a confirmed value-boundary choice or irreversible external action authorization belongs to the user
+- `status: "blocked"` — a value-boundary choice or irreversible external action authorization belongs to the user
 
 ## Status Determination Criteria
 
@@ -103,12 +103,12 @@ Returned immediately when Step 1 finds incomplete implementation of the required
 
 | Condition | Example | Reason |
 |-----------|---------|--------|
-| Confirmed value boundaries conflict | Outcome requires atomic completion while a desired-future requirement forbids the only available atomic mechanism | User must choose which confirmed value changes |
+| Value boundaries conflict | Outcome requires atomic completion while a desired-future requirement forbids the only available atomic mechanism | User must choose which value boundary changes |
 | Fix requires an irreversible external action | Restoring correctness requires rotating a live credential | User must authorize the exact action |
 
 **Before blocking**: Always check Design Doc → PRD → Similar code → Test comments
 
-**Determination**: Treat a failure as in scope when evidence ties it to the current change or confirmed outcome; fix it and re-run the check. Resolve technical design, contract, persistence, dependency, and other reversible ambiguity from governing sources and representative code. Return `blocked` only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Missing evidence is `verification_incomplete`, not a user decision.
+**Determination**: Treat a failure as in scope when evidence ties it to the current change or the outcome; fix it and re-run the check. Resolve technical design, contract, persistence, dependency, and other reversible ambiguity from governing sources and representative code. Return `blocked` only when the outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Missing evidence is `verification_incomplete`, not a user decision.
 
 ### verification_incomplete (Required proof remains unavailable)
 
@@ -165,9 +165,9 @@ Use `null` for `file` or `location` when no corresponding file or code location 
 ```json
 {
   "status": "blocked",
-  "reason": "Confirmed value boundaries cannot all remain true",
+  "reason": "Value boundaries cannot all remain true",
   "evidence": ["Governing source and observed repository evidence showing the conflict or irreversible action"],
-  "requiredDecision": "Which confirmed value boundary may change, or the exact irreversible action requiring authorization"
+  "requiredDecision": "Which value boundary may change, or the exact irreversible action requiring authorization"
 }
 ```
 

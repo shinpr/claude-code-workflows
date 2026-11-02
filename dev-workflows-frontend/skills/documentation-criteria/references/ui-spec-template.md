@@ -4,9 +4,9 @@
 
 [Purpose and scope of this UI Specification in 2-3 sentences]
 
-### Confirmed Requirement Context
+### Requirement Context
 - PRD path: [docs/prd/xxx-prd.md | "N/A — based on requirements analysis output"]
-- Feature scope: [Which confirmed requirements this UI Spec covers]
+- Feature scope: [Which requirements this UI Spec covers]
 
 ### Design Source
 | Source | Path | Version |
@@ -35,7 +35,7 @@ Lists each external resource this feature depends on with its feature-specific i
 
 ## AC Traceability (Prototype)
 
-Map confirmed acceptance criteria to prototype references, preserving existing AC IDs when present. Skip this section if no prototype is provided.
+Map acceptance criteria to prototype references, preserving existing AC IDs when present. Skip this section if no prototype is provided.
 
 | Criterion ID / Reference | Criterion Summary | Screen / State | Prototype Reference (element ID / path) | Adoption Decision |
 |-------|-----------|----------------|----------------------------------------|-------------------|
@@ -76,7 +76,7 @@ Add a screen-transition or component-tree Mermaid diagram only when the material
 
 #### State x Display Matrix
 
-The matrix contains one row for each state supported by confirmed requirements, approved UI direction, preserved behavior, or repository/design-system rules.
+The matrix contains one row for each state supported by the requirements, approved UI direction, preserved behavior, or repository/design-system rules.
 
 | State | Trigger | Display | Interaction / Recovery | Evidence |
 |-------|---------|---------|------------------------|----------|

@@ -21,7 +21,7 @@ Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or g
 
 ## Execution Gate
 
-Complete Steps 1-7 in order for the confirmed adjustment outcome. Advance only through the current step's stated evidence, quality result, or user stop; skip work only when its stated condition is false. Report completion after every applicable Completion Criterion and retained-limitation retry is satisfied.
+Complete Steps 1-7 in order for the adjustment outcome. Advance only through the current step's stated evidence, quality result, or user stop; skip work only when its stated condition is false. Report completion after every applicable Completion Criterion and retained-limitation retry is satisfied.
 
 ## Workflow Overview
 
@@ -49,9 +49,9 @@ Adjustment request → conditional external resource evidence
 - Structural boundary judgment via documentation-criteria
 - Adjustment edits and verification against the design source (run in this session)
 - Quality verification via quality-fixer-frontend
-- Commit the confirmed adjustment outcome
+- Commit the adjustment outcome
 
-**Responsibility Boundary**: This skill completes when the confirmed adjustment is committed after its quality cycle and any retained proof limitation receives its final retry. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
+**Responsibility Boundary**: This skill completes when the adjustment is committed after its quality cycle and any retained proof limitation receives its final retry. Adjustment work is end-to-end within this recipe; parent session owns edits, verification loops, quality-result routing, and commits.
 
 **Escalation Boundary**: Escalate to the full frontend design phase when the request crosses a responsibility or approved UI boundary, requires a complete Design Doc, or contains a technical choice that passes documentation-criteria's Choice and Durability filters.
 
@@ -73,7 +73,7 @@ Inspect the named or current UI and the smallest sufficient repository evidence 
 ### Step 3: Scale Judgment
 
 1. Read the candidate write set from Step 2.
-2. Apply Structural Scale to the confirmed outcome and responsibility boundary. Use write-set count as supporting evidence only:
+2. Apply Structural Scale to the adjustment outcome and responsibility boundary. Use write-set count as supporting evidence only:
    - **0 files**: The adjustment request did not map to any existing file. Escalate to the user with the message "No write target identified from the adjustment request. Please clarify which component(s) should change, or run the full frontend design phase if this is a new feature." Stop this recipe.
    - **Direct adjustment**: One coherent UI outcome follows existing component, state, interaction, and verification patterns inside one responsibility boundary. Continue directly to adjustment context even when generated or tightly coupled files increase the count.
    - **Design required**: The change crosses a responsibility or approved UI contract, coordinates independently valuable outcomes, or needs a durable technical choice between credible alternatives. Escalate to the full frontend design phase.
@@ -96,12 +96,12 @@ Execute Skill: typescript-rules before planning or applying adjustment edits.
 Execute Skill: implementation-approach before planning or applying adjustment edits.
 Execute Skill: testing-principles before adding or changing tests.
 
-Implement the confirmed adjustment outcome across its affected files:
-1. **Plan the edit** from the confirmed adjustment context and relevant external resource (e.g., design origin's fetched_summary).
+Implement the adjustment outcome across its affected files:
+1. **Plan the edit** from the Step 4 adjustment context and relevant external resource (e.g., design origin's fetched_summary).
 2. **Apply the edit** using Edit / Write / MultiEdit on the affected files.
-3. **Verify the confirmed target** using applicable repository/UI Spec evidence and any external source selected in Step 1. Reuse its available access or verification method; compare rendering, interaction or tokens only where they determine the requested adjustment.
+3. **Verify the adjustment target** using applicable repository/UI Spec evidence and any external source selected in Step 1. Reuse its available access or verification method; compare rendering, interaction or tokens only where they determine the requested adjustment.
 4. **Refine and re-verify** until the adjustment matches the design source, or matches the user-confirmed adjustment target when no separate design source exists.
-5. When the complete adjustment matches the confirmed target, proceed to Step 6.
+5. When the complete adjustment matches the adjustment target, proceed to Step 6.
 
 When required proof is unavailable, use sufficient file-based or other available evidence; retain an exact proof limitation otherwise. Ask for manual confirmation only when a user-owned interpretation is needed to determine the adjustment target.
 
@@ -109,21 +109,21 @@ When required proof is unavailable, use sufficient file-based or other available
 
 - Invoke **quality-fixer-frontend** using Agent tool
   - `subagent_type: "dev-workflows-frontend:quality-fixer-frontend"`
-  - `description: "Quality verification for confirmed adjustment"`
-  - `direct_scope`: Copy the confirmed adjustment request and preserved visible behavior from Step 4 unchanged.
+  - `description: "Quality verification for adjustment"`
+  - `direct_scope`: Copy the adjustment request and preserved visible behavior from Step 4 unchanged.
   - `governing_sources`: Pass the existing UI and design source references used for the adjustment unchanged.
-  - `observable_verification`: Pass the confirmed adjustment request from Step 4 and applicable acceptance criteria from the governing sources unchanged.
+  - `observable_verification`: Pass the adjustment request from Step 4 and applicable acceptance criteria from the governing sources unchanged.
   - Pass `qualityCommand` when available (caller first, otherwise current task).
 - Route the quality-fixer-frontend response by `status`:
   - `pass` → proceed to Step 7
-  - `stub_detected` → return to Step 5 to complete the confirmed adjustment, then re-invoke quality-fixer-frontend
+  - `stub_detected` → return to Step 5 to complete the adjustment, then re-invoke quality-fixer-frontend
   - `verification_incomplete` → retain the complete result for final retry and proceed to Step 7
   - `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance using the result's semantic evidence, changed files, and repository state
 
 ### Step 7: Commit
-Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the confirmed adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the adjustment commit, accidental changes introduced during the adjustment are removed, and existing worktree changes unrelated to the confirmed adjustment remain intact.
+Before committing, use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the adjustment, preserved pattern, or a necessary dependency, test, or generated artifact. Every required change is ready for the adjustment commit, accidental changes introduced during the adjustment are removed, and existing worktree changes unrelated to the adjustment remain intact.
 
-Commit the confirmed adjustment after `pass` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
+Commit the adjustment after `pass` or `verification_incomplete`. For the latter, derive and append one `Verification-Limitation: <reason>` and `Verification-Affected: <affected check or command>` trailer pair per retained limitation.
 
 On continuation, reconstruct retained limitations from the verification trailers on commits already completed for this request. After the adjustment is committed, retry each retained verification limitation once with quality-fixer-frontend. When the retry returns `pass`, remove that limitation from retained state. Commit any resulting fixes through Steps 6→7, and include only a repeated limitation in the completion report.
 
@@ -133,9 +133,9 @@ On continuation, reconstruct retained limitations from the verification trailers
 - [ ] UI Spec applicability and the candidate write set were determined from the requested UI and sufficient repository evidence
 - [ ] Structural boundary judgment applied; changes requiring complete design or a qualifying durable decision escalated
 - [ ] Adjustment context, including the affected files, was presented and confirmed once
-- [ ] The confirmed adjustment outcome is implemented; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
-- [ ] The confirmed adjustment completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
-- [ ] The confirmed adjustment is committed
+- [ ] The adjustment outcome is implemented; each declared verification mechanism ran, received manual confirmation where required, or retained its exact proof limitation after final retry
+- [ ] The adjustment completed quality-fixer-frontend before commit; retained proof limitations were retried and reported
+- [ ] The adjustment is committed
 
 ## Output Example
 

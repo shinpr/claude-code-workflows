@@ -37,9 +37,9 @@ At each `Invoke` below, build the Agent prompt as a mechanical extraction: copy 
 
 ## Step 1: Select the Governing Requirement Source
 
-Use the approved PRD path when one exists. Otherwise use the confirmed requirements verbatim.
+Use the approved PRD path when one exists. Otherwise use the requirements verbatim.
 
-Set `confirmed_requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator-confirmed convergence record unchanged.
+Set `requirement_context` to the approved PRD path exactly. Only when no approved PRD exists, use the orchestrator's convergence record unchanged.
 
 ## Step 2: Collect Decision Material
 
@@ -52,10 +52,10 @@ prd_path: [approved PRD path]
 or, when no approved PRD exists:
 
 ```text
-requirements: [confirmed requirements verbatim]
+requirements: [requirements verbatim]
 ```
 
-Invoke once for the complete confirmed scope. Require one valid JSON result and let the analyzer discover affected paths, responsibility boundaries, and cross-layer contracts. Treat its focus areas as existing-behavior safeguards, not as new requirements.
+Invoke once for the complete scope. Require one valid JSON result and let the analyzer discover affected paths, responsibility boundaries, and cross-layer contracts. Treat its focus areas as existing-behavior safeguards, not as new requirements.
 
 This independent discovery keeps scope and option convergence grounded in repository evidence rather than the orchestrator's unverified implementation hypothesis.
 
@@ -69,21 +69,21 @@ Determine Structural Scale from outcomes and responsibility boundaries. File cou
 
 Resolve `decisionMaterials.candidateDecisionPoints` against the governing requirement source, applicable `simplifications`, `reuse`, and `invalidations`. Remove a point when that evidence already converges on one sufficient approach. For each remaining item, apply documentation-criteria filters in order:
 
-1. Choice requires judgment between at least two credible, materially distinct options inside confirmed scope.
+1. Choice requires judgment between at least two credible, materially distinct options inside the scope of the requirements.
 2. The selection has durable material impact.
 
 Record every passing item as `adrDecisionPoints`; an empty list routes directly to the Design Doc. ADR creation is limited to items that pass both filters.
 
 Present the requirement-convergence Scope Confirmation. Place target responsibilities with their strongest file evidence, applicable simplifications with their conditions, and each qualifying ADR decision point with its filter evidence or `none` under **Decision evidence**; place Structural Scale with its boundary rationale and the recommended document route under **Workflow**.
 
-Offer proceed, or correct scope and re-run analysis. Ask a question only when its answer can change a convergence field, the confirmed outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
+Offer proceed, or correct scope and re-run analysis. Ask a question only when its answer can change a convergence field, the outcome, or scope. Continue only when every convergence field is `ready` or `weak-but-explicit`. `[Stop: Scope confirmation]`.
 
 ## Step 4: Create and Approve an ADR Batch When Needed
 
 When `adrDecisionPoints` is non-empty:
 
-1. Invoke `dev-workflows:technical-designer` once with exact inputs: `document_to_create: ADRBatch`; `confirmed_requirement_context`; `decision_points` as the ordered `adrDecisionPoints` confirmed in Step 3, unchanged; and `decision_materials` as the corresponding objects from Step 2 `decisionMaterials.candidateDecisionPoints`, copied unchanged in that order.
-2. Invoke `dev-workflows:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all returned paths]`, and `confirmed_requirement_context`.
+1. Invoke `dev-workflows:technical-designer` once with exact inputs: `document_to_create: ADRBatch`; `requirement_context`; `decision_points` as the ordered `adrDecisionPoints` from Step 3, unchanged; and `decision_materials` as the corresponding objects from Step 2 `decisionMaterials.candidateDecisionPoints`, copied unchanged in that order.
+2. Invoke `dev-workflows:document-reviewer` once with exact inputs: `doc_type: ADRBatch`, `targets: [all returned paths]`, and `requirement_context`.
 3. Route the reviewer verdict first: `pass` proceeds with `issues: []`; `needs_revision` applies Review Resolution, updates one ADR per path serially, and re-reviews the complete batch; `rejected` resolves the governing-source conflict before another review.
 4. Present one batch decision after Review Resolution converges, including a decline-only result; unresolved governing-source conflicts still block approval. `[Stop: ADR batch approval]`.
 5. After user approval, update each ADR status to `Accepted` and verify the changed status.
@@ -95,7 +95,7 @@ Create the complete MVP implementation design from reviewed artifacts and unchan
 Invoke `dev-workflows:technical-designer` with exactly:
 
 - `document_to_create: DesignDoc`;
-- `confirmed_requirement_context`;
+- `requirement_context`;
 - `structural_scale`;
 - `adr_paths: [accepted paths or []]`;
 - `codebase_analysis: [complete Step 2 JSON unchanged]`.
@@ -112,11 +112,11 @@ Apply Review Resolution to every discrepancy before document review. Send only `
 
 ## Step 7: Review and Approve
 
-Invoke `dev-workflows:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `confirmed_requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
+Invoke `dev-workflows:document-reviewer` with exact inputs: `doc_type: DesignDoc`, `target`, `review_context: creation`, the original user requirements verbatim as `requirements_verbatim`, `requirement_context`, `codebase_analysis`, and `verification_evidence` from Step 6.
 
 - `pass`: continue.
 - `needs_revision`: apply Review Resolution, update through a fresh technical-designer invocation using the existing path and complete applied findings, then re-review with `prior_feedback`.
-- `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when confirmed outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
+- `rejected`: resolve technical governing-source conflicts through Review Resolution; ask the user only when the outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes.
 
 Invoke `dev-workflows:design-sync` for consistency with other Design Docs and apply Review Resolution to actionable conflicts. Report `SKIPPED` distinctly when only one Design Doc exists.
 
@@ -124,7 +124,7 @@ Present the Design Doc, accepted ADR paths, resolved limitations/declines, and d
 
 ## Completion Criteria
 
-- Scope and Structural Scale were confirmed from outcomes and responsibility boundaries.
+- Scope and Structural Scale were determined from outcomes and responsibility boundaries.
 - ADRs exist only for decision points passing both filters, and the complete batch received one review and approval.
 - A Design Doc exists regardless of whether ADRs were needed.
 - Applicable existing-behavior, contract, assumption, equivalence, and verification safeguards reached the Design Doc.

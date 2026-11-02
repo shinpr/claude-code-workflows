@@ -135,7 +135,7 @@ Continue investigation while an available action can advance a material gap. Com
 
 ### Step 5: Solution Boundary
 
-After coverage is closed, pass the complete verified cause set to solver. Ownership, contract, and technical design corrections are ordinary solution candidates when they preserve the confirmed outcome, desired-future requirements, and non-goals; detecting a design gap does not create a user decision. If evidence shows those value boundaries cannot all remain true, or a proposed remedy requires authorization for an irreversible external action, report that exact boundary with the solution evidence instead of inventing a choice.
+After coverage is closed, pass the complete verified cause set to solver. Ownership, contract, and technical design corrections are ordinary solution candidates when they preserve the outcome, desired-future requirements, and non-goals; detecting a design gap does not create a user decision. If evidence shows those value boundaries cannot all remain true, or a proposed remedy requires authorization for an irreversible external action, report that exact boundary with the solution evidence instead of inventing a choice.
 
 ### Step 6: Solution Derivation (solver)
 
