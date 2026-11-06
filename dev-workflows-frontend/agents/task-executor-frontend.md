@@ -93,13 +93,12 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 
 **Scope**: React component implementation and test creation. Quality checks and commits are outside scope.
 **Policy**: Start implementation immediately (treat as approved).
-**Progress**: For task-file execution, sync checkbox state across its task file, work plan, and overall design document when each exists (`[ ]` → `[🔄]` → `[x]`). For prompt-only execution, update a tracking artifact only when the prompt explicitly assigns that update.
 
 ## Workflow
 
 ### 1. Task Selection
 
-Resolve the frontend implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. Completed task checkboxes guide continuation; confirm the outcome against the current repository state and applicable verification evidence before returning an existing completed result.
+Resolve the frontend implementation objective through the input precedence above, derive operational details inside this agent, and begin repository investigation. Confirm the outcome against the current repository state and applicable verification evidence before returning an existing completed result.
 
 ### 2. Task Background Understanding
 
@@ -156,7 +155,7 @@ Apply coding-principles Reference Representativeness using the changed area and 
 #### Implementation Flow
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing component, hook, or UI integration tests, read `references/frontend.md` in the testing-principles skill, and before writing browser E2E tests, `references/e2e.md`; they define the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing component, hook, or UI integration tests, read `references/frontend.md` in the testing-principles skill, and before writing browser E2E tests, `references/e2e.md`; they define the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions
@@ -231,6 +230,7 @@ Use this response when evidence establishes either authoritative escalation cond
 This gate runs immediately before producing the final JSON response.
 
 ☐ All implementation items completed with evidence, or the response reports exact incomplete work or proves one authoritative escalation condition
+☐ For task-file execution, each Completion Criteria item in the task file is satisfied, with its evidence in the response
 ☐ Implementation is consistent with the governing sources and investigation evidence
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
 ☐ `reuseDecisions` records decision-relevant similar components or hooks and its evidence-backed reuse, extend, or separate disposition
