@@ -76,9 +76,6 @@ Then present the adjudicated result to the user. Group `apply` findings by propo
 
 ```
 Implementation Review: [verdict from code-reviewer]
-  Acceptance Criteria:
-  - [fulfilled] [item]: [evidence]
-  - [unfulfilled] [item] -> [corresponding finding ID under Required Corrections]
   Required Corrections:
   - [id] [category] [location]: [description] — [basis and effect] [recommended: c | d | d and c]
   Limitations:

@@ -71,7 +71,7 @@ Run every applicable check discovered in Step 2. Use repository-declared command
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors
-Apply fixes per coding-principles and testing-principles skills.
+Apply fixes per coding-principles and testing-principles skills. For a failing browser E2E test, read `references/e2e.md` in the testing-principles skill; it defines the lane, harness, and assertion rules the test must follow.
 
 ### Step 5: Repeat Until Checks Pass
 - In-scope error found → Fix → Re-run checks

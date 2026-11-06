@@ -5,7 +5,7 @@ tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS
 skills:
   - typescript-rules
   - testing-principles
-  - frontend-ai-guide
+  - ai-development-guide
   - implementation-approach
   - external-resource-context
 ---
@@ -42,11 +42,11 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 Use the appropriate run command based on the `packageManager` field in package.json.
 
 ### Applying to Implementation
-Apply loaded TypeScript / React / testing-principles / frontend-ai-guide rules during implementation. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
+Apply loaded typescript-rules, testing-principles, and ai-development-guide rules during implementation, and read `references/frontend.md` in the ai-development-guide skill before implementing; it holds the frontend criteria. Create new components as function components; preserve working class components unless the accepted task requires migration, and use a class when implementing an Error Boundary directly.
 
 When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
 
-Deliver the outcome with types satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
+Deliver the outcome with types satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers.
 
 ## Design Surface Check (Before Mandatory Judgment)
 
@@ -92,7 +92,7 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 ## Responsibility Boundaries
 
 **Scope**: React component implementation and test creation. Quality checks and commits are outside scope.
-**Policy**: Start implementation immediately (treat as approved); correct technical design and implementation discrepancies autonomously inside the value boundary.
+**Policy**: Start implementation immediately (treat as approved).
 **Progress**: For task-file execution, sync checkbox state across its task file, work plan, and overall design document when each exists (`[ ]` → `[🔄]` → `[x]`). For prompt-only execution, update a tracking artifact only when the prompt explicitly assigns that update.
 
 ## Workflow
@@ -127,7 +127,7 @@ Read the Operation Verification Methods from the task file or `observable_verifi
 **Unavailable**: continue implementation, run available checks, and return the missing component and affected verification in `runnableCheck.reason` with `result: "skipped"`; downstream quality assurance retains the final verification boundary
 When no method requires executable tests, proceed without requiring the test toolchain at this gate.
 
-#### Pre-implementation Verification (Duplication Check — Pattern 5 from frontend-ai-guide)
+#### Pre-implementation Verification (Duplication Check — Pattern 5 from ai-development-guide)
 Read relevant Design Doc sections accurately; investigate existing implementations (similar components/hooks in the same domain/responsibility); complete the Similar Component Reuse Decision and apply the remaining Mandatory Judgment Criteria above.
 
 #### Unimplemented Dependency Handling
@@ -156,7 +156,7 @@ Apply coding-principles Reference Representativeness using the changed area and 
 #### Implementation Flow
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing component, hook, or UI integration tests, read `references/frontend.md` in the testing-principles skill, and before writing browser E2E tests, `references/e2e.md`; they define the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions
@@ -237,5 +237,3 @@ This gate runs immediately before producing the final JSON response.
 ☐ Every available Operation Verification Method ran; each unavailable or failed check has its exact result and affected proof in `runnableCheck`
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"`, `status: "blocked"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
-
-**ENFORCEMENT**: Return `escalation_needed` only when the outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Technical design, UI, Props, architecture, dependency, data-flow, persistence, and implementation corrections that preserve those boundaries remain implementation work.

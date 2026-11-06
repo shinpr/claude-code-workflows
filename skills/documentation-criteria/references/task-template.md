@@ -19,7 +19,7 @@ Preserve every directly constraining Work Plan citation unchanged so the executo
 ## Target Files
 
 - [Implementation file or responsibility]
-- [Test file, when required]
+- [Test file the Work Plan fixes, such as a generated skeleton]
 
 ## Investigation Targets
 

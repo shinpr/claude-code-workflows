@@ -21,7 +21,7 @@ Accept equivalent labels and concise prose with the same meaning. Follow linked 
 
 ## Selection
 
-1. Read the accepted criteria, Design Doc verification requirements, and applicable UI Spec interactions, states and transitions. Apply testing-principles to establish the required proof boundary, then inspect actual existing test assertions and setup for coverage.
+1. Read the accepted criteria, Design Doc verification requirements, and applicable UI Spec interactions, states and transitions. Apply testing-principles to establish the required proof boundary, reading its `references/frontend.md` for UI integration proof and `references/e2e.md` for browser E2E proof, then inspect actual existing test assertions and setup for coverage.
 2. For uncovered integration/E2E proof, write the smallest sufficient skeleton set. Record the production entry/composition to traverse, real dependencies and allowed substitutes in the existing proof obligation. Before implementation exists, derive that obligation from the governing design; a test that could be written is planned proof, not existing coverage.
 3. Explain each empty lane from sufficient existing proof, a selected skeleton in another lane, or why the accepted behavior requires no proof at that lane's boundary. Return an exact limitation for a required but unavailable boundary.
 

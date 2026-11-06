@@ -83,7 +83,7 @@ external_resource_refs: [selected references or []]
 
 Execute Skill: requirement-convergence. Build and judge the convergence record from the governing requirement source, repository analysis, and applicable UI analysis.
 
-Judge all four convergence fields. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
+Judge all four convergence fields by the rules in `references/criteria.md` of the requirement-convergence skill. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
 
 Determine Structural Scale from outcomes and responsibility boundaries; file count is supporting evidence only. Resolve candidate decision points against the governing source, applicable code/UI `simplifications`, `reuse`, and `invalidations`; applicable UI facts may support or contradict the remaining options. Apply documentation-criteria Choice and Durability filters only after this convergence and record passing points as `adrDecisionPoints`; an empty list is valid.
 

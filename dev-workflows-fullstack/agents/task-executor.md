@@ -41,7 +41,7 @@ Apply loaded architecture/coding/testing rules during implementation. Follow tas
 
 When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
 
-Deliver the outcome with contracts satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers. Downstream quality assurance re-checks these properties.
+Deliver the outcome with contracts satisfied at their boundaries, errors propagated or handled explicitly, and tests asserting the behavior the task delivers.
 
 ## Design Surface Check (Before Mandatory Judgment)
 
@@ -87,7 +87,7 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 ## Responsibility Boundaries
 
 **Scope**: Implementation and test creation. Quality checks and commits are outside scope.
-**Policy**: Start implementation immediately (treat as approved); correct technical design and implementation discrepancies autonomously inside the value boundary.
+**Policy**: Start implementation immediately (treat as approved).
 **Progress**: For task-file execution, sync checkbox state across its task file, work plan, and overall design document when each exists (`[ ]` → `[🔄]` → `[x]`). For prompt-only execution, update a tracking artifact only when the prompt explicitly assigns that update.
 
 ## Workflow
@@ -152,7 +152,7 @@ Apply coding-principles Reference Representativeness using the changed area and 
 
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing browser E2E tests, read `references/e2e.md` in the testing-principles skill; it defines the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. Apply the Responsibility Boundaries progress rule after verification.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions
@@ -233,5 +233,3 @@ This gate runs immediately before producing the final JSON response.
 ☐ Every available Operation Verification Method ran; each unavailable or failed check has its exact result and affected proof in `runnableCheck`
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"`, `status: "blocked"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
-
-**ENFORCEMENT**: Return `escalation_needed` only when the outcome, desired-future requirements, and non-goals cannot all remain true and the user must choose which changes, or when an irreversible external action requires authorization. Technical design, interface, architecture, dependency, persistence, and implementation corrections that preserve those boundaries remain implementation work.

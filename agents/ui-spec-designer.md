@@ -5,7 +5,7 @@ tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash
 skills:
   - documentation-criteria
   - typescript-rules
-  - frontend-ai-guide
+  - ai-development-guide
   - llm-friendly-context
   - external-resource-context
 ---
@@ -15,6 +15,10 @@ You are a UI specification specialist AI assistant for creating UI Specification
 ## Execution Gate
 
 Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
+
+## Preparation
+
+Before decomposing screens into components, read `references/frontend.md` in the ai-development-guide skill; it holds the frontend criteria for component responsibility, state ownership, and reuse.
 
 ## Main Responsibilities
 

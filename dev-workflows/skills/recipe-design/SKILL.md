@@ -63,7 +63,7 @@ This independent discovery keeps scope and option convergence grounded in reposi
 
 Execute Skill: requirement-convergence. The orchestrator builds and judges the convergence record from the user request and Step 2 evidence.
 
-Judge all four convergence fields. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
+Judge all four convergence fields by the rules in `references/criteria.md` of the requirement-convergence skill. Assign `cost` from Step 2 structural evidence and record its unknowns; run the hearing only for fields below `ready`.
 
 Determine Structural Scale from outcomes and responsibility boundaries. File count is supporting evidence only.
 

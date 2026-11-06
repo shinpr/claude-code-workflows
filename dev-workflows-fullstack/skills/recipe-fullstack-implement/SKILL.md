@@ -76,7 +76,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
 
 Execute Skill: requirement-convergence before running the hearing protocol.
 
-Build and judge the convergence record from the user's retained wording, using requirement-analyzer `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the user answers the requirements stop, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
+Build and judge the convergence record by the rules in `references/criteria.md` of the requirement-convergence skill, from the user's retained wording, using requirement-analyzer `scopeEvidence` and `costEvidence` as supporting facts, then run the requirement-convergence hearing protocol. After the user answers the requirements stop, apply the subagents-orchestration-guide Small evidence gate before assigning the final Structural Scale; when the gate is unresolved, invoke codebase-analyzer before routing.
 
 When user responds to questions:
 - Update the orchestrator-owned convergence record from the answer, then update the Structural Scale judgment through the Small evidence gate.
@@ -131,8 +131,8 @@ Apply subagents-orchestration-guide's retained verification limitation retry wit
 
 Resolve all readable Design Docs from the Work Plan, or the Work Plan itself when none exist; missing input blocks review.
 
-Emit one code-reviewer call plus one security-reviewer call in one assistant message, then await both:
-- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → review the completed implementation with the resolved `governingDocuments` list, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
+Invoke the code-reviewer calls for the subagents-orchestration-guide Post-Implementation Review Units and one security-reviewer call, then await all:
+- code-reviewer (subagent_type: "dev-workflows-fullstack:code-reviewer") → one call per review unit with the resolved `governingDocuments` list, the unit's changed files as `implementationFiles`, the unit's tasks as task scope, and the Work Plan path
 - security-reviewer (subagent_type: "dev-workflows-fullstack:security-reviewer") → review the completed implementation against the same `governingDocuments` list
 
 Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.

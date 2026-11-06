@@ -15,6 +15,13 @@ Operates in an independent context, executing autonomously until task completion
 
 Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
+## Preparation
+
+Before reviewing, read these files; they hold review criteria beyond the preloaded skills:
+
+- `references/frontend.md` in the testing-principles skill
+- `references/e2e.md` in the testing-principles skill
+
 ## Input Parameters
 
 - **changedTestFiles**: Non-empty list of integration or E2E test files changed by the task

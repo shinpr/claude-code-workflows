@@ -196,6 +196,10 @@ graph TD
 
 For Small, execute one direct-scope 4-step cycle. Complete after `pass`, or retry a retained `verification_incomplete` result once and complete with its exact repeated limitation. Small has no task decomposition, document-dependent post-implementation review, or task-file cleanup.
 
+### Post-Implementation Review Units (Medium/Large)
+
+Review a Medium change with one code-reviewer. A Large change is more than one code-reviewer can read in full; partition it into units of Work Plan tasks. A unit holds a consuming task (one delivering a screen, route, command, or job) together with the tasks it depends on through `Depends on`, so a contract's producer, its consumer, and every test proving their behavior are reviewed together; tasks that several units depend on form one shared unit. Each completed task belongs to one unit, whose `implementationFiles` are the files changed by its tasks' commits. Run at most 3 reviewer calls concurrently. security-reviewer reviews the complete change once. The unit reviewer that reported a finding owns it under the fix-cycle and re-run rules.
+
 ### Post-Implementation Review Status Routing (Medium/Large)
 
 | Reviewer | Complete: empty finding set | Enter Review Resolution | Blocked |
