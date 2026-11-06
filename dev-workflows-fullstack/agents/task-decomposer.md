@@ -48,7 +48,7 @@ For each task:
 
 1. Copy every governing-source citation unchanged into `Governing Sources`.
 2. Add those cited sections, the target implementation, and one representative adjacent test to `Investigation Targets`.
-3. Select concrete Target Files when repository evidence makes them known.
+3. Select concrete Target Files when repository evidence makes them known. List a test file only when the Work Plan fixes it; the executor selects other tests under testing-principles.
 4. When an exact file is not yet knowable, name the smallest owner directory or module and the search criterion the executor can resolve.
 
 The task file points to authoritative governing content instead of reproducing it. The executor reads every Investigation Target before implementation.

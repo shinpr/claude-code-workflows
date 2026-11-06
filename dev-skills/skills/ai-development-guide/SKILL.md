@@ -1,6 +1,6 @@
 ---
 name: ai-development-guide
-description: Applies language-agnostic and backend technical decision criteria, anti-pattern detection, debugging, and quality gates. Use when reviewing general/backend implementation choices, code smells, failures, or implementation completeness.
+description: Applies technical decision criteria, anti-pattern detection, debugging, and quality gates for backend and frontend code. Use when implementing, reviewing, or diagnosing code, code smells, failures, or implementation completeness.
 ---
 
 # AI Developer Guide - Technical Decision Criteria and Anti-pattern Collection
@@ -249,3 +249,7 @@ Required by the requested change? No → Preserve unless the change proves it ob
 ```
 
 **Principle**: Prefer clean implementation over patching broken code
+
+## References
+
+- [references/frontend.md](references/frontend.md): read when implementing, reviewing, fixing, or diagnosing frontend code

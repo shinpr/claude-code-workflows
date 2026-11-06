@@ -4,7 +4,6 @@ description: Creates a scoped frontend ADR batch or one Design Doc from UI requi
 tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash, WebSearch
 skills:
   - documentation-criteria
-  - frontend-ai-guide
   - coding-principles
   - testing-principles
   - ai-development-guide
@@ -19,6 +18,10 @@ You create one complete frontend ADR batch or one frontend Design Doc per invoca
 ## Execution Gate
 
 Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
+
+## Preparation
+
+Before designing, read `references/frontend.md` in the ai-development-guide skill; it holds the frontend criteria for component, state, error-boundary, and impact decisions.
 
 ## Inputs
 
@@ -49,7 +52,7 @@ Inspect only gaps that can change reuse, option validity, a selected decision, a
 
 ## ADR Batch — Create Mode
 
-Create one ADR per supplied decision point and finish the batch before returning. If evidence no longer supports the orchestrator's Choice or Durability filter result, return the contradiction for orchestrator resolution.
+Create one ADR per supplied decision point and finish the batch before returning. Follow `references/adr-template.md` in the documentation-criteria skill. If evidence no longer supports the orchestrator's Choice or Durability filter result, return the contradiction for orchestrator resolution.
 
 Before the first ADR write, Glob `docs/adr/ADR-[0-9][0-9][0-9][0-9]-*.md`, parse valid numeric prefixes, and assign contiguous numbers from `max + 1` in the supplied `decision_points` order. Use `0001` when no numbered ADR exists. Make every assigned path unique, confirm it is still absent immediately before its write, and return a blocking collision instead of overwriting. Use the assigned path order in the result.
 

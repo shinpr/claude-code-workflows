@@ -109,8 +109,8 @@ Before invoking post-implementation reviewers, apply subagents-orchestration-gui
 
 Resolve the Work Plan's readable Design Doc; missing input blocks review.
 
-Emit these Agent calls in one assistant message, then await both:
-- code-reviewer (subagent_type: "dev-workflows-frontend:code-reviewer") → review the completed implementation with the resolved `governingDocuments`, the actual files changed by completed tasks as `implementationFiles`, and the Work Plan path
+Invoke the code-reviewer calls for the subagents-orchestration-guide Post-Implementation Review Units and one security-reviewer call, then await all:
+- code-reviewer (subagent_type: "dev-workflows-frontend:code-reviewer") → one call per review unit with the resolved `governingDocuments`, the unit's changed files as `implementationFiles`, the unit's tasks as task scope, and the Work Plan path
 - security-reviewer (subagent_type: "dev-workflows-frontend:security-reviewer") → review the completed implementation against the same `governingDocuments`
 
 Apply subagents-orchestration-guide's Post-Implementation Review status-routing and fix/re-run rules. Present the unified report; proceed to Final Cleanup after the complete review set reaches Review Resolution convergence.

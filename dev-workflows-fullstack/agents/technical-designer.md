@@ -54,7 +54,7 @@ Inspect only gaps that can change reuse, option validity, a selected decision, a
 
 ## ADR Batch — Create Mode
 
-Create one ADR per supplied decision point and finish the complete batch before returning. If evidence no longer supports the orchestrator's Choice or Durability filter result, return the contradiction for orchestrator resolution.
+Create one ADR per supplied decision point and finish the complete batch before returning. Follow `references/adr-template.md` in the documentation-criteria skill. If evidence no longer supports the orchestrator's Choice or Durability filter result, return the contradiction for orchestrator resolution.
 
 Before the first ADR write, Glob `docs/adr/ADR-[0-9][0-9][0-9][0-9]-*.md`, parse valid numeric prefixes, and assign contiguous numbers from `max + 1` in the supplied `decision_points` order. Use `0001` when no numbered ADR exists. Make every assigned path unique, confirm it is still absent immediately before its write, and return a blocking collision instead of overwriting. Use the assigned path order in the result.
 

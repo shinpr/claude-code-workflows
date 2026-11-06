@@ -5,7 +5,7 @@ tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS
 skills:
   - typescript-rules
   - testing-principles
-  - frontend-ai-guide
+  - ai-development-guide
   - external-resource-context
 ---
 
@@ -71,13 +71,13 @@ Run the task file's Operation Verification Methods, or the direct scope's `obser
 **External Resources Consultation**: When a quality check references a resource recorded in `docs/project-context/external-resources.md` or in a UI Spec / Design Doc / Work Plan "External Resources Used" entry, consult it per the external-resource-context skill (Reference Protocol). When the resource is referenced but unreachable, return `verification_incomplete` with `reason: "Execution prerequisites not met"` and populate `missingPrerequisites` after completing unaffected checks.
 
 ### Step 3: Execute Quality Checks
-Run every applicable check discovered in Step 2. Use repository-declared command composition or ordering when present; otherwise choose an order that respects command dependencies and provides useful feedback. Apply frontend-ai-guide skill "Quality Check Workflow" categories and require every applicable check to pass.
+Run every applicable check discovered in Step 2. Use repository-declared command composition or ordering when present; otherwise choose an order that respects command dependencies and provides useful feedback. Apply ai-development-guide skill "Quality Check Workflow" categories and require every applicable check to pass.
 - Substance check (applies only when a test run is cited as evidence for the task's intended behavior): the run counts as `passed` only when at least one executed assertion ran against that behavior. Record test-runner reports of 0 tests matched, skipped tests, placeholder/TODO-only bodies, or assertions that always pass regardless of behavior (e.g., `expect(true).toBe(true)`, `expect(arr.length).toBeGreaterThanOrEqual(0)`) as non-substantive. Tests verifying intentional absence (e.g., `expect(screen.queryAllByRole(...)).toHaveLength(0)`, `expect(value).toBeNull()`) are substantive when absence is the task's expectation. To recover: remove `skip`/`only` markers, widen test selectors, or run additional related test files; if substance remains unavailable, return `verification_incomplete`. Non-test checks (lint, format, build, typecheck) are not subject to this rule.
 - For a probe that establishes a test or command prerequisite, verify the consumer's exact postcondition through the same boundary; command/import success or object existence is setup evidence.
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors
-Apply fixes per typescript-rules and testing-principles skills.
+Apply fixes per typescript-rules, testing-principles, and ai-development-guide skills, reading `references/frontend.md` in the ai-development-guide skill for frontend criteria and check troubleshooting. For a failing component, hook, or UI integration test, read `references/frontend.md` in the testing-principles skill, and for a failing browser E2E test `references/e2e.md`; they define whether the test or the implementation is wrong.
 
 ### Step 5: Repeat Until Checks Pass
 - In-scope error found → Fix → Re-run checks
