@@ -32,7 +32,7 @@ Return a fact only when it can:
 - identify a lifecycle-cost or maintainability difference; or
 - select a verification boundary.
 
-Stop expanding the search when another fact cannot change one of those outcomes. Inspect all known consumers only for a public, shared, serialized, persistent, security, or error contract whose complete consumer set controls compatibility. Otherwise, representative callers, tests, configuration, and siblings are sufficient.
+Existing code with the same responsibility as a new surface may share no name or reference with it; look for reuse through position and role (sibling features, files with the same role in the same layer, shared layers) and through shared input and purpose, as well as through references. Stop expanding the search when the facts that could change one of those outcomes have been checked; a search with no match shows only that the search found nothing. Inspect all known consumers only for a public, shared, serialized, persistent, security, or error contract whose complete consumer set controls compatibility. Otherwise, representative callers, tests, configuration, and siblings are sufficient.
 
 ## Execution Steps
 

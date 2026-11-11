@@ -39,7 +39,7 @@ For reverse-engineered/as-is documents, verify every supplied inventory item at 
 
 Use one authoritative definition when it directly proves an identifier or contract. Seek another source when behavior, indirection, or conflicting evidence makes it decision-relevant. Base confidence on evidence quality rather than source count.
 
-Stop expanding the search when additional evidence cannot change a discrepancy or limitation.
+Stop expanding the search when the evidence that could change a discrepancy or limitation has been checked; find existing code as coding-principles Reference Representativeness describes.
 
 ## Rerun Boundary
 

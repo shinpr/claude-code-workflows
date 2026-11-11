@@ -42,4 +42,4 @@ Use the repository's existing seed and authentication mechanisms. Create per-tes
 
 ## Skeleton Annotations
 
-Preserve the skeleton's annotations unchanged. When `Verification items:` are present, implement and assert every listed item.
+Preserve the skeleton's annotations unchanged, except `Selection evidence`, which served test selection only and is removed when the test becomes executable. When `Verification items:` are present, implement and assert every listed item.

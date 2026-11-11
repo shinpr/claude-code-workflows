@@ -29,6 +29,8 @@ Selection evidence: [required claim, uncovered failure, and why cheaper existing
 
 Use the project's comment syntax to wrap these annotations (e.g., `//` for C-family, `#` for Python/Ruby/Shell).
 
+`Selection evidence` serves test selection and planning, so the implementing task removes it when it makes the test executable.
+
 ### Verification Items (Optional)
 
 When verification points need explicit enumeration:

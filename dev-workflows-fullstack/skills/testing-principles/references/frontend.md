@@ -7,7 +7,7 @@ Before writing a test, inspect package scripts, runner configuration, setup file
 - Use React Testing Library when it is the project's component-test renderer; prefer `userEvent` for user interactions.
 - Use the repository's network mocking layer for API behavior. When MSW is configured, extend its handlers instead of adding runner-level fetch mocks.
 - Use the configured runner's imports, module-mocking API, fake timers, and reset conventions.
-- When multiple approaches coexist, follow the dominant convention in the changed feature area. If none is representative and adding or replacing tooling is outside the approved work, report the missing test-environment decision.
+- When multiple approaches coexist, choose from the behavior under test and the setup the repository maintains for it rather than from proximity alone. If none is representative and adding or replacing tooling is outside the approved work, report the missing test-environment decision.
 
 ## Test Scope
 

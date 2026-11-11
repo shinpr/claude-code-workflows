@@ -134,4 +134,5 @@ Final report must include:
 - Commit count
 - Cleanup result
 - Declined actionable findings with ID, governing reason, and evidence, when any occurred
+- Findings outside the change that remain unhandled, with location and evidence, when any remain
 - Escalation or blocking summary, if any

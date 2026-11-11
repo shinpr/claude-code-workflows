@@ -70,9 +70,11 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 ## Reference Representativeness
 
-Inspect the changed responsibility and enough representative callers, consumers, configuration and siblings to establish a compatible pattern or dependency. Nearby code is a starting point; when alternatives coexist, choose from their responsibility, contract, lifecycle and repository usage rather than proximity or global popularity alone. Record the evidence only when it changes the choice.
+Existing code relates to a change in two ways. Code that depends on it — callers, consumers, configuration — is reached through references to the changed code. Code that already holds the same responsibility may share no name or reference with it; reach it through position and role (sibling features, files with the same role in the same layer, shared layers) and through the input it takes and the purpose it serves, then compare their logic to judge whether the responsibility is the same.
 
-Expand to all known consumers for a changed public, shared, serialized or persistent contract whose compatibility depends on them. Otherwise stop when additional inspection cannot change implementation or proof. Resolve versions from applicable manifests and usage; record a specific limitation only when required compatibility evidence remains unavailable.
+When alternatives coexist, choose the pattern from responsibility, contract, lifecycle and repository usage rather than proximity or global popularity alone. Record the evidence only when it changes the choice.
+
+Expand to all known consumers for a changed public, shared, serialized or persistent contract whose compatibility depends on them. Stop when the candidates that could change implementation or proof have been read and judged; a search with no match shows only that the search found nothing. Resolve versions from applicable manifests and usage; record a specific limitation only when required compatibility evidence remains unavailable.
 
 ## Performance Considerations
 
@@ -120,7 +122,7 @@ One comment per decision. If a comment restates what the names and control flow 
 - Delete commented-out code (retrieve from git history when needed)
 
 ### Comment Quality
-- Base comments on stable rationale, limits, and contracts rather than dates, versions, or temporary state
+- Base comments on stable rationale, limits, and contracts rather than dates, versions, temporary state, or references to documents and their sections, which drift as those documents change
 - Update comments when changing code
 - Use proper grammar and formatting
 - Write for future maintainers
@@ -161,3 +163,7 @@ One comment per decision. If a comment restates what the names and control flow 
 - For changes involving identity or protected resources, prioritize authentication and per-resource authorization review
 
 For concrete detection patterns used by security review, see `references/security-checks.md`.
+
+## References
+
+- [references/frontend.md](references/frontend.md): read when implementing, reviewing, or fixing React/TypeScript code

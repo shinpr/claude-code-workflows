@@ -27,7 +27,7 @@ Use only supplied `external_resource_refs`. Resolve their labels through `docs/p
 
 Locate the affected screens, components, and callers, then inspect only the render, state, style, interaction, and data path needed for the current decisions. Include Props and variants, DOM or layout behavior, display conditions, responsive behavior, accessibility, localization, and generated artifacts when they can change the result, a preserved contract, reuse, or verification. From evidence already gathered, record a simplification when a responsibility, branch, artifact, or change can be omitted while the outcome still holds; it remains a candidate for the parent and document owner. Inspect every consumer only when the complete consumer set controls compatibility; otherwise use representative consumers, tests, stories, and style peers.
 
-Stop when another fact cannot change one of those outcomes.
+Stop when the facts that could change one of those outcomes have been checked; a search with no match shows only that the search found nothing.
 
 ## Output Format
 
