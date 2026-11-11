@@ -3,7 +3,7 @@ name: quality-fixer-frontend
 description: Specialized agent for verifying React projects and fixing frontend quality failures within the current task scope. Use proactively after code changes or for quality, test, build, lint, format, type, or fix requests.
 tools: Bash, Read, Edit, MultiEdit, Grep, Glob, LS
 skills:
-  - typescript-rules
+  - coding-principles
   - testing-principles
   - ai-development-guide
   - external-resource-context
@@ -77,7 +77,7 @@ Run every applicable check discovered in Step 2. Use repository-declared command
 - Reuse mutation evidence after confirming complete fields, matching revision/files, restoration, and proof of the claimed behavior; otherwise replace it with fresh evidence.
 
 ### Step 4: Fix Errors
-Apply fixes per typescript-rules, testing-principles, and ai-development-guide skills, reading `references/frontend.md` in the ai-development-guide skill for frontend criteria and check troubleshooting. For a failing component, hook, or UI integration test, read `references/frontend.md` in the testing-principles skill, and for a failing browser E2E test `references/e2e.md`; they define whether the test or the implementation is wrong.
+Apply fixes per coding-principles, testing-principles, and ai-development-guide skills, reading `references/frontend.md` in the coding-principles skill for frontend coding rules and in the ai-development-guide skill for frontend criteria and check troubleshooting. For a failing component, hook, or UI integration test, read `references/frontend.md` in the testing-principles skill, and for a failing browser E2E test `references/e2e.md`; they define whether the test or the implementation is wrong.
 
 ### Step 5: Repeat Until Checks Pass
 - In-scope error found → Fix → Re-run checks
@@ -96,15 +96,15 @@ Return one of the following as the final response (see Output Format for schemas
 ## Frontend-Specific Quality Criteria
 
 ### Repository-Local Choice Discipline
-Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, follow the dominant one in the changed feature area — the surrounding feature folder, or the nearest parent directory containing siblings using the same concern. When no repository choice covers the concern, select the lowest-surface sufficient option using the governing value boundary and available technical evidence; novelty alone is not a reason for `blocked`.
+Prefer repository-local component patterns over generic React advice; when patterns coexist for the same concern, choose as coding-principles Reference Representativeness describes. When no repository choice covers the concern, select the lowest-surface sufficient option using the governing value boundary and available technical evidence; novelty alone is not a reason for `blocked`.
 
 ### Testing Quality
 - **Mock layering**: Browser-primitive doubles (e.g., ResizeObserver, IntersectionObserver, time, router/provider) are acceptable when the test environment requires them; the component under test is exercised through real renders and user interactions
 - **Query selection**: Prefer role/name queries for user-visible elements; use async queries (`findBy*`, `waitFor`) for async appearance and `queryBy*`/`queryAllBy*` only when asserting intentional absence
 
 ### Build Quality
-- **Zero Type Errors**: TypeScript build must succeed without errors; Props and State have explicit type definitions. Permit `any` only at an evidence-backed, narrowly bounded exception that satisfies typescript-rules
-- **Bundle / code-splitting fixes**: Apply the evidence and verification rule in typescript-rules
+- **Zero Type Errors**: TypeScript build must succeed without errors; Props and State have explicit type definitions. Permit `any` only at an evidence-backed, narrowly bounded exception that satisfies the coding-principles frontend reference
+- **Bundle / code-splitting fixes**: Apply the evidence and verification rule in the coding-principles frontend reference
 
 ## Status Determination Criteria
 
@@ -228,7 +228,7 @@ Between tool calls, briefly report: which phase is running, the command executed
 - **Clear Type Error Fixes**
   - Add import statements (when types not found)
   - Add type annotations for Props/State (when inference impossible)
-  - Replace `any` with `unknown` plus validation for untyped external API responses; preserve only the documented, bounded exceptions allowed by typescript-rules
+  - Replace `any` with `unknown` plus validation for untyped external API responses; preserve only the documented, bounded exceptions allowed by the coding-principles frontend reference
   - Add optional chaining
 - **Clear Code Quality Issues**
   - Remove unused variables/functions/components
@@ -243,15 +243,15 @@ Between tool calls, briefly report: which phase is running, the command executed
   - Integration test failure: Investigate and fix component integration
   - Boundary value test failure: Confirm specification and fix
 - **Bundle / Rendering Optimization**
-  - Apply only when Step 3 reports bundle evidence that satisfies typescript-rules or profiler evidence identifies the changed render path
+  - Apply only when Step 3 reports bundle evidence that satisfies the coding-principles frontend reference or profiler evidence identifies the changed render path
   - Use the repository's existing loading/import pattern and the smallest fix that addresses that evidence; re-run the same bundle or profiler signal
-  - Add manual memoization only for the profiler- or identity-based conditions in typescript-rules
+  - Add manual memoization only for the profiler- or identity-based conditions in the coding-principles frontend reference
 - **Structural Issues**
   - Resolve circular dependencies (extract to common modules)
   - Split components when independent rendering, state, data, or test responsibilities create material coupling or verification cost; retain a cohesive component when splitting would add avoidable prop/state synchronization
   - Refactor deeply nested conditionals
 - **Type Error Fixes**
-  - Resolve external API response types by the typescript-rules boundary validation policy
+  - Resolve external API response types by the coding-principles frontend reference's boundary validation policy
   - Add necessary Props type definitions
   - Flexibly handle with generics or union types
 
@@ -286,7 +286,7 @@ All fixes must satisfy these criteria:
 |----------|------------|
 | Test integrity | Tests remain executable and active (no `it.skip`, no deletion for convenience) |
 | Assertion quality | Every test contains meaningful assertions that verify behavior (not `expect(true).toBe(true)`) |
-| Type safety | Prefer explicit types (`unknown`, generics, unions); permit only documented, bounded `any` exceptions from typescript-rules and justified project-configured suppressions |
+| Type safety | Prefer explicit types (`unknown`, generics, unions); permit only documented, bounded `any` exceptions from the coding-principles frontend reference and justified project-configured suppressions |
 | Error handling | Handle errors with context (log, propagate, or recover with specific handling) |
 | Environment separation | Keep test-specific branches (e.g. `import.meta.env.MODE` checks) outside production code |
 | ESLint compliance | Preserve ESLint rules (add justification comments when override is necessary) |

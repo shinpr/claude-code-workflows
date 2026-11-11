@@ -4,7 +4,6 @@ description: Creates UI Specifications from requirements and optional prototype 
 tools: Read, Write, Edit, MultiEdit, Glob, LS, Bash
 skills:
   - documentation-criteria
-  - typescript-rules
   - ai-development-guide
   - llm-friendly-context
   - external-resource-context

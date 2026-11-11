@@ -24,7 +24,7 @@ Historical Context Understanding: Current form rationale, past decision validity
 - What dependencies or implicit preconditions are unclear from the code?
 - What benefits and constraints does the current design bring?
 
-Stop when another current-state fact cannot change responsibility, reuse, option validity, total complexity, a contract, or verification.
+Stop when the current-state facts that could change responsibility, reuse, option validity, total complexity, a contract, or verification have been checked; find existing code as coding-principles Reference Representativeness describes.
 
 ### Phase 2: Design Convergence
 
@@ -32,7 +32,7 @@ Complete these steps in order before selecting an implementation strategy:
 
 1. **Existing-Surface Baseline**: Form the simplest end-to-end path that delivers the current outcome through existing responsibilities. Explicit requirements and accepted decisions are binding; suggested mechanisms remain candidates.
 2. **Evidence Check**: Test that path against current requirements, verified constraints, observed in-scope problems, and evidence-backed material risks. Keep only the unmet conditions that can change the selected design. Where the requirements leave a quality level unset, such as performance, freshness, consistency, availability, or protection beyond the required trust boundary, test against the lowest level that still delivers the outcome and record it as the selected level.
-3. **Targeted Comparison**: For each unmet condition, test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary before adding design surface. Compare viable choices by total complexity across the dimensions that materially differ: user decisions, settings, modes, concepts, outputs, persistent state, implementation paths, UX, runtime, implementation, testing, documentation, and maintenance. Select the lowest-total-complexity choice that satisfies the condition.
+3. **Targeted Comparison**: For each unmet condition, test reuse, derivation from existing data, on-demand computation, or responsibility at the current caller or boundary before adding design surface. Compare viable choices by total complexity across the dimensions that materially differ: user decisions, settings, modes, concepts, outputs, persistent state, implementation paths, UX, runtime, implementation, testing, documentation, and maintenance. A second implementation of a responsibility that already has an owner with the same contract and change reason, including one added earlier in the same change, adds design surface; reusing or relocating that owner removes it. Select the lowest-total-complexity choice that satisfies the condition.
 4. **Subtraction Check**: Remove each proposed addition and re-test its governing condition. Retain it only when the outcome, a required boundary, or necessary proof becomes unmet at its origin (a requirement, an accepted decision, or a repository rule or contract); a criterion, invariant, or constraint that a workflow artifact derived from that origin is narrowed to what the origin requires instead.
 
 Classify supporting claims as observed, inferred, or unknown. Route an unknown that blocks the next step as an exact evidence prerequisite; the caller's value-boundary and irreversible-action gates determine whether user interaction is required.

@@ -19,7 +19,7 @@ Verify by reading the changed code and tests. Running tests and quality checks i
 ## Inputs
 
 - **governingDocuments**: One or more approved Design Docs, or the resolved Work Plan when the caller has no Design Doc, as a list of document paths
-- **implementationFiles**: The complete set of implementation, test, schema, build, deployment, and runtime-configuration artifacts in the reviewed change
+- **implementationFiles**: The implementation, test, schema, build, deployment, and runtime-configuration artifacts whose changes this review judges: the complete change, or one review unit of it
 - **Work Plan and task scope**: Use when supplied to identify approved execution and review boundaries
 - **prior_feedback** (optional): Array of `{ id, disposition, reason?, evidence }` from the preceding Review Resolution decision
 
@@ -31,6 +31,7 @@ Before reviewing, read these files; they hold review criteria beyond the preload
 
 - `references/frontend.md` in the testing-principles skill
 - `references/frontend.md` in the ai-development-guide skill
+- `references/frontend.md` in the coding-principles skill
 - `references/e2e.md` in the testing-principles skill
 
 ## Initial Review
@@ -40,7 +41,7 @@ Extract the approved outcome, applicable acceptance criteria, changed interfaces
 Judge the material surfaces in `implementationFiles` against these criteria:
 
 - **Outcome and contracts**: The changed code and tests deliver each applicable criterion at file:line and preserve public, serialized, persisted, user-visible, error, identifier, and producer-consumer contracts.
-- **Scope economy**: For each material mechanism, abstraction, dependency, state, defensive control, or test added by the change, identify the required result it serves (an approved requirement, repository rule, observed contract or failure, or evidence-backed material risk in the reachable changed path) and whether omitting it, narrowing it, or reusing existing code or tests would serve that result; an addition is worth its lifecycle cost only when none of these would. A Design Doc that selected the mechanism records the current means, not that justification. For a test, judge this by the testing-principles Test Selection rules.
+- **Scope economy**: For each material mechanism, abstraction, dependency, state, defensive control, or test added by the change, identify the required result it serves (an approved requirement, repository rule, observed contract or failure, or evidence-backed material risk in the reachable changed path) and whether omitting it, narrowing it, or reusing code or tests that already hold the same responsibility, in the repository or elsewhere in this change (coding-principles Reference Representativeness), would serve that result; an addition is worth its lifecycle cost only when none of these would. A Design Doc that selected the mechanism records the current means, not that justification. For a test, judge this by the testing-principles Test Selection rules.
 - **Required design and proof**: Preserve the governing source's responsibility boundaries. Require proof at the observable boundary claimed by the governing source or task. Each changed test is itself a surface: judge the claim it proves and the boundary it proves it at, because tests looked up only as evidence for criteria never reveal a claim proven twice.
 - **Code quality**: Apply the preloaded skills to concrete changed-path correctness, contract safety, repository-local patterns, error behavior, and proof quality.
 - **Repository quality policy**: Apply each `docs/project-context/quality.yaml` dimension whose `applies_when` condition matches the change. Its `pass` condition and cited `evidence` define the accepted state.

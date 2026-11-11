@@ -41,6 +41,8 @@ Each selected test records:
 - proof obligation: boundary to traverse, expected state/results, pass criteria, real dependencies and permissible substitutes;
 - a distinct branch, state, lifecycle or fallback path when the main path could remain green through a material regression.
 
+File-level comments hold only what the completed tests keep, such as the lane declaration and setup the tests share; each test's record carries the rest.
+
 Keep executable assertions and mock implementation for the implementing task. Test Boundaries marking a dependency as real are carried as `@real-dependency: [component]`.
 
 ## Output

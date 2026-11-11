@@ -108,7 +108,7 @@ Keep concrete implementations separate while their apparent similarity is accide
 
 **Cases to Avoid Commonalization**
 - Accidental matches (coincidentally same code)
-- Possibility of evolving in different directions
+- Contracts or change reasons that evidence shows differ
 - Significant readability decrease from commonalization
 - Simple helpers in test code
 
@@ -138,12 +138,11 @@ Keep concrete implementations separate while their apparent similarity is accide
 **Symptom**: Duplicate implementations, architecture inconsistency, integration failures, adopting outdated patterns
 **Cause**: Insufficient understanding of existing code before implementation; referencing only nearby files without verifying representativeness
 **Avoidance Methods**:
-- Before implementation, always search for similar functionality (using domain, responsibility, configuration patterns as keywords)
+- Before implementation, find functionality that already holds the same responsibility and the code that depends on the change, as coding-principles Reference Representativeness describes; similar functionality may share no name with the new code
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
 - Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
 - Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
-- **Reference representativeness check**: When adopting a pattern or dependency from nearby code, inspect the changed area and enough representative consumers or siblings to establish compatibility; expand only when competing patterns or a shared/public contract can change the choice
 
 ## Quality Assurance Mechanism Awareness
 
@@ -168,7 +167,7 @@ Follow repository-declared command composition or ordering when it exists. Other
 ## Situations Requiring Technical Decisions
 
 ### Timing of Abstraction
-- Extract a shared abstraction after repository evidence establishes a shared responsibility and coordinated change pattern
+- Extract a shared abstraction after repository evidence shows a responsibility with the same contract and change reason maintained in more than one place
 - Be conscious of YAGNI, implement only currently needed features
 - Prioritize current simplicity over future extensibility
 
