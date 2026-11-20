@@ -82,7 +82,7 @@ When a task could appear complete while its cited acceptance criterion remains f
 - **Primary failure**: the material false-green state;
 - **Observable check**: the smallest check that detects it.
 
-Use wording from a supplied test skeleton when available. Otherwise derive the focus only from the cited acceptance criterion and Design Doc Verification Strategy. Omit it when normal task verification already proves the outcome.
+Use wording from a supplied test skeleton when available. Otherwise derive the focus only from the task's cited governing sources. Omit it when normal task verification already proves the outcome.
 
 ### 4. Keep the plan to repository work
 

@@ -32,7 +32,7 @@ Whole-repository quality assurance stays outside the plan as a separate executio
   - **Scope**: [responsibility, component, or expected files]
   - **Depends on**: none | [task IDs]
   - **Executor lane**: backend|frontend
-  - **Verification**: [Design Doc verification method or repository command]
+  - **Verification**: [Governing verification method or repository command]
   - **Primary failure**: [optional: most material false-green state]
   - **Observable check**: [optional: smallest check that detects the primary failure]
 
@@ -45,7 +45,7 @@ Whole-repository quality assurance stays outside the plan as a separate executio
   - **Scope**: [responsibility, component, or expected files]
   - **Depends on**: [task IDs]
   - **Executor lane**: backend|frontend
-  - **Verification**: [Design Doc verification method or repository command]
+  - **Verification**: [Governing verification method or repository command]
   - **Primary failure**: [optional]
   - **Observable check**: [optional]
 
