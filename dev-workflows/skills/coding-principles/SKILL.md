@@ -25,7 +25,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Use meaningful, descriptive names drawn from the problem domain
 - Use full words in names; abbreviations are acceptable only when widely recognized in the domain
 - Use descriptive names; single-letter names are acceptable only for loop counters or well-known conventions (i, j, x, y)
-- Extract magic numbers and strings into named constants
+- Extract magic numbers and strings into named constants. Take each value from an existing requirement, contract, measurement, or repository value for the same purpose; when none of these determines it, mark the constant as an assumed value in a comment
 - Keep code self-documenting where possible
 
 ## Function Design
@@ -45,6 +45,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Separate data transformation from side effects
 - Use early returns to reduce nesting
 - Use early returns or extraction when nesting obscures state transitions or decision ownership; retain nested structure when it maps the domain decision more clearly
+- When code branches on the same closed set of values in more than one place, make every branch handle each value explicitly, so a new value is detected at every branch: by an exhaustiveness check where the language has one, otherwise by failing on an unhandled value
 
 ## Error Handling
 
