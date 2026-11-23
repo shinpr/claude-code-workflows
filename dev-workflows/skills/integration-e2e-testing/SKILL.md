@@ -42,11 +42,11 @@ Verification items:
 
 ## Test File Naming Convention
 
+Name test files by the repository's existing convention and the project runner's discovery rule; the `@lane:` annotation is the source of truth for lane routing. When the repository has no lane-separating convention and its runner discovers `*.test.*` files, use:
+
 - Integration tests: `*.int.test.*` or `*.integration.test.*`
 - fixture-e2e tests: `*.fixture.e2e.test.*` (or organize under `tests/e2e/fixture/`)
 - service-integration-e2e tests: `*.service.e2e.test.*` (or organize under `tests/e2e/service/`)
-
-The test runner or framework in the project determines the appropriate file extension. Repos that already use a single `*.e2e.test.*` convention may keep it as long as each file declares `@lane:` in its header — the lane annotation is the source of truth for routing.
 
 ## Route Parity for Shared Mutations
 

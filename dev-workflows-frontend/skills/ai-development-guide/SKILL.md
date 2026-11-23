@@ -105,6 +105,7 @@ Keep concrete implementations separate while their apparent similarity is accide
 - Complex processing algorithms
 - Areas likely requiring bulk changes
 - Validation rules
+- Facts that several places in this repository must agree on: names, keys, paths, closed sets of values, and data shapes one side writes and another reads
 
 **Cases to Avoid Commonalization**
 - Accidental matches (coincidentally same code)
