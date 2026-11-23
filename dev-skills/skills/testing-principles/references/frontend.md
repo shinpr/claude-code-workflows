@@ -34,7 +34,7 @@ Keep setup local until 3+ uses or a named readability/contract benefit justifies
 ## Repository Conventions
 
 - Preserve the repository's test location and naming.
-- Test rendered output, user interactions, accessibility, and observable error states rather than component internals. Follow the repository's query convention; otherwise locate elements by accessible role and name, then by stable test IDs when no semantic query exists.
+- Test rendered output, user interactions, accessibility, and observable error states rather than component internals.
 
 ## Assertion Rules
 

@@ -36,9 +36,8 @@ Before implementation or execution, identify:
 
 Use the repository's existing seed and authentication mechanisms. Create per-test data with unique identifiers and clean it through the supported API, database fixture, or teardown path. When a required prerequisite is unavailable and adding it is outside approved scope, return the missing prerequisite instead of substituting fixture behavior.
 
-## Element Query and Assertion Rules
+## Assertion and Viewport Rules
 
-- Follow the repository's query convention; otherwise locate elements by accessible role and name or label, then by stable test IDs when no semantic query exists.
 - Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Treat assertions tied only to styling classes or internal view structure as insufficient proof.
 - When the UI specification defines responsive behavior, run the affected interaction at the specified viewport or device size; otherwise use the repository's default browser or device matrix.
 
