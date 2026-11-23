@@ -27,10 +27,6 @@ Before writing a test, inspect the test scripts, runner configuration, setup fil
 | Implementation violates the accepted behavior or boundary | Fix the implementation |
 | Both interpretations remain compatible with available requirements | Return the unresolved behavior decision |
 
-## Helper Decision
-
-Keep setup local until 3+ uses or a named readability/contract benefit justifies a helper. Preserve separate helpers when the scenarios have different ownership or are likely to evolve independently.
-
 ## Repository Conventions
 
 - Preserve the repository's test location and naming.

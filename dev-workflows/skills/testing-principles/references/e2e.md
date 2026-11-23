@@ -17,8 +17,7 @@ Preserve the lane selected by the skeleton. A lane change requires evidence that
 
 ## Structure and Reuse
 
-- Follow the repository's existing E2E abstraction and paths.
-- Extract a screen-level interaction helper, such as a page or screen object, when one interaction is reused across 3+ tests or a coherent workflow would otherwise be duplicated. Keep direct element queries in a small, local test.
+Follow the repository's existing E2E abstraction and paths.
 
 ## Fixture Lane
 
