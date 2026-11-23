@@ -81,7 +81,7 @@
       "source": "./dev-workflows-frontend",
       "strict": true,
       "version": "0.32.0",
-      "description": "Skills + Subagents for frontend development (any UI stack, in depth for React/TypeScript) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
+      "description": "Skills + Subagents for frontend development (any UI stack, with React/TypeScript-specific rules) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
         "url": "https://github.com/shinpr"
@@ -148,7 +148,7 @@
       "source": "./dev-workflows-fullstack",
       "strict": true,
       "version": "0.32.0",
-      "description": "Skills + Subagents for fullstack development (backend + frontend, in depth for React/TypeScript) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
+      "description": "Skills + Subagents for fullstack development (backend + frontend, with React/TypeScript-specific rules) - Use skills for coding guidance, or run recipe workflows for full orchestrated agentic coding with specialized agents",
       "author": {
         "name": "Shinsuke Kagawa",
         "url": "https://github.com/shinpr"

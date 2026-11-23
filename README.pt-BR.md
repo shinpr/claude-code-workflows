@@ -33,7 +33,7 @@ Requer uma versão do Claude Code com suporte ao marketplace de plugins.
 |---|---|---|
 | Entregar de ponta a ponta uma mudança de backend, API, CLI ou de uso geral | `/recipe-implement` | `dev-workflows` |
 | Projetar uma mudança de backend ou de uso geral antes da implementação | `/recipe-design` | `dev-workflows` |
-| Projetar e implementar um frontend (com mais detalhes para React / TypeScript) | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| Projetar e implementar um frontend (com regras próprias para React / TypeScript) | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
 | Entregar backend e frontend juntos | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | Revisar uma implementação concluída em relação ao resultado combinado | `/recipe-review` ou `/recipe-front-review` | `dev-workflows` ou `dev-workflows-frontend` |
 | Definir regras de qualidade específicas do repositório | `/recipe-quality-profile` | Qualquer plugin de fluxo |
@@ -149,7 +149,7 @@ A recipe delimita a mudança, examina a implementação atual, cria somente os d
 
 As recipes de design examinam a implementação existente, confirmam o escopo, criam os documentos necessários, executam uma revisão independente de consistência e param para aprovação. O planejamento e a implementação podem continuar mais tarde, em outro contexto ou por outra pessoa, a partir dos documentos aprovados. Cada tarefa do [Work Plan](skills/documentation-criteria/references/plan-template.md) cita as decisões de design e os critérios de aceitação que precisa atender, e os revisores finais conferem o código concluído com essas mesmas fontes, em vez da conversa anterior.
 
-O caminho de frontend acrescenta análise e uma UI Spec quando a estrutura ou o comportamento da interface ainda precisa ser definido. Suas regras para componentes, estado, tratamento de erros e testes valem para qualquer stack de UI e seguem os padrões que o seu repositório já usa. React com TypeScript conta ainda com regras mais detalhadas sobre limites de tipos, Error Boundaries, server components, memoização e React Testing Library.
+O caminho de frontend acrescenta análise e uma UI Spec quando a estrutura ou o comportamento da interface ainda precisa ser definido. Suas regras para componentes, estado, tratamento de erros e testes valem para qualquer stack de UI e seguem os padrões que o seu repositório já usa. React com TypeScript conta ainda com regras próprias sobre limites de tipos, Error Boundaries, server components, memoização e React Testing Library.
 
 Por exemplo, dois componentes de um dashboard podem tratar corretamente seus estados de carregamento isoladamente, mas a tela combinada pode não definir o que acontece quando um ainda carrega e o outro falha. A UI Spec registra essa combinação de estados e a relaciona ao trabalho de design e teste antes da integração.
 
@@ -229,7 +229,7 @@ Todos os pontos de entrada usam o prefixo `recipe-`. Digite `/recipe-` e use Tab
 <details>
 <summary>Ver todas as recipes de frontend</summary>
 
-O plugin de frontend acrescenta análise de UI, arquitetura de componentes e, quando necessário, a geração de uma UI Spec a partir de um protótipo. Suas regras valem para qualquer stack de UI, com mais detalhes para React com TypeScript.
+O plugin de frontend acrescenta análise de UI, arquitetura de componentes e, quando necessário, a geração de uma UI Spec a partir de um protótipo. Suas regras valem para qualquer stack de UI, e React com TypeScript tem ainda regras próprias.
 
 | Recipe | Objetivo | Quando usar |
 |---|---|---|
