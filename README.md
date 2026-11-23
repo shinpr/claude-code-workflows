@@ -33,8 +33,8 @@ Requires a Claude Code release with plugin marketplace support.
 |---|---|---|
 | Deliver a backend, API, CLI, or general change end to end | `/recipe-implement` | `dev-workflows` |
 | Design a backend or general change before implementation | `/recipe-design` | `dev-workflows` |
-| Design and build a React / TypeScript frontend | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
-| Deliver a backend and React frontend change together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| Design and build a frontend (most detailed for React / TypeScript) | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| Deliver a backend and frontend change together | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | Review a completed implementation against the agreed outcome | `/recipe-review` or `/recipe-front-review` | `dev-workflows` or `dev-workflows-frontend` |
 | Set repository-specific quality rules | `/recipe-quality-profile` | Any workflow plugin |
 | Investigate a problem before choosing a fix | `/recipe-diagnose` | Any workflow plugin |
@@ -141,7 +141,7 @@ The recipe scopes the change, inspects the current implementation, creates only 
 /recipe-plan
 /recipe-build
 
-# React frontend
+# Frontend
 /recipe-front-design "Build a user profile dashboard"
 /recipe-front-plan
 /recipe-front-build
@@ -149,7 +149,7 @@ The recipe scopes the change, inspects the current implementation, creates only 
 
 The design recipes inspect the existing code, confirm the scope, create the required documents, run an independent consistency review, and stop for approval. Planning and implementation can continue later, in a new context or by another contributor, from those approved artifacts. Each task in the [Work Plan](skills/documentation-criteria/references/plan-template.md) cites the design decisions and acceptance criteria it must satisfy, and the final reviewers check the completed code against those same sources instead of the earlier conversation.
 
-The frontend path adds UI analysis and a UI Spec when UI structure or behavior remains to be designed, plus component architecture, React Testing Library, and TypeScript checks.
+The frontend path adds UI analysis and a UI Spec when UI structure or behavior remains to be designed. Its rules for components, state, error handling, and tests are written for any UI stack and follow the patterns your repository already uses. React with TypeScript gets more detailed rules on top, covering type boundaries, Error Boundaries, server components, memoization, and React Testing Library.
 
 For example, two dashboard components may each handle loading correctly while the combined screen has no defined behavior when one is loading and the other has failed. The UI Spec records that state combination and traces it into design and test work before integration.
 
@@ -229,13 +229,13 @@ All workflow entry points use the `recipe-` prefix. Type `/recipe-` and use tab 
 <details>
 <summary>View all frontend recipes</summary>
 
-The frontend plugin adds React-specific analysis, component architecture, React Testing Library, TypeScript checks, and applicable UI Spec generation from optional prototype code.
+The frontend plugin adds UI analysis, component architecture, and applicable UI Spec generation from optional prototype code. Its rules cover any UI stack, with more detail for React with TypeScript.
 
 | Recipe | Purpose | When to Use |
 |--------|---------|-------------|
-| `/recipe-front-design` | Create an applicable UI Spec and frontend Design Doc | React component architecture |
+| `/recipe-front-design` | Create an applicable UI Spec and frontend Design Doc | Component architecture |
 | `/recipe-front-plan` | Generate a frontend work plan | Component planning |
-| `/recipe-front-build` | Execute a frontend work plan | Resume React implementation |
+| `/recipe-front-build` | Execute a frontend work plan | Resume frontend implementation |
 | `/recipe-front-adjust` | Adjust an implemented UI with external verification | Visual refinements |
 | `/recipe-front-review` | Review a completed frontend against the agreed outcome | Post-implementation check |
 | `/recipe-quality-profile` | Set repository-specific quality rules | Repository quality rules |

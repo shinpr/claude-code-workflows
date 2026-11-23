@@ -33,8 +33,8 @@ claude-code-workflows让探索始终围绕已经约定的结果展开。它在�
 |---|---|---|
 | 端到端交付后端、API、CLI或通用变更 | `/recipe-implement` | `dev-workflows` |
 | 在实现前设计后端或通用变更 | `/recipe-design` | `dev-workflows` |
-| 设计并实现React / TypeScript前端 | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
-| 同时交付后端和React前端 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| 设计并实现前端（React / TypeScript的规则最详细） | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| 同时交付后端和前端 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 对照约定结果审查已完成的实现 | `/recipe-review` 或 `/recipe-front-review` | `dev-workflows` 或 `dev-workflows-frontend` |
 | 设置仓库特有的质量规则 | `/recipe-quality-profile` | 任意工作流插件 |
 | 在选择修复方案前调查问题 | `/recipe-diagnose` | 任意工作流插件 |
@@ -141,7 +141,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 /recipe-plan
 /recipe-build
 
-# React前端
+# 前端
 /recipe-front-design "Build a user profile dashboard"
 /recipe-front-plan
 /recipe-front-build
@@ -149,7 +149,7 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 
 设计recipe会检查现有实现、确认范围、创建必要文档并进行独立一致性审查，然后等待批准。之后可以在新的上下文中，或由其他贡献者依据已批准的产物继续规划和实现。[Work Plan](skills/documentation-criteria/references/plan-template.md)中的每个任务都写明它必须满足的设计决策和验收标准，最终审查者也依据同一套来源检查完成的代码，而不是依赖之前的对话。
 
-当需要进一步设计前端UI结构或行为时，前端路径会增加UI分析和UI Spec，并包含组件架构、React Testing Library与TypeScript检查。
+当需要进一步设计前端UI结构或行为时，前端路径会增加UI分析和UI Spec。关于组件、状态、错误处理和测试的规则不依赖特定的UI技术栈，并按照仓库中已有的模式应用。React / TypeScript还有更详细的规则，涵盖类型边界、Error Boundary、服务端组件、记忆化（memoization）和React Testing Library。
 
 例如，两个仪表盘组件可能各自正确处理加载状态，但当一个仍在加载、另一个已经失败时，整个页面的行为却没有定义。UI Spec会记录这种状态组合，并在集成前将它追踪到设计与测试工作。
 
@@ -229,13 +229,13 @@ recipe会确定变更范围、检查当前实现，只创建决策所需的文�
 <details>
 <summary>查看全部前端recipe</summary>
 
-前端插件增加React专项分析、组件架构、React Testing Library、TypeScript检查，并可按需根据原型代码生成UI Spec。
+前端插件增加UI分析和组件架构，并可按需根据原型代码生成UI Spec。其规则适用于任何UI技术栈，React / TypeScript另有更详细的规则。
 
 | Recipe | 用途 | 适用场景 |
 |---|---|---|
-| `/recipe-front-design` | 创建适用的UI Spec和前端Design Doc | React组件架构 |
+| `/recipe-front-design` | 创建适用的UI Spec和前端Design Doc | 组件架构 |
 | `/recipe-front-plan` | 生成前端Work Plan | 组件规划 |
-| `/recipe-front-build` | 执行前端Work Plan | 恢复React实现 |
+| `/recipe-front-build` | 执行前端Work Plan | 恢复前端实现 |
 | `/recipe-front-adjust` | 借助外部验证调整已实现UI | 视觉细节调整 |
 | `/recipe-front-review` | 对照约定结果审查已完成的前端 | 实现后检查 |
 | `/recipe-quality-profile` | 设置仓库特有的质量规则 | 质量规则设置 |

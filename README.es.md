@@ -33,8 +33,8 @@ Requiere una versión de Claude Code compatible con el marketplace de plugins.
 |---|---|---|
 | Entregar de principio a fin un cambio de backend, API, CLI o propósito general | `/recipe-implement` | `dev-workflows` |
 | Diseñar un cambio de backend o propósito general antes de implementarlo | `/recipe-design` | `dev-workflows` |
-| Diseñar e implementar un frontend en React / TypeScript | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
-| Entregar juntos un backend y un frontend React | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| Diseñar e implementar un frontend (con más detalle para React / TypeScript) | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| Entregar juntos un backend y un frontend | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | Revisar una implementación terminada frente al resultado acordado | `/recipe-review` o `/recipe-front-review` | `dev-workflows` o `dev-workflows-frontend` |
 | Definir reglas de calidad propias del repositorio | `/recipe-quality-profile` | Cualquier plugin de flujos |
 | Investigar un problema antes de elegir una solución | `/recipe-diagnose` | Cualquier plugin de flujos |
@@ -141,7 +141,7 @@ El flujo delimita el cambio, inspecciona la implementación actual, crea únicam
 /recipe-plan
 /recipe-build
 
-# Frontend React
+# Frontend
 /recipe-front-design "Build a user profile dashboard"
 /recipe-front-plan
 /recipe-front-build
@@ -149,7 +149,7 @@ El flujo delimita el cambio, inspecciona la implementación actual, crea únicam
 
 Los flujos de diseño inspeccionan la implementación existente, confirman el alcance, crean los documentos necesarios, realizan una revisión de coherencia independiente y se detienen para solicitar aprobación. La planificación y la implementación pueden continuar más adelante, en un contexto nuevo o a cargo de otra persona, a partir de esos documentos aprobados. Cada tarea del [Work Plan](skills/documentation-criteria/references/plan-template.md) cita las decisiones de diseño y los criterios de aceptación que debe cumplir, y los revisores finales contrastan el código terminado con esas mismas fuentes en lugar de con la conversación anterior.
 
-El recorrido de frontend añade análisis de UI y una UI Spec cuando todavía hay que diseñar la estructura o el comportamiento de la interfaz, además de arquitectura de componentes, React Testing Library y controles de TypeScript.
+El recorrido de frontend añade análisis de UI y una UI Spec cuando todavía hay que diseñar la estructura o el comportamiento de la interfaz. Sus reglas sobre componentes, estado, manejo de errores y pruebas sirven para cualquier stack de UI y siguen los patrones que ya usa tu repositorio. React con TypeScript cuenta además con reglas más detalladas sobre límites de tipos, Error Boundaries, server components, memoización y React Testing Library.
 
 Por ejemplo, dos componentes de un panel pueden manejar correctamente sus estados de carga por separado, pero la pantalla combinada quizá no defina qué ocurre si uno sigue cargando y el otro falla. La UI Spec registra esa combinación de estados y la vincula con el trabajo de diseño y pruebas antes de integrar los componentes.
 
@@ -229,13 +229,13 @@ Todos los puntos de entrada usan el prefijo `recipe-`. Escribe `/recipe-` y usa 
 <details>
 <summary>Ver todas las recipes de frontend</summary>
 
-El plugin de frontend añade análisis específico de React, arquitectura de componentes, React Testing Library, controles de TypeScript y la generación de una UI Spec a partir de código de prototipo cuando corresponda.
+El plugin de frontend añade análisis de UI, arquitectura de componentes y la generación de una UI Spec a partir de código de prototipo cuando corresponda. Sus reglas sirven para cualquier stack de UI, con más detalle para React con TypeScript.
 
 | Recipe | Finalidad | Cuándo usarla |
 |---|---|---|
-| `/recipe-front-design` | Crear la UI Spec y el Design Doc de frontend aplicables | Arquitectura de componentes React |
+| `/recipe-front-design` | Crear la UI Spec y el Design Doc de frontend aplicables | Arquitectura de componentes |
 | `/recipe-front-plan` | Generar un Work Plan de frontend | Planificación de componentes |
-| `/recipe-front-build` | Ejecutar el Work Plan de frontend | Retomar una implementación React |
+| `/recipe-front-build` | Ejecutar el Work Plan de frontend | Retomar una implementación de frontend |
 | `/recipe-front-adjust` | Ajustar una UI implementada con verificación externa | Mejoras visuales |
 | `/recipe-front-review` | Revisar un frontend terminado frente al resultado acordado | Comprobación posterior a la implementación |
 | `/recipe-quality-profile` | Definir reglas de calidad propias del repositorio | Reglas de calidad |

@@ -167,4 +167,4 @@ For concrete detection patterns used by security review, see `references/securit
 
 ## References
 
-- [references/frontend.md](references/frontend.md): read when implementing, reviewing, or fixing React/TypeScript code
+- [references/frontend.md](references/frontend.md): read when implementing, reviewing, or fixing user-facing UI code

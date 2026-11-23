@@ -1,26 +1,28 @@
-# E2E Test Implementation
+# UI E2E Test Implementation
 
-## Browser Harness Resolution
+UI E2E tests drive the real UI runtime: a browser for web UI, or a simulator, emulator, or device for native apps.
 
-Inspect the repository's browser-test configuration, scripts, fixtures, neighboring tests, and CI routing. Preserve the existing harness, imports, locator conventions, setup lifecycle, file naming, and test location.
+## Harness Resolution
 
-When no browser harness exists, establish one only when a test skeleton, the task's Operation Verification Methods, or an accepted requirement names browser-level proof, selecting the lowest-surface sufficient harness from repository and applicable external evidence; otherwise prove the behavior at the cheaper observable boundary. Report an unavailable execution environment as a proof limitation rather than a user decision.
+Inspect the repository's E2E harness configuration, scripts, fixtures, neighboring tests, and CI routing. Preserve the existing harness, imports, locator conventions, setup lifecycle, file naming, and test location.
+
+When no E2E harness exists, establish one only when a test skeleton, the task's Operation Verification Methods, or an accepted requirement names UI E2E proof, selecting the lowest-surface sufficient harness from repository and applicable external evidence; otherwise prove the behavior at the cheaper observable boundary. Report an unavailable execution environment as a proof limitation rather than a user decision.
 
 ## Lane Selection
 
-- `fixture-e2e`: run a real browser against deterministic fixture or intercepted backend behavior.
+- `fixture-e2e`: drive the real UI runtime against deterministic fixture or intercepted backend behavior.
 - `service-integration-e2e`: run against the required local services or stubs when correctness depends on persistence, transactions, or cross-service contracts.
 
 Preserve the lane selected by the skeleton. A lane change requires evidence that the original lane cannot prove the accepted behavior.
 
 ## Structure and Reuse
 
-- Follow the repository's existing browser abstraction and paths.
+- Follow the repository's existing E2E abstraction and paths.
 - Introduce a page object when one interaction is reused across 3+ tests or a coherent workflow would otherwise be duplicated. Keep direct accessible locators for a small, local test.
 
 ## Fixture Lane
 
-Use the repository's existing route interception or fixture-loader boundary. Fixtures are deterministic, local to the test or suite, and shaped like the real contract. The browser still exercises the actual UI, navigation, and state updates.
+Use the repository's existing route interception or fixture-loader boundary. Fixtures are deterministic, local to the test or suite, and shaped like the real contract. The UI runtime still exercises the actual UI, navigation, and state updates.
 
 ## Service Lane Prerequisites
 
@@ -37,8 +39,8 @@ Use the repository's existing seed and authentication mechanisms. Create per-tes
 ## Locator and Assertion Rules
 
 - Follow the repository's locator convention; otherwise prefer accessible role/name or label locators, then stable test IDs when no semantic locator exists.
-- Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Treat assertions tied only to CSS classes or internal DOM structure as insufficient proof.
-- When the UI specification defines responsive behavior, run the affected interaction at the specified viewport; otherwise use the repository's default browser matrix.
+- Assert user-observable state, navigation, accessibility, or persisted behavior named by the skeleton. Treat assertions tied only to styling classes or internal view structure as insufficient proof.
+- When the UI specification defines responsive behavior, run the affected interaction at the specified viewport or device size; otherwise use the repository's default browser or device matrix.
 
 ## Skeleton Annotations
 

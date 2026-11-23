@@ -33,8 +33,8 @@ claude-code-workflows는 탐색이 합의된 결과를 향하도록 유지합니
 |---|---|---|
 | 백엔드, API, CLI 또는 일반 변경을 처음부터 끝까지 구현 | `/recipe-implement` | `dev-workflows` |
 | 구현 전에 백엔드 또는 일반 변경을 설계 | `/recipe-design` | `dev-workflows` |
-| React / TypeScript 프런트엔드를 설계하고 구현 | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
-| 백엔드와 React 프런트엔드를 함께 구현 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| 프런트엔드를 설계하고 구현 (React / TypeScript는 더 상세하게 지원) | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| 백엔드와 프런트엔드를 함께 구현 | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 완성된 구현이 합의한 결과에 맞는지 검토 | `/recipe-review` 또는 `/recipe-front-review` | `dev-workflows` 또는 `dev-workflows-frontend` |
 | 저장소별 품질 규칙 설정 | `/recipe-quality-profile` | 모든 워크플로 플러그인 |
 | 수정 방법을 정하기 전에 문제를 조사 | `/recipe-diagnose` | 모든 워크플로 플러그인 |
@@ -141,7 +141,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 /recipe-plan
 /recipe-build
 
-# React 프런트엔드
+# 프런트엔드
 /recipe-front-design "Build a user profile dashboard"
 /recipe-front-plan
 /recipe-front-build
@@ -149,7 +149,7 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 
 설계 recipe는 기존 구현을 조사하고 범위를 확인하며 필요한 문서를 만든 뒤, 독립적인 일관성 검토를 거쳐 승인을 기다립니다. 나중에 새 컨텍스트나 다른 담당자가 승인된 산출물을 바탕으로 계획과 구현을 이어갈 수 있습니다. 각 작업은 [Work Plan](skills/documentation-criteria/references/plan-template.md)에서 충족해야 할 설계 결정과 수용 기준을 명시하고, 최종 검토자는 이전 대화가 아닌 같은 자료를 기준으로 완성된 코드를 확인합니다.
 
-프런트엔드 경로는 UI 구조나 동작을 더 설계해야 할 때 UI 분석과 UI Spec을 추가하고, 컴포넌트 아키텍처, React Testing Library, TypeScript 검사도 수행합니다.
+프런트엔드 경로는 UI 구조나 동작을 더 설계해야 할 때 UI 분석과 UI Spec을 추가합니다. 컴포넌트, 상태, 오류 처리, 테스트에 관한 규칙은 특정 UI 스택을 전제로 하지 않으며, 저장소에서 이미 쓰는 패턴에 맞춰 적용됩니다. React와 TypeScript에는 타입 경계, Error Boundary, 서버 컴포넌트, 메모이제이션, React Testing Library에 관한 더 상세한 규칙이 추가됩니다.
 
 예를 들어 대시보드 컴포넌트 두 개가 각각 로딩 상태를 올바르게 처리해도, 하나는 로딩 중이고 다른 하나는 실패했을 때 전체 화면의 동작은 정의되지 않았을 수 있습니다. UI Spec은 이 상태 조합을 기록하고 통합 전에 설계 및 테스트 작업과 연결합니다.
 
@@ -229,13 +229,13 @@ recipe는 변경 범위를 정하고 현재 구현을 조사한 뒤, 결정에 �
 <details>
 <summary>프런트엔드 recipe 모두 보기</summary>
 
-프런트엔드 플러그인은 React 전용 분석, 컴포넌트 아키텍처, React Testing Library, TypeScript 검사와 필요시 프로토타입 코드에서 UI Spec을 만드는 기능을 추가합니다.
+프런트엔드 플러그인은 UI 분석, 컴포넌트 아키텍처와 필요시 프로토타입 코드에서 UI Spec을 만드는 기능을 추가합니다. 규칙은 어떤 UI 스택에도 적용되며, React와 TypeScript에는 더 상세한 규칙이 있습니다.
 
 | Recipe | 목적 | 사용 시점 |
 |---|---|---|
-| `/recipe-front-design` | 해당 UI Spec과 프런트엔드 Design Doc 작성 | React 컴포넌트 아키텍처 |
+| `/recipe-front-design` | 해당 UI Spec과 프런트엔드 Design Doc 작성 | 컴포넌트 아키텍처 |
 | `/recipe-front-plan` | 프런트엔드 Work Plan 생성 | 컴포넌트 계획 |
-| `/recipe-front-build` | 프런트엔드 Work Plan 실행 | React 구현 재개 |
+| `/recipe-front-build` | 프런트엔드 Work Plan 실행 | 프런트엔드 구현 재개 |
 | `/recipe-front-adjust` | 외부 검증으로 구현된 UI 조정 | 시각적 개선 |
 | `/recipe-front-review` | 완성된 프런트엔드가 합의한 결과에 맞는지 검토 | 구현 후 확인 |
 | `/recipe-quality-profile` | 저장소별 품질 규칙 설정 | 품질 규칙 설정 |

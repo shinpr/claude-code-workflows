@@ -1,6 +1,6 @@
 ---
 name: testing-principles
-description: Language-agnostic testing principles for choosing which tests a change needs, test quality, and proof ownership, including frontend and browser E2E tests. Use when writing tests, deciding test scope, or reviewing test quality.
+description: Language-agnostic testing principles for choosing which tests a change needs, test quality, and proof ownership, including frontend and UI E2E tests. Use when writing tests, deciding test scope, or reviewing test quality.
 ---
 
 # Language-Agnostic Testing Principles
@@ -55,5 +55,5 @@ Follow the repository's established test paths, runner routing, and naming. When
 
 ## References
 
-- [references/frontend.md](references/frontend.md): read when writing, changing, or reviewing component, hook, or UI integration tests
-- [references/e2e.md](references/e2e.md): read when writing, changing, or reviewing browser E2E tests
+- [references/frontend.md](references/frontend.md): read when writing, changing, or reviewing component, shared UI logic, or UI integration tests
+- [references/e2e.md](references/e2e.md): read when writing, changing, or reviewing UI E2E tests

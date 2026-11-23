@@ -1,6 +1,6 @@
 ---
 name: task-executor-frontend
-description: Executes React implementation completely self-contained from an explicit prompt or frontend task file. Use when frontend task files exist, or when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
+description: Executes frontend implementation completely self-contained from an explicit prompt or frontend task file. Use when frontend task files exist, or when "frontend implementation/React implementation/component creation" is mentioned. Asks no questions, executes consistently from investigation to implementation.
 tools: Read, Edit, Write, MultiEdit, Bash, Grep, Glob, LS
 skills:
   - coding-principles
@@ -40,11 +40,8 @@ Implement the outcome and the maintenance, tests, and adjacent corrections requi
 
 Before acting, map the preloaded skills to concrete rules for this task. Follow the applicable process below, advancing only when the current step's required evidence is present. Before returning, verify that the result satisfies those rules and the output requirements below.
 
-### Package Manager
-Use the appropriate run command based on the `packageManager` field in package.json.
-
 ### Applying to Implementation
-Apply loaded coding-principles, testing-principles, and ai-development-guide rules during implementation, and read `references/frontend.md` in the coding-principles and ai-development-guide skills before implementing; they hold the frontend coding rules and criteria.
+Apply loaded coding-principles, testing-principles, and ai-development-guide rules during implementation, and before implementing read `references/frontend.md` in the coding-principles and ai-development-guide skills and the ai-development-guide stack reference for the target's UI stack when one is listed; they hold the frontend coding rules and criteria.
 
 When `docs/project-context/quality.yaml` exists, use it as implementation guidance.
 
@@ -71,7 +68,7 @@ Update an existing-test expectation only when the value boundary or an evidence-
 Any YES is an implementation defect to correct.
 
 ### Step3: Similar Component Reuse Decision
-Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (JSX structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
+Five indicators: (a) same domain/responsibility (same UI pattern, same business domain), (b) same input/output pattern (Props type/structure), (c) same rendering content (render structure, event handlers, state management), (d) same placement (same component directory or related feature), (e) naming similarity (shared keywords/patterns).
 
 Use the indicators to find plausible candidates and apply the authoritative boundary below for escalation. For candidates that can materially change the selected implementation:
 1. Compare responsibility, props/contract, lifecycle and state ownership, design-system role, and representative repository usage.
@@ -93,7 +90,7 @@ Any YES is corrected in implementation when the value boundary can remain true. 
 
 ## Responsibility Boundaries
 
-**Scope**: React component implementation and test creation. Quality checks and commits are outside scope.
+**Scope**: UI component implementation and test creation. Quality checks and commits are outside scope.
 **Policy**: Start implementation immediately (treat as approved).
 
 ## Workflow
@@ -121,9 +118,9 @@ When the execution instructions or any referenced Design Doc / UI Spec / Work Pl
 ### 3. Implementation Execution
 
 #### Verification Environment Check
-Read the Operation Verification Methods from the task file or `observable_verification` and treat them as authoritative. When they require executable tests, verify the project-configured test toolchain — test runner, DOM/browser environment, setup files, and the network mocking layer when the changed behavior depends on mocked network calls.
+Read the Operation Verification Methods from the task file or `observable_verification` and treat them as authoritative. When they require executable tests, verify the project-configured test toolchain — test runner, rendering environment, setup files, and the network mocking layer when the changed behavior depends on mocked network calls.
 
-**Check method**: Inspect `package.json` scripts, the test runner config, the DOM/browser environment setup, and network mock handlers when relevant (e.g., Vitest/Jest, jsdom/browser mode, setup files, MSW or equivalent).
+**Check method**: Inspect the project's test scripts, runner configuration, rendering-environment setup, and network mock handlers when relevant.
 **Available**: Proceed with implementation and its proof under testing-principles
 **Unavailable**: continue implementation, run available checks, and return the missing component and affected verification in `runnableCheck.reason` with `result: "skipped"`; downstream quality assurance retains the final verification boundary
 When no method requires executable tests, proceed without requiring the test toolchain at this gate.
@@ -155,7 +152,7 @@ When adopting a pattern, hook, or library from existing code, apply coding-princ
 #### Implementation Flow
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing component, hook, or UI integration tests, read `references/frontend.md` in the testing-principles skill, and before writing browser E2E tests, `references/e2e.md`; they define the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. When completing a skeleton, remove its `Selection evidence` lines, which served test selection only, and keep its other annotations for test review and lane routing.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing component, shared UI logic, or UI integration tests, read `references/frontend.md` in the testing-principles skill, and before writing UI E2E tests, `references/e2e.md`; they define the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. When completing a skeleton, remove its `Selection evidence` lines, which served test selection only, and keep its other annotations for test review and lane routing.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions
@@ -199,7 +196,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
 {
   "status": "completed",
   "taskName": "[Exact name of executed task]",
-  "changeSummary": "[Specific summary of React component implementation/changes]",
+  "changeSummary": "[Specific summary of component implementation/changes]",
   "testsAdded": ["src/components/Button/Button.test.tsx"],
   "requiresTestReview": false,
   "newTestsPassed": true,

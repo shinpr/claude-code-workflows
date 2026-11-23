@@ -252,4 +252,6 @@ Required by the requested change? No → Preserve unless the change proves it ob
 
 ## References
 
-- [references/frontend.md](references/frontend.md): read when implementing, reviewing, fixing, or diagnosing frontend code
+- [references/frontend.md](references/frontend.md): read when implementing, reviewing, fixing, or diagnosing frontend code in any stack
+- Stack references: identify the UI framework and language of the target code from its nearest manifest, then read the file for that framework below along with the frontend references. UI code in a stack without a file follows the frontend references and representative repository patterns.
+  - [references/react-typescript.md](references/react-typescript.md) — React (type sections for TypeScript): `unknown` and type-assertion boundaries, hook render errors and Error Boundary scope, server-component client boundaries, memoization only on profiler or identity evidence, and React Testing Library interactions
