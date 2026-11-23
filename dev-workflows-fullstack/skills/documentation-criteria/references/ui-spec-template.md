@@ -96,7 +96,7 @@ The matrix contains one row for each state supported by the requirements, approv
 
 ### Environment Constraints
 
-- Target browsers: [e.g., Chrome 120+, Safari 17+]
+- Target browsers or platforms: [e.g., Chrome 120+, Safari 17+]
 - Theme support: [e.g., light/dark, system preference]
 
 #### Responsive Behavior

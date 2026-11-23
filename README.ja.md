@@ -33,8 +33,8 @@ claude-code-workflowsは、探索を合意済みの成果へ向け続けるた�
 |---|---|---|
 | バックエンド、API、CLI、一般的な変更を一通り完了させる | `/recipe-implement` | `dev-workflows` |
 | 実装前にバックエンドまたは一般的な変更を設計する | `/recipe-design` | `dev-workflows` |
-| React / TypeScriptフロントエンドを設計・実装する | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
-| バックエンドとReactフロントエンドをまとめて実装する | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
+| フロントエンドを設計・実装する（React / TypeScriptは特化したルールを持つ） | `/recipe-front-design` → `/recipe-front-plan` → `/recipe-front-build` | `dev-workflows-frontend` |
+| バックエンドとフロントエンドをまとめて実装する | `/recipe-fullstack-implement` | `dev-workflows-fullstack` |
 | 完成した実装を合意した成果に照らしてレビューする | `/recipe-review` または `/recipe-front-review` | `dev-workflows` または `dev-workflows-frontend` |
 | リポジトリ固有の品質ルールを定める | `/recipe-quality-profile` | 任意のワークフロープラグイン |
 | 修正を決める前に問題を調査する | `/recipe-diagnose` | 任意のワークフロープラグイン |
@@ -141,7 +141,7 @@ flowchart LR
 /recipe-plan
 /recipe-build
 
-# Reactフロントエンド
+# フロントエンド
 /recipe-front-design "Build a user profile dashboard"
 /recipe-front-plan
 /recipe-front-build
@@ -149,7 +149,7 @@ flowchart LR
 
 設計レシピは既存実装を確認し、範囲を確定し、必要なドキュメントを作成して、独立した整合性レビューを行った後に承認を待ちます。承認済みの成果物があれば、別のコンテキストや別の担当者が後から計画と実装を再開できます。各タスクは[作業計画](skills/documentation-criteria/references/plan-template.md)の中で、満たすべき設計判断と受け入れ基準を参照します。最終レビュアーも以前の会話ではなく、同じ設計判断と受け入れ基準に照らして完成したコードを確認します。
 
-フロントエンドでは、UIの構造や動作に設計の余地がある場合にUI分析とUI仕様を追加し、さらにコンポーネント設計、React Testing Library、TypeScriptのチェックを行います。
+フロントエンドでは、UIの構造や動作に設計の余地がある場合にUI分析とUI仕様を追加します。コンポーネント、状態、エラー処理、テストのルールは特定のUIスタックを前提にしておらず、リポジトリの既存パターンに沿って適用されます。React / TypeScriptには、型の境界、Error Boundary、サーバーコンポーネント、メモ化、React Testing Libraryについての専用のルールが加わります。
 
 たとえば2つのダッシュボードコンポーネントが個別にはローディングを正しく処理していても、一方がローディング中で他方が失敗したときの画面全体の動作が未定義な場合があります。UI仕様はその状態の組み合わせを記録し、結合前に設計とテスト作業へ対応付けます。
 
@@ -229,13 +229,13 @@ flowchart LR
 <details>
 <summary>フロントエンド向けレシピをすべて表示</summary>
 
-フロントエンドプラグインはReact固有の分析、コンポーネント設計、React Testing Library、TypeScriptチェック、必要に応じたプロトタイプコードからのUI仕様作成を追加します。
+フロントエンドプラグインは、UI分析、コンポーネント設計、必要に応じたプロトタイプコードからのUI仕様作成を追加します。ルールはどのUIスタックにも適用され、React / TypeScriptには専用のルールもあります。
 
 | レシピ | 目的 | 使用場面 |
 |---|---|---|
-| `/recipe-front-design` | 該当するUI仕様とフロントエンド設計ドキュメントを作成 | Reactコンポーネント設計 |
+| `/recipe-front-design` | 該当するUI仕様とフロントエンド設計ドキュメントを作成 | コンポーネント設計 |
 | `/recipe-front-plan` | フロントエンド作業計画を作成 | コンポーネント計画 |
-| `/recipe-front-build` | フロントエンド作業計画を実行 | React実装の再開 |
+| `/recipe-front-build` | フロントエンド作業計画を実行 | フロントエンド実装の再開 |
 | `/recipe-front-adjust` | 外部検証を使って実装済みUIを調整 | 見た目の調整 |
 | `/recipe-front-review` | 完成したフロントエンドを合意した成果に照らしてレビュー | 実装後の確認 |
 | `/recipe-quality-profile` | リポジトリ固有の品質ルールを設定 | 品質ルールの設定 |

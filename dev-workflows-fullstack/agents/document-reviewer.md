@@ -69,7 +69,7 @@ Verify current external facts from authoritative sources only when an ADR select
 ### UI Spec
 
 - Required screens/components, transitions, state/display behavior, interactions, visual outcomes, and acceptance-criteria traceability are implementable.
-- Loading, empty, error, responsive, accessibility, token, and browser behavior is present when supported by the requirements, approved UI direction, preserved behavior, or repository/design-system rules.
+- Loading, empty, error, responsive, accessibility, token, and browser or platform behavior is present when supported by the requirements, approved UI direction, preserved behavior, or repository/design-system rules.
 - Speculative UI states and user-decided exclusions are not reintroduced.
 
 ### Design Doc

@@ -1,6 +1,6 @@
 ---
 name: testing-principles
-description: Language-agnostic testing principles for choosing which tests a change needs, test quality, and proof ownership, including frontend and browser E2E tests. Use when writing tests, deciding test scope, or reviewing test quality.
+description: Language-agnostic testing principles for choosing which tests a change needs, test quality, and proof ownership, including frontend and UI E2E tests. Use when writing tests, deciding test scope, or reviewing test quality.
 ---
 
 # Language-Agnostic Testing Principles
@@ -20,6 +20,7 @@ Tests here guarantee accepted behavior, and the next agent reads every existing 
 - Structure each test as Arrange, one Act, and Assert; multiple assertions may prove one behavior.
 - Follow the repository's test naming convention and name the condition and observable outcome.
 - Exercise behavior through a public or integration boundary. Assertions verify return values, outputs, errors, or state changes rather than private implementation.
+- Locate UI elements through the repository's query convention; otherwise by accessible role and name or label, then by stable test IDs when no semantic query exists.
 - Use independently derived literal, property, approved snapshot, or fixture expectations. An implementation-derived oracle cannot detect the same implementation defect.
 - Keep each test's expected outcome unconditional. Table-driven or property-based cases are acceptable when each case is reported distinctly and uses an independent oracle.
 - Cover accepted boundary and error behavior; derive cases from the contract instead of adding generic edge-case permutations.
@@ -55,5 +56,5 @@ Follow the repository's established test paths, runner routing, and naming. When
 
 ## References
 
-- [references/frontend.md](references/frontend.md): read when writing, changing, or reviewing component, hook, or UI integration tests
-- [references/e2e.md](references/e2e.md): read when writing, changing, or reviewing browser E2E tests
+- [references/frontend.md](references/frontend.md): read when writing, changing, or reviewing component, shared UI logic, or UI integration tests
+- [references/e2e.md](references/e2e.md): read when writing, changing, or reviewing UI E2E tests

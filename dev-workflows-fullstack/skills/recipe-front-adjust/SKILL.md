@@ -91,7 +91,7 @@ Present the adjustment context to the user for review.
 
 ### Step 5: Adjustment + Verification (parent session)
 
-Execute Skill: ai-development-guide and read its `references/frontend.md` before planning or applying adjustment edits.
+Execute Skill: ai-development-guide and read its `references/frontend.md`, and its stack reference for the target's UI stack when one is listed, before planning or applying adjustment edits.
 Execute Skill: coding-principles and read its `references/frontend.md` before planning or applying adjustment edits.
 Execute Skill: implementation-approach before planning or applying adjustment edits.
 Execute Skill: testing-principles before adding or changing tests.

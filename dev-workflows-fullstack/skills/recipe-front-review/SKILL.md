@@ -1,6 +1,6 @@
 ---
 name: recipe-front-review
-description: Reviews completed frontend implementation for governing-source compliance, scope economy, repository quality, and security, then applies user-approved React corrections.
+description: Reviews completed frontend implementation for governing-source compliance, scope economy, repository quality, and security, then applies user-approved frontend corrections.
 disable-model-invocation: true
 ---
 
@@ -9,7 +9,7 @@ disable-model-invocation: true
 Execute Skill: llm-friendly-context before writing Agent prompts, handoffs, or generated artifacts.
 Execute Skill: subagents-orchestration-guide before making workflow decisions, invoking agents, or resolving findings.
 
-**Context**: Post-implementation quality assurance for React/TypeScript frontend
+**Context**: Post-implementation quality assurance for frontend
 
 ## Orchestrator Definition
 

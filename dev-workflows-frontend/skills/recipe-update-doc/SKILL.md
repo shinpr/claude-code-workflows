@@ -89,7 +89,7 @@ Determine type from document path, then determine the layer to select the correc
 
 **Layer detection** (for Design Doc and ADR):
 Read the document and determine its layer from content signals:
-- **Frontend** (→ technical-designer-frontend): Document title/scope mentions React, components, UI, frontend; or file contains component hierarchy, state management, UI interactions
+- **Frontend** (→ technical-designer-frontend): Document title/scope mentions a UI framework, components, UI, or frontend; or file contains component hierarchy, state management, UI interactions
 - **Backend** (→ technical-designer): All other cases (API, data layer, business logic, infrastructure)
 
 **ADR Update Guidance**:

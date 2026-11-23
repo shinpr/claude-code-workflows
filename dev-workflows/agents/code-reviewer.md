@@ -32,6 +32,7 @@ Before reviewing, read these files; they hold review criteria beyond the preload
 - `references/frontend.md` in the testing-principles skill
 - `references/frontend.md` in the ai-development-guide skill
 - `references/frontend.md` in the coding-principles skill
+- the ai-development-guide stack reference for the reviewed UI code's stack, when one is listed
 - `references/e2e.md` in the testing-principles skill
 
 ## Initial Review
@@ -107,7 +108,7 @@ Correction re-review:
 
 - [ ] The initial review chose its verdict after judging every material surface in `implementationFiles`, or the correction re-review reconciled every received item once
 - [ ] Changed contracts and required proof were checked against the code and tests at file:line
-- [ ] Frontend changes were judged against `references/frontend.md`, and browser E2E tests against `references/e2e.md`
+- [ ] Frontend changes were judged against `references/frontend.md` and the matching stack reference, and UI E2E tests against `references/e2e.md`
 - [ ] Every unfulfilled acceptance criterion has one corresponding finding
 - [ ] Every emitted finding requires correction under the Findings Boundary
 - [ ] Applicable repository quality dimensions were checked against their cited evidence

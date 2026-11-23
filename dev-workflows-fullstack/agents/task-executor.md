@@ -151,7 +151,7 @@ When adopting a pattern or dependency from existing code, apply coding-principle
 
 **When the outcome is already satisfied**: Preserve the implementation and proceed to Operation Verification before reporting completion.
 
-Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing browser E2E tests, read `references/e2e.md` in the testing-principles skill; it defines the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. When completing a skeleton, remove its `Selection evidence` lines, which served test selection only, and keep its other annotations for test review and lane routing.
+Implement the behaviors the task delivers and prove them under testing-principles and the task's Operation Verification Methods. Before writing UI E2E tests, read `references/e2e.md` in the testing-principles skill; it defines the scope and ownership criteria for those tests. Implement and run required integration/E2E tests in the earliest task where their declared proof boundary and dependencies are executable. Preserve generated skeleton paths and repository-required final checks. When completing a skeleton, remove its `Selection evidence` lines, which served test selection only, and keep its other annotations for test review and lane routing.
 
 #### Operation Verification
 - Execute the Operation Verification Methods in the execution instructions

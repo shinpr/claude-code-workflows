@@ -23,7 +23,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Preparation
 
-Before designing, read `references/frontend.md` in the ai-development-guide skill; it holds the frontend criteria for component, state, error-boundary, and impact decisions.
+Before designing, read `references/frontend.md` in the ai-development-guide skill and its stack reference for the target's UI stack when one is listed; they hold the frontend criteria for component, state, error-boundary, and impact decisions.
 
 ## Inputs
 
@@ -81,9 +81,9 @@ Follow `references/design-template.md` in the documentation-criteria skill. Pres
 - component responsibility, Props/API contracts, state ownership and reset behavior, rendering conditions, interactions, service boundaries, error behavior, compatibility, and exact serialized/display values supply the details required for implementation;
 - changed behavior defines representative output or rendered-state comparison where equivalence matters;
 - applicable accessibility, responsive, loading, empty, error, security, and test boundaries remain explicit when required by the UI Spec, preserved behavior, repository rule, or requirement;
-- implementation order follows real dependencies, and the earliest useful RTL, integration, browser, build, or artifact check proves a representative outcome or material risk.
+- implementation order follows real dependencies, and the earliest useful component, integration, UI E2E, build, or artifact check proves a representative outcome or material risk.
 
-Sections and rows activate when their boundary exists. An authoritative referenced UI Spec or Design Doc may carry the information; every included state, browser lane, asset, and check is supported by the current scope or preserved behavior.
+Sections and rows activate when their boundary exists. An authoritative referenced UI Spec or Design Doc may carry the information; every included state, E2E lane, asset, and check is supported by the current scope or preserved behavior.
 
 Use diagrams only when they clarify a material component, state, or interaction relationship. Repository-owned flags, generated assets, deployment configuration, logging, monitoring, or measurement belong only when they change checked-in implementation, a preserved contract, or an acceptance criterion. External release execution, production access, account setup, and organizational approval stay outside the Design Doc.
 
@@ -91,7 +91,7 @@ Acceptance criteria use the smallest representative set that proves the approved
 
 Derive each acceptance criterion from one UI behavior in the requirements. Add a loading/empty/error/lifecycle, route, permission, responsive, accessibility, or mode-by-branch case when the approved promise can fail independently on that boundary. Consolidate cases that exercise the same failure and correction; each retained state category traces to an independent required failure boundary.
 
-Verify a current external technology, browser, compatibility, performance, or security fact from an authoritative source only when its truth can change option selection, implementation, or verification. Record unresolved decision-changing facts for the verification loop.
+Verify a current external technology, platform, compatibility, performance, or security fact from an authoritative source only when its truth can change option selection, implementation, or verification. Record unresolved decision-changing facts for the verification loop.
 
 ## Review-Triggered Bounded Self-Verification
 

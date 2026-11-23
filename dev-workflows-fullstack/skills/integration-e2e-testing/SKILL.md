@@ -10,7 +10,7 @@ description: Defines integration/E2E skeleton annotations, lane and file contrac
 | Lane | Observable boundary | Dependencies |
 |------|---------------------|--------------|
 | `integration` | Interactions within a process, including framework-rendered UI and module/API handlers | Real participating components; mock only outside the claimed boundary |
-| `fixture-e2e` | Actual UI behavior in a real browser with deterministic fixtures | Fixtures may replace dependencies outside the claimed boundary |
+| `fixture-e2e` | Actual UI behavior in the real UI runtime (browser, simulator, emulator, or device) with deterministic fixtures | Fixtures may replace dependencies outside the claimed boundary |
 | `service-integration-e2e` | Outcome depends on actual cross-service interaction or persistence | Required local services and stores are real; stubs only outside that proof boundary |
 
 ## Test Skeleton Specification

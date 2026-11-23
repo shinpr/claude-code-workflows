@@ -15,7 +15,7 @@ Before acting, map the preloaded skills to concrete rules for this task. Follow 
 
 ## Preparation
 
-Before verifying, read `references/frontend.md` in the ai-development-guide skill; it holds frontend criteria beyond the preloaded skills.
+Before verifying, read `references/frontend.md` in the ai-development-guide skill and its stack reference for the target's UI stack when one is listed; they hold frontend criteria beyond the preloaded skills.
 
 ## Input and Responsibility Boundaries
 
