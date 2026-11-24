@@ -192,10 +192,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 
 ## Important Principles
 
-**Principles**: Follow these to maintain high-quality code:
-- **Correctness System Convention**: Follow strong correctness guarantees when applicable
-- **Test Fix Criteria**: Understand existing test intent and fix appropriately
-
 ### Fix Execution Policy
 
 **Execution**: Apply fixes per coding-principles.md and testing-principles.md
@@ -205,7 +201,6 @@ Between tool calls, briefly report: which phase is running, the command executed
 **Required Fix Approaches** (fix at their source, not around them):
 - Test failures → Fix implementation or test logic to pass genuinely
 - Type/contract errors → Fix type mismatches or interface/contract violations at their source
+- Lint failures → Change the flagged code per coding-principles Structure for Local Edits
 - Errors → Log with context or propagate with error chain
 - Safety warnings → Address root cause directly
-
-See coding-principles.md anti-patterns section for rationale.

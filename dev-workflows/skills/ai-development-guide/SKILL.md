@@ -8,30 +8,10 @@ description: Applies technical decision criteria, anti-pattern detection, debugg
 ## Value-First Engineering
 
 Inspect until the evidence identifies the lowest-total-complexity solution that delivers the required user, operator, or maintainer value while keeping the system correct and maintainable.
-- Resolve verified problems within scope or dependencies required for the outcome; report other findings with their owning boundary and evidence without expanding the active change.
+- Resolve verified problems within scope or dependencies required for the outcome.
 - Introduce capabilities, infrastructure, abstractions, or speculative edge-case handling when a current outcome, verified constraint, or evidence-backed material risk requires them.
-- Treat behavior-preserving maintenance inside the assigned responsibility as current maintainer value when repository evidence shows it reduces change ambiguity, duplicate ownership, defect risk, or future implementation and verification cost without expanding observable product scope.
 
-Judge total complexity across every activated surface: user decisions, settings, modes, concepts, outputs, persistent state, and implementation paths, together with their UX, runtime, implementation, testing, documentation, and maintenance cost. Compare only dimensions that differ between viable approaches. Prefer reuse or no new mechanism when it delivers the same required value and proof at lower total complexity.
-
-## Technical Anti-patterns (Red Flag Patterns)
-
-Pause the affected decision and review the design when detecting the following patterns:
-
-### Code Quality Anti-patterns
-1. **Duplicating one responsibility across independently maintained locations** - Review whether the duplicated logic has one change reason and should have one owner
-2. **Multiple responsibilities mixed in a single file** - Violates Single Responsibility Principle (SRP)
-3. **Defining same content in multiple files** - Violates DRY principle
-4. **Making changes without checking dependencies** - Potential for unexpected impacts
-5. **Disabling code with comments** - Should use version control
-6. **Error suppression** - Hiding problems creates technical debt
-7. **Bypassing safety mechanisms (type systems, validation, contracts)** - Circumventing language's correctness guarantees
-
-### Design Anti-patterns
-- **"Make it work for now" thinking** - Accumulation of technical debt
-- **Patchwork implementation** - Unplanned additions to existing code
-- **Symptomatic fixes** - Surface-level fixes that don't solve root causes
-- **Unplanned large-scale changes** - Lack of incremental approach
+Judge total complexity across every activated surface: user decisions, settings, modes, concepts, outputs, persistent state, and implementation paths, together with their UX, runtime, testing, documentation, and maintenance cost. Compare only dimensions that differ between viable approaches. Prefer reuse or no new mechanism when it delivers the same required value and proof at lower total complexity.
 
 ## Fail-Fast Fallback Design Principles
 
@@ -115,10 +95,10 @@ Keep concrete implementations separate while their apparent similarity is accide
 
 ## Common Failure Patterns and Avoidance Methods
 
-### Pattern 1: Error Fix Chain
-**Symptom**: Fixing one error causes new errors
-**Cause**: Surface-level fixes without understanding root cause
-**Avoidance**: Identify root cause with 5 Whys before fixing
+### Pattern 1: Symptom Fixes
+**Symptom**: Fixing one error or finding causes new ones, or the same defect returns through another path
+**Cause**: Each symptom is repaired where it appeared, leaving what produced it in place
+**Avoidance**: Trace the failures or findings in hand to what produces them; findings with one cause are corrected once at that cause, so no other path can produce them again
 
 ### Pattern 2: Circumventing Correctness Guarantees
 **Symptom**: Bypassing safety mechanisms (type systems, validation, contracts)
@@ -141,9 +121,9 @@ Keep concrete implementations separate while their apparent similarity is accide
 **Avoidance Methods**:
 - Before implementation, find functionality that already holds the same responsibility and the code that depends on the change, as coding-principles Reference Representativeness describes; similar functionality may share no name with the new code
 - Similar functionality found → Verify that its contract, lifecycle, and repository usage are representative; reuse or extend it when compatible, otherwise record why it is not a valid model
-- Similar functionality is technical debt → Repair it when it blocks the current outcome, was caused by the current change, or lies in scope; otherwise report it separately. Create an ADR when the repair requires an architectural decision
+- Existing code the change connects to or resembles has a problem, such as a fact written in two places, a state it can express but must not, or a shape the new case has to work around → Revise it in this change when the revision leaves this change's final state simpler to maintain, keeping the outcome, requirements, and non-goals unchanged: a change built around the problem keeps both the problem and the workaround. Create an ADR when the revision requires an architectural decision
 - No similar functionality exists → Implement new functionality following existing design philosophy
-- Preserve the evidence for each reuse, extend, separate, or repair decision in the applicable implementation or design record
+- Preserve the evidence for each reuse, extend, separate, or revise decision in the applicable implementation or design record
 
 ## Quality Assurance Mechanism Awareness
 
@@ -188,7 +168,7 @@ Follow repository-declared command composition or ordering when it exists. Other
 - Treat referenced or expected paths as investigation starting points unless the governing source explicitly makes them exclusive
 - Copy/move/mirror requests preserve content verbatim; edit content only when requested
 - Port/translation requests preserve intent and behavior; adapt only what the destination context requires
-- Include related files, symmetric locations, and adjacent behavior when evidence shows they are required by the same accepted outcome or consistency contract; report unrelated improvements separately
+- Include related files, symmetric locations, and adjacent behavior when evidence shows they are required by the same accepted outcome or consistency contract
 
 ## Implementation Completeness Assurance
 

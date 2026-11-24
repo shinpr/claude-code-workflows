@@ -129,7 +129,6 @@ Invoke task-executor-frontend using Agent tool:
 - `description`: "Execute review fixes"
 - `direct_scope`: Apply the approved frontend corrections within the review scope and stated total size budget
 - `governing_sources`: The reviewed Design Doc, applicable UI Spec, and accepted requirement or ADR paths
-- `target_paths`: The implementation and test paths identified for the approved code-side routes
 - `observable_verification`: The focused UI behavior tests or observable contract checks named by the findings and governing sources pass
 - `correction_findings`: Complete reviewer finding objects verbatim, with only their orchestrator dispositions added
 

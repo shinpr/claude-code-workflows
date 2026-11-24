@@ -48,12 +48,11 @@ For each task:
 
 1. Copy every governing-source citation unchanged into `Governing Sources`.
 2. Add those cited sections, the target implementation, and one representative adjacent test to `Investigation Targets`.
-3. Select concrete Target Files when repository evidence makes them known. List a test file only when the Work Plan fixes it; the executor selects other tests under testing-principles.
-4. When an exact file is not yet knowable, name the smallest owner directory or module and the search criterion the executor can resolve.
+3. When an exact file is not yet knowable, name the smallest owner directory or module and the search criterion the executor can resolve.
 
 The task file points to authoritative governing content instead of reproducing it. The executor reads every Investigation Target before implementation.
 
-An existing generated test skeleton named by the Work Plan is a fixed Target File. Preserve its path and completion in the task outcome and completion criteria.
+Preserve the path of an existing generated test skeleton named by the Work Plan, and its completion, in the task outcome and completion criteria.
 
 ### 4. Preserve verification intent
 
@@ -72,9 +71,7 @@ Each task contains:
 - Source Work Plan Task;
 - Implementation Outcome;
 - Governing Sources;
-- Target Files;
 - Investigation Targets;
-- concise Implementation Steps;
 - Operation Verification Methods;
 - optional Verification Focus copied from the Work Plan;
 - Completion Criteria tied to cited ACs.
