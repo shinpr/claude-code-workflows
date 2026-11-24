@@ -138,7 +138,7 @@ Applies when Pre-implementation Verification finds a dependency this task requir
 
 Classify from the task outcome and changed boundary, then run after Pre-implementation Verification when applicable.
 
-1. From the target and investigation paths in the execution instructions, identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
+1. From the changed code and the code investigated for it, identify the cases sharing the same path, contract, persisted state, or external boundary as the change — fallback rendering, stale state, retries, and external calls related to the change.
 2. Check the same defect class and record each case as `incorporated`, `unchanged` with evidence, or `separate_responsibility` with its owning boundary; when none exist, record the searched surface.
 3. Fold in-scope residuals into the implementation and its focused verification.
 
