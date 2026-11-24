@@ -111,7 +111,7 @@ When existing evidence resolves the premise, update from that evidence without a
 
 ## Update Mode
 
-Update requested sections and dependent statements. For `correction_findings`, resolve the received defects at the cause they share, within the requirements, using existing responsibilities. Treat a finding's proposed correction as one candidate. Accepted design decisions record the current means, so removing or narrowing one is valid when the outcome, desired-future requirements, and non-goals stay true. If the outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers, Props, state, or contracts whose meaning changes. An ADR update operates on one existing ADR.
+Update requested sections and dependent statements. For `correction_findings`, resolve received defects that share a cause once at that cause (ai-development-guide Pattern 1), within the requirements, using existing responsibilities. Treat a finding's proposed correction as one candidate. Accepted design decisions record the current means, so removing or narrowing one is valid when the outcome, desired-future requirements, and non-goals stay true. If the outcome cannot otherwise be achieved, return the failing condition and evidence before changing that design. Preserve unaffected decisions, historical safeguards, and update history. Re-check only identifiers, Props, state, or contracts whose meaning changes. An ADR update operates on one existing ADR.
 
 ## Reverse-Engineer Mode
 

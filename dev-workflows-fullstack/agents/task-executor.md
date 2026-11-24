@@ -69,6 +69,7 @@ Find plausible candidates by coding-principles Reference Representativeness and 
 1. Compare responsibility, contract, lifecycle, and representative repository usage.
 2. Record one `reuseDecisions` entry:
    - `reuse` or `extend` when those dimensions are compatible;
+   - `revise` when the candidate holds the responsibility but its current shape would force a workaround or a duplicate, and ai-development-guide Pattern 5 places its revision in this change;
    - `separate` when evidence shows different contracts or change reasons, or when sharing would add more coupling and contract surface than it removes.
 3. Continue with the repository-local reversible choice supported by that evidence.
 
@@ -181,7 +182,7 @@ Return the final response per Structured Response Specification. For research/an
 
 **mutationEvidence**: Use `[]` when no mutation verification ran; otherwise populate every field in the schema below with revision-bound evidence.
 
-**reuseDecisions**: Use `[]` when no plausible similar implementation was found. Otherwise include the decision-relevant candidates evaluated in Step 3 with `decision: "reuse" | "extend" | "separate"` and evidence covering responsibility, contract, lifecycle, and repository representativeness.
+**reuseDecisions**: Use `[]` when no plausible similar implementation was found. Otherwise include the decision-relevant candidates evaluated in Step 3 with `decision: "reuse" | "extend" | "revise" | "separate"` and evidence covering responsibility, contract, lifecycle, and repository representativeness.
 
 ### 1. Task Completion Response
 Complete this agent's work by returning the following JSON; the quality assurance process performs quality checks and commits:
@@ -194,7 +195,7 @@ Complete this agent's work by returning the following JSON; the quality assuranc
   "testsAdded": ["created/test/file/path"],
   "requiresTestReview": true,
   "newTestsPassed": true,
-  "reuseDecisions": [{"candidate": "[path:symbol]", "decision": "reuse | extend | separate", "evidence": "[Responsibility, contract, lifecycle, and repository-representativeness evidence]"}],
+  "reuseDecisions": [{"candidate": "[path:symbol]", "decision": "reuse | extend | revise | separate", "evidence": "[Responsibility, contract, lifecycle, and repository-representativeness evidence]"}],
   "runnableCheck": {"level": "L1: Functional Operation Verification / L2: Test Operation Verification / L3: Build Success Verification", "executed": true, "command": "Executed verification command", "result": "passed / failed / skipped", "reason": "Verification content or exact limitation"},
   "mutationEvidence": [{"mutation": "[description or patch]", "killedTest": "[test name]", "baselineResult": "[baseline command and result]", "mutatedResult": "[mutated command and result]", "restorationProof": "[restoration checksum or clean diff]", "targetRevision": "[revision or file hashes]"}]
 }
@@ -226,7 +227,7 @@ This gate runs immediately before producing the final JSON response.
 ☐ For task-file execution, each Completion Criteria item in the task file is satisfied, with its evidence in the response
 ☐ Implementation is consistent with the governing sources and investigation evidence
 ☐ Adjacent Case Sweep evidence records each inspected case and disposition, or the searched surface and no-case result, when the current task triggers the sweep
-☐ `reuseDecisions` records decision-relevant similar implementations and its evidence-backed reuse, extend, or separate disposition
+☐ `reuseDecisions` records decision-relevant similar implementations and its evidence-backed reuse, extend, revise, or separate disposition
 ☐ Every available Operation Verification Method ran; each unavailable or failed check has its exact result and affected proof in `runnableCheck`
 ☐ Test runs cited as `runnableCheck` evidence meet the substantive and executable rules in the `runnableCheck.result` field specification
 ☐ Final response is a single JSON with `status: "completed"`, `status: "blocked"`, or `status: "escalation_needed"` and matches the schema in Structured Response Specification
