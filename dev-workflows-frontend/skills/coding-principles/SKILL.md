@@ -7,9 +7,9 @@ description: Language-agnostic coding principles for maintainability, readabilit
 
 ## Core Philosophy
 
-1. **Maintainability over Speed**: Prioritize long-term code health over initial development velocity
-2. **Simplicity First**: Choose the simplest solution that meets requirements (YAGNI principle)
-3. **Design Convergence**: Deliver the current required outcome with the least new design surface. Selecting persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits carries enough surface to justify the full convergence process first.
+1. **Final State over Effort**: Minimize the complexity and size of what remains after the change — code, tests, concepts, and what a later change must know — not the work spent reaching it. The product keeps changing after this session and a future agent maintains whatever is left, so take on the larger change now when it leaves less behind. Do not choose a route because it needs fewer steps, edits, or tokens; effort only breaks a tie between results of equal final complexity.
+2. **Design Convergence**: Deliver the current required outcome with the least design surface in the final code. Selecting persistent state, public or cross-boundary contracts, behavioral modes, reusable abstractions, or component splits carries enough surface to justify the full convergence process first.
+3. **Structure for Local Edits**: The next change here will be made by an agent that reads only the code around it, so what a change must agree with belongs where that agent cannot miss it: a single definition, a type, an exhaustive branch, or a check that fails. For the code a change adds or extends, shape state so only valid combinations can be expressed, advance each state through its existing owner, and when a compiler, type, or lint check fails on the new code, change the structure so the check passes, suppressing it only when no such change exists.
 4. **Explicit over Implicit**: Make intentions clear through code structure and naming
 5. **Delete over Comment**: Remove unused code instead of commenting it out
 
@@ -19,7 +19,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Refactor related code inside the accepted outcome and governing boundaries when it reduces the change's risk or maintenance cost
 - Improve code structure incrementally
 - Keep the codebase lean and focused
-- Delete code proven obsolete by the requested change after checking its callers; report uncertain or out-of-scope cleanup separately
+- Delete code proven obsolete by the requested change after checking its callers
 
 ### Readability
 - Use meaningful, descriptive names drawn from the problem domain
@@ -35,10 +35,7 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Preserve external/public signatures unless their migration is part of the accepted outcome or governing artifact
 
 ### Single Responsibility
-- Each function should do one thing well
 - Extract a function when independently changing responsibilities or obscured control flow make the current unit harder to understand, verify, or reuse; retain a cohesive domain flow when extraction would create artificial coupling
-- Extract complex logic into separate, well-named functions
-- Functions should have a single level of abstraction
 
 ### Function Organization
 - Pure functions when possible (no side effects)
@@ -60,14 +57,6 @@ description: Language-agnostic coding principles for maintainability, readabilit
 - Propagate errors to appropriate handling levels
 - Provide meaningful error messages
 - Include error context when re-throwing
-
-## Dependency Management
-
-### Loose Coupling via Parameterized Dependencies
-- Inject external dependencies as parameters (constructor injection for classes, function parameters for procedural/functional code)
-- Depend on abstractions, not concrete implementations
-- Minimize inter-module dependencies
-- Facilitate testing through mockable dependencies
 
 ## Reference Representativeness
 
@@ -127,20 +116,6 @@ One comment per decision. If a comment restates what the names and control flow 
 - Update comments when changing code
 - Use proper grammar and formatting
 - Write for future maintainers
-
-## Refactoring Approach
-
-### Safe Refactoring
-- **Small steps**: Make one change at a time
-- **Maintain working state**: Keep tests passing
-- **Verify behavior**: Run tests after each change
-- **Incremental improvement**: Make the smallest sufficient improvement in each increment
-
-### Refactoring Triggers
-- Code duplication (DRY principle)
-- Functions that contain independently changing responsibilities or obscured control flow
-- Complex conditional logic
-- Unclear naming or structure
 
 ## Security Principles
 

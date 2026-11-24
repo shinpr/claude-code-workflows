@@ -176,28 +176,17 @@ Add an architecture or data-flow Mermaid diagram only when the changed relations
 - **Interface**: [APIs and contract definitions provided]
 - **Dependencies**: [Relationships with other components]
 
-### Data Representation Decision (When Introducing New Structures)
-
-| Criterion | Assessment | Reason |
-|-----------|-----------|--------|
-| Semantic Fit | [Yes/No] | [Does existing structure's meaning align?] |
-| Responsibility Fit | [Yes/No] | [Same bounded context?] |
-| Lifecycle Fit | [Yes/No] | [Same creation/mutation/deletion timing?] |
-| Boundary/Interop Cost | [Low/Medium/High] | [Cost of sharing across boundaries?] |
-
-**Decision**: [reuse / extend / new] — [rationale in 1-2 sentences]
-
 ### Selected Design
 
 Describe the complete selected end-to-end path. Candidate paths and rejected additions remain active analysis; an accepted ADR may retain alternatives as decision history. Mark this whole section `N/A — reverse-engineer/as-is document` for a reverse-engineer/as-is document.
 
-[Selected responsibilities, control/data flow, and use of existing system capabilities]
+[Selected responsibilities, control/data flow, use of existing system capabilities, and the revisions to existing code it includes]
 
 For each added design surface—user decision, setting, mode, concept, output, persistent state, implementation path, public contract, abstraction, service, or component split—record:
 
 - **Addition**: [selected design surface]
 - **Current evidence**: [requirement, accepted decision, verified constraint, observed problem, or evidence-backed material risk]
-- **Lower-surface insufficiency**: [why reuse, derivation, on-demand computation, or current-boundary ownership does not satisfy the same condition]
+- **Lower-surface insufficiency**: [why reuse, derivation, on-demand computation, current-boundary ownership, or reshaping the existing owner does not satisfy the same condition]
 - **Subtraction result**: [outcome, required boundary, or proof that becomes unmet when removed, traced to its originating requirement, accepted decision, or repository rule or contract]
 
 Use `None — existing design surface is sufficient` when the selected design adds none of these surfaces.

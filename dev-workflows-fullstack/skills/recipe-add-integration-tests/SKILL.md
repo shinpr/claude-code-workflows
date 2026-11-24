@@ -66,7 +66,6 @@ For each layer with generated skeletons, record the current HEAD as `diffBase`, 
 - `description`: "Implement integration tests"
 - `direct_scope`: Implement every test defined by the layer-specific generated skeletons
 - `governing_sources`: Layer-specific Design Doc, applicable UI Spec, and generated skeleton paths
-- `target_paths`: Generated test paths plus the existing setup or fixture paths explicitly identified before invocation
 - `observable_verification`: Execute the implemented tests and verify every skeleton claim at its declared boundary
 
 Execute one layer at a time through Steps 3→4→5→6→7 before starting the next.
@@ -96,7 +95,7 @@ Check Step 4 result:
 
 Invoke the same layer's task-executor:
 - `description`: "Fix review findings"
-- Reuse Step 3 `direct_scope`, `governing_sources`, `target_paths`, and `observable_verification`
+- Reuse Step 3 `direct_scope`, `governing_sources`, and `observable_verification`
 - `correction_findings`: Complete reviewer finding objects verbatim, with only their orchestrator dispositions added
 
 ### Step 6: Quality Check

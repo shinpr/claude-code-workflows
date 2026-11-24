@@ -97,7 +97,7 @@ After Structural Scale is determined, follow only that scale's applicable path. 
 ### Task Execution Quality Cycle (4-Step Cycle per Task)
 
 **Per-task cycle** (complete each task before starting next):
-1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`; pass `task_file: [path]` when one exists, otherwise pass `direct_scope` as the convergence record's outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
+1. **Agent tool** (subagent_type: "dev-workflows-fullstack:task-executor") → Record the current HEAD as `diffBase`; pass `task_file: [path]` when one exists, otherwise pass `direct_scope` as the convergence record's outcome and exclusions, `governing_sources`, and `observable_verification`
 2. Check task-executor response:
    - `status: escalation_needed` or `blocked` → Apply subagents-orchestration-guide Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`

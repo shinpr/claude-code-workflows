@@ -228,7 +228,7 @@ All fixes must satisfy these criteria:
 | Type safety | Keep type-system guarantees; permit only the bounded escapes allowed by the coding-principles frontend reference and justified project-configured suppressions |
 | Error handling | Handle errors with context (log, propagate, or recover with specific handling) |
 | Environment separation | Keep test-specific branches outside production code |
-| Lint compliance | Preserve configured lint rules (add justification comments when override is necessary) |
+| Lint compliance | Satisfy configured lint rules by changing the flagged code; a suppression follows coding-principles Structure for Local Edits |
 
 ## Fix Determination Flow
 

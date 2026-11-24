@@ -57,7 +57,7 @@ Verify current external facts from authoritative sources only when an ADR select
 
 ### ADR Batch
 
-- For ADR and Design Doc checks, total complexity covers every activated user decision, setting, mode, concept, output, persistent state, and implementation path, together with its UX, runtime, implementation, testing, documentation, and maintenance cost; compare only dimensions that differ between valid options.
+- For ADR and Design Doc checks, total complexity covers every activated user decision, setting, mode, concept, output, persistent state, and implementation path, together with its UX, runtime, testing, documentation, and maintenance cost; compare only dimensions that differ between valid options.
 - Each ADR owns one technical question inside the scope of the requirements.
 - Current requirements and repository evidence support at least two credible, materially distinct options, and the choice has durable impact.
 - Options compare product value from the requirements, repository fit, total complexity, maintainability, material trade-offs, and reversibility using available evidence.

@@ -16,11 +16,6 @@ Preserve every directly constraining Work Plan citation unchanged so the executo
 - [Design Doc path (§ section); AC IDs]
 - [UI Spec or ADR path (§ section), when directly constraining]
 
-## Target Files
-
-- [Implementation file or responsibility]
-- [Test file the Work Plan fixes, such as a generated skeleton]
-
 ## Investigation Targets
 
 Read the smallest representative set needed to implement the task:
@@ -32,12 +27,6 @@ Read the smallest representative set needed to implement the task:
 ## Investigation Notes
 
 - [Record only facts that change implementation, scope, or verification.]
-
-## Implementation Steps
-
-1. Read the Investigation Targets and record relevant repository facts.
-2. Implement the smallest repository change that completes the outcome, with the tests its cited verification requires.
-3. Run task verification.
 
 ## Operation Verification Methods
 

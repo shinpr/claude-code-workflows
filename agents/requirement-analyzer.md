@@ -43,7 +43,7 @@ Return exactly one JSON object:
   "scopeEvidence": {
     "affectedFiles": ["candidate/path"],
     "affectedLayers": ["backend"],
-    "executionRoute": {"status": "evident|unresolved", "responsibility": "single owner or null", "representativePattern": "path:symbol or null", "targetPaths": ["candidate/path"], "evidence": "why this is one supported route, or what prevents that conclusion"},
+    "executionRoute": {"status": "evident|unresolved", "responsibility": "single owner or null", "representativePattern": "path:symbol or null", "evidence": "why this is one supported route, or what prevents that conclusion"},
     "responsibilityBoundaries": [
       {"boundary": "responsibility or integration", "evidence": "path:line", "currentTreatment": "what the repository does with this responsibility today", "effect": "the consequence a user would observe, and how it can change scope, scale, or analysis target"}
     ],

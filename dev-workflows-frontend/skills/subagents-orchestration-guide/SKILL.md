@@ -57,7 +57,6 @@ Pass the governing requirement source and the specialist's expected action. Inve
 
 **Scope source classification**:
 - An explicit restriction in the user instruction or the outcome, desired-future requirements, or non-goals is a hard boundary. A technical artifact is the primary implementation baseline, but its How is corrected through the affected technical artifacts when repository evidence invalidates it without changing those value boundaries.
-- Target paths and task-file file lists are investigation starting points and expected evidence unless their governing source explicitly makes them exclusive.
 - Changes to adjacent files proceed when repository evidence shows they are required by the same outcome, responsibility, contract, or consistency rule.
 - Unrelated improvements remain outside the active change. A proposed change to the outcome, desired-future requirements, or non-goals returns to the requirements gate. Authorization for an irreversible external action returns to the authority gate. Technical design, contract, and implementation changes that preserve those value boundaries proceed through their affected technical artifacts.
 
@@ -232,7 +231,7 @@ After a correction or quality-fixer retry, compare its actual diff against the c
 #### Commit Boundary Check
 
 Immediately before a workflow commit:
-1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change. `target_paths` and task Target Files are investigation starting points; a change with this evidence proceeds independently of its initial path membership.
+1. Use repository state at the commit boundary as the primary evidence and account for every actual change by mapping it to the outcome, a governing source, or a necessary dependency, test, generated artifact, or adjacent maintenance change.
 2. Every required change is ready for the task commit, accidental changes introduced during the task are removed, and existing worktree changes unrelated to the outcome remain intact.
 3. Commit the resulting change set. When repository evidence shows a change would alter the outcome, desired-future requirements, or non-goals, apply Requirement Change Detection before committing it.
 
@@ -246,7 +245,7 @@ Verification-Affected: <affected check or command>
 Derive the values from the quality-fixer result. Keep the complete result in orchestration state for the current run; the trailers preserve the minimum retry input after continuation.
 
 **Per-task cycle**:
-1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the convergence record's outcome and exclusions, `governing_sources`, `target_paths`, and `observable_verification`
+1. **Execute**: record the current HEAD as `diffBase`, then invoke task-executor with `task_file: [path]` when one exists; for Small, invoke it with `direct_scope` as the convergence record's outcome and exclusions, `governing_sources`, and `observable_verification`
 2. **Branch on executor result**:
    - `status: escalation_needed` or `blocked` → Apply Specialist Result Acceptance
    - `requiresTestReview` is `true` → Identify the changed integration/E2E test files in the current changes and invoke integration-test-reviewer with them as `changedTestFiles`, plus `diffBase`, optional `taskFile`, prompt-only claims, and `mutationEvidence`
@@ -261,8 +260,6 @@ Derive the values from the quality-fixer result. Keep the complete result in orc
    - `verification_incomplete` → Retain the complete result for final retry and proceed to step 4
    - `pass` → Proceed to step 4
 4. **Commit**: apply Commit Boundary Check, then compose the message from `changeSummary` and execute git commit with Bash after `pass` or `verification_incomplete`; append the verification trailers for the latter
-
-**Findings outside the change**: Retain each executor `findingsOutsideChange` item; one the outcome needs is incomplete implementation under Specialist Result Acceptance. When the workflow runs post-implementation review, an item in work this workflow produced enters Review Resolution with the review findings, and the code-reviewer whose `implementationFiles` contain its location owns an applied one. List the items left unhandled with their location and evidence in the completion report.
 
 Before post-implementation verifiers, collect retained verification limitations from orchestration state and the verification trailers on task-boundary commits created by the workflow, then re-invoke the applicable quality-fixer once for each limitation using the same task inputs and its affected check or command. When the retry returns `pass`, remove that limitation from retained state. Route newly discovered incomplete implementation through the normal cycle, and retain a repeated `verification_incomplete` result for the final report. Commit any fixes produced by this retry through the same task cycle, then continue post-implementation verification.
 
