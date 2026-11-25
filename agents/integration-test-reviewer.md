@@ -142,7 +142,7 @@ Use `reviewBasis: null` only when an input-gate failure blocks review before a b
 - [ ] Mock only external dependencies in integration tests
 - [ ] Arrange/Act/Assert organization is sufficient to keep the selected proof clear and valid
 - [ ] Each test executes independently of other tests
-- [ ] Deterministic execution (no random/time dependency)
+- [ ] Deterministic execution (time, randomness, and the order of concurrent work controlled)
 - [ ] Test naming does not obscure or contradict the selected proof
 - [ ] Every issue has a stable ID
 - [ ] Every issue identifies one material proof gap and the smallest correction that restores the selected proof

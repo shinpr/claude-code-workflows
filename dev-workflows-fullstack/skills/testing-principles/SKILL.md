@@ -24,7 +24,7 @@ Tests here guarantee accepted behavior, and the next agent reads every existing 
 - Use independently derived literal, property, approved snapshot, or fixture expectations. An implementation-derived oracle cannot detect the same implementation defect.
 - Keep each test's expected outcome unconditional. Table-driven or property-based cases are acceptable when each case is reported distinctly and uses an independent oracle.
 - Cover accepted boundary and error behavior; derive cases from the contract instead of adding generic edge-case permutations.
-- Each test creates and cleans up its own state, passes in isolation and any order, and controls time or randomness that affects its result.
+- Each test creates and cleans up its own state; passes in isolation, in any order, and alongside the tests the runner executes concurrently with it; and controls the time, randomness, and order of concurrent work that affect its result.
 - Keep tests executable. Fix or remove tests that no longer describe accepted behavior; restore tests disabled only to bypass a failure.
 
 ## Mock and Boundary Rules
