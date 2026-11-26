@@ -68,7 +68,7 @@ Use these categories:
 
 - `dd_violation`: implementation contradicts an approved requirement or design contract;
 - `scope_excess`: a material addition is unnecessary or not worth its lifecycle cost and can be removed, narrowed, or absorbed by reshaping the structure it extends while preserving the outcome;
-- `reliability`: a concrete changed-path failure remains possible under stated conditions;
+- `reliability`: a supported use can reach a changed-path failure that violates the approved outcome or a preserved contract;
 - `coverage_gap`: required observable behavior or Verification Focus is not substantively proven;
 - `quality_rule`: an applicable `docs/project-context/quality.yaml` pass condition is false;
 - `adjacent_residual`: the same verified cause remains in an adjacent in-scope path.
