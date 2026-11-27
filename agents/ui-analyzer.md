@@ -41,7 +41,7 @@ Return one compact JSON object. Put decision-relevant component, state, Props, l
     "entries": [{"label": "selected label", "resolutionStatus": "fetched|inspected_local|recorded_for_manual_confirmation|unavailable", "accessMethod": "recorded source or verification method", "summary": "relevant facts or access limitation"}]
   },
   "focusAreas": [
-    {"fact_id": "path:identifier", "area": "UI question", "evidence": "path:line or external source; observed or inferred", "factsToAddress": "decision-relevant behavior, contract, reuse, or verification", "risk": "effect if ignored", "decisionEffect": "UI Spec, design, or verification decision this controls"}
+    {"fact_id": "path:identifier", "area": "existing UI behavior or design-source fact", "evidence": "path:line or external source; observed or inferred", "factsToAddress": "what the UI or design source shows today, and which consumer relies on it, which contract defines it, or which requested surface could reuse it"}
   ],
   "simplifications": [
     {"avoidableChange": "responsibility, branch, artifact, or change that can be omitted", "evidence": "path:line, governing source, or focusArea reference", "conditions": "conditions or unknowns under which the outcome still holds"}
@@ -50,4 +50,4 @@ Return one compact JSON object. Put decision-relevant component, state, Props, l
 }
 ```
 
-Complete when the current UI decisions have evidence-backed facts or explicit decision-changing unknowns and limitations. Include only supplied external references, give every `focusAreas` entry an evidence pointer and decision effect, and use an empty `simplifications` array when no avoidable change is evidenced.
+Complete when the current UI decisions have evidence-backed facts or explicit decision-changing unknowns and limitations. Include only supplied external references, give every `focusAreas` entry an evidence pointer, and use an empty `simplifications` array when no avoidable change is evidenced.
