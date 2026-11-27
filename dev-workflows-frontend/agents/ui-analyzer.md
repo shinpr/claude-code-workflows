@@ -41,7 +41,7 @@ Return one compact JSON object. Put decision-relevant component, state, Props, l
     "entries": [{"label": "selected label", "resolutionStatus": "fetched|inspected_local|recorded_for_manual_confirmation|unavailable", "accessMethod": "recorded source or verification method", "summary": "relevant facts or access limitation"}]
   },
   "focusAreas": [
-    {"fact_id": "path:identifier", "area": "existing UI behavior or design-source fact", "evidence": "path:line or external source; observed or inferred", "factsToAddress": "what the UI or design source shows today, and which consumer relies on it, which contract defines it, or which requested surface could reuse it"}
+    {"fact_id": "path:identifier", "area": "UI question", "evidence": "path:line or external source; observed or inferred", "factsToAddress": "decision-relevant behavior, contract, reuse, or verification"}
   ],
   "simplifications": [
     {"avoidableChange": "responsibility, branch, artifact, or change that can be omitted", "evidence": "path:line, governing source, or focusArea reference", "conditions": "conditions or unknowns under which the outcome still holds"}
