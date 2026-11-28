@@ -55,7 +55,7 @@ Verify candidate problems against supporting and contradicting evidence, consoli
 
 When `prior_feedback` is present, reconcile exactly those received items against the current implementation and governing evidence:
 
-1. Mark an applied item `resolved` when current evidence shows the finding is satisfied and the corrected boundary remains valid; otherwise mark it `maintained` with current evidence.
+1. Mark an applied item `resolved` when the evidence distinguishes the corrected behavior from the failure described in the finding and the corrected boundary remains valid; otherwise mark it `maintained` and state what the evidence leaves open.
 2. Mark a declined item `withdrawn` when current evidence no longer supports it; otherwise mark it `maintained` with current evidence.
 3. Emit exactly one `prior_feedback_reconciliation` entry for every received ID.
 4. Derive the verdict only from these reconciliation entries and return the correction re-review output.
